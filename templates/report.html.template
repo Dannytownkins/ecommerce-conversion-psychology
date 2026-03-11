@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline';">
+  <title>CRO Report — {{ENGAGEMENT_ID}}</title>
+  <style>
+    /* Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      line-height: 1.6;
+      color: #1a1a2e;
+      background: #f8f9fa;
+      padding: 2rem 1rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .report-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+    }
+    .report-header h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .report-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; opacity: 0.85; }
+    .report-meta span { background: rgba(255,255,255,0.15); padding: 0.25rem 0.75rem; border-radius: 4px; }
+
+    /* Sections */
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      font-size: 1.15rem;
+      color: #1a1a2e;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Score Cards */
+    .score-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .score-card {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+    }
+    .score-card .number { font-size: 1.75rem; font-weight: 700; }
+    .score-card .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .badge-pass { background: #dcfce7; color: #166534; }
+    .badge-fail { background: #fee2e2; color: #991b1b; }
+    .badge-partial { background: #fef9c3; color: #854d0e; }
+    .badge-skip { background: #f1f5f9; color: #475569; }
+    .badge-critical { background: #7f1d1d; color: #fff; }
+    .badge-high { background: #dc2626; color: #fff; }
+    .badge-medium { background: #f59e0b; color: #fff; }
+    .badge-low { background: #6b7280; color: #fff; }
+
+    /* Effort/Impact badges */
+    .badge-effort-low { background: #dcfce7; color: #166534; }
+    .badge-effort-medium { background: #fef9c3; color: #854d0e; }
+    .badge-effort-high { background: #fee2e2; color: #991b1b; }
+    .badge-impact-low { background: #f1f5f9; color: #475569; }
+    .badge-impact-medium { background: #dbeafe; color: #1e40af; }
+    .badge-impact-high { background: #dcfce7; color: #166534; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { background: #f8f9fa; text-align: left; font-weight: 600; }
+    th, td { padding: 0.625rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
+    tr:last-child td { border-bottom: none; }
+
+    /* Findings List */
+    .finding {
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border-radius: 6px;
+      border-left: 4px solid #e2e8f0;
+      background: #f8f9fa;
+    }
+    .finding-fail { border-left-color: #dc2626; }
+    .finding-pass { border-left-color: #16a34a; }
+    .finding-partial { border-left-color: #f59e0b; }
+    .finding-critical { border-left-color: #7f1d1d; background: #fef2f2; }
+    .finding .finding-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
+    .finding .finding-body { font-size: 0.875rem; color: #374151; }
+    .finding .finding-rec { margin-top: 0.5rem; font-size: 0.875rem; color: #1a1a2e; font-weight: 500; }
+
+    /* Compare Mode */
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+    /* Build Log Statuses */
+    .status-done { color: #16a34a; font-weight: 600; }
+    .status-adapted { color: #f59e0b; font-weight: 600; }
+    .status-stuck { color: #dc2626; font-weight: 600; }
+    .status-skipped { color: #6b7280; font-weight: 600; }
+
+    /* Not Completed */
+    .not-completed {
+      text-align: center;
+      padding: 2rem;
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    /* Footer */
+    .report-footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      padding: 1.5rem 0;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 2rem;
+    }
+
+    /* Print */
+    @media print {
+      body { padding: 0; background: #fff; max-width: 100%; }
+      .report-header { break-after: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .section { break-inside: avoid; border: 1px solid #ccc; }
+      .badge, .score-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { size: A4; margin: 1.5cm; }
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      body { padding: 0.5rem; }
+      .report-header { padding: 1.25rem; }
+      .report-meta { flex-direction: column; gap: 0.5rem; }
+      .section { padding: 1rem; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .score-cards { grid-template-columns: 1fr 1fr; }
+      table { font-size: 0.75rem; }
+      th, td { padding: 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="report-header">
+    <h1>CRO Report</h1>
+    <div class="report-meta">
+      <span>ID: {{ENGAGEMENT_ID}}</span>
+      <span>Date: {{DATE}}</span>
+      <span>Type: {{TYPE}}</span>
+      <span>Page: {{PAGE_URL}}</span>
+      <span>Platform: {{PLATFORM}}</span>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="section">
+    <h2>Executive Summary</h2>
+    <div class="score-cards">
+      <div class="score-card">
+        <div class="number" style="color: #dc2626;">{{CRITICAL_COUNT}}</div>
+        <div class="label">Critical</div>
+      </div>
+      <div class="score-card">
+        <div class="number" style="color: #f59e0b;">{{HIGH_COUNT}}</div>
+        <div class="label">High</div>
+      </div>
+      <div class="score-card">
+        <div class="number" style="color: #6b7280;">{{MEDIUM_COUNT}}</div>
+        <div class="label">Medium</div>
+      </div>
+      <div class="score-card">
+        <div class="number" style="color: #16a34a;">{{PASS_COUNT}}</div>
+        <div class="label">Passed</div>
+      </div>
+    </div>
+    <p>{{EXECUTIVE_SUMMARY}}</p>
+  </div>
+
+  <!-- AUDIT FINDINGS (Standard Mode) -->
+  <!-- {{SECTION:FINDINGS_START}} -->
+  <div class="section">
+    <h2>Audit Findings</h2>
+    {{FINDINGS_CONTENT}}
+    <!-- Each finding rendered as:
+    <div class="finding finding-[status]">
+      <div class="finding-header">
+        <span class="badge badge-[status]">[STATUS]</span>
+        <span class="badge badge-[priority]">[PRIORITY]</span>
+        <strong>[SECTION slug]</strong>
+      </div>
+      <div class="finding-body">[OBSERVATION]</div>
+      <div class="finding-rec">Recommendation: [RECOMMENDATION]</div>
+    </div>
+    -->
+  </div>
+  <!-- {{SECTION:FINDINGS_END}} -->
+
+  <!-- COMPARE MODE: YOUR FINDINGS -->
+  <!-- {{SECTION:COMPARE_YOUR_START}} -->
+  <div class="section">
+    <h2>Your Page — Findings</h2>
+    {{YOUR_FINDINGS_CONTENT}}
+  </div>
+  <!-- {{SECTION:COMPARE_YOUR_END}} -->
+
+  <!-- COMPARE MODE: COMPETITOR FINDINGS -->
+  <!-- {{SECTION:COMPARE_COMPETITOR_START}} -->
+  <div class="section">
+    <h2>Competitor Page — Findings</h2>
+    {{COMPETITOR_FINDINGS_CONTENT}}
+  </div>
+  <!-- {{SECTION:COMPARE_COMPETITOR_END}} -->
+
+  <!-- COMPARE MODE: GAP ANALYSIS -->
+  <!-- {{SECTION:COMPARE_GAP_START}} -->
+  <div class="section">
+    <h2>Gap Analysis</h2>
+    {{GAP_ANALYSIS_CONTENT}}
+  </div>
+  <!-- {{SECTION:COMPARE_GAP_END}} -->
+
+  <!-- ACTION PLAN -->
+  <!-- {{SECTION:PLAN_START}} -->
+  <div class="section">
+    <h2>Action Plan</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>What</th>
+          <th>Where</th>
+          <th>Why</th>
+          <th>Effort</th>
+          <th>Impact</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{PLAN_ROWS}}
+        <!-- Each row:
+        <tr>
+          <td>[#]</td>
+          <td>[What]</td>
+          <td>[Where]</td>
+          <td>[Why]</td>
+          <td><span class="badge badge-effort-[level]">[Effort]</span></td>
+          <td><span class="badge badge-impact-[level]">[Impact]</span></td>
+          <td><span class="badge badge-[priority]">[Priority]</span></td>
+        </tr>
+        -->
+      </tbody>
+    </table>
+  </div>
+  <!-- {{SECTION:PLAN_END}} -->
+
+  <!-- REVIEW NOTES -->
+  <!-- {{SECTION:REVIEW_START}} -->
+  <div class="section">
+    <h2>Review Notes</h2>
+    <p><strong>Verdict:</strong> <span class="badge badge-{{VERDICT_CLASS}}">{{VERDICT}}</span></p>
+    {{REVIEW_CONTENT}}
+  </div>
+  <!-- {{SECTION:REVIEW_END}} -->
+
+  <!-- BUILD LOG -->
+  <!-- {{SECTION:BUILD_START}} -->
+  <div class="section">
+    <h2>Implementation Log</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>What</th>
+          <th>Status</th>
+          <th>Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{BUILD_ROWS}}
+        <!-- Each row:
+        <tr>
+          <td>[#]</td>
+          <td>[What]</td>
+          <td><span class="status-[status]">[Status]</span></td>
+          <td>[Notes]</td>
+        </tr>
+        -->
+      </tbody>
+    </table>
+  </div>
+  <!-- {{SECTION:BUILD_END}} -->
+
+  <!-- SCREENSHOT MODE NOTICE -->
+  <!-- {{SECTION:SCREENSHOT_START}} -->
+  <div class="section">
+    <div class="not-completed">
+      Recommendations Only — no source code was available for this audit.
+      Build phase was skipped. Findings are based on visual analysis.
+    </div>
+  </div>
+  <!-- {{SECTION:SCREENSHOT_END}} -->
+
+  <!-- FOOTER -->
+  <div class="report-footer">
+    <p>Generated on {{GENERATED_DATE}} by CRO Plugin v{{VERSION}}</p>
+    <p>This report is self-contained — no external resources are loaded.</p>
+  </div>
+
+</body>
+</html>

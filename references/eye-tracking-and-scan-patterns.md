@@ -1,0 +1,278 @@
+<!-- RESEARCH_DATE: 2026-03-09 -->
+# Eye-Tracking and Visual Scan Patterns in E-Commerce
+
+## Research Summary
+
+**Total Findings**: 20 cited findings with specific data points
+
+**Top 3 Most Impactful Findings for E-Commerce Layout Design:**
+
+1. **Finding 4 (Above-the-Fold Attention Distribution)**: Users spend 57% of viewing time above the fold and 74% in the first two screenfuls. This directly dictates where to place product images, prices, and CTAs on product pages.
+2. **Finding 5 (Left-Side Dominance)**: 80% of fixations land on the left half of the page. Product images belong on the left, descriptions on the right -- violating this pattern fights against deeply ingrained scanning behavior.
+3. **Finding 1 (56% Image-First Behavior)**: 56% of users explore product images as their very first action on a product page. Image quality, placement, and gallery design are the single most important conversion lever on product detail pages.
+
+---
+
+## Findings
+
+---
+
+### Finding 1: Product Images Are the First Fixation Point for 56% of Users
+- **Source**: Baymard Institute, ongoing product page UX benchmark (2012-2025), https://baymard.com/research/product-page
+- **Methodology**: Large-scale qualitative usability testing with eye-tracking (Tobii eye tracker), 32+ participants per round, testing major e-commerce sites (REI, Cabela's, M&S, etc.)
+- **Key Finding**: 56% of test subjects' first action on a new product page was exploring the product images before reading titles, descriptions, or prices. Product photos were always the first thing participants looked at regardless of image position on the page.
+- **E-Commerce Application**: Product images must be large, high-quality, and prominently placed. They are the primary entry point for user engagement on product detail pages. Weak or small images lose the user before they even read the product name.
+- **Replication Status**: Replicated across multiple Baymard benchmark rounds and confirmed by cxpartners eye-tracking study.
+- **Boundary Conditions**: May be weaker for commoditized products where price is the dominant factor (e.g., office supplies, bulk goods). Strongest for apparel, electronics, and home goods.
+
+---
+
+### Finding 2: The F-Pattern Persists Across 20+ Years of Eye-Tracking Research
+- **Source**: Nielsen Norman Group, 2006 (original), 2017 (replication), https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/
+- **Methodology**: Original: 232 users recorded looking at thousands of web pages. Replication: 47 participants, aggregated heatmap data, 11 years later.
+- **Key Finding**: Users read in an F-shaped pattern -- two horizontal sweeps across the top, then a vertical scan down the left side. The 2017 replication produced virtually identical heatmaps to the 2006 original. A German Research Center for AI study also confirmed F-pattern on smartphones.
+- **E-Commerce Application**: For text-heavy product listings, search results, and category pages, the F-pattern means the first 2-3 items and the left column receive disproportionate attention. Key product info (name, price, rating) should be in the top-left of each listing card.
+- **Replication Status**: Replicated multiple times (NNGroup 2017, DFKI mobile study). One of the most robust findings in web usability.
+- **Boundary Conditions**: F-pattern is strongest for text-heavy, uniform layouts. Does NOT apply to visually diverse pages, hero-driven landing pages, or pages with strong visual hierarchy that breaks the pattern. Good design can prevent F-scanning.
+
+---
+
+### Finding 3: Z-Pattern Applies to Minimal, CTA-Focused Pages
+- **Source**: Multiple UX practitioners citing Gutenberg's reading gravity principle; 99designs, UX Planet, IxDF literature reviews. https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c
+- **Methodology**: Descriptive/prescriptive based on eye-tracking pattern analysis. Not a single controlled study but a convergence of eye-tracking observations on landing pages and homepages.
+- **Key Finding**: On pages with minimal text and clear visual elements (hero sections, landing pages, sign-up forms), users scan in a Z-pattern: top-left to top-right, diagonal to bottom-left, then across to bottom-right. The Z-path terminates where CTAs should be placed.
+- **E-Commerce Application**: Homepage hero sections and promotional landing pages should follow Z-pattern layout: logo/brand top-left, key value proposition top-right or center, hero image in the middle diagonal, CTA button at bottom-right terminal point.
+- **Replication Status**: Widely cited but lacks rigorous controlled experimental validation as a standalone pattern. More of an observed tendency than a tested law.
+- **Boundary Conditions**: Breaks down when pages have significant text content (F-pattern takes over), complex navigation, or multiple competing visual elements. Less applicable on mobile where single-column layout dominates.
+
+---
+
+### Finding 4: 57% of Viewing Time Is Spent Above the Fold
+- **Source**: Nielsen Norman Group, 2018 eye-tracking study published 2019, https://www.nngroup.com/articles/scrolling-and-attention/
+- **Methodology**: Eye-tracking study analyzing over 130,000 fixations on 1920x1080 screens across hundreds of pages.
+- **Key Finding**: Content above the fold received 57% of viewing time. The second screenful received 17%. The remaining 26% was distributed in a long-tail across all remaining content. Combined, 74% of viewing time was in the first two screenfuls (up to 2160px). This was down from 80% above-the-fold in a 2010 NNGroup study, likely due to the prevalence of longer pages and responsive design.
+- **E-Commerce Application**: Product image, price, key selling points, and primary CTA ("Add to Cart") must be above the fold. Supplementary content (reviews, related products, detailed specs) can live below. Landing pages with CTAs above the fold saw 30% higher conversion rates than those requiring scroll (analysis of 40,000+ landing pages).
+- **Replication Status**: Replicated (NNGroup 2010 vs 2018 data shows consistent pattern with expected shift).
+- **Boundary Conditions**: Mobile users scroll more readily and spend less time above the fold due to smaller viewports. Content-rich pages (blogs, editorial) see more scrolling than transactional pages.
+
+---
+
+### Finding 5: 80% of Fixations Fall on the Left Half of the Page
+- **Source**: Nielsen Norman Group, "Horizontal Attention Leans Left", https://www.nngroup.com/articles/horizontal-attention-leans-left/
+- **Methodology**: Large-scale eye-tracking across hundreds of web pages, measuring horizontal fixation distribution.
+- **Key Finding**: Web users spend 80% of their time viewing the left half of the page and 20% viewing the right half. This left-side bias is consistent across page types and is driven by left-to-right reading habits in Western cultures.
+- **E-Commerce Application**: Product images should be placed on the left side of product pages, with descriptions on the right. In product grids, items in the left columns receive more visual attention. The cxpartners study confirmed that the majority of participants preferred product pictures on the left and description on the right.
+- **Replication Status**: Replicated consistently across NNGroup studies and confirmed by cxpartners e-commerce-specific research.
+- **Boundary Conditions**: Reversed in right-to-left reading cultures (Arabic, Hebrew). Weaker on mobile single-column layouts where horizontal distribution is less relevant. Can be overridden by strong visual contrast on the right side.
+
+---
+
+### Finding 6: Banner Blindness -- Users Ignore Ad-Like Content Across 3 Decades
+- **Source**: Nielsen Norman Group, "Banner Blindness Revisited", 2018, https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/
+- **Methodology**: Eye-tracking studies spanning 1997 to present, most recent with 26 participants. Analysis across hundreds of web pages.
+- **Key Finding**: Users almost never fixate on anything that looks like an advertisement, whether or not it actually is an ad. In one study, 86% of participants failed to find information presented in a promotional, advertisement-like format (bright red, top-right corner of homepage). Banner blindness has been documented consistently across 3 decades of eye-tracking research. Average banner ad CTR has declined from 44% (1994) to approximately 0.1% (modern era).
+- **E-Commerce Application**: Promotional banners on e-commerce sites (sale announcements, featured deals) are frequently ignored if they resemble advertising. Important product information or deals should NOT be formatted as banners. Internal promotions should be integrated into the content flow rather than placed in banner-style containers.
+- **Replication Status**: One of the most replicated findings in web usability. Confirmed across desktop and mobile.
+- **Boundary Conditions**: Slightly less severe when banners contain human faces with positive expressions. Left-side and top banners receive marginally more attention than right-side banners. Goal-directed users show stronger banner blindness than browsing users.
+
+---
+
+### Finding 7: List Layout Drives More Attention to Price and Reviews Than Grid Layout
+- **Source**: RealEye.io, "List vs. Grid: Which Product Layout Drives More Sales on Smartphones?", https://www.realeye.io/blog/post/list-vs-grid-which-product-layout-drives-more-sales-on-smartphones
+- **Methodology**: Eye-tracking study using webcam-based tracking (RealEye platform) combined with AHP (Analytic Hierarchy Process) analysis, comparing list and grid layouts on smartphone screens.
+- **Key Finding**: List layout was more effective for driving attention to text-based information including price, reviews, and shipping details. Users viewed price information more frequently and for longer periods in list view. Scrolling was smoother and more consistent. Grid layout produced more dispersed gaze patterns with horizontal and vertical scanning. In list view, attention decreased from top to bottom along the vertical scroll path.
+- **E-Commerce Application**: For product categories where price comparison and review scores are primary decision factors, list layout may outperform grid. Grid layout is better for visually-driven categories (fashion, home decor) where image scanning matters more. Consider offering both views with list as default for price-sensitive categories.
+- **Replication Status**: Consistent with earlier column-vs-grid eye-tracking studies (ResearchGate, 2018) showing column layouts produce larger fixation densities.
+- **Boundary Conditions**: Study focused on smartphones; desktop results may differ due to wider viewport. Grid may outperform for highly visual product categories where aesthetics drive purchase decisions.
+
+---
+
+### Finding 8: Product Videos Increase Add-to-Cart by 37%
+- **Source**: Storyly / aggregated industry data, 2023-2024, https://www.storyly.io/post/latest-statistics-and-trends-for-video-commerce; Shopify video marketing statistics compilation, https://www.shopify.com/blog/video-marketing-statistics
+- **Methodology**: Aggregated industry conversion data and surveys across multiple e-commerce platforms.
+- **Key Finding**: E-commerce sites using video on product pages see a 37% increase in add-to-cart conversions. Sites with product videos report 2.8x higher revenue per visitor. 50% of online shoppers say they are more likely to buy a product if there is a video on the product page. 69% of consumers believe a product demo video best assists their purchase decision. Mobile video consumption on e-commerce platforms increased 133% in two years.
+- **E-Commerce Application**: Product videos should be prominently placed within the image gallery area. Even short (15-30 second) product demo videos can significantly increase conversion. Video thumbnails in search results also attract more attention than static results.
+- **Replication Status**: Widely reported across industry sources. Specific numbers vary but directional finding (video increases conversion) is robust.
+- **Boundary Conditions**: Video quality matters -- poor video can hurt conversion. Autoplay with sound is universally disliked. The 37% figure is an average; results vary dramatically by product category and video quality. Videos may not help for simple/commodity products.
+
+---
+
+### Finding 9: 25% of E-Commerce Sites Fail on Image Zoom Quality
+- **Source**: Baymard Institute, product page UX benchmark, https://baymard.com/blog/ensure-sufficient-image-resolution-and-zoom
+- **Methodology**: Expert UX benchmark review of top e-commerce sites combined with qualitative usability testing.
+- **Key Finding**: 25% of e-commerce sites do not provide sufficient image resolution or zoom capability. 93% of desktop e-commerce sites support some form of image zoom. However, 40% of e-commerce stores do not support pinch-to-zoom or double-tap zoom on mobile. For apparel and accessories, 5-15 thumbnail images may be necessary for full visual evaluation. Users need at least 3 additional thumbnails beyond the main image for meaningful visual context.
+- **E-Commerce Application**: Image galleries must support high-resolution zoom on both desktop and mobile. The minimum viable gallery should include 3-5 images with zoom capability. Mobile pinch-to-zoom is now an expected convention -- failing to support it directly hurts conversion confidence.
+- **Replication Status**: Based on ongoing benchmark data updated regularly. Consistent findings across benchmark rounds.
+- **Boundary Conditions**: Image quantity needs vary by product category. Simple products (cables, basic supplies) need fewer images. Complex/aesthetic products (furniture, fashion) need many more.
+
+---
+
+### Finding 10: 42% of Users Try to Judge Product Size from Images Alone
+- **Source**: Baymard Institute, "Product Page UX: Provide at Least One In Scale Image", https://baymard.com/blog/in-scale-product-images
+- **Methodology**: Qualitative usability testing with eye-tracking, part of ongoing product page UX benchmark.
+- **Key Finding**: 42% of users attempt to gauge a product's physical size from its product images. Despite this, 28% of e-commerce sites do not provide any "in scale" images (showing the product relative to a person, hand, or common object).
+- **E-Commerce Application**: Every product gallery should include at least one in-scale image. This is especially critical for products where size is ambiguous from photos alone (jewelry, electronics accessories, furniture). Failure to provide scale reference increases return rates and decreases purchase confidence.
+- **Replication Status**: Consistent across Baymard benchmark rounds.
+- **Boundary Conditions**: Less critical for products with universally known sizes (e.g., smartphones, standard clothing items with size charts).
+
+---
+
+### Finding 11: The Gutenberg Diagram -- CTA Placement at Terminal Optical Area
+- **Source**: Multiple design literature sources; UX Movement, "Why Users Click Right Call to Actions More Than Left Ones", https://uxmovement.com/buttons/why-users-click-right-call-to-actions-more-than-left-ones/; Vanseo Design analysis, https://vanseodesign.com/web-design/3-design-layouts/
+- **Methodology**: The Gutenberg diagram is a theoretical model validated by observational eye-tracking. Missouri University 2012 study tracked eye movements on web pages to measure time spent in each quadrant.
+- **Key Finding**: The Gutenberg diagram divides a page into four quadrants: Primary Optical Area (top-left, first fixation point), Strong Fallow Area (top-right, moderate attention), Weak Fallow Area (bottom-left, least attention), and Terminal Area (bottom-right, where reading gravity naturally ends). CTAs placed in the terminal area (bottom-right) align with natural reading completion and receive more clicks than left-positioned CTAs.
+- **E-Commerce Application**: On product pages, the "Add to Cart" button should be positioned at or near the bottom-right of the key content area (the terminal area). Brand/logo top-left, key value proposition top-center/right, CTA bottom-right. The weak fallow area (bottom-left) should contain non-critical elements like secondary links or legal text.
+- **Replication Status**: Theoretical model with partial empirical support. The general left-to-right, top-to-bottom reading gravity is well-established; the specific four-quadrant model has limited rigorous validation.
+- **Boundary Conditions**: Does not apply in right-to-left reading cultures. Breaks down on complex multi-column layouts, long-scroll pages, and mobile single-column designs. Strong visual hierarchy can override Gutenberg predictions.
+
+---
+
+### Finding 12: Size Is the Dominant Visual Hierarchy Factor for Fixation
+- **Source**: Faraday (2000), visual hierarchy research; Springer "Visual Hierarchy and Viewing Behavior: An Eye Tracking Study", https://link.springer.com/chapter/10.1007/978-3-642-21602-2_36; IxDF literature review.
+- **Methodology**: Controlled eye-tracking experiments manipulating size, color, contrast, and position of interface elements to measure their relative influence on first fixation and fixation duration.
+- **Key Finding**: Size is the most dominant factor in visual hierarchy -- larger elements consistently attract fixation before smaller ones. However, position (top-left bias), color contrast, and whitespace all contribute as complementary factors. The interaction of multiple factors is more powerful than any single factor alone. Whitespace around an element increases its perceived importance and attracts attention.
+- **E-Commerce Application**: Product images should be the largest element on product pages. Price should be large enough to be immediately scannable. CTA buttons need sufficient size AND color contrast to attract fixation. Whitespace around CTAs increases their visual prominence. Avoid making everything large -- hierarchy requires contrast between elements.
+- **Replication Status**: Size dominance is replicated across multiple eye-tracking studies. The relative ranking of other factors varies by context.
+- **Boundary Conditions**: Animation/motion overrides size (moving elements capture attention regardless of size). On mobile, size hierarchy is compressed due to limited viewport. Cultural factors influence which positions are perceived as primary.
+
+---
+
+### Finding 13: EyeQuant AI Achieves 85-90% Accuracy vs. Real Eye-Tracking
+- **Source**: EyeQuant, validation studies, https://www.eyequant.com/accuracy/
+- **Methodology**: AI neural networks trained on 1.6 million data points across 20,000 eye-tracking experiments. Validation using AUC (area under receiver-operator characteristic) to compare predicted attention maps against real eye-tracking data.
+- **Key Finding**: EyeQuant's predictive attention models are 85-90% as accurate as real eye-tracking studies. In one specific test, predictions were 91% as accurate as running an eye-tracking experiment with 46 participants. This validates that AI-predicted attention maps can be a practical substitute for lab-based eye-tracking in many design evaluation contexts.
+- **E-Commerce Application**: Teams can use AI attention prediction tools (EyeQuant, Attention Insight) to rapidly test product page layouts, banner designs, and landing pages without the cost and time of lab-based eye-tracking. Useful for A/B testing design variations before deployment.
+- **Replication Status**: Validated by EyeQuant's own methodology. Independent validation by third parties is limited.
+- **Boundary Conditions**: AI predictions are based on general web viewing patterns and may not capture task-specific or domain-specific attention shifts. Cannot account for individual user intent, motivation, or familiarity with the site.
+
+---
+
+### Finding 14: Lumen Research -- Average Digital Ad Dwell Time Is 1-2 Seconds
+- **Source**: Lumen Research, attention measurement platform; PwC validation study for Lumen, https://lumen-research.com/
+- **Methodology**: Panel-based webcam eye-tracking across 650,000+ real-world opt-in sessions. Dataset of 20 billion+ attentive impressions. PwC independent validation of prediction accuracy.
+- **Key Finding**: Average dwell time on digital ads and media formats is between 1 and 2 seconds. Not everything that meets "viewability" standards actually gets viewed by human eyes. PwC found Lumen's attention model correctly predicted whether an impression was viewed 70% of the time (using 100ms gaze detection threshold).
+- **E-Commerce Application**: Promotional elements on e-commerce sites have approximately 1-2 seconds to communicate their message. This means promotional messaging must be instantly scannable -- single number (e.g., "30% OFF"), single image, minimal text. Any promotion requiring reading will be missed by most users.
+- **Replication Status**: Based on large-scale real-world panel data, highly ecologically valid. PwC independently validated the model.
+- **Boundary Conditions**: Dwell time varies significantly by ad format, placement, and context. In-content native ads receive more attention than standard banner placements. These figures reflect passive browsing; task-directed users may show different patterns.
+
+---
+
+### Finding 15: Carousel Recommenders Encourage Exploration but Grid Is More Efficient
+- **Source**: ArXiv (2025), "Riding the Carousel: The First Extensive Eye Tracking Analysis of Browsing Behavior in Carousel Recommenders", https://arxiv.org/html/2507.10135; ACM IUI 2025 proceedings.
+- **Methodology**: Eye-tracking study comparing carousel and grid/list recommender interfaces, measuring gaze patterns, browsing duration, and perceived diversity.
+- **Key Finding**: Carousel users explored slower and longer and perceived items as more diverse and novel. Grid-based layouts enabled faster scanning. In image search grids, researchers observed middle bias, slower decay patterns, and row-skipping behavior. Carousels suffer from low engagement rates due to "banner blindness" association with auto-rotating content.
+- **E-Commerce Application**: Use carousels sparingly and only for discovery/inspiration contexts (e.g., "You might also like"). For primary product browsing (category pages, search results), grid or list layouts are more efficient. Never auto-rotate carousels. If using carousels, ensure clear navigation indicators and make the first visible items the highest-value recommendations.
+- **Replication Status**: Relatively new finding (2025). Consistent with NNGroup's longstanding skepticism of carousel effectiveness.
+- **Boundary Conditions**: Carousels may work better for entertainment/content platforms where exploratory browsing is the goal. In transactional e-commerce (high purchase intent), grid/list is almost always superior.
+
+---
+
+### Finding 16: 27% of Users Overlook Tabbed Content on Product Pages
+- **Source**: Baymard Institute, product page UX benchmark, https://baymard.com/blog/current-state-ecommerce-product-page-ux
+- **Methodology**: Qualitative usability testing with think-aloud protocol and eye-tracking across top e-commerce sites.
+- **Key Finding**: On product pages using "Horizontally Tabbed" layouts, 27% of participants overlooked the tabs entirely, missing important product information like specifications, reviews, or shipping details contained in non-default tabs. Over half of sites performed at "mediocre" or worse for product page layout UX.
+- **E-Commerce Application**: Critical product information (reviews, key specs, shipping info) should NOT be hidden behind tabs. If tabs are used, essential information should be visible in the default/first tab. Consider vertical accordion layouts or simply displaying all content in a single scrollable view, since users are now comfortable scrolling.
+- **Replication Status**: Consistent across Baymard benchmark rounds.
+- **Boundary Conditions**: Tab blindness is worse on mobile where tabs may be less visually prominent. Users who are highly motivated (high purchase intent) are more likely to discover tabbed content.
+
+---
+
+### Finding 17: NNGroup Identifies 4 Distinct Scanning Patterns Beyond F-Pattern
+- **Source**: Nielsen Norman Group, "How People Read on the Web: The Eyetracking Evidence", https://www.nngroup.com/reports/how-people-read-web-eyetracking-evidence/
+- **Methodology**: Large-scale eye-tracking across thousands of web pages, pattern categorization from heatmap and gaze-plot analysis.
+- **Key Finding**: Users exhibit 4 main text-scanning patterns: (1) F-pattern -- horizontal sweeps then vertical scanning, most common on text-heavy pages; (2) Spotted pattern -- skipping around looking for specific targets (links, numbers, keywords); (3) Layer-cake pattern -- scanning headings and subheadings, skipping body text; (4) Commitment pattern -- actually reading most of the content (rare, indicates high motivation).
+- **E-Commerce Application**: Product pages should be designed for ALL scanning patterns simultaneously: clear headings (layer-cake), scannable key specs with bolded values (spotted), important info top-left (F-pattern), and detailed content for committed readers. Use formatting like bullet points, bold key figures, and clear section headers to support multi-pattern scanning.
+- **Replication Status**: Well-established NNGroup taxonomy based on extensive eye-tracking data.
+- **Boundary Conditions**: Pattern selection depends on user motivation, task type, and content structure. High-intent shoppers show more commitment pattern; browsing users show more F-pattern and spotted pattern.
+
+---
+
+### Finding 18: Product Page Visual Flow -- Image Left, Price Near CTA
+- **Source**: cxpartners, "What People See Before They Buy", https://www.cxpartners.co.uk/our-thinking/what_people_see_before_they_buy_design_guidelines_for_ecommerce_product_pages_with_eyetracking_data; Baymard Institute CTA proximity research.
+- **Methodology**: cxpartners: eye-tracking study on e-commerce product pages across UK retailers (M&S, Tesco Direct, etc.). Baymard: qualitative usability testing with think-aloud.
+- **Key Finding**: The optimal product page visual flow is: (1) Large product image on the left captures first fixation; (2) Product title and key details to the right of the image; (3) Price positioned close to the CTA button -- proximity between price and "Add to Cart" increases add-to-cart rates by reducing cognitive friction; (4) CTA button must be visually distinct (bright color, button-shaped). Participants struggled when CTAs were not visually apparent (e.g., Tesco Direct), while M&S's bright-colored button was immediately found and praised.
+- **E-Commerce Application**: Follow the natural left-to-right flow: Image (left) -> Title + Key Info (center-right) -> Price + CTA (right, vertically aligned and close together). The CTA must look like a button with high color contrast. Never separate price and CTA with large whitespace or unrelated content.
+- **Replication Status**: Replicated across multiple practitioner studies. The image-left convention is now an established e-commerce design pattern.
+- **Boundary Conditions**: On mobile, this becomes a vertical flow (image top, then title, then price + CTA). Cultural reading direction affects optimal image placement.
+
+---
+
+### Finding 19: Attention to Low-Intensity Highlights Outperforms Bold Attention-Grabbers
+- **Source**: PMC/MDPI, "Attempts to Attract Eyesight in E-Commerce May Have Negative Effects", 2022, https://pmc.ncbi.nlm.nih.gov/articles/PMC9698550/
+- **Methodology**: Eye-tracking experiment in online shopping scenarios, measuring fixation time and selection behavior for different visual highlighting techniques.
+- **Key Finding**: Low-intensity background highlights (subtle color shading) produced the best fixation times and highest user selection rates. Aggressive visual highlighting (bright colors, large badges, animated elements) could produce negative effects, as overly attention-grabbing elements were associated with banner blindness responses and were ignored or actively avoided.
+- **E-Commerce Application**: Promotional highlights on product listings (sale badges, recommended tags, featured labels) should use subtle visual differentiation rather than loud, banner-like styling. A light background color or thin border is more effective than a large bright badge. This finding directly connects to banner blindness -- the more something looks promotional, the more it gets ignored.
+- **Replication Status**: Consistent with decades of banner blindness research. Specific "less is more" finding needs further replication.
+- **Boundary Conditions**: Very subtle highlights may be missed entirely by low-attention users. The optimal intensity depends on the overall visual density of the page.
+
+---
+
+### Finding 20: Mobile vs. Desktop -- Fundamentally Different Attention Distributions
+- **Source**: Smashing Magazine, "Eye-Tracking In Mobile UX Research", 2021, https://www.smashingmagazine.com/2021/10/eye-tracking-mobile-ux-research/; NNGroup scrolling studies; Tobii mobile research, https://www.tobii.com/blog/online-shoppers-don-t-read-they-glance
+- **Methodology**: Cross-device eye-tracking comparisons using both lab-based (Tobii) and webcam-based tracking on mobile and desktop e-commerce sites.
+- **Key Finding**: Mobile users scroll more readily and spend less time on above-the-fold content compared to desktop. Mobile gaze is concentrated in the center of the screen (thumb-reachable zone). The F-pattern still applies on mobile but is compressed. Users on mobile "don't read, they glance" -- fixation durations are shorter and scan paths are faster. Mobile video consumption on e-commerce platforms grew 133% in two years.
+- **E-Commerce Application**: Mobile product pages need a different visual hierarchy than desktop. Key information (price, primary CTA) must be within thumb reach. Single-column layouts eliminate left-right bias considerations but require careful vertical prioritization. Sticky "Add to Cart" buttons on mobile prevent the CTA from scrolling out of view.
+- **Replication Status**: Mobile-specific attention patterns are well-documented across multiple research sources.
+- **Boundary Conditions**: Tablet behavior falls between mobile and desktop. Mobile attention patterns vary significantly by screen size and whether the user is using one hand or two.
+
+---
+
+## Cross-Cutting Themes
+
+### When Each Scan Pattern Applies
+
+| Pattern | Best Context | E-Commerce Application |
+|---------|-------------|----------------------|
+| F-Pattern | Text-heavy pages, search results, product listings | Category pages, search results, comparison tables |
+| Z-Pattern | Minimal text, clear CTA, hero sections | Homepages, landing pages, promotional pages |
+| Gutenberg | Simple, single-purpose pages | Checkout pages, simple product pages |
+| Spotted | Users seeking specific info | Spec sheets, filtering interfaces, price comparisons |
+| Layer-Cake | Content with clear headings | Product descriptions with section headers |
+
+### The Image-Price-CTA Triangle
+
+Eye-tracking data consistently shows the optimal product page element arrangement follows natural reading flow:
+
+1. **Product Image** (left, large) -- captures first fixation in 56% of sessions
+2. **Title + Key Info** (right of image) -- scanned second via F-pattern horizontal sweep
+3. **Price** (right side, above or immediately adjacent to CTA) -- proximity to CTA reduces friction
+4. **CTA Button** (right side, below price, high contrast color) -- terminal position in Gutenberg flow
+
+### Context Sensitivity Warning
+
+Every finding in this document is context-dependent. Key variables that shift results:
+- **Device**: Desktop vs. mobile vs. tablet
+- **Task type**: Browsing/discovery vs. goal-directed purchase
+- **User motivation**: Low intent (window shopping) vs. high intent (ready to buy)
+- **Culture**: Left-to-right vs. right-to-left reading direction
+- **Product category**: Visual (fashion) vs. functional (electronics) vs. commodity (office supplies)
+- **Lab vs. real-world**: Lab eye-tracking inflates attention to all elements; real-world users are more distracted
+
+---
+
+## Source Bibliography
+
+1. Nielsen Norman Group - F-Shaped Pattern: https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/
+2. Nielsen Norman Group - Original F-Pattern (2006): https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content-discovered/
+3. Nielsen Norman Group - Scrolling and Attention: https://www.nngroup.com/articles/scrolling-and-attention/
+4. Nielsen Norman Group - Horizontal Attention Leans Left: https://www.nngroup.com/articles/horizontal-attention-leans-left/
+5. Nielsen Norman Group - Banner Blindness Revisited: https://www.nngroup.com/articles/banner-blindness-old-and-new-findings/
+6. Nielsen Norman Group - Banner Blindness Original: https://www.nngroup.com/articles/banner-blindness-original-eyetracking/
+7. Baymard Institute - Product Page UX: https://baymard.com/blog/current-state-ecommerce-product-page-ux
+8. Baymard Institute - Image Resolution and Zoom: https://baymard.com/blog/ensure-sufficient-image-resolution-and-zoom
+9. Baymard Institute - In Scale Images: https://baymard.com/blog/in-scale-product-images
+10. Baymard Institute - Research Methodology: https://baymard.com/research/methodology
+11. cxpartners - What People See Before They Buy: https://www.cxpartners.co.uk/our-thinking/what_people_see_before_they_buy_design_guidelines_for_ecommerce_product_pages_with_eyetracking_data
+12. EyeQuant - Accuracy: https://www.eyequant.com/accuracy/
+13. Lumen Research: https://lumen-research.com/
+14. RealEye - List vs Grid: https://www.realeye.io/blog/post/list-vs-grid-which-product-layout-drives-more-sales-on-smartphones
+15. Tobii - Shopper Research: https://www.tobii.com/solutions/consumer-research-and-user-experience/shopper-research
+16. Tobii - Mobile E-Commerce: https://www.tobii.com/blog/online-shoppers-don-t-read-they-glance
+17. Storyly - Video Commerce Statistics: https://www.storyly.io/post/latest-statistics-and-trends-for-video-commerce
+18. Shopify - Video Marketing Statistics: https://www.shopify.com/blog/video-marketing-statistics
+19. Smashing Magazine - Mobile Eye Tracking: https://www.smashingmagazine.com/2021/10/eye-tracking-mobile-ux-research/
+20. PMC - Negative Effects of Attention Grabbing: https://pmc.ncbi.nlm.nih.gov/articles/PMC9698550/
+21. ArXiv - Carousel Eye Tracking: https://arxiv.org/html/2507.10135
+22. Springer - Visual Hierarchy and Viewing Behavior: https://link.springer.com/chapter/10.1007/978-3-642-21602-2_36
+23. UX Planet - Z-Pattern: https://uxplanet.org/z-shaped-pattern-for-reading-web-content-ce1135f92f1c
+24. UX Movement - Right CTA Placement: https://uxmovement.com/buttons/why-users-click-right-call-to-actions-more-than-left-ones/

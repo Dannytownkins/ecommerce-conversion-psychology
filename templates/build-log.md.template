@@ -1,0 +1,27 @@
+# Build Log
+
+**Engagement:** {{ENGAGEMENT_ID}}
+**Date:** {{DATE}}
+**Platform:** {{PLATFORM}}
+
+## Implementation Status
+
+| Step | What | Status | Notes |
+|------|------|--------|-------|
+| 1 | {{WHAT}} | {{STATUS}} | {{NOTES}} |
+
+### Status Values
+- **Done** — Implemented as planned
+- **Adapted** — Implemented with minor deviation (documented in Notes)
+- **Stuck** — Could not implement (options presented to user)
+- **Skipped** — User chose to skip
+
+## Changes Made
+
+{{CHANGES_DESCRIPTION}}
+
+## Files Modified
+
+{{FILES_LIST}}
+
+---

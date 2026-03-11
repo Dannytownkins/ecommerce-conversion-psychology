@@ -1,0 +1,24 @@
+# Review Notes
+
+**Engagement:** {{ENGAGEMENT_ID}}
+**Date:** {{DATE}}
+**Reviewer verdict:** {{VERDICT}}
+
+## Review Summary
+
+{{REVIEW_SUMMARY}}
+
+## Findings
+
+{{REVIEW_FINDINGS}}
+
+## Verdict
+
+**{{VERDICT}}** — {{VERDICT_EXPLANATION}}
+
+Possible verdicts:
+- **APPROVE** — Plan is ready to build
+- **REVISE** — Plan needs changes (see findings above)
+- **BLOCK** — Critical issue prevents building (ethics, feasibility, or missing information)
+
+---

@@ -1,0 +1,21 @@
+# Competitor Audit Findings
+
+**Engagement:** {{ENGAGEMENT_ID}}
+**Competitor URL:** {{COMPETITOR_URL}}
+**Clusters:** {{CLUSTERS}}
+**Date:** {{DATE}}
+
+## Findings
+
+<!-- Each finding MUST use a canonical SECTION slug. See the slug list in workflows/audit.md. -->
+
+### [CLUSTER_NAME]
+
+FINDING: [PASS|FAIL|PARTIAL|SKIP]
+SECTION: [canonical-slug]
+OBSERVATION: [specific observation about the competitor page]
+RECOMMENDATION: [what this page does well or poorly]
+REFERENCE: [reference-file.md — section name]
+PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
+
+---

@@ -1,0 +1,19 @@
+# Engagement Context
+
+**Engagement ID:** {{ENGAGEMENT_ID}}
+**Date:** {{DATE}}
+**Type:** {{TYPE}}
+**Page URL:** {{PAGE_URL}}
+**Page Type:** {{PAGE_TYPE}}
+**Platform:** {{PLATFORM}}
+
+## Page Description
+
+{{PAGE_DESCRIPTION}}
+
+## Intake Notes
+
+{{INTAKE_NOTES}}
+
+---
+*This file is write-once and locked after intake.*

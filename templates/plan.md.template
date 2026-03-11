@@ -1,0 +1,27 @@
+# Action Plan
+
+**Engagement:** {{ENGAGEMENT_ID}}
+**Date:** {{DATE}}
+**Based on:** Audit findings from {{AUDIT_DATE}}
+
+## Prioritized Actions
+
+| # | What | Where | Why | Effort | Impact | Test | Priority |
+|---|------|-------|-----|--------|--------|------|----------|
+| 1 | {{WHAT}} | {{WHERE}} | {{WHY}} | {{EFFORT}} | {{IMPACT}} | {{TEST}} | {{PRIORITY}} |
+
+### Effort Scale
+- **Low:** < 1 hour, simple change
+- **Medium:** 1-4 hours, moderate complexity
+- **High:** 4+ hours or architectural change
+
+### Impact Scale
+- **Low:** Marginal UX improvement
+- **Medium:** Measurable conversion lift
+- **High:** Major friction point resolved, significant conversion impact
+
+## Notes
+
+{{PLANNER_NOTES}}
+
+---

@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "id": "{{ENGAGEMENT_ID}}",
+  "created": "{{CREATED_ISO}}",
+  "updated": "{{UPDATED_ISO}}",
+  "type": "{{TYPE}}",
+  "phase": "pending",
+  "page": {
+    "url": null,
+    "url_normalized": null,
+    "file_path": null,
+    "type": null
+  },
+  "platform": "generic",
+  "clusters_used": [],
+  "min_priority": null,
+  "compare_target": null,
+  "quick_scan": false
+}
