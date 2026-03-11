@@ -4,6 +4,8 @@
 
 **A CRO engine that thinks like a psychologist.** 15 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
+Each phase runs in a fresh context window with only the files it needs — no single agent tries to hold the full picture. A baton file system passes structured findings between phases, so nothing gets lost to compaction and every recommendation is traceable back to the research that produced it.
+
 Not a checklist. Not a linter. A full workflow that catches what you miss, challenges what you assume, and writes the code when you're ready.
 
 ---
