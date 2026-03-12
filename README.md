@@ -101,6 +101,7 @@ docs/cro/2026-03-11-a3f2b1c9/
 ecommerce-conversion-psychology/
 ├── .claude-plugin/plugin.json       Plugin metadata (v2.0.0)
 ├── references/                      15 domain + 7 principle/operational files
+├── citations/sources.md             Source URLs for human verification (not loaded by agents)
 ├── platforms/                       shopify.md, nextjs.md
 ├── templates/                       Baton + report templates
 ├── workflows/                       Phase workflows (context: fork)
@@ -118,7 +119,7 @@ ecommerce-conversion-psychology/
 
 ## Ethics & Security
 
-**Ethics gate** — Non-negotiable rules at every phase. Based on EU Digital Services Act, FTC Fake Reviews Rule, CA SB-478, CA SB-1001. In competitor comparison mode, synthesized gap recommendations are also ethics-checked — dark pattern advantages get flagged with ethical alternatives.
+**Ethics gate** — Non-negotiable rules at every phase. Based on EU Digital Services Act, EU AI Act, GDPR, CCPA/CPRA, FTC Fake Reviews Rule, CA SB-478, CA SB-1001, CA SB-243, and enforcement precedent from FTC v. Amazon ($2.5B, 2025) and FTC v. Epic Games ($245M, 2023). In competitor comparison mode, synthesized gap recommendations are also ethics-checked — dark pattern advantages get flagged with ethical alternatives.
 
 **Security:**
 - XSS prevention — all report content HTML-entity-escaped + CSP meta tag

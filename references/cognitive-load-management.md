@@ -98,7 +98,7 @@
 ### Finding 11: Checkout Form Fields -- The Optimal Count
 - **Source**: Baymard Institute (2024 benchmark update). "Checkout Optimization: Minimize Form Fields." Based on 25 rounds of usability testing.
 - **Methodology**: Qualitative moderated usability testing + benchmarking of top US e-commerce checkout flows. Longitudinal tracking of average form field counts (2019-2024).
-- **Key Finding**: The average US checkout has 14.88 form fields (23.48 total form elements). The ideal is 8 form fields (12 total elements: 7 fields, 2 checkboxes, 2 dropdowns, 1 radio button). The industry average has improved from 12.7 fields (2019) to 11.3 fields (2024). 18% of users abandon orders specifically because checkout is too long/complicated. Single-page checkout systems show up to 21.8% conversion rate increase. Inline validation yields ~22% improvement.
+- **Key Finding**: The average US checkout flow contains 23.48 form elements (14.88 counting only form fields). An ideal checkout can be reduced to 12-14 form elements (7-8 form fields). (Baymard Institute, 2025). The industry average has improved from 12.7 fields (2019) to 11.3 fields (2024). 18% of users abandon orders specifically because checkout is too long/complicated. Single-page checkout systems show up to 21.8% conversion rate increase. Inline validation yields ~22% improvement.
 - **E-Commerce Application**: Audit checkout forms and eliminate every non-essential field. Use address auto-complete to reduce manual entry. Combine name into one field where possible. Default to shipping = billing. Every field removed is friction removed.
 - **Replication Status**: Replicated (longitudinal benchmarking over 5+ years, consistent findings).
 - **Boundary Conditions**: B2B checkouts legitimately need more fields (company name, PO number, tax ID). International shipping may require additional fields. The 8-field ideal assumes domestic single-address orders.
@@ -179,30 +179,30 @@
 
 ## Source Index
 
-1. Hick, W.E. (1952). "On the rate of gain of information." Quarterly Journal of Experimental Psychology. https://www2.psychology.uiowa.edu/faculty/mordkoff/InfoProc/pdfs/Hick%201952.pdf
+1. Hick, W.E. (1952). "On the rate of gain of information." Quarterly Journal of Experimental Psychology.
 2. Miller, G.A. (1956). "The Magical Number Seven, Plus or Minus Two." Psychological Review.
-3. Iyengar, S.S. & Lepper, M.R. (2000). "When Choice is Demotivating." Journal of Personality and Social Psychology. https://faculty.washington.edu/jdb/345/345%20Articles/Iyengar%20&%20Lepper%20(2000).pdf
-4. Johnson, E.J. & Goldstein, D.G. (2003). "Do Defaults Save Lives?" Science. https://papers.ssrn.com/sol3/papers.cfm?abstract_id=1324774
-5. Nielsen, J. (2006). "F-Shaped Pattern for Reading Web Content." NNGroup. https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content-discovered/
-6. Scheibehenne, B. et al. (2010). "Can There Ever Be Too Many Options?" Journal of Consumer Research. https://scheibehenne.com/ScheibehenneGreifenederTodd2010.pdf
-7. Chernev, A. et al. (2015). "Choice overload: A conceptual review and meta-analysis." Journal of Consumer Psychology. https://chernev.com/wp-content/uploads/2017/02/ChoiceOverload_JCP_2015.pdf
+3. Iyengar, S.S. & Lepper, M.R. (2000). "When Choice is Demotivating." Journal of Personality and Social Psychology.
+4. Johnson, E.J. & Goldstein, D.G. (2003). "Do Defaults Save Lives?" Science.
+5. Nielsen, J. (2006). "F-Shaped Pattern for Reading Web Content." NNGroup.
+6. Scheibehenne, B. et al. (2010). "Can There Ever Be Too Many Options?" Journal of Consumer Research.
+7. Chernev, A. et al. (2015). "Choice overload: A conceptual review and meta-analysis." Journal of Consumer Psychology.
 8. Carter, E.C. & McCullough, M.E. (2015). Meta-analysis correcting for publication bias in ego depletion.
 9. Hagger, M.S. et al. (2016). Registered Replication Report on ego depletion. 23 labs, 2,000+ participants.
-10. Proctor, R.W. & Schneider, D.W. (2018). "Hick's law for choice reaction time: A review." https://web.ics.purdue.edu/~dws/pubs/ProctorSchneider_2018_QJEP.pdf
-11. NNGroup. "The Layer-Cake Pattern of Scanning Content on the Web." https://www.nngroup.com/articles/layer-cake-pattern-scanning/
-12. NNGroup. "Progressive Disclosure." https://www.nngroup.com/articles/progressive-disclosure/
-13. NNGroup. "Accordions on Desktop." https://www.nngroup.com/articles/accordions-on-desktop/
-14. Baymard Institute. "Checkout Optimization: Minimize Form Fields." https://baymard.com/blog/checkout-flow-average-form-fields
-15. Baymard Institute. "Display Applied Filters." https://baymard.com/blog/how-to-design-applied-filters
-16. Baymard Institute. "Consider Promoting Important Filters." https://baymard.com/blog/promoting-product-filters
-17. Baymard Institute. "Always Explain Industry-Specific Filters." https://baymard.com/blog/explain-industry-specific-filters
-18. Baymard Institute. "50 Cart Abandonment Rate Statistics." https://baymard.com/lists/cart-abandonment-rate
-19. Laws of UX. Hick's Law. https://lawsofux.com/hicks-law/
-20. Laws of UX. Miller's Law. https://lawsofux.com/millers-law/
-21. Laws of UX. Chunking. https://lawsofux.com/chunking/
-22. Vohs, K.D. et al. (2021). Multi-lab replication of ego depletion. 36 labs, 3,531 participants. https://pmc.ncbi.nlm.nih.gov/articles/PMC8186735/
+10. Proctor, R.W. & Schneider, D.W. (2018). "Hick's law for choice reaction time: A review."
+11. NNGroup. "The Layer-Cake Pattern of Scanning Content on the Web."
+12. NNGroup. "Progressive Disclosure."
+13. NNGroup. "Accordions on Desktop."
+14. Baymard Institute. "Checkout Optimization: Minimize Form Fields."
+15. Baymard Institute. "Display Applied Filters."
+16. Baymard Institute. "Consider Promoting Important Filters."
+17. Baymard Institute. "Always Explain Industry-Specific Filters."
+18. Baymard Institute. "50 Cart Abandonment Rate Statistics."
+19. Laws of UX. Hick's Law.
+20. Laws of UX. Miller's Law.
+21. Laws of UX. Chunking.
+22. Vohs, K.D. et al. (2021). Multi-lab replication of ego depletion. 36 labs, 3,531 participants.
 23. Profitero. Amazon badge analysis (Best Seller, Amazon's Choice conversion impact).
-24. NNGroup. "Text Scanning Patterns: Eyetracking Evidence." https://www.nngroup.com/articles/text-scanning-patterns-eyetracking/
+24. NNGroup. "Text Scanning Patterns: Eyetracking Evidence."
 
 ---
 

@@ -34,7 +34,7 @@
 ## Findings
 
 ### Finding 1: Only 16% of Major E-Commerce Sites Have Good Filtering UX
-- **Source**: Baymard Institute, "E-Commerce Product Lists & Filtering" research study (ongoing since ~2013). Published via Smashing Magazine (April 2015). https://baymard.com/research/ecommerce-product-lists
+- **Source**: Baymard Institute, "E-Commerce Product Lists & Filtering" research study (ongoing since ~2013). Published via Smashing Magazine (April 2015).
 - **Methodology**: 25 rounds of qualitative usability testing (think-aloud protocol), 4,400+ test participant/site sessions across 19 leading e-commerce sites in 8 verticals. Supplemented by benchmarking 327 leading e-commerce sites across 650+ UX guidelines and 12 quantitative studies (20,240 participants total).
 - **Key Finding**: Only 16% of major e-commerce sites provide a "good" filtering experience. 34% have a "poor" filtering experience. 42% lack category-specific filters entirely.
 - **E-Commerce Application**: Audit your filtering UX against Baymard's guidelines before optimizing anything else. If your site falls in the 84% without good filtering, fixing this is likely higher-ROI than tweaking CTAs or trust badges on product pages users never reach.
@@ -78,11 +78,11 @@
 - **Methodology**: Benchmark audit of top 50 US e-commerce search implementations combined with usability testing.
 - **Key Finding**: 82% of top 50 US e-commerce sites have autocomplete. However, 36% of those implementations do "more harm than good" — providing irrelevant suggestions, cluttering the dropdown, or directing users to wrong categories. 70% of sites require exact product-type jargon to return results. 60% don't support symbols or abbreviations. 18% fail on single-character misspellings.
 - **E-Commerce Application**: Having autocomplete is not enough — bad autocomplete is worse than none. Audit your autocomplete for: (a) relevance of suggestions, (b) tolerance for misspellings, (c) support for synonyms and abbreviations, (d) visual clarity of the dropdown. Test with real user queries from your search logs.
-- **Replication Status**: Baymard has benchmarked search UX multiple times. The specific percentages are from 2014 benchmarking — current implementations may have improved, but Baymard noted in 2017 that 51% still didn't offer faceted search suggestions.
+- **Replication Status**: Baymard has benchmarked search UX multiple times. The specific percentages are from 2014 benchmarking — current implementations may have improved, but Baymard noted in 2017 that 51% still didn't offer faceted search suggestions. **DATED (2014). Baymard has continued publishing updated search UX research. Principles remain valid but specific percentages should be verified against current Baymard benchmark data.**
 - **Boundary Conditions**: Autocomplete value increases with catalog size. Small catalogs (<50 products) may not benefit. The quality threshold matters more than presence.
 
 ### Finding 7: 68% of "No Results" Pages Are Dead Ends
-- **Source**: Baymard Institute. https://baymard.com/blog/no-results-page
+- **Source**: Baymard Institute.
 - **Methodology**: Benchmark audit of e-commerce "no results" page implementations.
 - **Key Finding**: 68% of e-commerce sites have "no results" page implementations that are functional dead ends — no suggestions, no alternatives, no recovery paths. Users who hit a dead end leave.
 - **E-Commerce Application**: A "no results" page must provide recovery paths: (1) spelling corrections applied automatically, (2) related/alternative products, (3) popular products or categories, (4) the search query preserved in the search box for easy editing, (5) customer service contact. Every zero-result page without recovery is a lost customer.
@@ -138,7 +138,7 @@
 - **Boundary Conditions**: Revenue concentration in search users would vary dramatically by site type. A search-heavy site like Amazon would show different patterns than a curated boutique.
 
 ### Finding 14: Mobile Filter Patterns — No Rigorous Comparative Data
-- **Source**: Pencil & Paper (design agency), "Mobile Filter UX Design Patterns & Best Practices." https://www.pencilandpaper.io/articles/ux-pattern-analysis-mobile-filters. Practitioner analysis, not peer-reviewed.
+- **Source**: Pencil & Paper (design agency), "Mobile Filter UX Design Patterns & Best Practices." Practitioner analysis, not peer-reviewed.
 - **Methodology**: Design pattern analysis with pros/cons assessment. No A/B testing or quantitative comparison.
 - **Key Finding**: Four common mobile filter patterns identified: (1) top drawer — natural eye scan position but pushes content down, (2) bottom drawer — thumb-accessible but may be missed, (3) sidebar overlay — maintains context but limited space, (4) full-screen modal — maximum space but loses product context. No pattern has been proven superior in controlled testing.
 - **E-Commerce Application**: Choose pattern based on filter complexity. Simple filters (2-3 facets): top or bottom drawer. Complex filters (5+ facets): full-screen modal. Always include an explicit "Apply" button on mobile rather than live-filtering, which risks closing drawers unexpectedly and confusing users.
@@ -162,7 +162,7 @@
 - **Boundary Conditions**: FLAG: VENDOR BIAS on all specific numbers. Algolia and Econsultancy sell search products/consulting.
 
 ### Finding 17: Search Box Should Accommodate 27+ Characters
-- **Source**: Nielsen Norman Group. "Search: Visible and Simple." https://www.nngroup.com/articles/search-visible-and-simple/
+- **Source**: Nielsen Norman Group. "Search: Visible and Simple."
 - **Methodology**: Usability testing (NNGroup's standard methodology; specific sample sizes not published for this guideline).
 - **Key Finding**: Search boxes should accommodate at least 27 characters of visible text. Queries truncated by a too-narrow search box reduce usability — users can't verify or edit what they typed. Search should be placed in the top header, always visible, with a magnifying glass icon as the universal signifier.
 - **E-Commerce Application**: Check your search box width against your actual query lengths (from search logs). If >5% of queries are truncated, widen the box. On mobile, a sticky search bar keeps search accessible during scrolling. Never hide search behind an icon-only toggle on sites with >50 products.
@@ -195,17 +195,17 @@
 
 ## Sources Consulted
 
-- Baymard Institute. "E-Commerce Product Lists & Filtering." https://baymard.com/research/ecommerce-product-lists
+- Baymard Institute. "E-Commerce Product Lists & Filtering."
 - Baymard Institute. "The Current State of E-Commerce Filtering." Smashing Magazine, April 2015.
 - Baymard Institute. "The Current State of E-Commerce Search." Smashing Magazine, August 2014.
-- Baymard Institute. "No Results Page." https://baymard.com/blog/no-results-page
+- Baymard Institute. "No Results Page."
 - Chernev, A., Bockenholdt, U. & Goodman, J. (2015). "Choice Overload: A Conceptual Review and Meta-Analysis." *Journal of Consumer Psychology*, 25(2).
 - Google Cloud / Harris Poll (2021). Search Abandonment Survey. n=9,096.
 - Hearst, M. et al. (2002). "Finding the Flow in Web Site Search." *Communications of the ACM*, 45(9).
 - Hearst, M. (2009). *Search User Interfaces*. Cambridge University Press.
 - Iyengar, S. & Lepper, M. (2000). "When Choice is Demotivating." *Journal of Personality and Social Psychology*, 79(6), 995-1006.
 - Kules, B. & Capra, R. (2009). "What Do Exploratory Searchers Look at in a Faceted Search Interface?" *JCDL 2009*.
-- Nielsen Norman Group. "Search: Visible and Simple." https://www.nngroup.com/articles/search-visible-and-simple/
-- Pencil & Paper. "Mobile Filter UX Design Patterns & Best Practices." https://www.pencilandpaper.io/articles/ux-pattern-analysis-mobile-filters
+- Nielsen Norman Group. "Search: Visible and Simple."
+- Pencil & Paper. "Mobile Filter UX Design Patterns & Best Practices."
 - Scheibehenne, B., Greifeneder, R. & Todd, P.M. (2010). "Can There Ever Be Too Many Options?" *Journal of Consumer Research*, 37(3), 409-425.
 - Schmutz, P. et al. (2009). "Cognitive Load in eCommerce Applications." *Advances in Human-Computer Interaction* (Wiley/Hindawi).

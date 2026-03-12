@@ -23,7 +23,7 @@
 
 ### Finding 1: Personalized CTAs Convert 202% Better Than Generic Defaults
 
-- **Source**: HubSpot, 2014 (updated/reaffirmed through 2025), [HubSpot Blog](https://blog.hubspot.com/marketing/personalized-calls-to-action-convert-better-data)
+- **Source**: HubSpot, 2014 (updated/reaffirmed through 2025), HubSpot Blog
 - **Methodology**: Analysis of 330,000+ CTA impressions across HubSpot's customer base over a six-month period, comparing "smart" CTAs (personalized to visitor lifecycle stage) against default static CTAs.
 - **Key Finding**: Personalized CTAs converted 202% better than basic, one-size-fits-all CTAs. The study measured view-to-submission rates across the full dataset.
 - **E-Commerce Application**: Serving different CTAs based on visitor status (new visitor vs. returning customer vs. cart abandoner) is the single highest-leverage CTA optimization. A first-time visitor might see "Explore Collection" while a returning visitor sees "Welcome Back — Complete Your Order."
@@ -34,7 +34,7 @@
 
 ### Finding 2: CTA Button Color — Contrast Matters, Not the Color Itself
 
-- **Source**: CXL Institute (Peep Laja), [CXL Blog](https://cxl.com/blog/which-color-converts-the-best/); HubSpot/Performable red vs. green test, [HubSpot Blog](https://blog.hubspot.com/blog/tabid/6307/bid/20566/the-button-color-a-b-test-red-beats-green.aspx)
+- **Source**: CXL Institute (Peep Laja), CXL Blog; HubSpot/Performable red vs. green test, HubSpot Blog
 - **Methodology**: HubSpot tested red vs. green CTA buttons over several days with ~2,000 page visits. CXL performed a comprehensive meta-analysis of published button color tests.
 - **Key Finding**: The red button outperformed the green button by 21% in the HubSpot test. However, CXL's analysis revealed the critical context: the site's primary palette was green, so the green button blended in while red stood out. CXL's conclusion: "No single color is better than another — what matters is how much a button color contrasts with the area around it."
 - **E-Commerce Application**: Choose a CTA button color that creates maximum contrast against your page background and surrounding elements. Do not adopt "red because HubSpot said so" — if your brand palette is already red, a contrasting color (blue, green, orange) will likely outperform. Test against your specific design context.
@@ -45,7 +45,7 @@
 
 ### Finding 3: Jackson's Art Supplies — CTA Color Differentiation Lifted Conversion 18.4%
 
-- **Source**: Blend Commerce, A/B test on Jackson's Art Supplies (Shopify), [Blend Commerce](https://blendcommerce.com/blogs/ab-tests-shopify/18-40-increase-in-conversion-rate)
+- **Source**: Blend Commerce, A/B test on Jackson's Art Supplies (Shopify), Blend Commerce
 - **Methodology**: A/B test on product detail pages. The control had all CTA buttons (Add to Cart, Rewards, Chat, Keep Me Updated) in the same color. The variant changed the Add to Cart button to a distinct, contrasting color.
 - **Key Finding**: +8.14% increase in Add to Cart clicks. +18.40% increase in eCommerce conversion rate. For new visitors specifically: +66% increase in Add to Cart clicks, +10% increase in AOV, +16.40% increase in average purchase revenue per user.
 - **E-Commerce Application**: When multiple interactive elements share the same visual weight, users cannot identify the primary action. Differentiating the primary CTA from secondary elements through color is a high-impact, low-effort optimization.
@@ -56,7 +56,7 @@
 
 ### Finding 4: Fitts's Law — Larger Buttons Are Faster and Easier to Acquire
 
-- **Source**: Fitts (1954), original research; NNGroup summary, [NNGroup](https://www.nngroup.com/articles/fitts-law/); ISO 9241-9 standard; Tognazzini (1999) on edge targets
+- **Source**: Fitts (1954), original research; NNGroup summary, NNGroup; ISO 9241-9 standard; Tognazzini (1999) on edge targets
 - **Methodology**: Fitts's Law is derived from information theory and validated across hundreds of controlled motor-task experiments since 1954. MT = a + b * log2(D/W + 1), where D = distance and W = target width.
 - **Key Finding**: Movement time to acquire a target is a logarithmic function of the distance divided by the target width. Doubling a button's size reduces acquisition time. Targets placed at screen edges are acquired fastest because the edge acts as an infinite-width target (users cannot overshoot). On touch interfaces, fingers are less precise than cursors, amplifying the size effect.
 - **E-Commerce Application**: Make primary CTA buttons substantially larger than other interactive elements. On mobile, consider full-width CTA buttons. Place CTAs near screen edges where possible (bottom of viewport for mobile sticky CTAs). Do not make secondary CTAs the same size as the primary.
@@ -67,7 +67,7 @@
 
 ### Finding 5: Touch Target Minimums — Platform Guidelines
 
-- **Source**: Google Material Design, [Material Design](https://m2.material.io/develop/web/supporting/touch-target); Apple Human Interface Guidelines; WCAG 2.2 SC 2.5.8, [W3C](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
+- **Source**: Google Material Design, Material Design; Apple Human Interface Guidelines; WCAG 2.2 SC 2.5.8, W3C
 - **Methodology**: Platform-level design guidelines based on ergonomic research and device usage data. WCAG 2.2 SC 2.5.8 is a formal accessibility standard (Level AA).
 - **Key Finding**: Three tiers of minimum touch target size exist:
   - **WCAG 2.2 AA minimum**: 24x24 CSS pixels (legal/compliance floor)
@@ -82,7 +82,7 @@
 
 ### Finding 6: "Add to Cart" Outperforms "Buy Now" for Most E-Commerce
 
-- **Source**: CXL Institute, [CXL Blog](https://cxl.com/blog/call-to-action-examples/); behavioral psychology principle of commitment aversion
+- **Source**: CXL Institute, CXL Blog; behavioral psychology principle of commitment aversion
 - **Methodology**: CXL's analysis of CTA copy patterns across e-commerce sites, drawing on conversion optimization principles and practitioner A/B tests. Specific quantified lift data for this exact comparison was not found in publicly available studies.
 - **Key Finding**: "Add to Cart" implies a reversible, low-commitment action — the shopper can remove the item later. "Buy Now" feels final and triggers commitment aversion. For most e-commerce contexts, "Add to Cart" performs better because it reduces perceived risk. However, "Buy Now" can perform well for impulse purchases, low-price items, or when paired with one-click checkout (Amazon's model).
 - **E-Commerce Application**: Default to "Add to Cart" for standard product pages. Reserve "Buy Now" for express checkout flows, flash sales, or products under ~$30 where impulse buying is common. Consider offering both: "Add to Cart" as primary and "Buy Now" as a secondary express option.
@@ -93,7 +93,7 @@
 
 ### Finding 7: "Add to Cart" vs. "Add to Bag" — Brand-Dependent Results
 
-- **Source**: Conversion Fanatics, [Conversion Fanatics](https://conversionfanatics.com/add-to-bag-vs-add-to-cart/); multiple A/B test case studies
+- **Source**: Conversion Fanatics, Conversion Fanatics; multiple A/B test case studies
 - **Methodology**: Multiple independent A/B tests across different retail verticals.
 - **Key Finding**: Results are contradictory and brand-dependent:
   - A premium men's lifestyle brand saw a **6.46% increase in add-to-carts** when switching to "Add to Bag" (81.81% probability of being better).
@@ -106,7 +106,7 @@
 
 ### Finding 8: Below-the-Fold CTA Can Outperform Above-the-Fold by 20-220%
 
-- **Source**: Marketing Experiments (MECLABS), [referenced via Unbounce](https://unbounce.com/conversion-rate-optimization/landing-page-cta-placement/); Google "Importance of Being Seen" study
+- **Source**: Marketing Experiments (MECLABS), referenced via Unbounce; Google "Importance of Being Seen" study
 - **Methodology**: Marketing Experiments conducted controlled A/B tests on CTA placement. Google's study measured ad visibility rates based on page position.
 - **Key Finding**: A below-the-fold CTA resulted in a **20% increase in conversions** in one test. In another test, a below-the-fold treatment increased conversion rate by **220%** over a control with both form and CTA above the fold. However, Google found that above-the-fold content has **73% visibility** vs. **44% for below-the-fold** content.
 - **E-Commerce Application**: For product pages, place the primary CTA (Add to Cart) in its expected position near the product title/price — which is typically above-fold on desktop. But also provide a sticky or repeated CTA for users who scroll through reviews, specifications, and other content. The 220% lift came from landing pages where persuasive content preceded the CTA — suggesting that for complex or high-consideration products, letting users read before asking them to act is superior.
@@ -117,33 +117,33 @@
 
 ### Finding 9: Single CTA Focus — Reducing Options Lifts Conversion Up to 371%
 
-- **Source**: HubSpot, [HubSpot Blog](https://blog.hubspot.com/marketing/personalized-calls-to-action-convert-better-data); Whirlpool email A/B test; WiserNotify compilation, [WiserNotify](https://wisernotify.com/blog/call-to-action-stats/)
-- **Methodology**: Multiple studies. HubSpot compiled data across email campaigns. Whirlpool tested 4 CTAs vs. 1 CTA in email. Broader compilations measured landing page single-CTA performance.
+- **Source**: Campaign Monitor; Whirlpool email A/B test; WiserNotify compilation, WiserNotify
+- **Methodology**: Multiple studies. Campaign Monitor analyzed email campaigns. Whirlpool tested 4 CTAs vs. 1 CTA in email. Broader compilations measured landing page single-CTA performance.
 - **Key Finding**:
-  - Emails with a single CTA increased clicks by **371%** and sales by **1617%**.
+  - Emails with a single CTA increased clicks by **371%** (Campaign Monitor).
   - Whirlpool's single-CTA email outperformed the 4-CTA version by **42%**.
   - Reducing CTAs to a single CTA on a landing page increased conversions by **266%**.
   - Emails with 3+ CTAs have lower click-through rates than those with fewer than 3.
 - **E-Commerce Application**: For email campaigns and landing pages, ruthlessly reduce to a single primary CTA. For product pages, maintain one visually dominant primary CTA (Add to Cart) with secondary actions (Wishlist, Compare, Share) visually subordinated through smaller size, outline/ghost styling, or muted colors.
 - **Replication Status**: The single-CTA advantage in emails is well-replicated across multiple studies. Product page data is more nuanced.
-- **Boundary Conditions**: Product pages legitimately need multiple actions — the solution is visual hierarchy, not elimination. Category pages and homepages with multiple products inherently need multiple CTAs. The 371% and 1617% figures come from email contexts and should not be directly extrapolated to web pages.
+- **Boundary Conditions**: Product pages legitimately need multiple actions — the solution is visual hierarchy, not elimination. Category pages and homepages with multiple products inherently need multiple CTAs. The 371% figure comes from email contexts and should not be directly extrapolated to web pages.
 
 ---
 
-### Finding 10: Rounded Corners Outperform Sharp Corners by 17-55% CTR
+### Finding 10: Rounded Corners Are Preferred Over Sharp Corners
 
-- **Source**: Biswas, Abell, & Chacko (academic research), referenced in [Cieden](https://cieden.com/book/sub-atomic/shapes/rounded-buttons-and-usability); cognitive processing research on contour perception
-- **Methodology**: Controlled experiments measuring click-through rates on buttons with rounded vs. sharp corners. Supported by neuroscience research on contour processing.
-- **Key Finding**: Rounded CTA buttons get **17% to 55% higher click-through rates** than sharp-cornered ones. The neurological basis: sharp edges require more cognitive processing effort (additional neuronal image tools for edge detection), while rounded shapes are processed more efficiently. Rounded corners also draw visual attention inward toward the button content, while sharp edges direct attention outward.
+- **Source**: Contour bias research (Bar & Neta, 2006); Fitts's Law implications for corner targeting; cognitive processing research on contour perception
+- **Methodology**: Neuroscience research on contour processing and visual preference. Supported by Fitts's Law analysis of corner targeting.
+- **Key Finding**: Rounded shapes are processed more efficiently by the visual system. The neurological basis: sharp edges require more cognitive processing effort (additional neuronal image tools for edge detection), while rounded shapes are processed more efficiently (Bar & Neta, 2006 — contour bias). Rounded corners also draw visual attention inward toward the button content, while sharp edges direct attention outward.
 - **E-Commerce Application**: Use rounded corners (border-radius of 4-12px for standard buttons, or pill shape for very prominent CTAs) for primary CTA buttons. This aligns with the learned convention that rounded rectangles signal "pressable button."
-- **Replication Status**: The cognitive processing advantage of rounded shapes is replicated in neuroscience literature. The specific 17-55% CTR range needs more independent replication in e-commerce contexts.
+- **Replication Status**: The cognitive processing advantage of rounded shapes is replicated in neuroscience literature (Bar & Neta, 2006; subsequent replications).
 - **Boundary Conditions**: Design system consistency matters — if your entire UI uses sharp corners, a lone rounded button may look inconsistent rather than inviting. The effect may be smaller on audiences accustomed to angular design systems (e.g., some enterprise contexts).
 
 ---
 
 ### Finding 11: Sticky "Add to Cart" on Mobile — 5-37% Conversion Lift
 
-- **Source**: Multiple A/B tests: Blend Commerce, [Blend Commerce sticky CTA](https://blendcommerce.com/blogs/ab-tests-shopify/10-increase-in-conversion-rate); GrowthRock, [GrowthRock](https://growthrock.co/sticky-add-to-cart-button-example/); Traction Marketing NZ, [Traction Marketing](https://tractionmarketing.nz/insights/unlocking-small-wins-that-scale-what-we-learned-from-testing-a-sticky-add-to-cart-button-on-mobile/); FoxStark case study, [EcommerceConversionChecklist](https://ecommerceconversionchecklist.com/shopifycro-casestudies-foxstark-18-57atcrate)
+- **Source**: Multiple A/B tests: Blend Commerce, Blend Commerce sticky CTA; GrowthRock, GrowthRock; Traction Marketing NZ, Traction Marketing; FoxStark case study, EcommerceConversionChecklist
 - **Methodology**: Multiple independent A/B tests on Shopify product pages, measuring conversion rate, Add to Cart rate, and revenue per visitor.
 - **Key Finding**:
   - Sticky CTA on PDP: **+10% conversion rate**, -3% bounce rate, +5% cart clicks (Blend Commerce)
@@ -161,7 +161,7 @@
 
 ### Finding 12: White Space Around CTAs — Up to 232% Conversion Increase
 
-- **Source**: VWO, [VWO Blog](https://vwo.com/blog/high-converting-call-to-action-button-examples/); Microsoft Clarity, [Microsoft Clarity Blog](https://clarity.microsoft.com/blog/cta-best-practices/)
+- **Source**: VWO, VWO Blog; Microsoft Clarity, Microsoft Clarity Blog
 - **Methodology**: VWO case study involving removal of clutter and addition of white space around CTA elements on landing pages.
 - **Key Finding**: A CTA surrounded by fewer elements and more white space increased conversion rate by **232%**. The effect comes from the combination of removing competing visual elements and giving the CTA visual prominence through isolation.
 - **E-Commerce Application**: Ensure the "Add to Cart" button has generous padding and margin. Remove unnecessary badges, links, or secondary information from the immediate vicinity of the primary CTA. On product pages, the CTA zone (price + button + key trust signals) should have clear visual separation from product descriptions and other content.
@@ -172,7 +172,7 @@
 
 ### Finding 13: Baymard Institute — CTA Label Honesty Prevents Abandonment
 
-- **Source**: Baymard Institute, [Baymard Blog](https://baymard.com/blog/consumables-subscriptions-cta); usability testing across major e-commerce sites
+- **Source**: Baymard Institute, Baymard Blog; usability testing across major e-commerce sites
 - **Methodology**: Qualitative usability testing with real users across leading e-commerce sites. Part of Baymard's ongoing large-scale UX research program (130,000+ hours of research referenced on their site).
 - **Key Finding**: When users clicked a CTA labeled generically (like "Get Started") and were immediately asked for personal information or shown a promotion, **73% of users were surprised** and **41% voiced frustration at being misled**. Several users abandoned the site altogether. Users developed negative brand perceptions, interpreting unexpected requests as a "hard sell."
 - **E-Commerce Application**: CTA button labels must accurately describe what happens next. "Add to Cart" should add to cart — not open a popup, trigger a survey, or redirect to a different flow. If clicking "Add to Cart" triggers an upsell modal, users will feel deceived. Reserve interstitial experiences for after the expected action completes.
@@ -183,7 +183,7 @@
 
 ### Finding 14: NNGroup — Specific Labels Outperform Generic Labels
 
-- **Source**: NNGroup, [NNGroup - Better Link Labels](https://www.nngroup.com/articles/better-link-labels/); [NNGroup - Get Started Stops Users](https://www.nngroup.com/articles/get-started/)
+- **Source**: NNGroup, NNGroup - Better Link Labels; NNGroup - Get Started Stops Users
 - **Methodology**: Eyetracking studies and qualitative usability testing. Users scan rather than read UI, so labels must communicate meaning independently of surrounding text.
 - **Key Finding**: Generic labels ("Get Started," "Continue," "Submit," "Click Here") perform poorly because users scan and encounter them without context. Specific labels ("Add to Cart — $49.99," "Start Free Trial," "Download PDF Guide") outperform because they communicate the action and its outcome in a single glance. When links set expectations that aren't met, users "cut their click budget" and reduce engagement with the site.
 - **E-Commerce Application**: Use action-specific CTA labels: "Add to Cart," "Buy Now — Free Shipping," "Reserve Your Size." Avoid generic labels like "Continue," "Proceed," or "Go." Including the price or a key benefit in the CTA can reduce uncertainty and increase clicks.
@@ -194,7 +194,7 @@
 
 ### Finding 15: VWO Data — 30% of All A/B Tests Target CTAs; Winners Average 49% Lift
 
-- **Source**: Wingify/VWO, [VWO Blog](https://vwo.com/blog/call-to-action-buttons-ultimate-guide/)
+- **Source**: Wingify/VWO, VWO Blog
 - **Methodology**: Meta-analysis of A/B tests run across VWO's customer base (Wingify is the parent company of VWO).
 - **Key Finding**: Approximately **30% of all A/B tests** run by VWO customers focus on CTA buttons — making it the most commonly tested element. However, only **1 in 7** CTA tests produces a statistically significant improvement. When a CTA test does win, the **average conversion increase is 49%**.
 - **E-Commerce Application**: CTA testing is high-leverage but low hit-rate. Expect to run ~7 CTA tests to find one significant winner. When you do find a winner, the payoff is substantial. Prioritize CTA tests that change multiple properties simultaneously (copy + color + size) for higher chances of significance, then isolate variables in follow-up tests.
@@ -205,7 +205,7 @@
 
 ### Finding 16: SAP — Replacing Text Link with Orange Button Lifted Conversions 32.5%
 
-- **Source**: Referenced via multiple CRO case study compilations including [Neil Patel](https://neilpatel.com/blog/100-conversion-optimization-case-studies/) and [Capturly](https://capturly.com/blog/cro-case-studies-to-increase-conversion-rate/)
+- **Source**: Referenced via multiple CRO case study compilations including Neil Patel and Capturly
 - **Methodology**: A/B test replacing a small blue text download link with a large orange CTA button on a landing page.
 - **Key Finding**: The large orange button produced a **32.5% increase in conversions** compared to the text link.
 - **E-Commerce Application**: Ensure CTAs are visually identifiable as buttons, not text links. This applies to "Add to Cart," "Checkout," and any primary action. A styled button with background color, padding, and clear affordances will always outperform a styled text link for primary actions.
@@ -216,7 +216,7 @@
 
 ### Finding 17: GoSquared — Shorter CTA Copy Increased Trial Starts by 104%
 
-- **Source**: Referenced via [Unbounce CRO case studies](https://unbounce.com/conversion-rate-optimization/cro-case-studies/)
+- **Source**: Referenced via Unbounce CRO case studies
 - **Methodology**: A/B test on GoSquared's website comparing a longer CTA label against a shorter, more direct variant.
 - **Key Finding**: The shorter CTA won with a **104% month-over-month increase in premium trial start rates**. Brevity and clarity beat verbosity.
 - **E-Commerce Application**: Keep CTA copy short — 2-4 words maximum. "Add to Cart" beats "Add This Item to Your Shopping Cart." "Buy Now" beats "Purchase This Product Now." Every additional word introduces cognitive load and scanning friction.
@@ -227,7 +227,7 @@
 
 ### Finding 18: Secondary CTAs Should Use Ghost/Outline Styling
 
-- **Source**: NerdCow, [NerdCow CTA Hierarchy](https://nerdcow.co.uk/blog/cta-hierarchy/); DesignCourse, [DesignCourse](https://designcourse.com/blog/post/primary-vs-secondary-cta-buttons-in-ui-design); LogRocket UX, [LogRocket](https://blog.logrocket.com/ux-design/design-cta-buttons-ux-best-practices/)
+- **Source**: NerdCow, NerdCow CTA Hierarchy; DesignCourse, DesignCourse; LogRocket UX, LogRocket
 - **Methodology**: UX design pattern analysis and practitioner consensus across CRO and design communities.
 - **Key Finding**: Secondary CTAs (Wishlist, Compare, Share) should be visually subordinate to the primary CTA through: outline/ghost button styling (border only, no fill), smaller size, muted or neutral colors, or text-link styling with an icon. The primary CTA should have a solid fill, the strongest contrast color, and the largest tap target.
 - **E-Commerce Application**: On product pages: "Add to Cart" gets a solid, high-contrast filled button. "Add to Wishlist" gets an outline/ghost button or icon-only treatment. "Share" and "Compare" get text links or small icon buttons. Never give a secondary action equal or greater visual weight than the primary CTA.
@@ -238,7 +238,7 @@
 
 ### Finding 19: Google Visibility Study — Above-Fold Content Gets 73% Visibility
 
-- **Source**: Google, "The Importance of Being Seen" study, referenced via [CXL](https://cxl.com/blog/above-the-fold/)
+- **Source**: Google, "The Importance of Being Seen" study, referenced via CXL
 - **Methodology**: Large-scale analysis of ad viewability across Google's display network, measuring the percentage of ads that were actually visible to users based on page position.
 - **Key Finding**: Ads above the fold had **73% visibility** to users, while ads below the fold had only **44% visibility**. This is a 29 percentage-point gap in raw visibility.
 - **E-Commerce Application**: The primary CTA should be visible without scrolling on desktop. On mobile, where screen space is limited, a sticky CTA solves the visibility problem for below-fold content. Key product information (price, availability, primary CTA) should be above fold or persistently visible.
@@ -249,7 +249,7 @@
 
 ### Finding 20: Snocks.com — Post-Click CTA Label Change as Confirmation
 
-- **Source**: GoodUI, Test #429 on Snocks.com, [GoodUI Tests](https://goodui.org/tests/device/desktop/tag/button/?sort=)
+- **Source**: GoodUI, Test #429 on Snocks.com, GoodUI Tests
 - **Methodology**: A/B test on Snocks.com (a Shopify store) from GoodUI's database of 595+ catalogued experiments across 128 million+ visitors.
 - **Key Finding**: Upon clicking the "Add to Cart" button, the button label changed to a cheering/congratulatory message confirming the action and noting free shipping. This micro-interaction pattern reinforces the user's decision and reduces uncertainty about whether the click registered.
 - **E-Commerce Application**: After a user clicks "Add to Cart," provide immediate visual feedback: change the button text (e.g., "Added!" or "In Your Cart"), show a checkmark animation, or briefly change the button color. This confirmation reduces double-clicks and builds confidence in the interaction.
@@ -260,7 +260,7 @@
 
 ### Finding 21: WCAG 2.2 SC 2.5.8 — 24px Minimum Target Size Is Legal Floor
 
-- **Source**: W3C, WCAG 2.2 Success Criterion 2.5.8, [W3C Understanding SC 2.5.8](https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html)
+- **Source**: W3C, WCAG 2.2 Success Criterion 2.5.8, W3C Understanding SC 2.5.8
 - **Methodology**: W3C accessibility standard, Level AA requirement. Based on ergonomic research and public comment period.
 - **Key Finding**: All interactive targets must be at least **24x24 CSS pixels** (Level AA). This is a formal accessibility requirement, not a recommendation. Exceptions exist for inline text links, browser-controlled elements, and cases where spacing provides adequate offset. Note: CSS pixels don't change with zoom — 16x16 at 100% zoom remains 16x16 at 400% zoom. The enhanced target size criterion (SC 2.5.5, Level AAA) requires **44x44 CSS pixels**.
 - **E-Commerce Application**: 24px is the absolute minimum for any interactive element — including small "X" close buttons, quantity selectors, and color swatches. Primary CTAs should far exceed this minimum. For "Add to Cart" buttons, target 44-60px height minimum. For mobile, Apple's 44pt and Google's 48dp recommendations should be treated as the practical minimum, not WCAG's 24px floor.

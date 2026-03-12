@@ -140,28 +140,28 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 
 ## Sources
 
-- [Eriksen Translations - Color and Culture](https://eriksen.com/marketing/color_culture/)
-- [PMC - Implicit color-valence associations across cultures (2023)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10017663/)
-- [Asian Absolute - Colour Symbolism in China](https://asianabsolute.co.uk/blog/understanding-colour-symbolism-in-china/)
-- [PMC - Cultural dimensions in online purchase behavior (2021)](https://pmc.ncbi.nlm.nih.gov/articles/PMC8026092/)
-- [Marcus & Gould (2000) - Crosscurrents, ACM Interactions](https://interactions.acm.org/archive/view/july-2000/crosscurrents-cultural-dimensions-and-global-web-user-interface-design1)
-- [Marcus & Gould on ResearchGate](https://www.researchgate.net/publication/220383663_Crosscurrents_cultural_dimensions_and_global_Web_user-interface_design)
-- [Springer - Hofstede's cultural dimensions in technology acceptance meta-analysis (2022)](https://link.springer.com/article/10.1007/s10209-022-00930-7)
-- [TMO Group - Chinese Web-Store Design: East vs West](https://www.tmogroup.asia/chinese-webstore-design-east-west/)
-- [UX Magazine - Chinese Users Want Same E-Com Experiences](https://uxmag.com/articles/chinese-users-want-the-same-e-com-experiences-as-their-western-counterparts)
-- [App Growth Summit - Culture and Design: Japanese vs Western Apps](https://appgrowthsummit.com/the-intersection-of-culture-and-design-a-comparative-of-japanese-and-western-apps/)
-- [Kristi.Digital - Western vs Asian Product Design](https://blog.kristi.digital/p/designers-coffee-western-vs-asian-product-design)
-- [Baymard Institute - Cart Abandonment Rate Statistics](https://baymard.com/lists/cart-abandonment-rate)
-- [Passport Global - Why Shoppers Abandon Carts (2026)](https://passportglobal.com/blog/why-shoppers-abandon-carts-and-what-they-expect-from-international-checkout/)
-- [EcommerceGermany - Trust Signals in Germany](https://ecommercegermany.com/blog/trust-signals-in-germany/)
-- [Ecommerce Trust Europe](https://ecommercetrustmark.eu/)
-- [Psychology Today - Individualist vs Collectivist Cultures Online](https://www.psychologytoday.com/us/blog/webs-influence/201307/how-sell-online-individualist-vs-collectivist-cultures)
-- [Beyo Global - Collectivist vs Individualist Societies in Retail](https://beyo.global/thinking/collectivist-vs-individualist-societies-how-do-these-impact-upon-retail)
-- [FastSpring - How to Format 30+ Currencies](https://fastspring.com/blog/how-to-format-30-currencies-from-countries-all-over-the-world/)
-- [Microsoft Learn - Currency Formats](https://learn.microsoft.com/en-us/globalization/locale/currency-formats)
-- [Crisol Translations - Ecommerce Localisation](https://www.crisoltranslations.com/our-blog/ecommerce-localisation/)
-- [Shogun - Ecommerce Localization Strategy Guide](https://getshogun.com/guides/ecommerce-localization)
-- [PlaceholderText.org - RTL Layout Testing Guide](https://placeholdertext.org/blog/the-complete-guide-to-rtl-right-to-left-layout-testing-arabic-hebrew-more/)
-- [UserQ - UI/UX in Arabic Interfaces](https://userq.com/5-essential-considerations-for-ui-ux-in-arabic-interfaces/)
-- [Stripe - Payment Method Conversion Data](https://www.hostmerchantservices.com/2025/09/e-commerce-payment-processing/)
-- [Finotor - Localization in Global E-Commerce](https://finotor.com/why-localization-is-key-to-success-in-global-e-commerce/)
+- Eriksen Translations - Color and Culture
+- PMC - Implicit color-valence associations across cultures (2023)
+- Asian Absolute - Colour Symbolism in China
+- PMC - Cultural dimensions in online purchase behavior (2021)
+- Marcus & Gould (2000) - Crosscurrents, ACM Interactions
+- Marcus & Gould on ResearchGate
+- Springer - Hofstede's cultural dimensions in technology acceptance meta-analysis (2022)
+- TMO Group - Chinese Web-Store Design: East vs West
+- UX Magazine - Chinese Users Want Same E-Com Experiences
+- App Growth Summit - Culture and Design: Japanese vs Western Apps
+- Kristi.Digital - Western vs Asian Product Design
+- Baymard Institute - Cart Abandonment Rate Statistics
+- Passport Global - Why Shoppers Abandon Carts (2026)
+- EcommerceGermany - Trust Signals in Germany
+- Ecommerce Trust Europe
+- Psychology Today - Individualist vs Collectivist Cultures Online
+- Beyo Global - Collectivist vs Individualist Societies in Retail
+- FastSpring - How to Format 30+ Currencies
+- Microsoft Learn - Currency Formats
+- Crisol Translations - Ecommerce Localisation
+- Shogun - Ecommerce Localization Strategy Guide
+- PlaceholderText.org - RTL Layout Testing Guide
+- UserQ - UI/UX in Arabic Interfaces
+- Stripe - Payment Method Conversion Data
+- Finotor - Localization in Global E-Commerce

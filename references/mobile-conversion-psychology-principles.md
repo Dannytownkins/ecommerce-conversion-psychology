@@ -101,7 +101,7 @@
 
 **Evidence:**
 - WiserReview (2025): Exceeding 5 checkout steps = 22% abandonment increase. Mobile amplifies this because each step requires full-screen attention.
-- Mobile cart abandonment: 80.2% (Analyzify) vs ~70% desktop. The 10-point gap is both friction and intent.
+- Mobile cart abandonment averages approximately 78-80% (SaleCycle/XP2, 2025), compared to the overall cross-device average of ~70.2% (Baymard Institute, 50-study aggregate, 2025). The gap is both friction and intent.
 - Apple Pay mobile conversion: 58% increase vs traditional forms (Envive). Mechanism is twofold: reduced friction AND reduced trust anxiety (no card number entry).
 - BNPL: Provider-reported 40%+ AOV increases. Reduces "payment pain" barrier, which is more acute on mobile where purchases feel more impulsive.
 
@@ -120,8 +120,8 @@
 
 **Evidence:**
 - Statista (Q3 2024, 29B visits, 1B shoppers, 2,276 sites): 77% of US retail visits from smartphones but only ~65% of orders.
-- Desktop conversion ~3.9% vs mobile ~1.8% (Retail Touchpoints 2026). This 2:1 ratio is remarkably stable, suggesting behavioral difference not just friction.
-- Monetate (Q4 2017, 2B+ sessions): Multi-device shoppers: 55% purchase rate vs 6% single-device, AOV $130 vs $115.
+- Desktop conversion averages approximately 3.9% vs. mobile at 1.8% (2025 industry benchmarks; Retail Touchpoints, Blend Commerce). Desktop converts at roughly 1.7x the rate of mobile (Smart Insights, 2025). Some 2026 data shows convergence to ~2.8% each on well-optimized sites. This ratio is remarkably stable, suggesting behavioral difference not just friction.
+- Monetate (Q4 2017, 2B+ sessions): Multi-device shoppers: 55% purchase rate vs 6% single-device, AOV $130 vs $115. **DATED (Q4 2017). Mobile traffic share has increased from ~50% (2017) to 60-75% (2025), and mobile conversion rates have improved from ~1.2% to ~1.8-2.8%.**
 - Astound Commerce: Less than 10% of users visit the same site from multiple devices. The multi-device journey is real but less common than industry narrative suggests.
 
 **Implementation:**
@@ -412,7 +412,7 @@ START: What is the page type?
 | Desktop vs mobile conversion rate | ~3.9% vs ~1.8% | Retail Touchpoints | 2025 | High |
 | Desktop vs mobile AOV | $122-230 vs $86-149 | Dynamic Yield, OpenSend, Kibo | 2024-2025 | Medium (range is wide) |
 | App AOV vs mobile web AOV | ~$217 vs ~$194 | jmango360 | 2024 | Medium (single source) |
-| Mobile cart abandonment | ~80.2% vs ~70% desktop | Analyzify / Baymard | 2024 | Medium-High |
+| Mobile cart abandonment | ~78-80% vs ~70.2% cross-device avg | SaleCycle/XP2, Baymard (50-study aggregate) | 2025 | Medium-High |
 | Apple Pay mobile conversion vs traditional | 58% higher | Envive compilation | 2025 | Medium (vendor-adjacent) |
 | Digital wallet share of online transactions | 53% | Worldpay | 2024 | High |
 | Situational stimuli effect on impulse buying | ESr=0.477 (strongest factor) | Anoop meta-analysis (75 articles, n=139,545) | 2025 | High |

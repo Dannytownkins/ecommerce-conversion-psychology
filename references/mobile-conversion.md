@@ -5,7 +5,7 @@
 
 **Total Findings**: 20 cited findings with specific data points
 
-**Top 3 Most Impactful Findings**:
+**Top 3 Most Impactful Findings**
 
 1. **Finding 4 (Mobile Checkout Abandonment)**: Mobile cart abandonment is 77% vs. 70% desktop. Baymard estimates a 35.26% conversion rate increase is recoverable through better checkout design alone. This represents the single largest mobile conversion opportunity.
 2. **Finding 10 (Page Speed and Bounce)**: 53% of mobile users abandon sites taking >3 seconds to load; each 0.1s improvement yields measurable revenue gains. Speed is a prerequisite for all other optimizations.
@@ -21,7 +21,7 @@
 - **Key Finding**: 49% of users hold their phone with one hand, relying on thumb for interaction. 75% of all interactions are thumb-driven (Josh Clark). The screen divides into three zones: Easy (bottom center), Stretch (top and edges), and Hard (top corners). On devices exceeding 6.5 inches, the natural easy-reach zone shrinks to just 22% of total screen area. Every additional 0.5 inches of screen size reduces one-handed usability by approximately 23%.
 - **E-Commerce Application**: Place primary CTAs (Add to Cart, Buy Now, Checkout) in the bottom third of the screen. Avoid placing critical actions in top corners. Consider sticky bottom bars for key conversion actions. Airbnb's 2023 thumb-zone navigation redesign increased feature engagement by 38%.
 - **Replication Status**: Replicated across multiple studies and platforms. The original 49% one-handed figure is widely cited but Hoober himself has noted usage is more fluid than a single static grip.
-- **Boundary Conditions**: Users switch grips frequently based on context (walking vs. sitting). Tablets and foldable devices have entirely different zones. Two-handed use becomes dominant for complex tasks like form filling. The original 2013 data predates the shift to 6"+ phones now standard.
+- **Boundary Conditions**: Users switch grips frequently based on context (walking vs. sitting). Tablets and foldable devices have entirely different zones. Two-handed use becomes dominant for complex tasks like form filling. The original 2013 data predates the shift to 6"+ phones now standard. **DATED (2013). Based on smaller phone screens (3.5-4.7 inches). Modern phones (6.1-6.9 inches) have shifted the natural thumb reach area. Core principle (bottom-center is primary interaction zone) remains validated. Designers should test with current device sizes.**
 
 ### Finding 2: One-Handed vs. Two-Handed Mobile Use
 - **Source**: Steven Hoober, UXmatters, 2013; subsequent research from University of Maryland; A List Apart
@@ -34,7 +34,7 @@
 ### Finding 3: Mobile vs. Desktop Conversion Rate Gap
 - **Source**: Smart Insights, 2025; Statista; Envive.ai 2026 compilation; Venn Apps 2025
 - **Methodology**: Aggregate industry data across multiple e-commerce verticals
-- **Key Finding**: Desktop converts at 4.3% vs. mobile at 2.2% (2025 data). Mobile drives 75% of e-commerce traffic but converts at roughly half the desktop rate. Desktop AOV is $122 vs. $86 on mobile. Mobile checkout takes 40% longer than desktop. Form-complexity abandonment is 2x more likely on mobile. The gap narrows in app-first categories like food delivery (6.1% mobile conversion).
+- **Key Finding**: Desktop conversion averages approximately 3.9% vs. mobile at 1.8% (2025 industry benchmarks; Retail Touchpoints, Blend Commerce). Desktop converts at roughly 1.7x the rate of mobile (Smart Insights, 2025). Some 2026 data shows convergence to ~2.8% each on well-optimized sites. Mobile drives 75% of e-commerce traffic but converts at roughly half the desktop rate. Desktop AOV is $122 vs. $86 on mobile. Mobile checkout takes 40% longer than desktop. Form-complexity abandonment is 2x more likely on mobile. The gap narrows in app-first categories like food delivery (6.1% mobile conversion).
 - **E-Commerce Application**: The conversion gap represents massive revenue leakage. Prioritize mobile checkout simplification, reduce form fields, and support digital wallets. The traffic-to-conversion ratio means even small mobile conversion improvements have outsized revenue impact. High-ticket categories need particular attention since the gap exceeds 2.5x there.
 - **Replication Status**: Consistently replicated across data sources, though exact figures vary (some show 3.2% desktop vs. 2.8% mobile). The directional finding is universal.
 - **Boundary Conditions**: App-based commerce significantly closes the gap. Categories with impulse/low-consideration purchases (food delivery, ride-sharing) show near-parity. The gap is smaller for returning customers and those using saved payment methods.
@@ -42,7 +42,7 @@
 ### Finding 4: Mobile Checkout Abandonment and Recovery
 - **Source**: Baymard Institute, 2024 (ongoing benchmark, 14 years of tracking); based on 49 studies
 - **Methodology**: Meta-analysis of 49 different cart abandonment studies; independent large-scale checkout usability testing
-- **Key Finding**: Average cart abandonment rate is 70.19% overall, but 77.06% on mobile (vs. 70.01% desktop, 66.39% tablet). Top abandonment reasons: 47% extra costs appearing at checkout, 22% too long/complicated checkout process. Average checkout has 11.3 form fields. Baymard estimates the average large e-commerce site can gain 35.26% conversion rate increase through better checkout design, representing $260 billion in recoverable lost orders (US + EU).
+- **Key Finding**: Average cart abandonment rate is 70.19% overall. Mobile cart abandonment averages approximately 78-80% (SaleCycle/XP2, 2025), compared to the overall cross-device average of ~70.2% (Baymard Institute, 50-study aggregate, 2025). Desktop is ~70.01%, tablet ~66.39%. Top abandonment reasons: 47% extra costs appearing at checkout, 22% too long/complicated checkout process. Average checkout has 11.3 form fields. Baymard estimates the average large e-commerce site can gain 35.26% conversion rate increase through better checkout design, representing $260 billion in recoverable lost orders (US + EU).
 - **E-Commerce Application**: Reduce form fields below the 11.3 average (aim for 6-8). Show all costs upfront before checkout. Support guest checkout. Implement digital wallets (Apple Pay, Google Pay, Shop Pay) to bypass form filling entirely. One-click checkout increases mobile spending by 28.5%.
 - **Replication Status**: Highly replicated. The 70% abandonment figure is the most-cited stat in e-commerce UX.
 - **Boundary Conditions**: Abandonment rates vary dramatically by vertical (fashion higher, digital goods lower). Some "abandonment" is actually comparison shopping behavior, not true friction-driven loss. B2B checkout has different dynamics.
@@ -90,7 +90,7 @@
 ### Finding 10: Digital Wallet and One-Click Checkout Impact
 - **Source**: Swell.is custom checkout statistics 2025; Baymard Institute; multiple industry reports
 - **Methodology**: Aggregate conversion data from payment processor reports and A/B tests
-- **Key Finding**: One-click checkout increases mobile spending by 28.5%. PayPal delivers 88.7% checkout conversion rate, significantly outperforming card payments. Offering Buy Now Pay Later (BNPL) improves checkout conversion by 78% and reduces cart abandonment by 10%. Mobile shoppers using optimized digital wallets (Apple Pay, Google Pay, Shop Pay) push conversion rates into the 3%+ range (approaching desktop parity). Guest checkout alone reduces abandonment significantly -- 24% of users abandon when forced to create an account.
+- **Key Finding**: One-click checkout increases mobile spending by 28.5%. PayPal delivers 88.7% checkout conversion rate, significantly outperforming card payments. Offering Buy Now Pay Later (BNPL) can boost checkout conversion by up to ~30% in optimal conditions (Chargeflow, 2025; Stripe found up to 14% revenue increase in controlled A/B testing). Mobile shoppers using optimized digital wallets (Apple Pay, Google Pay, Shop Pay) push conversion rates into the 3%+ range (approaching desktop parity). Guest checkout alone reduces abandonment significantly -- 24% of users abandon when forced to create an account.
 - **E-Commerce Application**: Offer Apple Pay, Google Pay, and Shop Pay as primary checkout options, displayed prominently above traditional card entry. Support express checkout buttons on product pages (not just cart). Implement BNPL for orders over $50. Never require account creation before purchase. Save payment methods for returning customers.
 - **Replication Status**: Replicated. Digital wallet conversion advantages are consistently measured.
 - **Boundary Conditions**: Digital wallet adoption varies by geography (Apple Pay penetration differs by country). BNPL effectiveness is strongest for $50-$500 price range. B2B transactions rarely use digital wallets. Older demographics may not have wallets configured.
@@ -146,7 +146,7 @@
 ### Finding 17: Mobile-Specific Cart Abandonment by Device
 - **Source**: Baymard Institute 2024; multiple industry aggregations
 - **Methodology**: Meta-analysis of 49 cart abandonment studies; device-segmented analytics
-- **Key Finding**: Mobile abandonment: 77.06%. Desktop abandonment: 70.01%. Tablet abandonment: 66.39%. The 7-point gap between mobile and desktop represents pure mobile friction. Primary mobile-specific causes: small screen making forms harder, difficulty comparing products (no multi-tab), security perception concerns, and slower perceived performance. 24% abandon when forced to create an account (this friction is amplified on mobile keyboards).
+- **Key Finding**: Mobile cart abandonment averages approximately 78-80% (SaleCycle/XP2, 2025). Desktop abandonment: ~70.01%. Tablet abandonment: ~66.39%. The 8-10 point gap between mobile and desktop represents pure mobile friction. Primary mobile-specific causes: small screen making forms harder, difficulty comparing products (no multi-tab), security perception concerns, and slower perceived performance. 24% abandon when forced to create an account (this friction is amplified on mobile keyboards).
 - **E-Commerce Application**: Offer guest checkout prominently. Show order summary in a collapsible accordion rather than requiring scroll. Use progress indicators to set expectations. Enable "continue on desktop" via saved cart/email link for high-ticket items. Minimize keyboard switching during checkout.
 - **Replication Status**: Replicated consistently across Baymard's tracking period.
 - **Boundary Conditions**: The mobile-desktop gap is narrowing year over year as mobile UX improves. App-based checkout shows significantly lower abandonment than mobile web. Product category and price point affect the gap magnitude.
@@ -162,9 +162,9 @@
 ### Finding 19: Mobile BNPL (Buy Now Pay Later) Conversion Impact
 - **Source**: Swell.is 2025 checkout statistics; industry payment processor data
 - **Methodology**: Aggregate conversion data from BNPL provider analytics and merchant A/B tests
-- **Key Finding**: BNPL options improve checkout conversion by 78% and reduce cart abandonment by 10%. BNPL is particularly effective on mobile where AOV anxiety is higher (mobile AOV $86 vs. desktop $122). Younger demographics (18-35) are the primary BNPL users and also the most mobile-dominant shoppers. Displaying BNPL pricing ("4 payments of $24.99") on the product page, not just at checkout, increases add-to-cart rates.
+- **Key Finding**: Stripe's A/B test across 150,000+ global payment sessions found offering BNPL at checkout resulted in up to a 14% increase in revenue, driven by higher conversion rates and higher average order values. More than two-thirds of BNPL volume came from net-new sales (Stripe, 2024). Industry aggregates show BNPL can boost checkout conversion by up to ~30% in optimal conditions (Chargeflow, 2025). Academic research found BNPL adopters spend 6.42% more than non-adopters (ScienceDirect, 2024). BNPL is particularly effective on mobile where AOV anxiety is higher (mobile AOV $86 vs. desktop $122). Younger demographics (18-35) are the primary BNPL users and also the most mobile-dominant shoppers. Displaying BNPL pricing ("4 payments of $24.99") on the product page, not just at checkout, increases add-to-cart rates.
 - **E-Commerce Application**: Display BNPL messaging on product pages (near the price) and in the cart, not just at checkout. Support Afterpay/Klarna/Affirm as checkout options. Show the per-installment price prominently. Target BNPL messaging for products in the $50-$500 range where it has the strongest impact on mobile conversion.
-- **Replication Status**: Replicated across multiple BNPL providers and merchant categories.
+- **Replication Status**: Replicated across multiple BNPL providers and merchant categories. Stripe's controlled A/B test provides the most methodologically sound data.
 - **Boundary Conditions**: BNPL effectiveness drops for very low-price items (< $30) and very high-price items (> $1,000). Regulatory scrutiny of BNPL is increasing in multiple markets. Some demographics view BNPL negatively (associated with debt). B2B commerce rarely benefits.
 
 ### Finding 20: Mobile Image Gallery -- Thumbnails vs. Dots
@@ -193,17 +193,17 @@
 
 ## Source Bibliography
 
-- Baymard Institute. Mobile E-Commerce UX Benchmark. https://baymard.com/blog/mobile-ux-ecommerce
-- Baymard Institute. "Mobile Gestures: 40% of Sites Don't Support Pinch or Tap Gestures." https://baymard.com/blog/mobile-image-gestures
-- Baymard Institute. "50 Cart Abandonment Rate Statistics 2026." https://baymard.com/lists/cart-abandonment-rate
-- Baymard Institute. "Always Use Thumbnails to Represent Additional Product Images." https://baymard.com/blog/always-use-thumbnails-additional-images
-- Google. "The Need for Mobile Speed." https://www.thinkwithgoogle.com/marketing-strategies/app-and-mobile/page-load-time-statistics/
-- Google/Deloitte. "Milliseconds Make Millions." https://web.dev/case-studies/milliseconds-make-millions
-- Heyflow. "Mastering the Thumb Zone." https://heyflow.com/blog/mastering-the-thumb-zone/
+- Baymard Institute. Mobile E-Commerce UX Benchmark.
+- Baymard Institute. "Mobile Gestures: 40% of Sites Don't Support Pinch or Tap Gestures."
+- Baymard Institute. "50 Cart Abandonment Rate Statistics 2026."
+- Baymard Institute. "Always Use Thumbnails to Represent Additional Product Images."
+- Google. "The Need for Mobile Speed."
+- Google/Deloitte. "Milliseconds Make Millions."
+- Heyflow. "Mastering the Thumb Zone."
 - Hoober, Steven. "How Do Users Really Hold Mobile Devices?" UXmatters, 2013.
-- Luke Wroblewski. "Web Form Design: Filling in the Blanks." Rosenfeld Media, 2008. https://www.lukew.com/resources/web_form_design.asp
-- Nielsen Norman Group. "Hamburger Menus and Hidden Navigation Hurt UX Metrics." https://www.nngroup.com/articles/hamburger-menus/
-- Smart Insights. "E-commerce conversion rate benchmarks - 2025 update." https://www.smartinsights.com/ecommerce/ecommerce-analytics/ecommerce-conversion-rates/
-- Smashing Magazine. "The Thumb Zone: Designing For Mobile Users." https://www.smashingmagazine.com/2016/09/the-thumb-zone-designing-for-mobile-users/
-- Swell.is. "35 Custom Checkout Statistics for 2025." https://www.swell.is/content/custom-checkout-statistics
-- W3C. "WCAG 2.2 Success Criterion 2.5.8: Target Size." https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html
+- Luke Wroblewski. "Web Form Design: Filling in the Blanks." Rosenfeld Media, 2008.
+- Nielsen Norman Group. "Hamburger Menus and Hidden Navigation Hurt UX Metrics."
+- Smart Insights. "E-commerce conversion rate benchmarks - 2025 update."
+- Smashing Magazine. "The Thumb Zone: Designing For Mobile Users."
+- Swell.is. "35 Custom Checkout Statistics for 2025."
+- W3C. "WCAG 2.2 Success Criterion 2.5.8: Target Size."
