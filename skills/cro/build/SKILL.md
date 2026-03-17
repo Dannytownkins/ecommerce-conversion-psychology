@@ -1,5 +1,5 @@
 ---
-name: build
+name: cro:build
 description: >-
   Builds a new ecommerce page from scratch using conversion psychology
   principles. Four-phase relay with structured intake for product pages,

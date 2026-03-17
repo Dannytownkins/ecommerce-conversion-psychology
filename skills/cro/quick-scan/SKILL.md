@@ -1,5 +1,5 @@
 ---
-name: quick-scan
+name: cro:quick-scan
 description: >-
   Runs a quick CRO scan of an ecommerce page. Single domain cluster,
   3-5 highest-impact quick wins, no further phases. Faster and cheaper

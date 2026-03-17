@@ -1,5 +1,5 @@
 ---
-name: audit
+name: cro:audit
 description: >-
   Runs a full CRO audit of an existing ecommerce page via four-phase relay
   (audit, plan, review, build). Covers product pages, checkout flows, carts,

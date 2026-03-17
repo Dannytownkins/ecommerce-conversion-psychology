@@ -97,10 +97,27 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ## Installation
 
-Clone or copy this repo into your Claude Code skills directory as `cro`:
+Each sub-command needs its own directory in `~/.claude/skills/` with the `cro:` prefix. Run this from the repo root:
 
 ```bash
-git clone https://github.com/Dannytownkins/ecommerce-conversion-psychology ~/.claude/skills/cro
+# Clone the repo
+git clone https://github.com/Dannytownkins/ecommerce-conversion-psychology
+cd ecommerce-conversion-psychology
+
+# Install the router skill
+cp -r skills/cro ~/.claude/skills/cro
+cp -r references workflows templates platforms citations ~/.claude/skills/cro/
+
+# Install each sub-command as a separate skill
+for cmd in audit build compare quick-scan resume; do
+  mkdir -p ~/.claude/skills/cro:$cmd
+  cp skills/cro/$cmd/SKILL.md ~/.claude/skills/cro:$cmd/
+  ln -sf ~/.claude/skills/cro/references ~/.claude/skills/cro:$cmd/references
+  ln -sf ~/.claude/skills/cro/workflows ~/.claude/skills/cro:$cmd/workflows
+  ln -sf ~/.claude/skills/cro/templates ~/.claude/skills/cro:$cmd/templates
+  ln -sf ~/.claude/skills/cro/platforms ~/.claude/skills/cro:$cmd/platforms
+  ln -sf ~/.claude/skills/cro/citations ~/.claude/skills/cro:$cmd/citations
+done
 ```
 
 Then restart Claude Code or run `/reload-plugins`. The `/cro` commands will be available immediately.
@@ -110,18 +127,20 @@ Then restart Claude Code or run `/reload-plugins`. The `/cro` commands will be a
 ## Architecture
 
 ```
-ecommerce-conversion-psychology/    → install as ~/.claude/skills/cro/
-├── SKILL.md                        /cro router
-├── audit/SKILL.md                  /cro:audit
-├── build/SKILL.md                  /cro:build
-├── compare/SKILL.md                /cro:compare
-├── quick-scan/SKILL.md             /cro:quick-scan
-├── resume/SKILL.md                 /cro:resume
-├── references/                     18 domain + 7 principle/operational files
-├── citations/                      Source URLs for human verification
-├── platforms/                      shopify.md, nextjs.md
-├── templates/                      Baton + report templates
-├── workflows/                      Phase workflows (context: fork)
+ecommerce-conversion-psychology/
+├── .claude-plugin/plugin.json       Plugin metadata (v2.2.0)
+├── skills/cro/                      Command family
+│   ├── SKILL.md                     /cro router
+│   ├── audit/SKILL.md               /cro:audit
+│   ├── build/SKILL.md               /cro:build
+│   ├── compare/SKILL.md             /cro:compare
+│   ├── quick-scan/SKILL.md          /cro:quick-scan
+│   └── resume/SKILL.md              /cro:resume
+├── references/                      18 domain + 7 principle/operational files
+├── citations/                       Source URLs for human verification
+├── platforms/                       shopify.md, nextjs.md
+├── templates/                       Baton + report templates
+├── workflows/                       Phase workflows (context: fork)
 ├── README.md
 └── CHANGELOG.md
 ```

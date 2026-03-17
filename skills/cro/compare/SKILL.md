@@ -1,5 +1,5 @@
 ---
-name: compare
+name: cro:compare
 description: >-
   Compares an ecommerce page against a competitor page. Runs 1:1 same-type
   comparison with side-by-side scoring and gap analysis. Supports URLs

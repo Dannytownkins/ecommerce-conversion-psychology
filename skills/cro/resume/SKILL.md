@@ -1,5 +1,5 @@
 ---
-name: resume
+name: cro:resume
 description: >-
   List and resume in-progress CRO engagements. Use when returning
   to a previous audit, build, or comparison to check status or
