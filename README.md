@@ -95,31 +95,36 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ---
 
-## Architecture
+## Installation
 
+Clone or copy this repo into your Claude Code skills directory as `cro`:
+
+```bash
+git clone https://github.com/Dannytownkins/ecommerce-conversion-psychology ~/.claude/skills/cro
 ```
-ecommerce-conversion-psychology/
-├── .claude-plugin/plugin.json       Plugin metadata (v2.2.0)
-├── references/                      18 domain + 7 principle/operational files
-├── docs/citations.md                Source URLs for human verification (not loaded by agents)
-├── platforms/                       shopify.md, nextjs.md
-├── templates/                       Baton + report templates
-├── workflows/                       Phase workflows (context: fork)
-├── skills/cro/                      Command family
-│   ├── SKILL.md                     /cro router
-│   ├── audit/SKILL.md               /cro:audit
-│   ├── build/SKILL.md               /cro:build
-│   ├── quick-scan/SKILL.md          /cro:quick-scan
-│   └── compare/SKILL.md             /cro:compare
-├── README.md
-└── CHANGELOG.md
-```
+
+Then restart Claude Code or run `/reload-plugins`. The `/cro` commands will be available immediately.
 
 ---
 
-## Plugin Metadata
+## Architecture
 
-`.claude-plugin/plugin.json` contains name, version, and description metadata. It exists for potential future plugin discovery systems and is **not** used by Claude Code's skill loader. The skill loader reads `skills/cro/SKILL.md` directly.
+```
+ecommerce-conversion-psychology/    → install as ~/.claude/skills/cro/
+├── SKILL.md                        /cro router
+├── audit/SKILL.md                  /cro:audit
+├── build/SKILL.md                  /cro:build
+├── compare/SKILL.md                /cro:compare
+├── quick-scan/SKILL.md             /cro:quick-scan
+├── resume/SKILL.md                 /cro:resume
+├── references/                     18 domain + 7 principle/operational files
+├── citations/                      Source URLs for human verification
+├── platforms/                      shopify.md, nextjs.md
+├── templates/                      Baton + report templates
+├── workflows/                      Phase workflows (context: fork)
+├── README.md
+└── CHANGELOG.md
+```
 
 ---
 
