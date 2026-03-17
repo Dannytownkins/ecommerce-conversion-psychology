@@ -2,7 +2,7 @@
 # Checkout Optimization & Cart Abandonment Psychology
 ## Raw Research Findings
 
-**Total Findings**: 20
+**Total Findings**: 22
 **Date Compiled**: 2026-03-09
 **Research Focus**: Checkout UX optimization, cart abandonment causes, and conversion psychology
 
@@ -252,6 +252,28 @@
 - **E-Commerce Application**: Load-test checkout flows. Monitor checkout error rates in production. Implement graceful error recovery (preserve cart state across page reloads/crashes). Test checkout on all major browsers and devices.
 - **Replication Status**: Replicated in Baymard data. Corroborated by industry reporting.
 - **Boundary Conditions**: Higher impact during peak traffic events (Black Friday, flash sales) when sites are most likely to experience issues.
+
+---
+
+## Finding 21: Accessible Checkout Design
+
+- **Source**: (a) Baymard Institute, ongoing checkout UX research; (b) W3C WCAG 2.2; (c) Adrian Roselli, accessibility expert guidance
+- **Methodology**: (a) Baymard: large-scale moderated usability testing including users with disabilities. (b) WCAG standards. (c) Expert analysis of form accessibility patterns.
+- **Key Finding**: **19% of users abandon checkout** because the site requires account creation (Baymard) — but this friction is amplified for users relying on assistive technology, who face additional barriers from non-standard form controls, missing labels, and inaccessible error messages. Accessible checkout requires: (1) all form fields must have associated `<label>` elements, (2) inline validation errors must be announced to screen readers via `aria-describedby`, (3) progress indicators need `aria-live="polite"` regions to announce step changes, (4) error summaries must receive focus on submission failure, (5) payment forms must use autocomplete attributes for autofill support. The 4,187+ ADA lawsuits in 2024 (69-77% targeting ecommerce) make checkout accessibility a legal exposure, not just a UX concern.
+- **E-Commerce Application**: Audit checkout forms with a screen reader (VoiceOver, NVDA, TalkBack). Ensure every form field has a visible label AND an associated `<label>` element. Use `aria-describedby` to link error messages to their fields. Announce form submission errors by moving focus to an error summary. Use `autocomplete` attributes on all standard fields (name, email, address, card number). Test the entire checkout flow using keyboard-only navigation — if you can't complete a purchase without a mouse, neither can users with motor impairments.
+- **Replication Status**: WCAG is the international standard. Baymard's 19% abandonment figure is from their ongoing research program. The legal exposure data is factual (UsableNet litigation tracking).
+- **Boundary Conditions**: The 19% abandonment is self-reported (users citing their reason for leaving). The amplification effect for assistive technology users is logical but not quantified. No study measures the conversion uplift from making a checkout accessible vs inaccessible in a controlled experiment.
+
+---
+
+## Finding 22: Cart Recovery Channels — Push, Email, SMS Cascade
+
+- **Source**: Cross-reference to post-purchase-psychology.md Finding 15
+- **Methodology**: See post-purchase-psychology.md for full methodology details.
+- **Key Finding**: Cart abandonment (70.19% average, Baymard) is the primary trigger for multi-channel recovery. **The optimal sequence is push at 5-15 minutes, email at 3-6 hours, SMS at 24 hours for high-value carts only.** Automated push generates 22.88% click-to-conversion (Omnisend). Abandoned cart email achieves $3.65 RPR average (Klaviyo, 143K+ flows). SMS achieves 15-20% conversion but at higher cost (CartBoss). **[DENOMINATOR NOTE: Push "22.88% conversion" is click-to-conversion only. Against all recipients it is ~0.04%. SMS "15-20%" denominator is unclear. Always specify denominator when comparing channels.]**
+- **E-Commerce Application**: Cart recovery is the highest-ROI automated flow. Implement staged cascade: push first (cheapest, fastest), email second (highest reach), SMS third (highest per-message cost, reserve for high-value carts). Deep-link directly to cart with items pre-loaded. Suppress subsequent channels if user converts from earlier touchpoint. See post-purchase-psychology.md Findings 13-16 for full cascade implementation details.
+- **Replication Status**: Cross-reference — see post-purchase-psychology.md for full replication assessment.
+- **Boundary Conditions**: Cross-reference — see post-purchase-psychology.md for full boundary conditions. Key limitation: timing sequence is practitioner consensus, not experimentally validated.
 
 ---
 

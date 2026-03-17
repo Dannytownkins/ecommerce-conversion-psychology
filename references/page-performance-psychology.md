@@ -3,7 +3,7 @@
 
 **Research Date:** 2026-03-09
 **Domain:** E-commerce page performance and its psychological impact on users
-**Findings:** 12 cited findings with specific data points
+**Total Findings:** 16 cited findings with specific data points
 
 ## Executive Summary
 
@@ -16,6 +16,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 5. **Optimistic UI is underused and high-impact.** Showing success before server confirmation (Instagram's approach) eliminates perceived latency for interactions entirely.
 6. **Above-the-fold text should render first.** Text renders faster than images and satisfies LCP; hero images and CTAs should follow immediately, with below-fold content lazy-loaded.
 7. **Speed is a trust signal.** 70% of consumers say page speed impacts willingness to buy. Slow sites are unconsciously associated with unreliable businesses.
+8. **Animation quality matters more than skeleton-vs-spinner choice.** Wang et al. (2025, N=1,409) found dynamic animation significantly reduces perceived wait time vs static. The debate over skeletons vs spinners misses the point — how you animate matters more than what you animate. (See Finding 13, which refines Finding 2.)
 
 ---
 
@@ -35,7 +36,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **Source**: (a) Viget, 2017, "A Bone to Pick with Skeleton Screens"; (b) Bill Chung, 2020, UX Collective
 - **Methodology**: (a) Viget: 136 mobile users randomly shown spinner, skeleton, or blank screen via animated GIFs, then asked to evaluate wait time. (b) Chung: Physical mobile device testing with participants in "half-focused" state in downtown Vancouver.
 - **Key Finding**: **Viget found skeletons performed worst** -- users perceived longer wait times with skeletons than with spinners or blank screens. **Chung found skeletons performed best**, but only marginally shorter perceived duration vs. spinner and blank screen.
-- **E-Commerce Application**: Do not blindly adopt skeleton screens. Test them against your specific content type. Skeletons work best when they closely match the final layout (reducing layout shift). Poorly designed skeletons that don't match final content may increase perceived wait time by setting expectations that are then violated.
+- **E-Commerce Application**: Do not blindly adopt skeleton screens. Test them against your specific content type. Skeletons work best when they closely match the final layout (reducing layout shift). Poorly designed skeletons that don't match final content may increase perceived wait time by setting expectations that are then violated. **Note:** Finding 13 refines this finding — animation quality matters more than the skeleton-vs-spinner pattern choice. NNGroup (2023) recommends skeletons for full-page loads under 10 seconds and spinners for individual module loads under 10 seconds. The differentiator is use case (full-page vs module), not duration.
 - **Replication Status**: Contradictory. No large-scale definitive study exists. Both studies had small sample sizes.
 - **Boundary Conditions**: Skeleton fidelity matters enormously. A skeleton that closely mirrors final content likely outperforms a generic gray-box skeleton. Context (content-heavy pages vs. simple pages) likely moderates the effect.
 
@@ -70,7 +71,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 
 - **Source**: Google/SOASTA, 2016-2017; Akamai, 2010-2016
 - **Methodology**: Google/SOASTA analyzed mobile sessions. Akamai tracked abandonment across CDN-served sites. Earlier Akamai studies (2006, 2010) tracked evolving expectations.
-- **Key Finding**: Google found **53% of mobile visits abandoned** if page took >3 seconds. Akamai's peak conversion rate of **4.75%** occurred at **3.3 seconds** load time; one additional second dropped conversion to **3.52%** (a **26% drop**). The 2010 Akamai study found **57% abandonment** at 3 seconds, up from lower thresholds in 2006.
+- **Key Finding**: Google found **53% of mobile visits abandoned** if page took >3 seconds. Akamai's peak conversion rate of **4.75%** occurred at **3.3 seconds** load time; one additional second dropped conversion to **3.52%** (a **26% drop**). [CITATION LAUNDERED: The widely-cited Akamai '1 second = 7% conversion reduction' statistic traces to reports from 2006 and 2014 with varying methodologies. No auditable primary study exists for the specific 7% figure.] The 2010 Akamai study found **57% abandonment** at 3 seconds, up from lower thresholds in 2006.
 - **E-Commerce Application**: The 3-second threshold remains a useful engineering target, but expectations are tightening. Aim for under 2 seconds on mobile. The trend shows users becoming less patient over time, not more.
 - **Replication Status**: Widely cited but the original Google/SOASTA data is from 2016. The directional finding is robust, but the exact 53% figure is dated.
 - **Boundary Conditions**: Varies by context. Users will wait longer for complex tasks (booking flights) than simple ones (browsing products). Wi-Fi vs. cellular also matters. Desktop thresholds are more forgiving.
@@ -129,6 +130,42 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **Replication Status**: Corroborated by Rakuten (Finding 5), Pinterest, and Renault case studies on web.dev.
 - **Boundary Conditions**: Vodafone is a high-traffic brand; smaller sites may see proportionally different results. The SEO compounding effect depends on competitive landscape.
 
+### Finding 13: Animation Type Matters More Than Skeleton vs Spinner
+
+- **Source**: (a) Wang et al., 2025, MDPI Journal of Theoretical and Applied Electronic Commerce Research; (b) Harrison, Yeo & Hudson, 2010, ACM CHI
+- **Methodology**: (a) Wang: 4 online experiments (N=198, 411, 400, 400; total N=1,409) comparing dynamic vs static loading animations using Attentional Gate Theory. (b) Harrison: Controlled lab experiment testing ribbed, backward-decelerating progress bars at CMU.
+- **Key Finding**: (a) Dynamic/animated loading indicators significantly reduced perceived wait time compared to static indicators. (b) Backward-decelerating ribbed progress bars reduced perceived duration by **~11-12%** (p<0.001). The pattern of the loading indicator (skeleton vs spinner) is less important than the quality of its animation.
+- **E-Commerce Application**: Use subtle motion and shimmer on loading placeholders. Use accelerating-feel or backward-decelerating progress bars for determinate waits (checkout processing, payment). Avoid static loading indicators entirely.
+- **Replication Status**: Wang 2025 is peer-reviewed with large total N=1,409. Harrison 2010 is peer-reviewed ACM CHI. Both are non-ecommerce contexts (general UI/loading tasks). No direct ecommerce conversion measurement.
+- **Boundary Conditions**: Studies measured perception (perceived wait time), not purchase conversion. Wang's sample was ages 20-29 only. Ecommerce-specific replication is needed but the underlying perceptual mechanism is well-established.
+
+### Finding 14: Shimmer Direction and Multi-Stage Loading Patterns
+
+- **Source**: (a) Bill Chung, 2017, UX Collective; (b) Erwin Hofman, practitioner study; (c) Yin et al., 2025, MDPI Applied Sciences
+- **Methodology**: (a) Chung: Street-intercept testing, ~20 participants, compared wave/shimmer vs pulse vs static. (b) Hofman: Independent practitioner A/B comparison, ~20 participants. (c) Yin: Lab experiment, N=90, ages 20-29, repeated-measures ANOVA, 4-second constant wait.
+- **Key Finding**: (a,b) Slow left-to-right shimmer animation was perceived as having the **shortest loading duration** compared to pulse and static alternatives. Two independent practitioner studies converge on the same direction. (c) Multi-stage loading patterns (e.g., spinner transitioning to skeleton) showed context-dependent results — some sequences outperformed single-stage, but blank+spinner often performed best.
+- **E-Commerce Application**: Use slow left-to-right shimmer (the Facebook/Google pattern) for skeleton placeholders. For category/search pages with filter loading, consider multi-stage patterns (spinner for initial response, skeleton for content layout). Test multi-stage patterns rather than assuming they outperform single-stage.
+- **Replication Status**: Shimmer direction confirmed by two independent practitioner studies (~20 each). Multi-stage is a single peer-reviewed study with small N. All non-ecommerce.
+- **Boundary Conditions**: All sample sizes are very small (~20 for shimmer, N=90 for multi-stage). The shimmer finding is practitioner-level evidence, not peer-reviewed. Multi-stage results were context-specific — the "best" sequence varied by scenario.
+
+### Finding 15: Skeleton Fidelity — Match the Final Layout or Don't Use Them
+
+- **Source**: (a) Tim Kadlec, 2020, web performance consultant; (b) NNGroup, 2023, "Skeleton Screens 101"
+- **Methodology**: (a) Kadlec: Expert practitioner analysis of skeleton screen implementations across production sites. (b) NNGroup: Expert synthesis and usability review.
+- **Key Finding**: Skeleton screens convert passive waiting into active scanning — but **only when the skeleton closely matches the final layout structure**. A skeleton that doesn't match creates jarring "content shift" that actively harms perception, potentially worse than showing no skeleton at all. NNGroup independently warns against "frame-display" skeletons that don't show content structure. Both sources emphasize that **poorly matched skeletons are worse than spinners**.
+- **E-Commerce Application**: Skeleton shapes must match product card dimensions, image aspect ratios, and text line heights. On product listing pages, the skeleton grid must match the final grid exactly. If you cannot match the layout, use a spinner instead. Reserve space for all dynamic elements to prevent Cumulative Layout Shift (CLS).
+- **Replication Status**: Two independent expert sources (Kadlec and NNGroup) converge on the same conclusion. No peer-reviewed study on skeleton fidelity exists.
+- **Boundary Conditions**: Expert guidance, not empirical conversion data. The mechanism is logical (layout shift = violated expectations) and consistent with CLS research (Finding 5), but the specific conversion impact of skeleton fidelity is unmeasured.
+
+### Finding 16: Skeleton Screen Accessibility Requirements
+
+- **Source**: Adrian Roselli, 2020, "More Accessible Skeletons"
+- **Methodology**: Accessibility expert analysis of skeleton screen implementations and screen reader behavior.
+- **Key Finding**: Skeleton screen implementations without ARIA attributes create **accessibility barriers for screen reader users**. Recommended implementation: use `aria-busy="true"` on the container while loading, `role="status"` for live regions, and ensure skeleton elements are hidden from assistive technology with `aria-hidden="true"`. **Important caveat**: Roselli notes that few screen readers actually honor `aria-busy` at the time of writing — test with actual assistive technology.
+- **E-Commerce Application**: When implementing skeleton screens on product grids, search results, or checkout loading states: (1) wrap the loading region in `aria-busy="true"`, (2) announce loading completion with `aria-live="polite"`, (3) hide decorative skeleton shapes from screen readers. This is implementation guidance, not a conversion optimization — but failing to do it creates legal exposure (see accessibility lawsuit trends).
+- **Replication Status**: Expert guidance consistent with WCAG best practices. No empirical study on the conversion impact of accessible vs inaccessible skeleton implementations.
+- **Boundary Conditions**: Screen reader support for `aria-busy` varies. Test with VoiceOver (iOS/macOS), NVDA (Windows), and TalkBack (Android) before shipping.
+
 ---
 
 ## Key Sources
@@ -147,3 +184,11 @@ Page performance psychology reveals that **perceived speed often matters more th
 12. Cloud Four -- Stop Lazy Loading Product Images
 13. web.dev -- Business impact of Core Web Vitals
 14. Smashing Magazine -- "True Lies of Optimistic UI" (2016)
+15. Wang et al. -- "Website Loading Animation and Perceived Waiting Time" (2025)
+16. Harrison, Yeo & Hudson -- "Faster Progress Bars: Manipulating Perceived Duration" (2010)
+17. Bill Chung -- "What you should know about skeleton screens" (2017)
+18. Erwin Hofman -- "Skeleton Loading and Perceived Performance" (practitioner)
+19. Yin et al. -- "Design Strategies for Mobile Click-and-Load Waiting Scenarios" (2025)
+20. Tim Kadlec -- "Effective Skeleton Screens" (2020)
+21. NNGroup -- "Skeleton Screens 101" (2023)
+22. Adrian Roselli -- "More Accessible Skeletons" (2020)

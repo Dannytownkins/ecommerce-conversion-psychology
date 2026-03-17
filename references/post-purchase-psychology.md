@@ -3,7 +3,7 @@
 ## Confirmation, Remorse Reduction, and Repeat Purchase
 
 **Research compiled**: March 2026
-**Scope**: 12 cited findings covering post-purchase anxiety, buyer's remorse, upsell timing, confirmation emails, return policy framing, shipping anticipation, review solicitation, and thank-you page optimization.
+**Scope**: 16 cited findings covering post-purchase anxiety, buyer's remorse, upsell timing, confirmation emails, return policy framing, shipping anticipation, review solicitation, and thank-you page optimization.
 
 ---
 
@@ -141,6 +141,46 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 
 ---
 
+### Finding 13: Automated Push Massively Outperforms Campaign Blasts for Cart Recovery
+- **Source**: (a) Omnisend, 2025, platform benchmark (23B+ messages analyzed); (b) MobiLoud, 2025, practitioner benchmark
+- **Methodology**: (a) Omnisend analyzed push notification performance across their platform, comparing automated/triggered sends vs campaign blasts. (b) MobiLoud aggregated cart recovery push notification performance data.
+- **Key Finding**: Automated/triggered push notifications dramatically outperform campaign blasts. Omnisend: automated push achieved **22.88% click-to-conversion** rate, but only **2.9% of push messages were automated** — yet they generated **21% of all push-driven orders**. Against ALL recipients (not just clickers), push conversion is approximately **0.04%**. MobiLoud reports **8-12% cart recovery conversion** for abandoned cart push specifically, with 30% open rates and 10% conversion (vs email: 40% open, 5% conversion). **[DENOMINATOR NOTE: "Conversion rate" in push/SMS/email varies up to 570x depending on denominator. This document specifies: click-to-conversion (22.88%), all-recipient (~0.04%), or cart-recovery-specific (8-12%). Always ask which denominator is being used when comparing channels.]**
+- **E-Commerce Application**: Triggered automation is essential — campaign blasts waste opt-in capital. Push should be the FIRST touchpoint after cart abandonment (5-15 minutes, while intent is fresh), followed by email (3-6 hours), then SMS for high-value carts (24 hours). See Finding 15 for the full cascade.
+- **Replication Status**: Omnisend data is large-scale vendor platform analytics. MobiLoud is a smaller vendor source. Both have financial incentive to make push look effective. No independent peer-reviewed study compares push vs email vs SMS for cart recovery under controlled conditions.
+- **Boundary Conditions**: Web push opt-in is ~6% of visitors (Airship 2025); native app push is 61-68%. Web push has very limited reach. The 22.88% click-to-conversion figure applies only to users who already clicked — not the total addressable audience.
+
+---
+
+### Finding 14: Notification Fatigue Drives Opt-Out and Churn
+- **Source**: (a) Wohllebe et al., 2021, peer-reviewed (N=17,500 retail app users, 7-week experiment); (b) Reuters Institute, 2025, Digital News Report
+- **Methodology**: (a) Wohllebe: Field experiment with N=17,500 retail app users across 5 notification frequency conditions over 7 weeks, measuring uninstall rates. Peer-reviewed. (b) Reuters: Annual survey of news consumption behavior including notification attitudes.
+- **Key Finding**: Wohllebe et al. found that as **frequency of non-personalized push notifications increases, uninstalls increase** — one of the strongest ecommerce-specific quantitative studies available. Reuters Institute found **79% of users don't receive news alerts** and **43% actively disabled notifications** due to overload. While the Reuters data is news-specific, the fatigue mechanism applies broadly. The principle is clear: every unnecessary notification erodes the opt-in base.
+- **E-Commerce Application**: Cap notification frequency. Maximum 3 notifications per abandoned cart event across all channels. Add a notification preference center. Personalize every notification — include the specific product name, image, and price. Never send generic "come back!" blasts. The Wohllebe study specifically shows that personalization is the moderator — non-personalized frequency destroys the channel.
+- **Replication Status**: Wohllebe is the strongest source — peer-reviewed, N=17,500, retail context, directly measures uninstall behavior. Reuters is independent and large-scale but news-specific. Directionally corroborated by multiple vendor sources.
+- **Boundary Conditions**: Wohllebe studied a retail app (not web push). Reuters data is news, not ecommerce. The specific frequency thresholds at which fatigue kicks in may vary by industry, product type, and user demographics.
+
+---
+
+### Finding 15: Multi-Channel Cart Recovery Cascade — Push, Email, SMS
+- **Source**: (a) MobiLoud/Dotdigital, 2025-2026, practitioner guidance; (b) Klaviyo, 2024, platform benchmark (143,000+ abandoned cart flows); (c) CartBoss, 2024, SMS recovery benchmark
+- **Methodology**: (a) Practitioner consensus on optimal timing sequences. (b) Klaviyo analyzed 143,000+ abandoned cart email flows across their platform. (c) CartBoss aggregated SMS cart recovery performance.
+- **Key Finding**: Practitioner consensus recommends a staged multi-channel cascade: **(1) Push at 5-15 minutes** (simple reminder, intent is fresh), **(2) Email at 3-6 hours** (add incentive, 10% off), **(3) SMS at 24 hours** for high-value carts only (urgency: "cart expires" or "low stock"). Deep-link directly to cart with items pre-loaded. Klaviyo data: abandoned cart email achieves **50.5% open rate**, **6.25% CTR**, **3.33% placed order rate**, and **$3.65 revenue per recipient** average ($28.89 for top 10%). SMS (CartBoss): **98% open rate**, **15-20% conversion**, optimal within 15-30 minutes, but higher cost per message — reserve for high-value carts. **[DENOMINATOR NOTE: Klaviyo RPR is per-recipient (all recipients). CartBoss SMS "conversion" is likely measured against recipients who opened, not all recipients.]**
+- **E-Commerce Application**: Implement staged cascade: push first (cheapest, fastest), email second (highest reach), SMS third (highest per-message conversion, highest cost). For app users, push fires first; for web-only users, email is the first touchpoint. Suppress subsequent channels if the user converts from an earlier touchpoint. Include product image, name, and price in every message.
+- **Replication Status**: Timing sequence is practitioner consensus, not experimentally validated. Klaviyo $3.65 RPR is based on 143,000+ flows (large sample, single platform). CartBoss SMS data is vendor-sourced.
+- **Boundary Conditions**: Timing optimization (5-15min/3-6h/24h) has never been A/B tested against alternative sequences in a published study. Klaviyo's merchant base skews Shopify DTC (fashion, beauty, lifestyle) — not representative of all ecommerce. SMS regulations vary by country (TCPA in US, GDPR in EU).
+
+---
+
+### Finding 16: Rich Media and Personalization Improve Push Notification Performance
+- **Source**: (a) Airship, 2025, push notification benchmarks; (b) Omnisend/Pushwoosh, vendor benchmarks
+- **Methodology**: (a) Airship analyzed push notification performance across their platform, segmenting by rich media and personalization features. (b) Omnisend and Pushwoosh provided similar vendor analytics.
+- **Key Finding**: Rich push notifications (with images) achieve **+22% higher direct open rates** than text-only (Airship). Personalized content with product images, specific product names, and prices outperforms generic messages. Messages under 10 words perform best. Wide vendor ranges for personalization impact ("+4-72% purchases" from Airship, "up to 4x open" from aggregated data) suggest **cherry-picked maxima** — treat specific effect sizes as directional only.
+- **E-Commerce Application**: Always include the abandoned product image, name, and price in cart recovery notifications. Keep copy under 10 words. Segment by cart value (high-value carts get more aggressive follow-up) and user recency (recent browsers vs lapsed users). Use rich push format where supported. Avoid generic "You left something behind!" — always personalize.
+- **Replication Status**: Airship +22% for rich push is the most specific figure with clear methodology. Other claims use wide ranges indicating cherry-picked best cases. All sources are vendors selling push notification infrastructure.
+- **Boundary Conditions**: All data is vendor-sourced with financial incentive. Wide ranges (4-72%) indicate high variance across implementations. Rich push support varies by platform and device.
+
+---
+
 ## Methodology Notes
 
 - Sources are a mix of academic research (Journal of Economic Analysis & Policy), large-scale consumer surveys (Narvar, Sifted), platform aggregate data (Omnisend, Shopify, ReConvert), and practitioner case studies (Talkable, Invesp, parcelLab).
@@ -154,3 +194,5 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 2. **Long-term retention impact**: Most studies measure short-term behavior (90 days). Multi-year customer lifetime value effects of post-purchase optimization are understudied.
 3. **Cross-cultural variation**: Nearly all cited research is U.S.-centric. Post-purchase expectations vary significantly by market.
 4. **Mobile vs. desktop post-purchase behavior**: Scant data on how device context affects post-purchase engagement and upsell acceptance.
+5. **Push vs email vs SMS controlled comparison**: No independent peer-reviewed study directly compares these channels for cart recovery under controlled conditions. All comparison data is vendor-sourced.
+6. **Notification fatigue thresholds**: The specific frequency at which push notifications trigger opt-out/uninstall in ecommerce contexts is understudied beyond Wohllebe et al.'s retail app study.

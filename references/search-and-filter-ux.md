@@ -2,7 +2,7 @@
 # Search & Filter UX in E-Commerce: Research Findings
 
 **Research Date**: March 11, 2026
-**Total Findings**: 18
+**Total Findings**: 22
 **Methodology**: Web-based literature review of academic papers, Baymard Institute research, practitioner case studies, and vendor-reported data (vendor bias flagged throughout)
 
 ---
@@ -177,6 +177,38 @@
 - **Replication Status**: Hearst's work is foundational and widely cited in information retrieval research. Kules & Capra's eye-tracking study is consistent. Neither was conducted on e-commerce product catalogs specifically.
 - **Boundary Conditions**: Academic studies used art image collections and library catalogs, not product catalogs. The preference for faceted interfaces likely transfers to e-commerce (Baymard's usability data supports this), but direct replication in e-commerce settings is lacking. Small catalogs may not need faceted search.
 
+### Finding 19: Search Users Convert Higher — But It's Correlation, Not Causation
+- **Source**: (a) Algolia, 2026, vendor benchmark; (b) Opensend/Algolia, vendor analytics; (c) Salesforce Commerce Cloud, vendor telemetry
+- **Methodology**: (a,b) Observational platform analytics comparing conversion rates of users who used site search vs those who browsed. Amazon: 12% vs 2% (6x), Walmart: 2.9% vs 1.1% (2.6x). (c) Salesforce reports ~16% of visitors use search, generating ~55% of revenue.
+- **Key Finding**: Search users convert at **1.8x-6x higher rates** than non-search users across major retailers. However, this is **correlation, not causation** — all sources and all audits of this data agree. High-intent users self-select into search. The search bar does not create purchase intent; it channels existing intent. The widely-cited "15% of visitors use search, driving 45% of revenue" stat is **[CITATION LAUNDERED]** — no traceable primary source with disclosed methodology exists despite decades of repetition across marketing blogs.
+- **E-Commerce Application**: Treat search as a high-value surface that deserves investment. Optimize search results as a primary conversion surface. But do not assume forcing more users into search will lift conversion — the intent drives the behavior, not the tool. Measure search quality (zero-results rate, refinement rate, exit rate) rather than just search usage.
+- **Replication Status**: The directional finding (search users convert higher) is consistent across all vendor sources. The causal interpretation has never been tested via randomized experiment. All quantitative sources are vendors who sell search tools.
+- **Boundary Conditions**: The 6x figure is Amazon-specific and reflects Amazon's unusually high search usage. Smaller retailers typically see 1.5-3x. The correlation is likely stronger for retailers with large catalogs and weaker for curated/small-catalog stores.
+
+### Finding 20: Zero-Results Pages Are Conversion Killers
+- **Source**: (a) Google Cloud / Harris Poll, 2024, commissioned study (N=13,500, 14 countries); (b) Algolia, 2026, vendor benchmark
+- **Methodology**: (a) Harris Poll survey commissioned by Google Cloud of 13,500+ consumers across 14 countries. (b) Algolia aggregated platform analytics.
+- **Key Finding**: After an unsuccessful search, **80-81% of consumers leave and buy elsewhere** (80% globally, 81% U.S.). **77% avoid sites where they've had search difficulties** in the future. The damage compounds — a single bad search experience has a long-term brand penalty. Algolia's data converges on the same 80%+ abandonment figure independently.
+- **E-Commerce Application**: Zero-results pages must never be dead ends. Implement: (1) typo tolerance and fuzzy matching, (2) synonym recognition, (3) "did you mean?" suggestions, (4) popular products or categories as fallbacks, (5) contact/chat option for complex queries. Every zero-results page should be treated as a conversion emergency.
+- **Replication Status**: Google Cloud study is the strongest source (N=13,500, Harris Poll executed, independent polling firm). Algolia converges independently. Google commissioned the study and sells Cloud search products — the research questions may be framed to emphasize search importance.
+- **Boundary Conditions**: Harris Poll is survey-based (stated behavior, not observed). The 80% figure measures stated intent to leave, not actual measured abandonment. Google funded the study. The directional finding is very likely robust but the specific percentage should be treated as approximate.
+
+### Finding 21: Mobile Search Bar and Filter Placement
+- **Source**: Baymard Institute, 2023-2024, ongoing usability research program (4,400+ usability testing sessions)
+- **Methodology**: Large-scale moderated usability testing across major ecommerce sites with eye-tracking and behavioral observation.
+- **Key Finding**: **61% of ecommerce sites fail to promote important filters** — users cannot find the filters that would help them narrow results. **41% of sites fail on 8 key search query types** (product type, symptom/use case, feature spec, compatibility, thematic, non-product, slang/abbreviation, exact product). Horizontal filter toolbars become problematic with 6+ filter types. On mobile, the most effective pattern is a sticky filter/sort bar at the bottom of the screen.
+- **E-Commerce Application**: Use sticky filter/sort bar at bottom on mobile (within thumb zone). Limit horizontal filter chips to 5-6 visible options with "More filters" expansion. Promote the filters most relevant to the current category — don't show the same generic filters everywhere. Ensure the search box accommodates 27+ characters (NNGroup recommendation).
+- **Replication Status**: Baymard is the most credible independent source in ecommerce UX research. 4,400+ sessions across multiple years and sites. Their methodology (moderated usability testing) is the gold standard for UX research.
+- **Boundary Conditions**: Baymard's research is usability-focused, not conversion-focused. They identify friction points, not causal conversion lifts. The 61% and 41% figures describe prevalence of problems, not measured conversion impact of fixing them.
+
+### Finding 22: Visual Search is Growing, Voice Search is Not Converting
+- **Source**: (a) Google, 2024-2025, platform data; (b) Envive, 2025, vendor analytics; (c) Synup, voice search statistics
+- **Methodology**: (a) Google reported Lens usage data. (b) Envive aggregated visual search analytics across clients. (c) Synup compiled voice search behavior data from Voicebot.ai surveys.
+- **Key Finding**: Visual search is growing rapidly: Google Lens processes **20 billion searches per month**, with **~4 billion shopping-related**. Envive reports visual search users show 30% higher conversion and 22% fewer returns, though this is likely self-selection bias (visual searchers have high purchase intent for specific items). Voice commerce shows high awareness but low purchase completion: **49% use voice for shopping activities** but **only 26% have ever completed a purchase via voice** (Synup/Voicebot.ai). The widely-forecast "30% of transactions by voice by 2025" has demonstrably not materialized.
+- **E-Commerce Application**: For visual-heavy categories (fashion, home decor, furniture): add camera icon to search bar, optimize product images for visual search matching. For voice: optimize for discovery queries ("what's a good gift for...") but do not invest in voice checkout — voice is a discovery channel, not a transaction channel.
+- **Replication Status**: Google Lens data is first-party platform data (credible for usage volume). Envive visual search stats are vendor-sourced (sells visual search analytics). Voice data is survey-based.
+- **Boundary Conditions**: Envive's 30%/22% figures almost certainly reflect self-selection, not causal feature impact. Voice commerce forecasts have consistently overestimated adoption. Visual search is strongest for visually-distinctive products and weakest for commodities.
+
 ---
 
 ## Methodological Notes and Caveats
@@ -209,3 +241,9 @@
 - Pencil & Paper. "Mobile Filter UX Design Patterns & Best Practices."
 - Scheibehenne, B., Greifeneder, R. & Todd, P.M. (2010). "Can There Ever Be Too Many Options?" *Journal of Consumer Research*, 37(3), 409-425.
 - Schmutz, P. et al. (2009). "Cognitive Load in eCommerce Applications." *Advances in Human-Computer Interaction* (Wiley/Hindawi).
+- Google Cloud / Harris Poll (2024). Search Abandonment Study. N=13,500.
+- Algolia (2026). E-Commerce Search and KPIs Statistics.
+- Baymard Institute (2023-2024). Mobile Filtering UX Research.
+- Google (2024-2025). Google Lens Shopping Data.
+- Envive (2025). Visual Search Conversion Statistics.
+- Synup / Voicebot.ai. Voice Search Shopping Statistics.

@@ -49,6 +49,7 @@ PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 - CRITICAL is reserved for ethics gate items that apply regardless
 - The OBSERVATION must reference specific intake details ("Since this is a $200+ considered purchase for professionals who..." not "This is a best practice")
 - Skip principles that don't apply to this page type, audience, or product
+- When a recommendation involves specific implementation values (hex codes, pixel sizes, ARIA attributes, regulatory requirements, CSS patterns), include them directly in the step's What field. The builder cannot access reference docs — all implementation specifics must be inlined in the plan.
 
 After generating synthetic findings, proceed to Step 2 using them exactly as you would audit findings.
 

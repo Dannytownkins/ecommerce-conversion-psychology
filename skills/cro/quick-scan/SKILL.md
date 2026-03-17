@@ -43,7 +43,16 @@ Auto-select first cluster from page-type table:
 | Pricing/Plans | trust-conversion |
 | Post-purchase | audience-journey |
 
-Override with --cluster flag. If no flag, offer: "I'll scan [cluster]. Want a different focus?"
+Override with --cluster flag. If no flag, offer the user a choice with context:
+
+"I'll scan **[cluster name]** ([brief description]). Other options:
+- `--cluster visual-cta` — CTA design, color psychology, eye tracking, product video
+- `--cluster trust-conversion` — Trust signals, social proof, checkout, pricing, biometric auth, cookie consent
+- `--cluster context-platform` — Mobile UX, cognitive load, performance, search & filter, cookie consent
+- `--cluster audience-journey` — Personalization, cross-cultural, post-purchase, social commerce, push notifications
+
+Or run `/cro:audit [same-input]` for full multi-cluster coverage."
+
 In automated mode (no human interaction), use default without asking.
 </cluster_selection>
 
@@ -72,7 +81,7 @@ Format as natural language with actionable recommendations:
 2. [Finding + specific recommendation]
 3. [Finding + specific recommendation]
 
-Want a full audit? Run `/cro:audit [same-input]`
+Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for full multi-cluster coverage.
 </output>
 
 <ethics>

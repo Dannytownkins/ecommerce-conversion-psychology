@@ -3,7 +3,7 @@
 
 ## Research Summary
 
-**Total Findings**: 20 cited findings with specific data points
+**Total Findings**: 25 cited findings with specific data points
 
 **Top 3 Most Impactful Findings for E-Commerce Layout Design:**
 
@@ -217,6 +217,56 @@
 
 ---
 
+### Finding 21: Usage/Tutorial Videos Outperform Beauty Shots for Purchase Intent
+- **Source**: Cheng et al., 2022, Frontiers in Psychology (PMC), peer-reviewed
+- **Methodology**: Experimental study examining the effect of product video type (usage/tutorial vs appearance/beauty) on purchase intention, with perceived diagnosticity and mental imagery as mediators. Product rating tested as moderator.
+- **Key Finding**: Usage/tutorial videos improved purchase intention **more than appearance/beauty videos**, mediated by perceived diagnosticity (the video helped users evaluate the product) and mental imagery (the video helped users imagine using the product). The effect was moderated by product rating — **at low ratings, video type had no significant effect** (suggesting that video cannot overcome negative social proof).
+- **E-Commerce Application**: Prioritize "in-use" demonstration videos over polished brand/beauty content. Show the product being used, unboxed, assembled, or worn — not just glamour shots. For products with low ratings, fix the ratings before investing in video content. Unboxing videos show strong directional results (+45% add-to-cart in vendor data, though unverified).
+- **Replication Status**: Peer-reviewed in Frontiers in Psychology. Measures purchase intention, not actual conversion. No direct replication in an ecommerce purchase context.
+- **Boundary Conditions**: Measures purchase intention, not actual purchase behavior. The intention-behavior gap is real and potentially large. Product category likely moderates — usage video is more impactful for complex/functional products than for simple/aesthetic ones.
+
+---
+
+### Finding 22: Vertical Video (9:16) Outperforms Horizontal on Mobile
+- **Source**: Mulier, Slabbinck & Vermeir, 2021, Journal of Interactive Marketing, Vol. 55, pp. 1-15, peer-reviewed (Ghent University)
+- **Methodology**: Large-scale field study on Facebook advertising examining vertical vs horizontal video format effects on consumer interest, engagement, and processing fluency across generational cohorts.
+- **Key Finding**: Vertical video (9:16) increases consumer interest via **processing fluency** — the format matches how users naturally hold their phone, reducing cognitive effort. Gen Z processes vertical video most fluently. **[DOMAIN CAVEAT: This study tested Facebook video ADS, not product page video. The application to product detail pages is inferred, not directly measured.]** Vendor data (Zebracat) reports vertical video achieves **76% completion rate vs 54% for horizontal** on mobile, though this is unverified.
+- **E-Commerce Application**: Create mobile product videos in 9:16 vertical format. This is especially important for social-commerce-originated traffic (TikTok, Instagram Reels, YouTube Shorts) where users are already conditioned to vertical video. For desktop, provide both formats or use responsive video players.
+- **Replication Status**: Peer-reviewed in a top marketing journal — strongest video format evidence in this document. However, the study tested advertising, not product pages. The processing fluency mechanism is plausible for PDPs but unverified.
+- **Boundary Conditions**: Study context is social media advertising, not product detail pages. Gen X and Y showed negative effects from vertical format — generational targeting may be needed. Desktop users may prefer horizontal.
+
+---
+
+### Finding 23: The "Mere Presence" Effect — Video Option Lifts Conversion Even When Unwatched
+- **Source**: VWO / Treepodia, multivariate test
+- **Methodology**: VWO multivariate A/B test comparing product pages with a video option vs without, measuring conversion regardless of whether visitors actually watched the video.
+- **Key Finding**: Visitors with the **option to watch video** (whether they watched it or not) showed **27-46% higher conversion** than visitors with no video option. This suggests video thumbnails alone function as a quality and transparency signal — the mere presence of video communicates "this seller has nothing to hide." The range (27-46%) represents floor-to-ceiling across multiple tests.
+- **E-Commerce Application**: Even if video production resources are limited, having ANY video option (even a simple 30-second product overview) may lift conversion through signaling. Prioritize video thumbnails in the product gallery — even users who never click "play" may be influenced by the presence of the option. A clear play button and compelling thumbnail are as important as the video content itself.
+- **Replication Status**: VWO is a vendor (A/B testing platform) with publication bias for positive results. No methodology, sample size, or baseline conversion rate disclosed. The 27-46% range is suspiciously wide. Treat as directional evidence, not a reliable effect size.
+- **Boundary Conditions**: Vendor data with no disclosed methodology. The "mere presence" mechanism is plausible (signaling theory) but the specific conversion lift numbers should not be cited as reliable. The effect likely varies by product category and baseline page quality.
+
+---
+
+### Finding 24: Short Videos Win — Under 60 Seconds, Hook in First 3 Seconds
+- **Source**: (a) Wistia, 2025, "State of Video" report; (b) Videowise, 2026, shoppable video platform data
+- **Methodology**: (a) Wistia analyzed engagement patterns across videos hosted on their platform. (b) Videowise tracked view rates for muted autoplay and tap-to-play implementations.
+- **Key Finding**: Overall video engagement dropped **7% in 2024**; short-form video (under 5 min) dropped **10%** (Wistia). Despite the decline, shorter videos still achieve the highest engagement. The optimal product video length is **30-60 seconds** for a feature summary near Add to Cart. Muted autoplay achieves **40-60% view rates** on mobile (Videowise). **Autoplay WITH SOUND is universally negative** — increases bounce by 25% (Videowise). The first 3 seconds are critical — vendor data suggests 67% swipe away if not engaged immediately.
+- **E-Commerce Application**: Place a 30-60 second feature summary video near the Add to Cart button. Use muted autoplay with visible sound-on/restart controls. Hook the viewer in the first 3 seconds — start with the product in use, not a logo or brand intro. For longer content (tutorials, reviews), use expandable sections below the fold.
+- **Replication Status**: Wistia is a large-scale video hosting platform — their engagement data is extensive but vendor-sourced. Videowise is a vendor selling shoppable video tools. The "67% swipe away in 3 seconds" figure has no primary source attribution.
+- **Boundary Conditions**: Engagement is declining across the board — video fatigue is real. The 30-60s recommendation is general, not product-category-specific. Autoplay behavior varies by browser and OS (Safari restricts autoplay more aggressively). The first-3-seconds claim is vendor data without methodology.
+
+---
+
+### Finding 25: Video Placement in Gallery is Critical — Hidden Videos Are Worthless
+- **Source**: (a) Baymard Institute, 2019, "Where and How to Embed Product Page Videos (35% Get It Wrong)"; (b) Goodvidio/Medium, practitioner guidance
+- **Methodology**: (a) Baymard: Usability testing and benchmark analysis of video placement across major ecommerce sites. (b) Goodvidio: Practitioner analysis of video placement patterns.
+- **Key Finding**: Baymard found that product videos are **"worthless" if users can't find them** — placement and discoverability substantially impact whether videos get watched. **35% of major ecommerce sites** implement video placement poorly (hidden in separate tabs, below the fold, or requiring extra clicks). Best practice: embed video as the **2nd or 3rd image in the main product gallery** with a clear play button overlay and compelling thumbnail. This connects to Finding 16 (27% of users overlook tabbed content entirely) — a video hidden behind a "Videos" tab may never be seen.
+- **E-Commerce Application**: Place video in the main product image gallery, not in a separate tab. Use position 2 or 3 (after the hero image). Add a clear play icon overlay on the thumbnail. Do not rely on a separate "Watch Video" text link below the gallery. For mobile, ensure the video thumbnail is swipeable within the image carousel.
+- **Replication Status**: Baymard is the most credible independent source. Their usability testing methodology is well-established. Goodvidio is practitioner guidance consistent with Baymard's findings.
+- **Boundary Conditions**: Baymard's research is from 2019 — video placement conventions may have evolved. The "35% get it wrong" figure is about placement quality, not measured conversion impact of placement changes. No A/B test comparing gallery-embedded vs tab-hidden video with conversion as outcome has been published.
+
+---
+
 ## Cross-Cutting Themes
 
 ### When Each Scan Pattern Applies
@@ -276,3 +326,9 @@ Every finding in this document is context-dependent. Key variables that shift re
 22. Springer - Visual Hierarchy and Viewing Behavior
 23. UX Planet - Z-Pattern
 24. UX Movement - Right CTA Placement
+25. Cheng et al. (2022) - Frontiers in Psychology (PMC)
+26. Mulier, Slabbinck & Vermeir (2021) - Journal of Interactive Marketing
+27. VWO / Treepodia - Video Mere Presence Effect
+28. Wistia (2025) - State of Video Report
+29. Videowise (2026) - Shoppable Video Benchmarks
+30. Baymard Institute (2019) - Product Page Video Placement

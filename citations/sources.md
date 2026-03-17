@@ -409,3 +409,152 @@ To check a citation, ask Claude Code:
 | Sources | Smaller screens shift to selective browsing | Wang et al. (2024), Information & Management | URL not found |
 | Sources | Pop-up notifications reduce review effectiveness | Park & McCallister (2023), J. Student Research | https://www.jsr.org/hs/index.php/path/article/view/4887 |
 | Sources | CRO benchmarks tool | Blend Commerce (2025) | https://benchmarks.blendcommerce.com/ |
+
+## page-performance-psychology.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 13 | Dynamic animation reduces perceived wait (Wang 2025) | MDPI JTAER | https://www.mdpi.com/0718-1876/20/4/306 |
+| 13 | Ribbed progress bars reduce perceived duration (Harrison 2010) | ACM CHI | https://dl.acm.org/doi/10.1145/1753326.1753556 |
+| 14 | Skeleton shimmer direction (Chung 2017) | UX Collective | https://uxdesign.cc/what-you-should-know-about-skeleton-screens-a820c45a571a |
+| 14 | Skeleton shimmer practitioner study (Hofman) | erwinhofman.com | https://www.erwinhofman.com/blog/skeleton-loading-and-perceived-performance-cro/ |
+| 14 | Multi-stage loading patterns (Yin 2025) | MDPI Applied Sciences | https://www.mdpi.com/2076-3417/15/12/6717 |
+| 15 | Skeleton fidelity (Kadlec 2020) | timkadlec.com | https://timkadlec.com/remembers/2020-11-02-skeleton-screens/ |
+| 15 | Skeleton screens 101 (NNGroup 2023) | NNGroup | https://www.nngroup.com/articles/skeleton-screens/ |
+| 16 | More accessible skeletons (Roselli 2020) | adrianroselli.com | https://adrianroselli.com/2020/11/more-accessible-skeletons.html |
+
+## color-psychology.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 21 | Dark mode logo color adaptation (Gazit 2025) | Ergonomics (Tandfonline) | https://www.tandfonline.com/doi/full/10.1080/00140139.2025.2483451 |
+| 21 | Material Design dark theme guidelines | Google Material Design | https://m2.material.io/design/color/dark-theme.html |
+| 21 | Dark mode logo rendering problems (Email on Acid 2022) | Email on Acid | https://www.emailonacid.com/blog/article/email-development/dark-mode-logo-problems/ |
+| 21 | Dark mode Trustbadge (Trusted Shops 2023) | Trusted Shops | https://www.trustedshops.com/newsroom/enhance-your-websites-trust-with-the-new-dark-mode-setting-for-the-trustbadge |
+| 22 | Light vs dark reading performance (Piepenbrock 2013) | Ergonomics / PubMed | https://pubmed.ncbi.nlm.nih.gov/23654206/ |
+| 22 | Dark mode cognitive performance (Ergonomics 2025) | Tandfonline | https://www.tandfonline.com/doi/full/10.1080/00140139.2025.2483451 |
+| 22 | Dark mode workload (ETRA 2025) | ACM Digital Library | https://dl.acm.org/doi/10.1145/3715669.3725879 |
+| 22 | Dark mode systematic review (Muangsrinoon 2024) | IJCESEN | https://www.ijcesen.com/index.php/ijcesen/article/view/1415 |
+
+## mobile-conversion.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 21 | Dark mode poll results (Android Authority 2024) | Android Authority | https://www.androidauthority.com/dark-mode-poll-results-1090716/ |
+| 21 | Dark mode user issues (NNGroup 2023) | NNGroup | https://www.nngroup.com/articles/dark-mode-users-issues/ |
+| 21 | Terra dark mode case study | web.dev | https://web.dev/case-studies/terra-dark-mode |
+| 22 | WebAIM Million 2025 annual report | WebAIM | https://webaim.org/projects/million/ |
+| 23 | Digital accessibility lawsuit report (UsableNet 2024) | UsableNet | https://blog.usablenet.com/2024-digital-accessibility-lawsuit-report-relased-insights-for-2025 |
+| 23 | Accessibility overlay user experience (ASSETS 2024) | ACM Digital Library | https://dl.acm.org/doi/10.1145/3663548.3675650 |
+| 23 | Overlay fact sheet | OverlayFactSheet.com | https://overlayfactsheet.com/en/ |
+| 24 | WCAG 2.2 target size enhanced | W3C | https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html |
+| 24 | WCAG 2.2 target size minimum | W3C | https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html |
+
+## search-and-filter-ux.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 19 | E-commerce search and KPIs statistics (Algolia 2026) | Algolia | https://www.algolia.com/blog/ecommerce/e-commerce-search-and-kpis-statistics |
+| 19 | On-site search conversion rate statistics (Opensend) | Opensend | https://www.opensend.com/post/on-site-search-conversion-rate-statistics-ecommerce |
+| 20 | Search abandonment in retail (Google Cloud 2024) | Google Cloud Blog | https://cloud.google.com/blog/topics/retail/new-research-on-search-abandonment-in-retail |
+| 21 | Promoting product filters (Baymard) | Baymard Institute | https://baymard.com/blog/promoting-product-filters |
+| 21 | Ecommerce search query types (Baymard) | Baymard Institute | https://baymard.com/blog/ecommerce-search-query-types |
+| 22 | Google Lens shopping data | Google Blog | https://blog.google/products-and-platforms/products/shopping/visual-search-lens-shopping/ |
+| 22 | Voice search statistics (Synup) | Synup | https://www.synup.com/en/voice-search-statistics |
+
+## post-purchase-psychology.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 13 | Email SMS push marketing ecommerce (Omnisend 2025) | Omnisend | https://www.omnisend.com/blog/email-sms-push-marketing-ecommerce-2025/ |
+| 13 | Abandoned cart push notifications (MobiLoud 2025) | MobiLoud | https://www.mobiloud.com/blog/abandoned-cart-push-notifications |
+| 14 | Push notification frequency and app user behavior (Wohllebe 2021) | ResearchGate | https://www.researchgate.net/publication/351932011_Mobile_apps_in_retail_Effect_of_push_notification_frequency_on_app_user_behavior |
+| 14 | Reuters Institute Digital News Report 2025 | Reuters Institute | https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2025/walking-notification-tightrope-how-engage-audiences-while-avoiding |
+| 15 | Abandoned cart benchmarks (Klaviyo 2024) | Klaviyo | https://www.klaviyo.com/blog/abandoned-cart-benchmarks |
+| 15 | SMS cart recovery guide (CartBoss) | CartBoss | https://www.cartboss.io/blog/improve-cart-recovery-with-sms-the-ultimate-guide-to-better-results-and-profits/ |
+| 16 | Push notification benchmarks 2025 (Airship) | Airship | https://www.airship.com/resources/benchmark-report/mobile-app-push-notification-benchmarks-for-2025/ |
+| 16 | Push notification benchmarks (Pushwoosh) | Pushwoosh | https://www.pushwoosh.com/blog/push-notification-benchmarks/ |
+
+## eye-tracking-and-scan-patterns.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 21 | Usage vs appearance videos and purchase intention (Cheng 2022) | PMC/Frontiers in Psychology | https://pmc.ncbi.nlm.nih.gov/articles/PMC8891234/ |
+| 22 | Vertical video processing fluency (Mulier 2021) | Journal of Interactive Marketing / SAGE | https://journals.sagepub.com/doi/abs/10.1016/j.intmar.2020.12.002 |
+| 23 | Video mere presence effect (VWO/Treepodia) | VWO Blog | https://vwo.com/blog/video-marketing-for-business/ |
+| 24 | State of Video 2025 (Wistia) | Wistia | https://wistia.com/learn/marketing/video-marketing-statistics |
+| 24 | Shoppable video guide (Videowise 2026) | Videowise | https://videowise.com/blog/shoppable-video-complete-guide |
+| 25 | Product page video placement (Baymard 2019) | Baymard Institute | https://baymard.com/blog/embedding-product-page-videos |
+
+## checkout-optimization.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 21 | WCAG 2.2 accessibility standards | W3C | https://www.w3.org/WAI/WCAG22/Understanding/ |
+| 21 | More accessible skeletons / ARIA patterns (Roselli 2020) | adrianroselli.com | https://adrianroselli.com/2020/11/more-accessible-skeletons.html |
+| 22 | Cart recovery cascade — cross-reference | post-purchase-psychology.md | See Finding 15 |
+
+## social-proof-patterns.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 21 | Trust in social commerce meta-analysis (Wang 2022) | SAGE Open | https://journals.sagepub.com/doi/10.1177/21582440221091262 |
+| 21 | Checkout button and impulse buying (Han 2023) | J. Retailing and Consumer Services | https://www.sciencedirect.com/science/article/abs/pii/S0969698923001789 |
+
+## cta-design-and-placement.md (v2.1 additions)
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 22 | WCAG 2.2 touch target requirements — cross-reference | mobile-conversion.md | See Finding 24 |
+
+## cookie-consent-and-compliance.md
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 1 | Informed consent field experiments (Utz 2019) | ACM CCS / arXiv | https://arxiv.org/abs/1909.02638 |
+| 1 | Dark patterns after GDPR (Nouwens 2020) | ACM CHI | https://dl.acm.org/doi/fullHtml/10.1145/3313831.3376321 |
+| 1 | Cookie consent manipulation (Bauer 2021) | Computers in Human Behavior | https://www.sciencedirect.com/science/article/abs/pii/S0747563221000510 |
+| 2 | Cookie consent field experiments (Utz 2019) | ACM CCS | https://arxiv.org/abs/1909.02638 |
+| 2 | Cookie preferences interaction (Habib 2022) | ACM CHI | https://dl.acm.org/doi/10.1145/3491102.3501985 |
+| 2 | Cookie banner design best practice (Cookie-Script 2024) | Cookie-Script | https://cookie-script.com/blog/cookie-banner-design-best-practice |
+| 3 | EDPB Cookie Banner Taskforce Report 2023 | EDPB | https://www.edpb.europa.eu/our-work-tools/our-documents/other/report-work-undertaken-cookie-banner-taskforce_en |
+| 3 | UK ICO cookie banner guidance | ICO | https://ico.org.uk/media2/migrated/4027811/cookie-banner-concerns.pdf |
+| 4 | Cookie behaviour study (Advance Metrics 2023) | Advance Metrics | https://www.advance-metrics.com/en/blog/cookie-behaviour-study/ |
+| 4 | Cookie consent benchmarks (etracker) | etracker | https://www.etracker.com/en/cookie-consent-benchmarks/ |
+| 5 | Cross-country GDPR cookie banner analysis (CHI 2025) | ACM CHI | https://dl.acm.org/doi/10.1145/3706598.3713648 |
+| 6 | Bright patterns in cookie consent (Bielova 2024) | USENIX Security | https://www.usenix.org/conference/usenixsecurity24/presentation/bielova |
+| 7 | US-UK cookie consent usability (Bouma-Sims 2023) | ACM CHI | https://dl.acm.org/doi/10.1145/3544548.3580725 |
+| 8 | Consent conversion rate optimization (Secure Privacy 2024) | Secure Privacy | https://secureprivacy.ai/blog/consent-conversion-rate-optimization-guide |
+
+## biometric-and-express-checkout.md
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 1 | Conversion impact of 50+ payment methods (Stripe 2024-2025) | Stripe Blog | https://stripe.com/blog/testing-the-conversion-impact-of-50-plus-global-payment-methods |
+| 1 | Shop Pay checkout (Shopify) | Shopify Blog | https://www.shopify.com/blog/shop-pay-checkout |
+| 1 | Apple Pay for business (Checkout.com 2025) | Checkout.com | https://www.checkout.com/blog/apple-pay-for-business |
+| 2 | Online Authentication Barometer (FIDO 2024) | FIDO Alliance | https://fidoalliance.org/wp-content/uploads/2024/10/Barometer-Report-2024-Oct-29.pdf |
+| 2 | Mastercard biometrics report (2017) | Mastercard | https://www.mastercard.us/content/dam/public/mastercardcom/na/us/en/smb/other/biometrics_updated_030619.pdf |
+| 2 | Password statistics (NordPass/GlobeNewsWire 2024) | GlobeNewsWire | https://www.globenewswire.com/news-release/2024/05/21/2885556/0/en/People-have-around-170-passwords-on-average-study-shows.html |
+| 3 | E-commerce authentication benchmark (Corbado 2026) | Corbado | https://www.corbado.com/blog/ecommerce-authentication |
+| 4 | Biometric payment in retailing (Zarco 2024) | J. Retailing and Consumer Services | https://www.sciencedirect.com/science/article/pii/S0969698924000857 |
+| 4 | Consumer trust in biometrics (Aware 2024) | Aware Inc. | https://www.aware.com/press-release/new-consumer-report-from-aware-reveals-widespread-trust-in-biometrics/ |
+| 5 | Cart abandonment rate statistics (Baymard 2025) | Baymard Institute | https://baymard.com/lists/cart-abandonment-rate |
+| 7 | Biometric payments survey (PYMNTS/AWS 2023) | PYMNTS | https://www.pymnts.com/news/biometrics/2023/51percent-of-online-buyers-used-biometrics-to-make-a-purchase/ |
+| 8 | Passkey Index 2025 (FIDO Alliance) | FIDO Alliance | https://fidoalliance.org/passkey-index-2025/ |
+
+## social-commerce-psychology.md
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 1 | Trust in social commerce meta-analysis (Wang 2022) | SAGE Open | https://journals.sagepub.com/doi/10.1177/21582440221091262 |
+| 1 | Checkout button and impulse buying (Han 2023) | J. Retailing and Consumer Services | https://www.sciencedirect.com/science/article/abs/pii/S0969698923001789 |
+| 1 | TikTok Shop trust transfer Indonesia (T&F 2023) | Cogent Social Sciences | https://www.tandfonline.com/doi/full/10.1080/23311886.2023.2292759 |
+| 2 | Impulse buying on TikTok (Frontiers 2024) | Frontiers in Communication | https://www.frontiersin.org/journals/communication/articles/10.3389/fcomm.2024.1470327/full |
+| 4 | Social proof and impulse buying on short-form video (ScienceDirect 2024) | J. Retailing and Consumer Services | https://www.sciencedirect.com/science/article/abs/pii/S0969698924004958 |
+| 5 | Herd effect in live commerce (J. Internet Commerce 2025) | Taylor & Francis | https://www.tandfonline.com/doi/full/10.1080/15332861.2025.2597037 |
+| 6 | Gen Z commerce report (Envision Horizons 2024) | Envision Horizons | https://www.envisionhorizons.com/will-tiktok-shop-dominate-social-commerce-in-2024/ |
+| 6 | Consumer purchasing behavior (NuVoodoo 2025) | NuVoodoo | https://nuvoodoo.com/2025/02/06/four-in-five-gen-zs-and-seven-in-10-millennials-are-now-shopping-at-least-occasionally-on-social-media-platforms-especially-tiktok-youtube-facebook-instagram/ |
+| 7 | TikTok Shop statistics (Marketing LTB 2025) | Marketing LTB | https://marketingltb.com/blog/statistics/tiktok-shop-statistics/ |
+| 7 | TikTok shopping statistics (Capital One Shopping) | Capital One Shopping | https://capitaloneshopping.com/research/tiktok-shopping-statistics |
+| 3 | eMarketer US social commerce forecast (Dec 2025) | eMarketer | https://www.emarketer.com/press-releases/tiktok-shop-makes-up-nearly-20-of-social-commerce-in-2025/ |

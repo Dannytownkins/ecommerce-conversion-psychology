@@ -74,9 +74,9 @@ Select 1-3 clusters based on page type:
 
 Cluster reference files:
 - visual-cta: cta-design-and-placement.md, color-psychology.md, eye-tracking-and-scan-patterns.md
-- trust-conversion: trust-and-credibility.md, social-proof-patterns.md, checkout-optimization.md, pricing-psychology.md
-- context-platform: cognitive-load-management.md, mobile-conversion.md, mobile-conversion-psychology-principles.md, page-performance-psychology.md, search-and-filter-ux.md
-- audience-journey: personalization-psychology.md, cross-cultural-considerations.md, post-purchase-psychology.md
+- trust-conversion: trust-and-credibility.md, social-proof-patterns.md, checkout-optimization.md, pricing-psychology.md, biometric-and-express-checkout.md, cookie-consent-and-compliance.md
+- context-platform: cognitive-load-management.md, mobile-conversion.md, mobile-conversion-psychology-principles.md, page-performance-psychology.md, search-and-filter-ux.md, cookie-consent-and-compliance.md
+- audience-journey: personalization-psychology.md, cross-cultural-considerations.md, post-purchase-psychology.md, social-commerce-psychology.md
 
 Override rules:
 - Non-Western market → add audience-journey

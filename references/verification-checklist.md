@@ -11,3 +11,6 @@ After applying conversion guidance, verify every recommendation against this che
 - [ ] Price presentation is transparent — all fees visible before payment
 - [ ] Social proof is specific and authentic (not vague or fabricated)
 - [ ] Search and filters are visible, functional, and recover gracefully from zero-result states (category/collection pages)
+- [ ] Cookie consent banner: does not block primary CTA on mobile; provides equal Accept/Reject (GDPR markets)
+- [ ] Express checkout / digital wallet buttons visible early in checkout flow (above email field)
+- [ ] Dark mode: CTA, trust badges, and product images pass WCAG AA contrast in both themes (if prefers-color-scheme is supported)

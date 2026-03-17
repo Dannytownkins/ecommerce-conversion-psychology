@@ -1,7 +1,7 @@
 <!-- RESEARCH_DATE: 2026-03-09 -->
 # CTA Design & Placement in E-Commerce: Research Findings
 
-**Total Findings**: 21
+**Total Findings**: 22
 **Research Date**: 2026-03-09
 **Domain**: Call-to-Action button design, copy, placement, and optimization for e-commerce conversion
 
@@ -266,6 +266,17 @@
 - **E-Commerce Application**: 24px is the absolute minimum for any interactive element — including small "X" close buttons, quantity selectors, and color swatches. Primary CTAs should far exceed this minimum. For "Add to Cart" buttons, target 44-60px height minimum. For mobile, Apple's 44pt and Google's 48dp recommendations should be treated as the practical minimum, not WCAG's 24px floor.
 - **Replication Status**: This is a formal W3C standard, not an experimental finding. It is legally binding in jurisdictions that reference WCAG 2.2.
 - **Boundary Conditions**: The 24px minimum applies per-element. Adjacent small targets that collectively form a larger interactive area may still fail if individual targets are too small. Inline text links within sentences are exempt from this criterion.
+
+---
+
+### Finding 22: WCAG Touch Target Requirements for CTAs
+
+- **Source**: Cross-reference to mobile-conversion.md Finding 24; (a) W3C WCAG 2.2; (b) Apple HIG; (c) Google Material Design
+- **Methodology**: Standards specifications and platform guidelines. See mobile-conversion.md Finding 24 for full context on accessibility implications.
+- **Key Finding**: WCAG 2.2 SC 2.5.5 (AAA) requires **44x44 CSS pixels** minimum for touch targets; SC 2.5.8 (AA) requires **24x24 CSS pixels**. Apple HIG recommends **44pt**, Google Material Design recommends **48dp**. For ecommerce CTAs specifically, **48px minimum** is the recommended floor, with **60px+ for primary conversion buttons** (Add to Cart, Buy Now, Checkout, Pay). This builds on Finding 5 (touch target minimums) and Finding 21 (WCAG 2.5.8) with additional context: the 4,187+ ADA accessibility lawsuits in 2024, with 69-77% targeting ecommerce, make CTA touch target compliance a legal exposure, not just a design preference.
+- **E-Commerce Application**: Audit all CTA buttons on mobile for minimum 48px touch target height. Primary conversion CTAs should be 60px+ in height. Ensure adequate spacing between adjacent touch targets (minimum 8px gap). Sticky bottom CTAs are especially important — they must be large enough for confident one-handed thumb tapping. This is a mechanical fix requiring no A/B testing. **Cross-reference:** See mobile-conversion.md Findings 22-24 for full accessibility context including lawsuit data and platform-specific error rates.
+- **Replication Status**: WCAG is the international standard. Platform guidelines are consistent. Finding 5 in this document already established Fitts's Law and touch target principles — this finding extends it with accessibility compliance context.
+- **Boundary Conditions**: No peer-reviewed study directly measures the conversion impact of specific CTA touch target sizes. The legal exposure is US-specific (ADA) with EU parallel (EAA enforceable June 2025).
 
 ---
 

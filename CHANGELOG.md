@@ -1,6 +1,58 @@
 # Changelog
 
-## 2.1.0 — 2026-03-12
+## 2.1.0 — 2026-03-17
+
+### Mobile CRO Expansion — 9 New Topics, 4-Audit Verified
+
+#### New Reference Docs (3)
+- `cookie-consent-and-compliance.md` — 9 findings. Banner architecture, placement, GDPR compliance, consent fatigue, cognitive load. **Tier 1 evidence** (multiple large-N peer-reviewed field experiments including Utz 2019 on a real ecommerce site with 82,000+ users).
+- `biometric-and-express-checkout.md` — 8 findings. Digital wallets, passkeys, password friction, biometric speed and trust, generational divide. **Tier 2 evidence** (Stripe A/B testing is methodologically strongest).
+- `social-commerce-psychology.md` — 7 findings. Trust transfer, impulse mechanics, platform comparisons, herd effect, cross-generational targeting. **Tier 2/3 evidence** (purchase-intention vs actual-behavior gap; cultural boundary conditions).
+
+#### Expanded Reference Docs (6 existing docs, ~43 new findings)
+- `page-performance-psychology.md` — +4 findings (skeleton animation quality, shimmer direction, fidelity requirements, accessibility). Corrected NNGroup threshold and flagged Akamai citation.
+- `color-psychology.md` — +2 findings (dark mode CTA/trust badge contrast, dark mode reading performance and sentiment).
+- `mobile-conversion.md` — +4 findings (dark mode adoption, WCAG failure rates with ecommerce-platform-specific data, accessibility lawsuits, touch targets and font size).
+- `search-and-filter-ux.md` — +4 findings (search-user correlation caveat, zero-results abandonment, mobile filter placement, visual/voice search).
+- `post-purchase-psychology.md` — +4 findings (automated push vs blasts, notification fatigue with Wohllebe N=17,500, multi-channel cart recovery cascade, rich media push).
+- `eye-tracking-and-scan-patterns.md` — +5 findings (usage vs beauty videos, vertical video, mere presence effect, short-form engagement, gallery placement).
+
+#### Cross-Reference Findings (3)
+- `checkout-optimization.md` — +2 findings (accessible checkout design, cart recovery channel cross-reference from post-purchase).
+- `social-proof-patterns.md` — +1 finding (social commerce trust transfer cross-reference).
+- `cta-design-and-placement.md` — +1 finding (WCAG touch target requirements cross-reference).
+
+#### Routing & Infrastructure
+- Added 3 new docs to cluster routing: cookie-consent → context-platform + trust-conversion; biometric → trust-conversion; social-commerce → audience-journey.
+- Added 3 canonical section slugs: cookie-consent, express-checkout, social-commerce.
+- Updated slug lists in all 3 workflow files (audit, quick-scan, compare).
+- Quick-scan now shows all cluster options with descriptions when prompting user.
+- Quick-scan output suggests other clusters and full audit as next steps.
+- Planner prompt updated to require inlining implementation specifics (hex codes, ARIA attributes, regulatory requirements) since builder cannot access reference docs.
+- Verification checklist expanded from 9 to 12 items (cookie consent, express checkout, dark mode contrast).
+
+#### Evidence Quality
+- All 9 topics verified through 4-audit triangulation: Critical Audit (bias/methodology), Verification Audit (87 claims, structured review), Agent Verification (URL-level source checking), Sonnet Audit (54 claims, direct URL fetching).
+- 8 factual errors corrected in source data before writing (wrong authors, wrong journals, wrong stats, wrong thresholds, citation laundering flags).
+- No ecommerce-specific RCTs exist across any of the 9 topics (or the existing 15 reference docs). This is a structural feature of the field, not a gap we can fill. All conversion evidence is directional.
+- Evidence quality tiers applied: Tier 1 (cite with confidence), Tier 2 (cite with caveats), Tier 3 (directional only), Tier 4 (do not cite — removed).
+- Cross-reference report documenting all audit findings at `docs/audit files/cross-reference-report.md`.
+
+#### Known Limitations
+- Quick-scan defaults to one cluster; new topics only surface via --cluster override or full audit.
+- Social commerce reaches product pages only via cross-reference in social-proof-patterns.md, not the full standalone doc.
+- Push notification cart recovery reaches cart pages only via cross-reference in checkout-optimization.md.
+- Dark mode findings split across visual-cta and context-platform clusters; cart pages miss mobile adoption context.
+- No A/B comparison mechanism between v2.0 and v2.1 audit quality.
+
+#### Totals
+- 18 domain reference files (was 15) + 7 principle/operational files
+- ~272 findings in reference library (was ~229)
+- 3 new standalone docs, 9 existing docs modified, 5 workflow/skill files updated
+
+---
+
+## 2.0.1 — 2026-03-12
 
 ### Reference Library Audit & Accuracy Pass
 

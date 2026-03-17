@@ -3,7 +3,7 @@
 
 ## Summary
 
-**Total Findings**: 20 cited findings with specific data points
+**Total Findings**: 22 cited findings with specific data points
 
 **Research Integrity Note**: Color psychology is the most myth-laden domain in conversion optimization. The majority of "color X increases conversions by Y%" claims are actually measuring contrast effects, novelty effects, or visual hierarchy changes -- not color per se. This document separates robust findings from noise.
 
@@ -311,6 +311,28 @@
 
 ---
 
+### Finding 21: Dark Mode Disrupts CTA and Trust Badge Contrast
+
+- **Source**: (a) W3C WCAG 2.1 AA / WebAIM Contrast Checker; (b) Google Material Design Dark Theme Guidelines; (c) Gazit et al., 2025, Ergonomics (Tandfonline); (d) Email on Acid, 2022; (e) Trusted Shops, 2023
+- **Methodology**: (a) Standards reference: WCAG 2.0 AA requires 4.5:1 for normal text, 3:1 for large text in both light and dark themes. (b) Guidelines synthesis. (c) Lab experiment: N=31 (lab) + N=89 (online), participants adjusted logo colors for dark backgrounds; mean L* decrease of 7.74 for bright colors, increase of 11.65 for dark colors. (d,e) Practitioner analysis of rendering issues in dark mode email/web contexts.
+- **Key Finding**: Dark mode breaks CTA visibility, trust badge legibility, and brand logo rendering unless specifically adapted. Material Design recommends **dark grey (#121212) not pure black** and **desaturating accent colors to the 200 tonal range** (~20 points). Logos with non-transparent backgrounds display as white rectangles; black logos on transparent backgrounds become invisible. Trust badges (Norton, McAfee, Trustpilot) designed for white backgrounds lose contrast and credibility on dark surfaces. **Gazit et al. found users instinctively adjust bright colors darker and dark colors brighter** for dark backgrounds — suggesting current light-mode designs need systematic color adaptation, not just inversion.
+- **E-Commerce Application**: Provide SVG trust badges with transparent backgrounds and use CSS `prefers-color-scheme` to swap assets between themes. Test all CTA buttons in both light and dark mode — a green "Add to Cart" that pops on white may blend or appear muted on dark backgrounds. Desaturate accent colors for dark mode. Validate all text meets WCAG 4.5:1 contrast in both themes. Red (traditionally urgency/sale) becomes less prominent against dark backgrounds.
+- **Replication Status**: WCAG is standards reference. Material Design is guidelines. Gazit 2025 is peer-reviewed but small-N (N=31 lab). Email on Acid/Trusted Shops are practitioner evidence. No controlled A/B study measures the conversion impact of dark-mode-adapted vs non-adapted CTAs or trust badges.
+- **Boundary Conditions**: No ecommerce-specific conversion RCT for dark mode exists. All contrast findings are about perception and compliance, not measured checkout conversion. Cultural color associations (Finding 15) may also behave differently in dark mode — untested.
+
+---
+
+### Finding 22: Dark Mode Affects Reading Performance and Sentiment — Context Determines Which Mode is Better
+
+- **Source**: (a) Piepenbrock, Mayr & Buchner, 2013, Ergonomics (peer-reviewed); (b) Ergonomics, 2025 (peer-reviewed, N=173); (c) ACM ETRA, 2025 (peer-reviewed); (d) Muangsrinoon & Boonbrahm, 2024, IJCESEN (systematic review of 33 studies)
+- **Methodology**: (a) Controlled lab study comparing light-on-dark vs dark-on-light text for visual acuity tasks across age groups. (b) N=173 participants, cognitive performance in light vs dark interfaces. (c) Eye-tracking study measuring pupil dilation and perceived workload across task complexities. (d) Systematic review of 33 prior studies on dark/light mode effects.
+- **Key Finding**: The evidence is genuinely mixed and context-dependent. **Light mode produces better performance for high-acuity reading tasks** — Piepenbrock found light backgrounds advantageous for visual acuity; Ergonomics 2025 found cognitive scores higher in light mode. **Dark mode reduces perceived workload for medium-complexity browsing** — ETRA 2025 found lower subjective workload but higher pupil dilation in dark mode. Muangsrinoon's systematic review suggests dark interfaces may **alter sentiment perception**, potentially making content feel more negative. One contradictory finding: Muhamad & Mokhtar (2024, N=30) found dark mode had HIGHER reading speed (136.27 vs 128.42 wpm) — but with a small, young-adult-only sample.
+- **E-Commerce Application**: For browsing and discovery (homepages, category pages), dark mode is acceptable and may reduce perceived effort. For fine-detail reading (spec sheets, size charts, pricing tables, checkout forms), light mode may produce better comprehension and fewer errors. Implement both themes and respect user preference via `prefers-color-scheme`. Do not force either mode. Consider that urgency/scarcity cues may land differently on dark backgrounds due to sentiment effects.
+- **Replication Status**: Multiple independent peer-reviewed sources converge on the context-dependent conclusion. The field is actively contested — no consensus on a universal "better" mode.
+- **Boundary Conditions**: Most studies use young adult/student samples. No ecommerce-specific reading performance study exists. The sentiment effect on purchase behavior is theoretical, not measured. Cultural moderators are unstudied.
+
+---
+
 ## Key Takeaways for E-Commerce Implementation
 
 ### What the Evidence Actually Supports
@@ -359,3 +381,10 @@ Test on your own site, with your own audience, in your own context. Use the prin
 - Speero. "Testing Button Colors."
 - Su, L., Cui, A.P., & Walsh, M.F. (2019). Journal of Marketing Theory and Practice, 27(3), 269-281.
 - W3C. "Understanding Success Criterion 1.4.3: Contrast (Minimum)."
+- Gazit et al. (2025). Ergonomics (Tandfonline). Dark mode logo color adaptation.
+- Google Material Design. "Dark theme." https://m2.material.io/design/color/dark-theme.html
+- Email on Acid. (2022). "Dark Mode Logo Problems."
+- Trusted Shops. (2023). "Dark Mode Setting for the Trustbadge."
+- Piepenbrock, C., Mayr, S., & Buchner, A. (2013). Ergonomics, 56(7).
+- ACM ETRA (2025). Dark mode and perceived workload.
+- Muangsrinoon & Boonbrahm (2024). IJCESEN. Systematic review of dark mode effects.

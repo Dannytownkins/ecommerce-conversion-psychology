@@ -68,7 +68,7 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ## What's Under the Hood
 
-- **15 domain reference files** — pricing, checkout, trust, social proof, CTAs, color, eye tracking, cognitive load, mobile UX, performance, personalization, cross-cultural, post-purchase, search/filter
+- **18 domain reference files** — pricing, checkout, trust, social proof, CTAs, color, eye tracking, cognitive load, mobile UX, performance, personalization, cross-cultural, post-purchase, search/filter, cookie consent, biometric/express checkout, social commerce
 - **4 auditor clusters** that get assigned by page type (or `--cluster` override)
 - **Ethics gate** checked at every phase — fake urgency, hidden pricing, review manipulation, dark patterns → always `CRITICAL`
 - **Progress memory** — re-audit a page and see what changed since last time
@@ -80,10 +80,10 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 | Cluster | Slug | Coverage |
 |---------|------|----------|
-| Visual & CTA | `visual-cta` | CTA design, color psychology, eye tracking, scan patterns |
-| Trust & Conversion | `trust-conversion` | Trust signals, social proof, checkout optimization, pricing |
-| Context & Platform | `context-platform` | Cognitive load, mobile UX, performance, search & filter |
-| Audience & Journey | `audience-journey` | Personalization, cross-cultural, post-purchase |
+| Visual & CTA | `visual-cta` | CTA design, color psychology, eye tracking, scan patterns, product video |
+| Trust & Conversion | `trust-conversion` | Trust signals, social proof, checkout optimization, pricing, biometric auth, cookie consent |
+| Context & Platform | `context-platform` | Cognitive load, mobile UX, performance, search & filter, cookie consent |
+| Audience & Journey | `audience-journey` | Personalization, cross-cultural, post-purchase, social commerce, push notifications |
 
 ### Platform Support
 
@@ -99,8 +99,8 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ```
 ecommerce-conversion-psychology/
-├── .claude-plugin/plugin.json       Plugin metadata (v2.0.0)
-├── references/                      15 domain + 7 principle/operational files
+├── .claude-plugin/plugin.json       Plugin metadata (v2.1.0)
+├── references/                      18 domain + 7 principle/operational files
 ├── citations/sources.md             Source URLs for human verification (not loaded by agents)
 ├── platforms/                       shopify.md, nextjs.md
 ├── templates/                       Baton + report templates

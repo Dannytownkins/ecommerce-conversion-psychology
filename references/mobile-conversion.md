@@ -3,7 +3,7 @@
 
 ## Research Summary
 
-**Total Findings**: 20 cited findings with specific data points
+**Total Findings**: 24 cited findings with specific data points
 
 **Top 3 Most Impactful Findings**
 
@@ -175,6 +175,42 @@
 - **Replication Status**: Replicated across Baymard's testing rounds. The thumbnail advantage is consistent.
 - **Boundary Conditions**: Products with only 2-3 images may not benefit from thumbnails (dots suffice). Very small thumbnails that can't convey content are worse than dots. Thumbnail rows consume vertical space that may push CTAs below the fold on shorter screens.
 
+### Finding 21: Respect prefers-color-scheme — Dark Mode Adoption is High but Active Usage is Mixed
+
+- **Source**: (a) Android Authority, 2024, reader poll (N=2,514); (b) Earthweb/forms.app/Gitnux, 2024-2026, survey aggregations; (c) NNGroup, 2023, behavioral observation (N=115); (d) Terra/web.dev, 2021/2023, case study
+- **Methodology**: (a) Self-selected poll of tech publication readers. (b) Aggregated survey data from multiple sources reporting 70-82% system-level dark mode enablement. (c) NNGroup observed 115 mobile users' actual mode settings — roughly 1/3 dark, 1/3 light, 1/3 switching. (d) Single-site case study: media/content site implementing dark theme, before/after metrics.
+- **Key Finding**: System-level dark mode enablement is high (**70-82%** in surveys) and accelerating, but **per-session active usage is closer to 1/3** based on behavioral observation (NNGroup 2023). The gap between "enabled" and "actively used" matters for implementation priority. Terra case study showed dramatic engagement improvement when dark-mode-preferring users received dark theme: desktop bounce dropped from **~27.5% to 10.82%** (60% reduction), mobile pages/session rose from **2.47 to 5.24**. However, Terra is a media/content site — bounce dynamics differ from ecommerce.
+- **E-Commerce Application**: Implement `prefers-color-scheme` media query to respect user preference. Do not force light mode on dark-mode-preferring users — the bounce penalty is real. But do not assume "80% of users want dark mode" — the behavioral data suggests closer to 1/3 actively use it at any given time. Test CTA contrast, trust badges, and product images in both themes before shipping dark mode support. Product photography designed for white backgrounds may look wrong on dark surfaces.
+- **Replication Status**: Survey data converges across multiple sources (70-82%). NNGroup behavioral observation (N=115) is the strongest methodology but small sample. Terra case study is a single non-ecommerce site. No ecommerce-specific dark mode conversion RCT exists.
+- **Boundary Conditions**: All survey sources have tech-enthusiast audience bias. The NNGroup behavioral study is the best data but N=115. Terra is media, not ecommerce — bounce rate dynamics differ. No study measures the conversion impact of implementing vs not implementing dark mode on an ecommerce site.
+
+### Finding 22: 94.8% of Homepages Fail WCAG — Ecommerce Platforms Are Worse Than Average
+
+- **Source**: WebAIM, 2025, "The WebAIM Million" annual automated accessibility audit
+- **Methodology**: Automated WAVE testing of 1,000,000 homepages. Annual report tracking year-over-year trends. Nonprofit research organization at Utah State University — no product to sell.
+- **Key Finding**: **94.8% of the top 1,000,000 homepages** had detectable WCAG 2 failures (improved from 95.9% in 2024). Average of **51 errors per page** (down from 56.8). Most common failure: low contrast text (**79.1% of pages**). Ecommerce platforms are specifically worse than average: **Shopify: ~70 errors/page**, **WooCommerce: ~75 errors/page**, **Magento: ~85 errors/page** — all significantly above the 51-error mean. Note: automated testing catches approximately 30-40% of accessibility issues — the real failure rate is higher.
+- **E-Commerce Application**: Accessibility failures are the norm, not the exception. Baseline friction is enormous and represents both a legal risk and a conversion opportunity. Start with the highest-impact automated fixes: contrast ratios on CTAs and body text, missing alt text on product images, form label associations. Ecommerce platforms have platform-level accessibility debt that theme customization alone cannot fully address.
+- **Replication Status**: WebAIM Million is the gold standard for accessibility prevalence data — large-scale, annual, transparent methodology, independent nonprofit. Replicated every year since 2019 with consistent findings.
+- **Boundary Conditions**: Automated testing detects only a subset of accessibility issues. Manual testing with assistive technology is required for full compliance. The ecommerce-platform-specific error counts (~70-85/page) are from the 2025 report and may reflect platform defaults rather than customized stores.
+
+### Finding 23: Accessibility Lawsuits Are Accelerating — Ecommerce is 68-77% of Targets
+
+- **Source**: (a) UsableNet, 2024-2025, digital accessibility litigation reports; (b) ACM SIGACCESS (ASSETS '24), peer-reviewed
+- **Methodology**: (a) UsableNet tracks all ADA digital accessibility lawsuits filed in US federal courts. (b) ASSETS '24: peer-reviewed study on accessibility overlay effectiveness and user experience.
+- **Key Finding**: UsableNet tracked **4,187+ federal lawsuits** in 2024, with **69-77% targeting ecommerce/retail**. **67% targeted companies under $25M revenue** — small and mid-size ecommerce is disproportionately targeted. **41% were against previously sued companies** (repeat defendants). Settlements range **$5K-$75K** plus attorney fees. The European Accessibility Act (EAA) became enforceable **June 28, 2025**, creating EU-wide exposure beyond GDPR. **Accessibility overlays are ineffective and attract lawsuits**: ASSETS '24 found **42% of users stopped using sites** after overlay activation; **25% of 2024 lawsuits cited overlay presence**. OverlayFactSheet.com has 800+ accessibility professionals signed against overlays.
+- **E-Commerce Application**: Proactive accessibility compliance is cheaper than reactive litigation. Do not use overlay widgets — they do not achieve WCAG compliance and may increase legal exposure. Invest in native remediation: semantic HTML, proper heading hierarchy, form labels, alt text, keyboard navigation, ARIA landmarks. For Shopify stores: audit the theme's accessibility before customizing; many themes ship with significant accessibility debt.
+- **Replication Status**: UsableNet litigation data is factual case tracking — not vendor opinion, though UsableNet sells accessibility services. ASSETS '24 is peer-reviewed (top accessibility venue). EAA enforcement date is regulatory fact.
+- **Boundary Conditions**: Lawsuit data is US-specific (ADA). EAA creates parallel EU exposure but enforcement patterns are not yet established. The 42% overlay stat is from a single study. Settlement range is typical, not guaranteed.
+
+### Finding 24: Touch Targets and Font Size — Mechanical Fixes with High ROI
+
+- **Source**: (a) W3C WCAG 2.2, standards specification; (b) Apple Human Interface Guidelines; (c) Google Material Design; (d) Smashing Magazine, 2018; (e) Learn UI Design, 2024
+- **Methodology**: (a) WCAG 2.2 standards: SC 2.5.5 (AAA) requires 44x44 CSS pixels minimum; SC 2.5.8 (AA) requires 24x24 CSS pixels minimum. (b,c) Platform design guidelines. (d,e) Practitioner analysis of mobile typography.
+- **Key Finding**: Touch target sizing has measurable impact on mobile usability. WCAG 2.2 AA minimum is **24x24px**; AAA is **44x44px**. Apple HIG recommends **44pt** minimum. Google Material Design recommends **48dp** minimum. For ecommerce CTAs (Add to Cart, Checkout), **48px minimum** should be the floor, with **60px+ recommended** for primary conversion buttons. For mobile text, **16px minimum** is the practical floor — iOS auto-zooms form inputs below 16px, which disrupts the checkout flow and frustrates users. This iOS behavior alone makes sub-16px text a conversion hazard on mobile.
+- **E-Commerce Application**: Audit all interactive elements on mobile for minimum 48px touch targets. Primary CTAs (Add to Cart, Buy Now, Checkout, Pay) should be 60px+ in height. Set base font size to 16px minimum for all mobile text. For form inputs specifically, 16px prevents iOS auto-zoom. Use CSS `font-size: max(16px, 1rem)` as a safeguard. These are mechanical fixes that require no A/B testing — they are standards compliance.
+- **Replication Status**: WCAG is the international accessibility standard. Platform guidelines (Apple, Google) are consistent. The iOS auto-zoom behavior at sub-16px is a documented browser behavior, not an opinion.
+- **Boundary Conditions**: No peer-reviewed study directly measures the conversion impact of specific touch target sizes on ecommerce. The WebAbility.io claims of "28% error reduction" and "15% conversion increase" from proper target sizing are vendor-sourced without disclosed methodology — treat as directional only.
+
 ---
 
 ## Cross-Cutting Themes
@@ -207,3 +243,6 @@
 - Smashing Magazine. "The Thumb Zone: Designing For Mobile Users."
 - Swell.is. "35 Custom Checkout Statistics for 2025."
 - W3C. "WCAG 2.2 Success Criterion 2.5.8: Target Size."
+- Android Authority. (2024). "Dark Mode Poll Results."
+- NNGroup. (2023). "Dark Mode: Issues and Considerations for Users."
+- Terra / web.dev. (2021/2023). "How Terra improved user engagement with dark theme."

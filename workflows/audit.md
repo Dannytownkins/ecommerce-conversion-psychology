@@ -28,7 +28,8 @@ mobile-nav, mobile-cta, mobile-touch-targets, mobile-font-size, mobile-scroll,
 page-load, image-optimization, lazy-loading, critical-css, font-loading,
 cognitive-load, choice-overload, information-density, form-complexity,
 personalization, cross-cultural, post-purchase-flow,
-search-ux, filter-ux, sort-ux, category-navigation
+search-ux, filter-ux, sort-ux, category-navigation,
+cookie-consent, express-checkout, social-commerce
 
 If a finding doesn't match any slug, use the closest match.
 

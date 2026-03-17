@@ -1,7 +1,7 @@
 <!-- RESEARCH_DATE: 2026-03-09 -->
 # Social Proof Patterns in E-Commerce: Research Findings
 
-**Total Findings:** 20
+**Total Findings:** 21
 **Research Date:** 2026-03-09
 **Methodology Note:** All citations trace to named studies, peer-reviewed journals, or industry surveys with disclosed methodology. Where practitioner claims lack rigorous methodology, this is noted. Numbers from marketing tool vendors (e.g., Fomo, ProveSource) are treated with skepticism and flagged accordingly.
 
@@ -217,6 +217,17 @@
 
 ---
 
+### Finding 21: Social Commerce Trust Transfer — Creator Credibility Over In-App Checkout
+
+- **Source**: (a) Wang et al., 2022, SAGE Open, meta-analysis of 19 studies; (b) Han, 2023, Journal of Retailing and Consumer Services, peer-reviewed
+- **Methodology**: (a) Wang: Meta-analysis of 20 effect sizes from 19 studies examining trust and purchase intention in social commerce. (b) Han: Empirical study of checkout button placement and impulse buying on Instagram, with trust transfer as the theoretical framework.
+- **Key Finding**: Trust transfer from creators/influencers to products is the **primary conversion mechanism** in social commerce — not platform features like in-app checkout. Han (2023) found that in-app checkout **does NOT by itself facilitate impulse-buying** on Instagram. What drives purchase is brand familiarity + creator credibility + active social engagement. Trust in **sellers** has a larger effect than trust in the platform or community (Wang 2022 meta-analysis). Simply adding a "Buy" button to social content is insufficient without the trust infrastructure around it.
+- **E-Commerce Application**: For products sold through social channels (TikTok Shop, Instagram Shopping): invest in creator partnerships and authentic social engagement before optimizing the checkout mechanics. Social proof on product pages should include creator endorsements and real social media engagement metrics, not just star ratings. For social-commerce-originated traffic landing on your .com: surface the creator/influencer connection prominently on the product page. **Cross-reference:** See social-commerce-psychology.md for full platform comparisons, impulse mechanics, and generational targeting data.
+- **Replication Status**: Wang 2022 is a peer-reviewed meta-analysis (strongest study design). Han 2023 is peer-reviewed in a top retailing journal. Both measure purchase intention, not actual purchase behavior — the intention-behavior gap applies.
+- **Boundary Conditions**: All 19 underlying studies in Wang's meta-analysis measure purchase intention, not actual purchases. Han's Instagram study may not generalize to TikTok or other platforms. Cultural moderators are significant — most social commerce trust research originates from Chinese/SE Asian contexts where social commerce is more mature.
+
+---
+
 ## Source Quality Assessment
 
 | Source | Type | Rigor | Conflict of Interest |
@@ -246,3 +257,4 @@
 8. **Prompt for specific testimonials** -- "saved me $400/month" beats "great product" by ~58%.
 9. **Invest in UGC alongside professional photography** -- UGC converts 3-5x better for authenticity.
 10. **Segment by consideration level** -- high-ticket items need expert reviews and case studies, not just star counts.
+11. **Social commerce trust comes from creators, not checkout buttons** — in-app checkout alone does not drive impulse purchases. Invest in creator credibility and social engagement first (Finding 21).
