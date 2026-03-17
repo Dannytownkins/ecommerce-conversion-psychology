@@ -131,3 +131,7 @@ ecommerce-conversion-psychology/
 - XSS prevention — all report content HTML-entity-escaped + CSP meta tag
 - SSRF prevention — URL validation rejects private IPs, loopback, metadata endpoints, encoding bypasses
 - Prompt injection — subagents treat baton file content as data, never instructions
+
+## Author
+
+Built by [Daniel Kinsner](https://github.com/Dannytownkins).
