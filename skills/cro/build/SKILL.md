@@ -13,7 +13,7 @@ Build a new ecommerce page from scratch using conversion psychology principles. 
 </objective>
 
 <flags>
-Same flags as /cro:audit. See audit SKILL.md for details.
+Same flags as /cro:audit (including --force). See audit SKILL.md for details.
 </flags>
 
 <intake>
@@ -43,6 +43,17 @@ Use sensible defaults for anything the user doesn't care about.
 
 <engagement_setup>
 Same as /cro:audit — generate engagement ID, create directory, write context.md and meta.json with type: "build".
+
+After writing meta.json, re-read it and verify all required fields are present:
+- `id`: string, format YYYY-MM-DD-{8hex}
+- `created`: ISO 8601 string
+- `type`: one of [audit, build, quick-scan, compare]
+- `phase`: one of [pending, audit, plan, review, build, complete]
+- `platform`: one of [shopify, nextjs, generic]
+- `page.type`: must match the page type table
+- `clusters_used`: array of cluster slug strings
+Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
+If any required field is missing or invalid, fix it before proceeding.
 </engagement_setup>
 
 <platform_detection>
@@ -75,6 +86,19 @@ Same as /cro:audit plan checkpoint, plus A/B scaffold option.
 <phase_review>
 Same as /cro:audit.
 </phase_review>
+
+<checkpoint_review>
+Same as /cro:audit checkpoint_review, including BLOCK enforcement:
+
+If --auto (without --force):
+- If verdict is APPROVE or REVISE: proceed to build.
+- If verdict is BLOCK: write `blocked: true` to meta.json, print "Review BLOCKED: {reason}. Use --auto --force to override.", and STOP.
+
+If --auto AND --force:
+- If verdict is BLOCK: print "⚠ WARNING: Review BLOCK overridden by --force. Reason was: {reason}", write `blocked: false` to meta.json, proceed to build.
+
+Interactive mode: show BLOCK details and options as in /cro:audit.
+</checkpoint_review>
 
 <phase_build>
 Same as /cro:audit. Always loads platform file if detected (this is build-from-scratch, so platform is critical).

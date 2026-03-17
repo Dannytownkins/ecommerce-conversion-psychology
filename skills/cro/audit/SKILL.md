@@ -5,7 +5,7 @@ description: >-
   (audit, plan, review, build). Covers product pages, checkout flows, carts,
   pricing, landing pages, and category pages using research-backed psychology.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path] [--auto] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--export-report] [--ab-scaffold] [--engagement-id id]"
+argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--export-report] [--ab-scaffold] [--engagement-id id]"
 ---
 
 <objective>
@@ -13,7 +13,8 @@ Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce
 </objective>
 
 <flags>
---auto: Skip all checkpoint pauses. Deterministic path: audit → plan → review → build → done. Abort with error if interactive input required.
+--auto: Skip all checkpoint pauses. Deterministic path: audit → plan → review → build → done. Abort with error if interactive input required. Halts on BLOCK verdict unless --force is also set.
+--force: Override BLOCK verdicts in --auto mode. No effect without --auto.
 --min-priority [level]: Filter findings. Scale: critical > high > medium > low. Always include CRITICAL regardless.
 --platform [name]: Skip platform detection. Values: shopify, nextjs, generic.
 --export-report: Generate HTML report after final phase (or current phase if stopping early).
@@ -51,6 +52,17 @@ Before dispatching auditors:
 4. Detect legacy file: if docs/cro-action-plan.md exists, inform user it will be preserved but not used.
 5. Write context.md (write-once, locked after this step)
 6. Write meta.json with schema_version: 1, phase: "pending"
+
+After writing meta.json, re-read it and verify all required fields are present:
+- `id`: string, format YYYY-MM-DD-{8hex}
+- `created`: ISO 8601 string
+- `type`: one of [audit, build, quick-scan, compare]
+- `phase`: one of [pending, audit, plan, review, build, complete]
+- `platform`: one of [shopify, nextjs, generic]
+- `page.type`: must match the page type table
+- `clusters_used`: array of cluster slug strings
+Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
+If any required field is missing or invalid, fix it before proceeding.
 </engagement_setup>
 
 <platform_detection>
@@ -75,7 +87,7 @@ Select 1-3 clusters based on page type:
 Cluster reference files:
 - visual-cta: cta-design-and-placement.md, color-psychology.md, eye-tracking-and-scan-patterns.md
 - trust-conversion: trust-and-credibility.md, social-proof-patterns.md, checkout-optimization.md, pricing-psychology.md, biometric-and-express-checkout.md, cookie-consent-and-compliance.md
-- context-platform: cognitive-load-management.md, mobile-conversion.md, mobile-conversion-psychology-principles.md, page-performance-psychology.md, search-and-filter-ux.md, cookie-consent-and-compliance.md
+- context-platform: cognitive-load-management.md, mobile-conversion.md, page-performance-psychology.md, search-and-filter-ux.md
 - audience-journey: personalization-psychology.md, cross-cultural-considerations.md, post-purchase-psychology.md, social-commerce-psychology.md
 
 Override rules:
@@ -101,6 +113,45 @@ If an auditor fails: write SKIP finding for that cluster, inform user at checkpo
 
 If --min-priority set and zero findings remain after filter: "No findings at [PRIORITY] or above. Options: (1) Lower the filter, (2) View all findings, (3) Stop here."
 </phase_audit>
+
+<progress_comparison>
+After writing audit.md but before presenting the checkpoint:
+
+1. Determine if a previous engagement exists:
+   a. If --engagement-id was provided, look up that engagement's audit.md directly
+   b. Otherwise, scan docs/cro/*/meta.json for a matching url_normalized (exclude the current engagement and quick-scan engagements)
+   c. If multiple matches, use the most recent by date
+   d. If no match found, skip this section entirely
+
+2. Read the previous engagement's audit.md. Parse each finding block, extracting:
+   - SECTION slug (the canonical slug)
+   - FINDING verdict (PASS, FAIL, PARTIAL, SKIP)
+
+3. Parse the current audit.md the same way.
+
+4. Compare by SECTION slug and classify each:
+   - FIXED: was FAIL or PARTIAL in previous, now PASS in current
+   - REGRESSED: was PASS in previous, now FAIL or PARTIAL in current
+   - UNCHANGED: same verdict in both
+   - NEW: present in current but not in previous
+   - RESOLVED: present in previous but not in current
+
+5. Append a `## Progress Comparison` section to the current engagement's audit.md:
+
+```markdown
+## Progress Comparison
+
+Compared against engagement `{previous-id}` ({date}).
+
+| Section | Previous | Current | Status |
+|---------|----------|---------|--------|
+| {slug} | {verdict} | {verdict} | {status} |
+
+Summary: X FIXED, Y REGRESSED, Z UNCHANGED, W NEW, V RESOLVED
+```
+
+6. Use the summary counts when presenting the checkpoint message.
+</progress_comparison>
 
 <checkpoint_audit>
 Present natural language summary (not raw tables):
@@ -181,7 +232,12 @@ Update meta.json: phase → "review".
 4. Export report
 5. Stop here
 
-If --auto: proceed to build regardless of verdict.
+If --auto (without --force):
+- If verdict is APPROVE or REVISE: proceed to build.
+- If verdict is BLOCK: write `blocked: true` to meta.json, print "Review BLOCKED: {reason}. Use --auto --force to override.", and STOP. Do not proceed to build.
+
+If --auto AND --force:
+- If verdict is BLOCK: print "WARNING: Review BLOCK overridden by --force. Reason was: {reason}", write `blocked: false` to meta.json, proceed to build.
 </checkpoint_review>
 
 <pre_build_snapshot>

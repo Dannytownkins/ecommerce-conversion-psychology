@@ -73,22 +73,15 @@
       text-transform: uppercase;
       letter-spacing: 0.03em;
     }
-    .badge-pass { background: #dcfce7; color: #166534; }
-    .badge-fail { background: #fee2e2; color: #991b1b; }
-    .badge-partial { background: #fef9c3; color: #854d0e; }
-    .badge-skip { background: #f1f5f9; color: #475569; }
+    .badge-pass, .badge-effort-low, .badge-impact-high { background: #dcfce7; color: #166534; }
+    .badge-fail, .badge-effort-high { background: #fee2e2; color: #991b1b; }
+    .badge-partial, .badge-effort-medium { background: #fef9c3; color: #854d0e; }
+    .badge-skip, .badge-impact-low { background: #f1f5f9; color: #475569; }
     .badge-critical { background: #7f1d1d; color: #fff; }
     .badge-high { background: #dc2626; color: #fff; }
     .badge-medium { background: #f59e0b; color: #fff; }
     .badge-low { background: #6b7280; color: #fff; }
-
-    /* Effort/Impact badges */
-    .badge-effort-low { background: #dcfce7; color: #166534; }
-    .badge-effort-medium { background: #fef9c3; color: #854d0e; }
-    .badge-effort-high { background: #fee2e2; color: #991b1b; }
-    .badge-impact-low { background: #f1f5f9; color: #475569; }
     .badge-impact-medium { background: #dbeafe; color: #1e40af; }
-    .badge-impact-high { background: #dcfce7; color: #166534; }
 
     /* Tables */
     table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
@@ -204,17 +197,6 @@
   <div class="section">
     <h2>Audit Findings</h2>
     {{FINDINGS_CONTENT}}
-    <!-- Each finding rendered as:
-    <div class="finding finding-[status]">
-      <div class="finding-header">
-        <span class="badge badge-[status]">[STATUS]</span>
-        <span class="badge badge-[priority]">[PRIORITY]</span>
-        <strong>[SECTION slug]</strong>
-      </div>
-      <div class="finding-body">[OBSERVATION]</div>
-      <div class="finding-rec">Recommendation: [RECOMMENDATION]</div>
-    </div>
-    -->
   </div>
   <!-- {{SECTION:FINDINGS_END}} -->
 
@@ -260,17 +242,6 @@
       </thead>
       <tbody>
         {{PLAN_ROWS}}
-        <!-- Each row:
-        <tr>
-          <td>[#]</td>
-          <td>[What]</td>
-          <td>[Where]</td>
-          <td>[Why]</td>
-          <td><span class="badge badge-effort-[level]">[Effort]</span></td>
-          <td><span class="badge badge-impact-[level]">[Impact]</span></td>
-          <td><span class="badge badge-[priority]">[Priority]</span></td>
-        </tr>
-        -->
       </tbody>
     </table>
   </div>
@@ -300,14 +271,6 @@
       </thead>
       <tbody>
         {{BUILD_ROWS}}
-        <!-- Each row:
-        <tr>
-          <td>[#]</td>
-          <td>[What]</td>
-          <td><span class="status-[status]">[Status]</span></td>
-          <td>[Notes]</td>
-        </tr>
-        -->
       </tbody>
     </table>
   </div>

@@ -3,7 +3,7 @@
 All source URLs for findings in the reference files. This file is for human verification only — agents do not read it.
 
 To check a citation, ask Claude Code:
-"Check citations/sources.md for the source of [finding description]"
+"Check docs/citations.md for the source of [finding description]"
 
 ## checkout-optimization.md
 

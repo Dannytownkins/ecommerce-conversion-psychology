@@ -18,3 +18,7 @@ REFERENCE: [reference-file.md — section name]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 
 ---
+
+## Progress Comparison
+
+<!-- Populated automatically when re-auditing a previously audited page -->

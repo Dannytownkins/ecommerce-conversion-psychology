@@ -5,7 +5,7 @@ description: >-
   3-5 highest-impact quick wins, no further phases. Faster and cheaper
   than a full audit.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs]"
+argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--ephemeral]"
 ---
 
 <objective>
@@ -16,6 +16,7 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 --cluster [slug]: Override auto-selected cluster. Values: visual-cta, trust-conversion, context-platform, audience-journey.
 --min-priority [level]: Filter findings. Default for quick-scan: high (only HIGH and CRITICAL).
 --platform [name]: Skip platform detection.
+--ephemeral: Output findings directly in conversation only. No engagement directory, no meta.json, no audit.md. Ignored when --auto is active (agent pipelines always persist).
 </flags>
 
 <mode_detection>
@@ -26,7 +27,20 @@ Determine input type from $ARGUMENTS:
 </mode_detection>
 
 <engagement_setup>
-Same as /cro:audit but with type: "quick-scan", quick_scan: true in meta.json.
+If --ephemeral is set AND --auto is NOT set, skip this entire block — no directory, no meta.json, no files. Findings will be output directly in conversation.
+
+Otherwise (default or --auto): same as /cro:audit but with type: "quick-scan", quick_scan: true in meta.json.
+
+After writing meta.json, re-read it and verify all required fields are present:
+- `id`: string, format YYYY-MM-DD-{8hex}
+- `created`: ISO 8601 string
+- `type`: one of [audit, build, quick-scan, compare]
+- `phase`: one of [pending, audit, plan, review, build, complete]
+- `platform`: one of [shopify, nextjs, generic]
+- `page.type`: must match the page type table
+- `clusters_used`: array of cluster slug strings
+Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
+If any required field is missing or invalid, fix it before proceeding.
 </engagement_setup>
 
 <cluster_selection>
@@ -63,8 +77,8 @@ Dispatch ONE auditor with:
 - Page code or description
 - Ethics gate from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md
 
-Write findings to docs/cro/{engagement-id}/audit.md.
-Update meta.json: phase → "complete".
+If not ephemeral: write findings to docs/cro/{engagement-id}/audit.md and update meta.json: phase → "complete".
+If ephemeral: skip file writes entirely.
 </dispatch>
 
 <output>

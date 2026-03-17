@@ -17,6 +17,10 @@ The coordinator provides:
 
 ## Process
 
+### Pre-flight: BLOCK Check
+
+Before writing any code, read review.md from the engagement directory. If the review verdict is **BLOCK**, check meta.json for `"blocked": false` (indicating a force-override was applied by the coordinator). If `blocked` is not `false`, refuse to proceed and report: "Build refused: review verdict is BLOCK. Reason: {reason from review.md}. The coordinator must re-run with --force to override."
+
 ### Step 1: Batch Preference
 
 Ask the user before starting:

@@ -1,6 +1,6 @@
 # 🧠 E-Commerce Conversion Psychology
 
-![v2.0.0](https://img.shields.io/badge/version-2.0.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_any-green)
+![v2.2.0](https://img.shields.io/badge/version-2.2.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 15 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -99,9 +99,9 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ```
 ecommerce-conversion-psychology/
-├── .claude-plugin/plugin.json       Plugin metadata (v2.1.0)
+├── .claude-plugin/plugin.json       Plugin metadata (v2.2.0)
 ├── references/                      18 domain + 7 principle/operational files
-├── citations/sources.md             Source URLs for human verification (not loaded by agents)
+├── docs/citations.md                Source URLs for human verification (not loaded by agents)
 ├── platforms/                       shopify.md, nextjs.md
 ├── templates/                       Baton + report templates
 ├── workflows/                       Phase workflows (context: fork)
@@ -114,6 +114,12 @@ ecommerce-conversion-psychology/
 ├── README.md
 └── CHANGELOG.md
 ```
+
+---
+
+## Plugin Metadata
+
+`.claude-plugin/plugin.json` contains name, version, and description metadata. It exists for potential future plugin discovery systems and is **not** used by Claude Code's skill loader. The skill loader reads `skills/cro/SKILL.md` directly.
 
 ---
 

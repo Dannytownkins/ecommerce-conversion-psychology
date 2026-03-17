@@ -38,6 +38,17 @@ If user proceeds despite mismatch, note it in the comparison output.
 <engagement_setup>
 Same as /cro:audit but with type: "compare" in meta.json.
 Store compare_target URL/path in meta.json.
+
+After writing meta.json, re-read it and verify all required fields are present:
+- `id`: string, format YYYY-MM-DD-{8hex}
+- `created`: ISO 8601 string
+- `type`: one of [audit, build, quick-scan, compare]
+- `phase`: one of [pending, audit, plan, review, build, complete]
+- `platform`: one of [shopify, nextjs, generic]
+- `page.type`: must match the page type table
+- `clusters_used`: array of cluster slug strings
+Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
+If any required field is missing or invalid, fix it before proceeding.
 </engagement_setup>
 
 <dispatch>

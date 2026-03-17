@@ -1,4 +1,5 @@
 <!-- RESEARCH_DATE: 2026-03-09 -->
+<!-- cross-reference: For cookie consent and compliance patterns, see the trust-conversion cluster (cookie-consent-and-compliance.md) -->
 # Cognitive Load Management in E-Commerce: Research Findings
 
 **Total Findings**: 20

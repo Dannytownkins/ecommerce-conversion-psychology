@@ -1,5 +1,46 @@
 # Changelog
 
+## 2.2.0 — 2026-03-17
+
+### Plugin Hardening — Structural Consolidation, Safety, and UX
+
+#### Reference Consolidation (2 changes)
+- Merged `mobile-conversion-psychology-principles.md` into `mobile-conversion.md` — 7 psychology principles, 7 patterns, 6 anti-patterns, decision tree, and key data table now live alongside the 24 UX findings in a single file. Fixed broken cross-reference (line 6 referenced non-existent `mobile-and-performance.md`).
+- Removed `cookie-consent-and-compliance.md` from `context-platform` cluster (kept in `trust-conversion` only). Added cross-reference note in `cognitive-load-management.md`. No page type loses cookie-consent coverage.
+
+#### Workflow Safety (3 changes)
+- `--auto` mode now halts on reviewer BLOCK verdict. Writes `blocked: true` to `meta.json` and stops. Use `--auto --force` to override with explicit warning.
+- Builder subagent (`workflows/build.md`) now performs pre-flight BLOCK check before writing any code — defense in depth.
+- Added `--force` flag to router common flags and all coordinator SKILL.md files.
+
+#### New Command
+- `/cro:resume` — lists in-progress engagements and resumes at last checkpoint. Supports `--engagement-id` for direct resume. Infers phase from baton files for v1 engagements. Handles BLOCKED engagements with explicit options. Uses markdown headings (not XML tags).
+
+#### UX Improvements (2 changes)
+- `/cro:quick-scan` now persistent-by-default (was already the behavior). Added `--ephemeral` flag to skip directory creation. `--auto` always persists regardless of `--ephemeral`.
+- Progress memory diff: re-auditing a previously audited page now appends a `## Progress Comparison` table to `audit.md` showing FIXED/REGRESSED/UNCHANGED/NEW/RESOLVED status per finding.
+
+#### Schema & Validation
+- Added `phase` and `blocked` fields to `templates/meta.json.template`.
+- Added inline baton validation prose to all 4 coordinator SKILL.md files (audit, build, compare, quick-scan). Validates required fields, enums, and nested objects after meta.json creation.
+- Dropped standalone `meta.schema.json` plan — prose validation is more effective for LLM readers than formal JSON Schema.
+
+#### Housekeeping
+- Simplified `templates/report.html.template`: consolidated badge CSS classes, removed template hint comments. 333 → 296 lines. All conditional section blocks preserved.
+- Moved `citations/sources.md` → `docs/citations.md`. Removed empty `citations/` directory. Updated all references.
+- Documented `.claude-plugin/plugin.json` purpose in README (future plugin discovery, not used by Claude Code skill loader).
+- Bumped version to 2.2.0 in `README.md` badge and `.claude-plugin/plugin.json`.
+
+#### SKILL.md Authoring Convention
+- New SKILL.md files (`skills/cro/resume/SKILL.md`) use markdown headings exclusively. Existing files retain XML tags — incremental migration when modified.
+
+#### Totals
+- 17 domain reference files (was 18 — mobile merge) + 7 principle/operational files
+- ~272 findings in reference library (unchanged — merge consolidated, did not add/remove)
+- 5 commands: `/cro`, `/cro:audit`, `/cro:build`, `/cro:quick-scan`, `/cro:compare`, `/cro:resume`
+
+---
+
 ## 2.1.0 — 2026-03-17
 
 ### Mobile CRO Expansion — 9 New Topics, 4-Audit Verified
@@ -68,7 +109,7 @@
 - Added 7 missing regulations: EU AI Act, GDPR, CCPA/CPRA ADMT, US state privacy laws (20+ states), CA SB 243, FTC Click-to-Cancel vacatur, EU DSA Art 25 enforcement precedent (X/Twitter €120M fine)
 
 #### Citation Architecture
-- Created `citations/sources.md` — single-file citation index (~350 source URLs) for human verification
+- Created `docs/citations.md` — single-file citation index (~350 source URLs) for human verification
 - Stripped all URLs from 13 reference files to reduce agent context token usage
 - Researched and added DOI links for 20 academic sources in pricing-psychology.md
 - Researched and added URLs for 29 named sources in mobile-conversion-psychology-principles.md

@@ -19,10 +19,11 @@ Available commands:
 
 /cro:audit [url-or-path]           Full 4-phase CRO audit of an existing page
 /cro:build [description]           Build a new ecommerce page from scratch
-/cro:quick-scan [url-or-desc]      Quick scan — one cluster, 3-5 quick wins
+/cro:quick-scan [url-or-desc]      Quick scan — one cluster, 3-5 quick wins (add --ephemeral to skip file output)
 /cro:compare [url] [competitor]    1:1 competitor comparison
+/cro:resume [--engagement-id <id>] List & resume in-progress engagements
 
-Common flags: --auto, --min-priority, --platform, --export-report
+Common flags: --auto, --force, --min-priority, --platform, --export-report
 </quick_start>
 
 <instructions>

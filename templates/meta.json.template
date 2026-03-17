@@ -15,5 +15,6 @@
   "clusters_used": [],
   "min_priority": null,
   "compare_target": null,
-  "quick_scan": false
+  "quick_scan": false,
+  "blocked": false
 }

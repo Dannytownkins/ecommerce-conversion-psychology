@@ -1,6 +1,6 @@
 {
   "name": "ecommerce-conversion-psychology",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "CRO toolkit for ecommerce pages using research-backed psychology. Namespaced commands: /cro:audit, /cro:build, /cro:quick-scan, /cro:compare. Platform-aware (Shopify, Next.js), with severity filtering, progress memory, A/B test scaffolding, and HTML report export.",
   "author": {
     "name": "Daniel Kinsner"
