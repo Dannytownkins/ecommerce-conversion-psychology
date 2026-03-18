@@ -50,7 +50,16 @@ Target 3–6 sections that together cover the full page.
 - If fewer than 3 natural boundaries exist, use scroll positions at 33% and 66% of page height as fallback boundaries.
 - If more than 6 boundaries exist, merge adjacent small sections until you have at most 6.
 
-Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px] }`.
+Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px], "clusters": ["relevant-cluster-slugs"] }`.
+
+**Section-to-cluster mapping:** Tag each section with the cluster slugs most relevant to its content:
+- Sections containing CTAs, hero areas, product images, visual hierarchy → `visual-cta`
+- Sections containing trust badges, reviews, ratings, social proof, pricing, checkout elements, payment options → `trust-conversion`
+- Sections containing navigation, search, filters, forms, dense content → `context-platform`
+- Sections containing personalization, recommendations, post-purchase elements → `audience-journey`
+- Header/footer/nav sections → tag with all clusters that reference their content
+
+A section can be tagged with multiple clusters. This mapping tells the coordinator which DOM sections to route to which auditor.
 
 ### Step 3: Capture Sectioned Screenshots
 
@@ -131,11 +140,12 @@ PRE_HYDRATION_WARNING: [true | false]
 
 STRUCTURED_DATA: [extracted JSON-LD metadata, if any]
 
-DOM:
-[The preprocessed DOM string]
+DOM_FILE: [path where preprocessed DOM was written, e.g., docs/cro/{engagement-id}/dom.html]
 
 STATUS: COMPLETE
 ```
+
+**DOM file output:** Write the preprocessed DOM to `docs/cro/{engagement-id}/dom.html` rather than embedding it in your text response. The coordinator will pass this file path to auditors, who will read it directly. This avoids passing potentially 300KB of HTML through agent text output.
 
 ## Output Rules
 
@@ -143,6 +153,7 @@ STATUS: COMPLETE
 - Do not evaluate the page against any CRO principles — that is the auditor's job.
 - Do not modify the DOM content beyond the preprocessing steps — preserve all text, prices, ratings, product names, and structural markup exactly as rendered.
 - Screenshots must be captured before DOM extraction (in case DOM extraction affects page state).
+- Write the preprocessed DOM to a file — do NOT include the DOM string in your text output.
 
 ## Failure Mode
 

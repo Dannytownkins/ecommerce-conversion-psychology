@@ -29,7 +29,7 @@ How to acquire page data:
 1. **File path provided** → read directly. Set `source_mode: "file"` in meta.json. No acquisition agent needed.
 2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md, then dispatch the acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
-   - Dispatch via Agent tool with `model: "haiku"` — the acquisition agent is mechanical, not analytical
+   - Dispatch via Agent tool with `model: "sonnet"` — the acquisition agent is mechanical, not analytical
    - Pass the validated URL and viewport dimensions (default 1280x800)
    - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, style metadata
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
@@ -112,7 +112,7 @@ Each Agent call contains:
 
 **Input varies by source mode:**
 
-- **URL mode (source_mode: url-dual):** Pass each auditor the sectioned screenshots AND the preprocessed DOM from the acquisition agent. **Segment DOM by cluster:** use the section boundary metadata from acquisition to pass each auditor only the DOM sections relevant to their cluster's page areas (e.g., hero/CTA sections to visual-cta, checkout/trust sections to trust-conversion). This reduces per-auditor context significantly.
+- **URL mode (source_mode: url-dual):** Pass each auditor the sectioned screenshots AND the DOM file path from the acquisition agent (`docs/cro/{engagement-id}/dom.html`). **Segment by cluster:** use the `clusters` tags in the acquisition agent's section boundary metadata to determine which screenshots and DOM sections to pass to each auditor. Only pass an auditor the screenshots tagged with its cluster slug. The auditor reads the DOM file directly and focuses on sections relevant to its cluster. This reduces per-auditor context significantly.
 - **File path mode (source_mode: file):** Pass the page source code directly. No screenshots.
 - **Description mode (source_mode: description):** Pass the text description.
 

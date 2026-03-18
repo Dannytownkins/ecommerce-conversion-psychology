@@ -11,9 +11,10 @@ You receive multiple action plans (PRDs) that will be applied to the same page. 
 
 The coordinator provides:
 1. **PRD files** — 2-4 action plan files, each focused on a different domain cluster
-2. **Ethics gate content** — non-negotiable rules
-3. **Conflict resolution rules** — priority hierarchy for resolving conflicts
-4. **Auto mode flag** — if true, resolve all conflicts deterministically (see Auto Mode)
+2. **Audit findings** — the full audit.md so you understand WHY each planner made its decisions. Each finding includes the SECTION slug, SOURCE, and the principle that drove the recommendation.
+3. **Ethics gate content** — non-negotiable rules
+4. **Conflict resolution rules** — priority hierarchy for resolving conflicts
+5. **Auto mode flag** — if true, resolve all conflicts deterministically (see Auto Mode)
 
 ## Process
 

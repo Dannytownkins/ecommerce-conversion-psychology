@@ -60,13 +60,13 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 **Serialize acquisition, then parallelize auditors:**
 
 **Step 1: Acquire your page** (if URL)
-- Validate URL, dispatch acquisition agent (model: haiku) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
+- Validate URL, dispatch acquisition agent (model: sonnet) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
 - Collect screenshots + preprocessed DOM + metadata
 - If acquisition returns STATUS: BLOCKED → stop entirely, report error, do NOT proceed to competitor
 - Set source_mode in meta.json
 
 **Step 2: Acquire competitor page** (if URL)
-- Validate URL, dispatch acquisition agent (model: haiku)
+- Validate URL, dispatch acquisition agent (model: sonnet)
 - Collect screenshots + preprocessed DOM + metadata
 - If acquisition fails → note it, proceed with your page data only (comparison will be partial)
 

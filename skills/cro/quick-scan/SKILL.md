@@ -5,7 +5,7 @@ description: >-
   3-5 highest-impact quick wins, no further phases. Faster and cheaper
   than a full audit.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--visual] [--no-visual] [--ephemeral]"
+argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--visual] [--no-visual]"
 ---
 
 <objective>
@@ -31,7 +31,7 @@ Determine input type from $ARGUMENTS:
 1. Validate URL using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
 2. Dispatch acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
-   - Dispatch via Agent tool with `model: "haiku"`
+   - Dispatch via Agent tool with `model: "sonnet"`
    - Pass the validated URL and viewport dimensions (default 1280x800)
    - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, styles
    - If acquisition returns `STATUS: BLOCKED` → present reason, ask for file path or pasted code

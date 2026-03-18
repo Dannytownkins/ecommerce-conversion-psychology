@@ -27,7 +27,7 @@ This is guidance, not a rigid rule. If findings are numerous but all concentrate
 
 After all planners complete, dispatch the reconciler (using `model: "opus"`):
 - Read ${CLAUDE_PLUGIN_ROOT}/workflows/reconcile.md for instructions
-- Pass all PRD files + ethics gate + conflict resolution rules
+- Pass all PRD files + audit.md (so the reconciler understands WHY each plan step exists) + ethics gate + conflict resolution rules
 - Pass auto mode flag if --auto is active
 - Collect output: reconciliation report + any amended plan steps
 - Write amended steps back to the relevant PRD files
