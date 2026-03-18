@@ -2,6 +2,7 @@
 
 **Engagement:** {{ENGAGEMENT_ID}}
 **Competitor URL:** {{COMPETITOR_URL}}
+**Device:** {{DEVICE}} ({{VIEWPORT}})
 **Clusters:** {{CLUSTERS}}
 **Date:** {{DATE}}
 

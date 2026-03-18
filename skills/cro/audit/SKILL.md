@@ -5,7 +5,7 @@ description: >-
   (audit, plan, review, build). Covers product pages, checkout flows, carts,
   pricing, landing pages, and category pages using research-backed psychology.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--visual] [--no-visual] [--ab-scaffold] [--engagement-id id]"
+argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--device desktop|mobile|both] [--visual] [--no-visual] [--ab-scaffold] [--engagement-id id]"
 ---
 
 <objective>
@@ -20,6 +20,11 @@ Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce
 --export-report: Generate HTML report after final phase (or current phase if stopping early).
 --ab-scaffold: Generate A/B test scaffold after plan phase. Pair with --ab-tool [tool] to specify existing tool.
 --engagement-id [id]: Resume or target a specific past engagement instead of creating new.
+--device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
+  - desktop: 1440×900, 1x DPR
+  - mobile: 390×844 (iPhone 14 preset, includes DPR and user-agent)
+  - both: Runs two separate acquisition/audit passes, produces audit.md (desktop) + audit-mobile.md (mobile)
+  In --auto mode: defaults to "desktop" (no prompt).
 </flags>
 
 <mode_detection>
@@ -30,7 +35,12 @@ How to acquire page data:
 2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md, then dispatch the acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
    - Dispatch via Agent tool with `model: "sonnet"` — the acquisition agent is mechanical, not analytical
-   - Pass the validated URL and viewport dimensions (default 1280x800)
+   - Pass the validated URL, viewport dimensions based on selected device, and device context:
+     - Desktop: viewport 1440×900, device "desktop"
+     - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"
+     - Both: dispatch twice serially:
+       1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
+       2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
    - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, style metadata
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
@@ -38,6 +48,23 @@ How to acquire page data:
 3. **No agent-browser and no file path** → prompt user to paste code or provide file path. Set `source_mode: "file"` or `"description"`.
 4. Never silently fail — always tell the user what is happening
 </mode_detection>
+
+<device_selection>
+**URL mode only.** After mode detection, before engagement setup, prompt for device:
+
+"Which device should I scan?
+1. **Desktop** (1440×900) — default
+2. **Mobile** (390×844, iPhone 14/15)
+3. **Both** — produces two separate reports"
+
+- If `--device` flag is set: use specified device, skip prompt.
+- In `--auto` mode: default to `desktop`, skip prompt.
+- For file path mode: skip device selection entirely (no viewport rendering).
+
+Log selected device: "Scanning **[device]** at [width]×[height]."
+
+Set `devices_requested` in meta.json to the user's choice: `["desktop"]`, `["mobile"]`, or `["desktop", "mobile"]`.
+</device_selection>
 
 <progress_memory>
 Before dispatching auditors:
@@ -65,7 +92,7 @@ After writing meta.json, re-read it and verify all required fields are present:
 - `platform`: one of [shopify, nextjs, generic]
 - `page.type`: must match the page type table
 - `clusters_used`: array of cluster slug strings
-Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`, `source_mode`, `plans_queue`, `reconciled`
+Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`, `source_mode`, `devices_requested`, `devices_scanned`, `plans_queue`, `reconciled`
 If any required field is missing or invalid, fix it before proceeding.
 Always update the `updated` field to the current ISO timestamp on every phase transition.
 </engagement_setup>
@@ -102,13 +129,14 @@ Override rules:
 </domain_cluster_routing>
 
 <phase_audit>
-Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message. Use `model: "sonnet"` for all auditor dispatches — this ensures consistent analysis quality regardless of parent model.
+Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message. Use `model: "opus"` for all auditor dispatches — Opus provides better reasoning for cross-referencing screenshots against DOM and applying device-appropriate principles.
 
 Each Agent call contains:
 - The audit workflow instructions (read from ${CLAUDE_PLUGIN_ROOT}/workflows/audit.md)
 - Reference file paths for that cluster ONLY (at ${CLAUDE_PLUGIN_ROOT}/references/)
 - Ethics gate content (read from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md)
 - Min-priority filter if specified
+- **Device context:** pass `"desktop"` or `"mobile"` to each auditor
 
 **Input varies by source mode:**
 
@@ -118,8 +146,26 @@ Each Agent call contains:
 
 Collect all outputs. Verify each output ends with `STATUS: COMPLETE` or `STATUS: PARTIAL`.
 
+**Single device (desktop or mobile):**
 Write combined findings to docs/cro/{engagement-id}/audit.md.
-Update meta.json: phase → "audit", updated → current ISO timestamp.
+Update meta.json: phase → "audit", `devices_scanned` → matches selected device, updated → current ISO timestamp.
+
+**"Both" mode:**
+Run auditor batches sequentially to cap concurrency at 3 per batch:
+1. Dispatch desktop auditors (1-3 per cluster, parallel) with `device: "desktop"` — collect findings
+2. Wait for all desktop auditors to complete
+3. Dispatch mobile auditors (1-3 per cluster, parallel) with `device: "mobile"` — collect findings
+4. Write `audit.md` (desktop findings) to disk
+5. Write `audit-mobile.md` (mobile findings) to disk
+6. **Then** update meta.json: phase → "audit", `devices_scanned: ["desktop", "mobile"]`, updated → current ISO timestamp
+(Write files first, meta.json last — preserves atomicity invariant.)
+
+**Partial failure in "both" mode:**
+If one device's acquisition or audit fails, deliver the successful device's report + warning:
+"⚠️ [Mobile/Desktop] scan failed: [reason]. Run with `--device [failed-device]` to retry."
+Set `devices_scanned` to reflect only what completed. `devices_requested` preserves the original "both" intent.
+
+**Plan phase with "both" mode:** The planner receives both `audit.md` and `audit-mobile.md` as input. Findings from both devices inform the action plan.
 
 **Auditor retry:** If an auditor returns `STATUS: PARTIAL`, SKIP, or fails entirely: retry once automatically with the same inputs. If the retry also fails: write SKIP finding for that cluster, offer "Re-run [cluster]" at checkpoint.
 
@@ -134,6 +180,7 @@ After writing audit.md but before presenting the checkpoint:
    b. Otherwise, scan docs/cro/*/meta.json for a matching url_normalized (exclude the current engagement and quick-scan engagements)
    c. If multiple matches, use the most recent by date
    d. If no match found, skip this section entirely
+   e. **Device-aware matching:** Only compare same-device reports. Desktop `audit.md` compares to previous `audit.md`. Mobile `audit-mobile.md` compares to previous `audit-mobile.md`. If the previous engagement used a different viewport width (e.g., old 1280px vs new 1440px), skip comparison and note: "Previous scan used a different viewport width; comparison skipped."
 
 2. Read the previous engagement's audit.md. Parse each finding block, extracting:
    - SECTION slug (the canonical slug)

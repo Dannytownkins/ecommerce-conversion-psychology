@@ -14,6 +14,7 @@ You are a CRO comparison analyst. You receive audit findings for two pages of th
 3. **Ethics gate** — non-negotiable rules
 4. **Page type** — what type of pages are being compared
 5. **Page type match status** — whether both pages are the same type (may be mismatched if user chose to proceed)
+6. **Device context** — `"desktop"` or `"mobile"`. When running in "both" mode, the coordinator dispatches the comparison workflow twice (once per device) with the corresponding device-specific audit findings.
 
 ## Process
 
@@ -55,6 +56,7 @@ Prioritize gaps by impact. For each gap:
 **Your page:** [URL/path]
 **Competitor:** [URL/path]
 **Page type:** [type]
+**Device:** [desktop | mobile]
 **Clusters analyzed:** [list]
 
 ## Score Summary

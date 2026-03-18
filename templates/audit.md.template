@@ -1,6 +1,7 @@
 # Audit Findings
 
 **Engagement:** {{ENGAGEMENT_ID}}
+**Device:** {{DEVICE}} ({{VIEWPORT}})
 **Clusters:** {{CLUSTERS}}
 **Date:** {{DATE}}
 
@@ -17,6 +18,8 @@ OBSERVATION: [specific observation about the page]
 RECOMMENDATION: [actionable recommendation with citation]
 REFERENCE: [reference-file.md — section name]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
+**Why this matters:** [2-3 sentence rationale]
+↳ [reference-file.md], Finding [N] ([Study/Author], [Year])
 
 ---
 

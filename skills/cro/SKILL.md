@@ -24,6 +24,7 @@ Available commands:
 /cro:resume [--engagement-id <id>] List & resume in-progress engagements
 
 Output flags: --visual (generate annotated screenshot report), --no-visual (skip visual report prompt)
+Device flags: --device desktop|mobile|both (target viewport — desktop default, prompts if omitted)
 Common flags: --auto, --force, --min-priority, --platform
 </quick_start>
 

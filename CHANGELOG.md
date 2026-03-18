@@ -1,5 +1,55 @@
 # Changelog
 
+## 3.1.0 — 2026-03-18
+
+### Viewport-Aware Scanning & Audit Accuracy
+
+Eliminates false positives caused by agents reading source code patterns that don't match the actual rendered page at the target viewport. Adds device selection, enforces correct viewport dimensions, produces per-device reports, and embeds research rationale in every finding.
+
+#### Device-Aware Scanning (6 changes)
+- New `--device desktop|mobile|both` flag on `/cro:quick-scan`, `/cro:audit`, and `/cro:compare`. Prompts user for device choice before scanning. Defaults to desktop in `--auto` mode.
+- Desktop viewport: 1440×900 at 1x DPR (up from 1280×800). Safely above most Shopify/theme breakpoints.
+- Mobile viewport: 390×844 via `agent-browser set device "iPhone 14"` preset (includes DPR and mobile user-agent).
+- "Both" mode produces two separate reports: `audit.md` (desktop, backward-compatible) + `audit-mobile.md` (mobile). DOM extracted once at desktop viewport, screenshots captured at both viewports.
+- Partial failure in "both" mode delivers the successful device's report + warning with retry instructions. `devices_requested` preserves original intent for resume.
+- Compare "both" mode displays cost warning before dispatching 4 acquisitions.
+
+#### Acquisition Pipeline Hardening (4 changes)
+- `workflows/acquire.md` now accepts parametric viewport `{ width, height }` and device context — no more hardcoded 1280×800 default.
+- New `dom_file` optional input: when provided, acquisition skips DOM extraction (Steps 4-6) and captures screenshots only. Used for the second pass in "both" mode.
+- Correct `agent-browser` CLI syntax: `set viewport W H` for desktop, `set device "iPhone 14"` for mobile. Documented `--args "--force-device-scale-factor=2"` alternative for custom DPR.
+- WebFetch fallback blocked for URL inputs (caused the false-positive bug). File path and pasted code inputs still work without agent-browser.
+
+#### Device-Aware Auditor Principles (3 changes)
+- Auditor workflows (`audit.md`, `quick-scan.md`) receive device context and apply device-appropriate principles. Desktop emphasizes F/Z scan patterns, visual hierarchy, grid layout. Mobile emphasizes sticky CTAs, touch targets (48px+), thumb zones, single-column flow.
+- DOM caveat for mobile: auditors are told "DOM was captured at desktop viewport — screenshots are primary for mobile layout judgments."
+- De-emphasis rules prevent false positives: desktop auditors skip touch target analysis, mobile auditors skip left-side dominance rules.
+
+#### Embedded Rationale & Citations (2 changes)
+- Every FAIL and PARTIAL finding now includes a `**Why this matters:**` block (2-3 sentence rationale) + citation line pointing to the specific reference file, finding number, study name, and year.
+- Updated finding format in `workflows/audit.md`, `workflows/quick-scan.md`, and `templates/audit.md.template`.
+
+#### Model Upgrade (1 change)
+- Full audit and compare auditors upgraded from Sonnet to Opus 4.6 for better cross-referencing of screenshots against DOM and device-appropriate principle application. Quick-scan auditors remain on Sonnet.
+
+#### Downstream Consumer Updates (5 changes)
+- `meta.json` schema: new `devices_requested` and `devices_scanned` fields (added to template and validation lists in audit/quick-scan/compare SKILLs).
+- `/cro:resume` reads device context from meta.json. Old engagements without `devices_scanned` default to `["desktop"]`. Offers retry when `devices_requested` != `devices_scanned`.
+- Quick-scan aggregate filters by device — no cross-device comparison.
+- Progress comparison skips if previous engagement used a different viewport width.
+- Visual report template: CSS `max-width` scaling for 2x+ DPR mobile screenshots, device label in metadata bar.
+
+#### Concurrency & Atomicity (2 changes)
+- "Both" mode auditor concurrency capped at 3 per batch (desktop batch completes, then mobile batch). Prevents rate limit issues with 6 simultaneous Opus subagents.
+- Write order enforced: audit files written to disk first, `devices_scanned` updated in meta.json last. Preserves "file existence wins" atomicity invariant.
+
+#### Files Modified (13)
+- `workflows/acquire.md`, `workflows/audit.md`, `workflows/quick-scan.md`, `workflows/compare.md`
+- `skills/cro/SKILL.md`, `skills/cro/audit/SKILL.md`, `skills/cro/quick-scan/SKILL.md`, `skills/cro/compare/SKILL.md`, `skills/cro/resume/SKILL.md`
+- `templates/meta.json.template`, `templates/audit.md.template`, `templates/audit-competitor.md.template`, `templates/visual-report.html.template`
+
+---
+
 ## 3.0.0 — 2026-03-17
 
 ### Accuracy, Architecture & Visual Reports — Major Release

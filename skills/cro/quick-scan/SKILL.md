@@ -5,7 +5,7 @@ description: >-
   3-5 highest-impact quick wins, no further phases. Faster and cheaper
   than a full audit.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--visual] [--no-visual]"
+argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--device desktop|mobile|both] [--visual] [--no-visual]"
 ---
 
 <objective>
@@ -19,6 +19,11 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 --visual: Auto-generate visual report (annotated screenshot mockup) without prompting.
 --no-visual: Skip output prompt, conversation output only (meta.json still created silently).
 --ephemeral: DEPRECATED — behaves as --no-visual. Prints warning: "--ephemeral is deprecated, use --no-visual".
+--device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
+  - desktop: 1440×900, 1x DPR
+  - mobile: 390×844 (iPhone 14 preset, includes DPR and user-agent)
+  - both: Runs two separate scans, produces audit.md (desktop) + audit-mobile.md (mobile)
+  In --auto mode: defaults to "desktop" (no prompt).
 </flags>
 
 <mode_detection>
@@ -32,7 +37,12 @@ Determine input type from $ARGUMENTS:
 2. Dispatch acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
    - Dispatch via Agent tool with `model: "sonnet"`
-   - Pass the validated URL and viewport dimensions (default 1280x800)
+   - Pass the validated URL, viewport dimensions based on selected device, and device context:
+     - Desktop: viewport 1440×900, device "desktop"
+     - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"
+     - Both: dispatch twice serially:
+       1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
+       2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
    - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, styles
    - If acquisition returns `STATUS: BLOCKED` → present reason, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data
@@ -41,6 +51,23 @@ Determine input type from $ARGUMENTS:
 **File path:** Set `source_mode: "file"` in meta.json.
 **Description:** Set `source_mode: "description"` in meta.json.
 </mode_detection>
+
+<device_selection>
+**URL mode only.** After mode detection, before cluster selection, prompt for device:
+
+"Which device should I scan?
+1. **Desktop** (1440×900) — default
+2. **Mobile** (390×844, iPhone 14/15)
+3. **Both** — produces two separate reports"
+
+- If `--device` flag is set: use specified device, skip prompt.
+- In `--auto` mode: default to `desktop`, skip prompt.
+- For file path and description modes: skip device selection entirely (no viewport rendering).
+
+Log selected device: "Scanning **[device]** at [width]×[height]."
+
+Set `devices_requested` in meta.json to the user's choice: `["desktop"]`, `["mobile"]`, or `["desktop", "mobile"]`.
+</device_selection>
 
 <engagement_setup>
 Always create meta.json silently (needed for aggregation). Create engagement directory and meta.json with type: "quick-scan", quick_scan: true, schema_version: 2.
@@ -53,7 +80,7 @@ After writing meta.json, re-read it and verify all required fields are present:
 - `platform`: one of [shopify, nextjs, generic]
 - `page.type`: must match the page type table
 - `clusters_used`: array of cluster slug strings
-Optional: `blocked`, `quick_scan`, `compare_target`, `page.url`, `page.file_path`, `min_priority`, `source_mode`, `plans_queue`, `reconciled`
+Optional: `blocked`, `quick_scan`, `compare_target`, `page.url`, `page.file_path`, `min_priority`, `source_mode`, `devices_requested`, `devices_scanned`, `plans_queue`, `reconciled`
 If any required field is missing or invalid, fix it before proceeding.
 Always update the `updated` field to current ISO timestamp on phase transitions.
 
@@ -88,17 +115,30 @@ In automated mode (no human interaction), use default without asking.
 </cluster_selection>
 
 <dispatch>
-Dispatch ONE auditor with `model: "sonnet"`:
+Dispatch ONE auditor per device with `model: "sonnet"`:
 - Quick-scan workflow from ${CLAUDE_PLUGIN_ROOT}/workflows/quick-scan.md
 - Reference files for selected cluster ONLY (from ${CLAUDE_PLUGIN_ROOT}/references/)
 - Ethics gate from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md
+- **Device context:** pass `"desktop"` or `"mobile"` to the auditor
 
 **Input varies by source mode:**
 - **URL mode:** Pass sectioned screenshots + preprocessed DOM from acquisition agent
 - **File path mode:** Pass page source code directly
 - **Description mode:** Pass the text description
 
-Write findings to docs/cro/{engagement-id}/audit.md and update meta.json: phase → "complete".
+**Single device (desktop or mobile):**
+Write findings to docs/cro/{engagement-id}/audit.md. Update meta.json: phase → "complete", `devices_scanned` → matches selected device.
+
+**Both mode:**
+Dispatch TWO auditors (one per device, serially) with `model: "sonnet"`:
+1. Desktop auditor → write to `audit.md`
+2. Mobile auditor → write to `audit-mobile.md`
+Write audit files first, THEN update meta.json: phase → "complete", `devices_scanned: ["desktop", "mobile"]`.
+
+**Partial failure in "both" mode:**
+If one device's acquisition or audit fails, deliver the successful device's report + warning:
+"⚠️ [Mobile/Desktop] scan failed: [reason]. Run with `--device [failed-device]` to retry."
+Set `devices_scanned` to reflect only what completed. `devices_requested` preserves the original "both" intent.
 </dispatch>
 
 <output>
@@ -130,9 +170,11 @@ Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for 
 
 In --auto mode: skip prompt, default to markdown only (audit.md already written).
 
-**Quick-scan aggregate:** After presenting results, if 2+ previous quick-scans exist for the same URL (check docs/cro/*/meta.json for matching url_normalized with quick_scan: true):
+**Quick-scan aggregate:** After presenting results, if 2+ previous quick-scans exist for the same URL AND same device (check docs/cro/*/meta.json for matching `url_normalized` with `quick_scan: true` AND matching device in `devices_scanned`):
 
-"You've scanned this page [N] times. Want to see the aggregate? Shows which findings are consistent (high confidence) vs. appeared once."
+"You've scanned this page [N] times on [device]. Want to see the aggregate? Shows which findings are consistent (high confidence) vs. appeared once."
+
+Aggregate only compares desktop-to-desktop or mobile-to-mobile — never cross-device. Display device in aggregate summary.
 
 In --auto mode: skip aggregate prompt. Aggregate only via explicit `--aggregate` flag.
 </output>

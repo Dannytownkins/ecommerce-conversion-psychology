@@ -10,14 +10,41 @@ You capture page data for CRO analysis. Your job is purely mechanical: navigate,
 ## Input
 
 1. **URL** — validated by the coordinator against url-validation.md rules
-2. **Viewport dimensions** — default 1280x800
-3. **Nonce** — random hex string from the coordinator (pass through to STATUS line)
+2. **Viewport** — `{ width, height }` passed by the coordinator. No default — the coordinator must specify dimensions based on the selected device.
+3. **Device context** — `"desktop"` or `"mobile"`. Used for section detection heuristics and DPR selection:
+   - Desktop: 1x DPR (default Chromium behavior)
+   - Mobile: use device preset for accurate DPR and user-agent
+4. **Nonce** — random hex string from the coordinator (pass through to STATUS line)
+5. **dom_file** (optional) — path to an existing preprocessed DOM file. If provided, skip Steps 4, 5, and 6 entirely and reuse this DOM. Used by the coordinator for the second pass in "both" mode (screenshots only).
 
 ## Process
 
 ### Step 1: Navigate and Validate
 
-Navigate to the URL via agent-browser. Set viewport to the specified dimensions.
+Navigate to the URL via agent-browser. Set viewport explicitly before navigation based on device context:
+
+```
+Desktop: agent-browser set viewport {width} {height}
+         (DPR defaults to 1x — no extra flags needed)
+
+Mobile:  agent-browser set device "iPhone 14"
+         (sets viewport 390x844, DPR 3x, and mobile user-agent automatically)
+
+         Alternative for exact 2x DPR:
+         agent-browser --args "--force-device-scale-factor=2" set viewport {width} {height}
+```
+
+**agent-browser is REQUIRED for URL input.** If agent-browser is not available and the input is a URL, return immediately:
+
+```
+STATUS: BLOCKED — agent-browser is required for viewport-accurate URL scanning.
+Install: npm install -g agent-browser && agent-browser install
+Alternatives: (1) provide a local file path, (2) paste page source code
+```
+
+Do NOT fall back to WebFetch or any other HTTP fetching tool for URL input. WebFetch does not render the page at a viewport and produces source code that does not reflect the actual rendered layout, causing false positives in downstream auditors.
+
+**Note:** If the input is a file path or pasted source code (not a URL), agent-browser is not needed. Proceed normally without viewport rendering.
 
 Wait for DOMContentLoaded + 2 seconds settle time (handles most JS hydration).
 
@@ -61,6 +88,10 @@ Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel off
 
 A section can be tagged with multiple clusters. This mapping tells the coordinator which DOM sections to route to which auditor.
 
+**Device-aware section detection:**
+- When `device: "mobile"`: also look for sticky bottom bars, hamburger/drawer menus, single-column layouts, horizontal swipe carousels, and collapsed accordion sections
+- When `device: "desktop"`: also look for multi-column grids, sidebar layouts, hover-dependent flyout menus, and mega-navigation dropdowns
+
 ### Step 3: Capture Sectioned Screenshots
 
 Capture screenshots at each section boundary:
@@ -69,13 +100,15 @@ Capture screenshots at each section boundary:
 2. **Each subsequent section** — scroll to the boundary's `scrollY`, capture a viewport-sized screenshot
 
 Capture settings:
-- Device pixel ratio: 1x (not retina)
+- Device pixel ratio: determined by device context (1x for desktop, set by device preset for mobile)
 - Format: JPEG, quality 80
-- Viewport: as specified in input (default 1280x800)
+- Viewport: as specified in input (no default — coordinator must specify)
 
 Cap at 6 screenshots total. Minimum 3.
 
 ### Step 4: Extract and Preprocess DOM
+
+**If `dom_file` was provided in input:** Skip Steps 4, 5, and 6 entirely. The coordinator has already acquired the DOM from a previous acquisition pass. Proceed directly to the Output Format section, using the provided `dom_file` path as `DOM_FILE` in the output.
 
 Extract `document.documentElement.outerHTML` from the fully rendered page.
 
@@ -124,14 +157,17 @@ If pre-hydration detected:
 Return a structured report with these sections:
 
 ```
+DEVICE: [desktop | mobile]
+VIEWPORT: [width]x[height] @ [dpr]x
+
 SCREENSHOTS: [number captured]
 [For each: { "index": N, "label": "[section name]", "scrollY": N, "path": "[screenshot file path]" }]
 
 SECTIONS: [number of boundaries detected]
 [Array of section boundary metadata objects]
 
-DOM_SIZE: [size in bytes after preprocessing]
-DOM_MODE: [full | skeleton]
+DOM_SIZE: [size in bytes after preprocessing, or "reused" if dom_file was provided]
+DOM_MODE: [full | skeleton | reused]
 
 STYLES:
 { "bg": "...", "container_bg": "...", "text": "...", "cta_bg": "...", "link": "..." }
@@ -140,7 +176,7 @@ PRE_HYDRATION_WARNING: [true | false]
 
 STRUCTURED_DATA: [extracted JSON-LD metadata, if any]
 
-DOM_FILE: [path where preprocessed DOM was written, e.g., docs/cro/{engagement-id}/dom.html]
+DOM_FILE: [path where preprocessed DOM was written, or the dom_file path that was provided]
 
 STATUS: COMPLETE
 ```

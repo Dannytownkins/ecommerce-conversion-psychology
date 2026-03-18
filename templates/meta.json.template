@@ -13,6 +13,8 @@
   },
   "platform": "generic",
   "source_mode": null,
+  "devices_requested": [],
+  "devices_scanned": [],
   "clusters_used": [],
   "min_priority": null,
   "compare_target": null,

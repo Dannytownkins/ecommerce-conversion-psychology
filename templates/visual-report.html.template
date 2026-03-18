@@ -42,9 +42,28 @@
     }
     .screenshot-img {
       width: 100%;
+      max-width: 100%;
+      height: auto;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
       display: block;
+    }
+    /* Mobile screenshots at 2x+ DPR have larger pixel dimensions — scale to fit container */
+    .screenshot-img.mobile {
+      max-width: 390px;
+      margin: 0 auto;
+    }
+    .device-label {
+      display: inline-block;
+      background: #1a1a2e;
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.15rem 0.5rem;
+      border-radius: 3px;
+      margin-bottom: 0.25rem;
     }
 
     /* CRO Callout Bars */
@@ -136,6 +155,7 @@
       <span>Date: {{DATE}}</span>
       <span>Platform: {{PLATFORM}}</span>
       <span>Clusters: {{CLUSTERS}}</span>
+      <span>Device: {{DEVICE}} ({{VIEWPORT}})</span>
       <span>Source: {{SOURCE_MODE}}</span>
     </div>
   </div>

@@ -1,6 +1,6 @@
 # 🧠 E-Commerce Conversion Psychology
 
-![v3.0.0](https://img.shields.io/badge/version-3.0.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_any-green)
+![v3.1.0](https://img.shields.io/badge/version-3.1.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 15 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -24,10 +24,12 @@ Not a checklist. Not a linter. A full workflow that catches what you miss, chall
 
 | Flag | Commands | Purpose |
 |------|----------|---------|
+| `--device` | audit, quick-scan, compare | Target viewport: `desktop` (1440×900), `mobile` (390×844), `both` |
 | `--auto` | audit, build | Skip checkpoints, run all phases automatically |
 | `--min-priority` | audit, build, quick-scan | Filter by severity: `critical`, `high`, `medium`, `low` |
 | `--platform` | audit, build, quick-scan | Skip detection: `shopify`, `nextjs` |
-| `--export-report` | audit, build, compare | Generate self-contained HTML report |
+| `--visual` | audit, quick-scan, compare | Generate annotated screenshot report |
+| `--no-visual` | audit, quick-scan, compare | Skip visual report prompt |
 | `--ab-scaffold` | audit, build | Generate A/B test scaffold after planning |
 | `--ab-tool` | audit, build | Specify existing A/B tool |
 | `--cluster` | quick-scan | Override cluster: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey` |
@@ -54,9 +56,10 @@ Each run creates a directory under `docs/cro/` — one file per phase:
 
 ```
 docs/cro/2026-03-11-a3f2b1c9/
-  meta.json           Engagement state + metadata
+  meta.json           Engagement state + metadata (includes devices_scanned)
   context.md          Write-once intake context
-  audit.md            Findings
+  audit.md            Desktop findings (or single-device findings)
+  audit-mobile.md     Mobile findings (only when --device both)
   plan.md             Prioritized action plan
   review.md           Review notes + verdict
   build-log.md        Implementation status

@@ -16,6 +16,7 @@ The coordinator provides:
 4. **Screenshots** — 3-6 sectioned viewport captures of the page (URL mode only). Each screenshot covers one visual section of the page. Examine each screenshot individually against your cluster's principles before moving to the next.
 5. **Preprocessed DOM** — cleaned, post-JS-execution HTML with scripts/styles/SVGs stripped (URL mode only). Use this to verify what you see in screenshots — check for hidden elements, ARIA attributes, form structures, meta tags, and implementation details not visible in screenshots.
 6. **Min-priority filter** — if specified, include only findings at or above this level
+7. **Device context** — `"desktop"` or `"mobile"`. Determines which principles to emphasize and how to interpret the page layout. See Device-Aware Evaluation below.
 
 ## Canonical SECTION Slugs
 
@@ -61,6 +62,24 @@ PRIORITY: CRITICAL
 
 ### Step 3: Systematic Audit
 
+**Device-aware evaluation:**
+
+You are auditing a **{device}** viewport at {width}×{height}. Apply only principles relevant to this viewport.
+
+When `device: "desktop"`:
+- Emphasize: visual hierarchy, F/Z scan patterns, whitespace around CTAs, above-fold content at 1440px width, grid vs carousel layout, left-side dominance (80% fixation rule), multi-column layouts
+- De-emphasize: touch target sizes, sticky bottom CTAs, thumb-reachable zones
+
+When `device: "mobile"`:
+- Emphasize: sticky CTAs, touch target sizes (48px+ minimum), thumb-reachable zones, single-column flow, font readability (16px+ body), mobile nav patterns, swipe gestures, viewport-relative sizing
+- De-emphasize: F-pattern left-side dominance (does not apply to single-column layouts), multi-column grid analysis, hover states
+
+**DOM caveat for mobile:** When `device: "mobile"`, the DOM may have been captured at the desktop viewport (1440px). Some elements may be hidden or restructured at mobile widths via CSS or JavaScript. For layout and visibility judgments on mobile, rely on **screenshots as the primary source of truth**. Use DOM only for content extraction (text, prices, attributes, semantic structure).
+
+Do NOT apply desktop-specific principles to mobile screenshots or vice versa. This is the primary source of false positives.
+
+---
+
 **If screenshots are provided (URL mode):** Examine each screenshot one at a time. For each screenshot, identify which principles from your reference files apply to the content visible in that section. Cross-reference your visual observations with the preprocessed DOM to verify implementation details.
 
 **If only page code is provided (file path mode):** Read the source code and evaluate against reference principles.
@@ -88,7 +107,11 @@ OBSERVATION: [what was observed on the page, max 2 sentences]
 RECOMMENDATION: [specific, implementable action — not vague advice]
 REFERENCE: [filename:principle-name or principle number]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
+**Why this matters:** [2-3 sentence concise rationale explaining the psychology/research behind this finding]
+↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year])
 ```
+
+The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
 
 **Priority definitions:**
 - **CRITICAL** — Ethics violation, legal compliance issue. Fix immediately.

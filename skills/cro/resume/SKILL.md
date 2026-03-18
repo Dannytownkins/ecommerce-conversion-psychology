@@ -103,6 +103,16 @@ When reading any meta.json, validate:
 
 If validation fails, warn: "meta.json for engagement {id} has invalid data: [details]. This engagement may be corrupted."
 
+### Device Context Restoration
+
+When resuming an engagement:
+1. Read `devices_scanned` and `devices_requested` from meta.json (if present).
+2. If `devices_scanned` is missing (old engagement without device support): default to `["desktop"]`.
+3. Pass the device context to the coordinator when handing off.
+4. **Partial failure retry:** If `devices_requested` includes a device not in `devices_scanned` (e.g., user requested "both" but only desktop completed), offer:
+   "Mobile scanning failed in the previous session. Would you like to retry the mobile scan?"
+   If yes, hand off to the coordinator with `--device mobile`.
+
 ### Resuming
 
 Hand off to the relevant coordinator skill (`/cro:audit` or `/cro:build`) with `--engagement-id {id}`. The coordinator reads existing baton files and presents the appropriate checkpoint.
