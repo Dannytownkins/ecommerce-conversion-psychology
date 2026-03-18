@@ -29,6 +29,8 @@ Desktop: agent-browser set viewport {width} {height}
 
 Mobile:  agent-browser set device "iPhone 14"
          (sets viewport 390x844, DPR 3x, and mobile user-agent automatically)
+         To change the mobile device preset, update this line and the corresponding
+         viewport dimensions in the SKILL.md files and CHANGELOG.
 
          Alternative for exact 2x DPR:
          agent-browser --args "--force-device-scale-factor=2" set viewport {width} {height}
@@ -46,7 +48,12 @@ Do NOT fall back to WebFetch or any other HTTP fetching tool for URL input. WebF
 
 **Note:** If the input is a file path or pasted source code (not a URL), agent-browser is not needed. Proceed normally without viewport rendering.
 
-Wait for DOMContentLoaded + 2 seconds settle time (handles most JS hydration).
+Wait for the page to be ready before proceeding:
+1. Wait for DOMContentLoaded
+2. Wait an additional 3 seconds settle time (handles JS hydration, lazy-loaded content, async API calls)
+3. If the page appears to still be loading (spinner elements visible, skeleton screens, fewer than 10 visible text nodes), wait an additional 3 seconds (6 total settle time)
+
+The original 2-second settle was insufficient for heavy JS sites (React SPAs, Next.js hydration) and contributed to false positives from incomplete rendering.
 
 **Post-navigation URL validation:** After the page loads, verify that `window.location.href` still resolves to the same domain as the original validated URL. If the page redirected to a different domain, a private IP range, or a non-HTTP scheme, abort immediately:
 

@@ -151,10 +151,11 @@ Write combined findings to docs/cro/{engagement-id}/audit.md.
 Update meta.json: phase → "audit", `devices_scanned` → matches selected device, updated → current ISO timestamp.
 
 **"Both" mode:**
-Run auditor batches sequentially to cap concurrency at 3 per batch:
-1. Dispatch desktop auditors (1-3 per cluster, parallel) with `device: "desktop"` — collect findings
+Run auditor batches sequentially to cap concurrency at 3 simultaneous Opus subagents:
+1. Dispatch desktop auditors (1 per cluster, up to 3 clusters in parallel) with `device: "desktop"` — collect findings
 2. Wait for all desktop auditors to complete
-3. Dispatch mobile auditors (1-3 per cluster, parallel) with `device: "mobile"` — collect findings
+3. Dispatch mobile auditors (1 per cluster, up to 3 clusters in parallel) with `device: "mobile"` — collect findings
+Do NOT dispatch all 6 auditors at once — Opus rate limits make this unreliable.
 4. Write `audit.md` (desktop findings) to disk
 5. Write `audit-mobile.md` (mobile findings) to disk
 6. **Then** update meta.json: phase → "audit", `devices_scanned: ["desktop", "mobile"]`, updated → current ISO timestamp
