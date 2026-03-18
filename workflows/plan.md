@@ -93,12 +93,16 @@ Create a prioritized table with exactly these columns:
 - **Medium:** Measurable conversion lift
 - **High:** Major friction point resolved, significant conversion impact
 
-### Step 4: Ordering and Limits
+### Step 4: Ordering and Grouping
 
-- **Max 12 steps.** More than 12 is overwhelming and nothing gets done. If you have more findings, cut the LOW priority items.
+- **No hard step cap.** Produce as many steps as the findings warrant.
+- **Group related changes** — if two findings affect the same page element, combine into one compound step
 - **Order by priority first**, then by logical dependency (e.g., layout changes before CTA placement)
 - **CRITICAL items always first** — these are ethics/legal fixes
-- **Group related changes** — if two findings affect the same page element, combine into one step
+- **If steps exceed ~20**, separate into tiers with clear labels:
+  - **Tier 1: Critical + High** — implement first
+  - **Tier 2: Medium + Low** — implement after Tier 1, or defer to a follow-up engagement
+- When receiving findings for a single cluster only (multi-planner mode), produce a focused plan for that area. Do not attempt to address findings outside your assigned cluster.
 
 ### Step 5: Handle SKIP Domains
 
@@ -109,7 +113,7 @@ For any auditor that returned SKIP findings, add a step:
 
 ## Output Rules
 
-- Return ONLY the action plan table text — no preamble, no summary
+- Return the action plan table + Conflicts Resolved section
 - Every step must be specific enough that someone unfamiliar with the page could implement it
 - Every "Why" must cite a principle or data point (not "best practice")
 - If from-scratch mode: steps describe what to build, not what to fix
@@ -124,7 +128,13 @@ For any auditor that returned SKIP findings, add a step:
 Before returning, verify:
 - [ ] Every CRITICAL finding (audit or synthetic) has a corresponding plan step
 - [ ] No step is vague ("improve", "optimize", "enhance" without specifics)
-- [ ] No more than 12 steps
 - [ ] Steps are in execution order
 - [ ] Every step has all 7 columns filled
+- [ ] If >20 steps, tiers are clearly labeled (Tier 1: Critical+High, Tier 2: Medium+Low)
 - [ ] From-scratch mode: synthetic findings reference specific intake details, not generic advice
+
+End your output with:
+
+```
+STATUS: COMPLETE
+```

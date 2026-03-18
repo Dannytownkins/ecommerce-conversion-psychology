@@ -221,15 +221,28 @@ If --auto: skip checkpoint, proceed to review. If --ab-scaffold: generate scaffo
 
 <phase_review>
 Read ${CLAUDE_PLUGIN_ROOT}/workflows/review.md for reviewer instructions.
+Read ${CLAUDE_PLUGIN_ROOT}/references/relay-loop-protocol.md for the relay loop protocol.
 
-Dispatch reviewer subagent with:
-- Workflow instructions
-- Context, audit findings, and action plan from baton files
-- Ethics gate content
-- Verification checklist (from ${CLAUDE_PLUGIN_ROOT}/references/verification-checklist.md)
+**Relay loop dispatch:**
 
-Collect output. Write to docs/cro/{engagement-id}/review.md.
-Update meta.json: phase → "review".
+1. Generate a nonce: `openssl rand -hex 4`
+2. Dispatch reviewer subagent with `model: "opus"`:
+   - Workflow instructions
+   - Context, audit findings, and action plan from baton files
+   - Ethics gate content
+   - Verification checklist (from ${CLAUDE_PLUGIN_ROOT}/references/verification-checklist.md)
+   - The nonce
+   - Auto mode flag (true if --auto)
+   - Previous Q&A pairs (empty on first dispatch)
+3. Collect output. Parse for `QUESTION__{nonce}:` lines and `VERDICT__{nonce}:` line.
+4. **Conditional relay:** If QUESTION lines found AND not --auto:
+   - Present questions to user (numbered, with options from JSON)
+   - Collect answers
+   - Re-dispatch reviewer with: original inputs + Q&A pairs only (not full previous output) + same nonce
+   - Max 3 total dispatches. After 3rd, present unresolved questions + best-effort verdict to user.
+5. If no QUESTION lines (or --auto): use the verdict as-is.
+6. Write review notes to docs/cro/{engagement-id}/review.md.
+7. Update meta.json: phase → "review", updated → current ISO timestamp.
 </phase_review>
 
 <checkpoint_review>
@@ -241,8 +254,11 @@ Update meta.json: phase → "review".
 1. Proceed to build
 2. Adjust plan based on review
 3. Go back to planning
-4. Export report
-5. Stop here
+4. Deepen plan — add more detail to weak steps
+5. Export report
+6. Save here and resume later
+
+If --auto: always select option 1 (proceed to build). Options 4, 5, 6 are interactive-only.
 
 If --auto (without --force):
 - If verdict is APPROVE or REVISE: proceed to build.
@@ -265,19 +281,35 @@ Skip entirely if not a git repo.
 
 <phase_build>
 Read ${CLAUDE_PLUGIN_ROOT}/workflows/build.md for builder instructions.
+Read ${CLAUDE_PLUGIN_ROOT}/references/relay-loop-protocol.md for the relay loop protocol.
 
 If platform detected, also load ${CLAUDE_PLUGIN_ROOT}/platforms/{platform}.md.
 
-Dispatch builder subagent with:
-- Workflow instructions
-- Action plan and review notes from baton files
-- Platform reference (if applicable)
-- Context from baton file
+**Pre-build safety (--auto mode only):**
+If `--auto` and project is a git repo: run `git status --porcelain`. If output is non-empty, abort: "Build requires clean git state in --auto mode. Commit or stash your changes first."
 
-Collect output. Write to docs/cro/{engagement-id}/build-log.md.
-Update meta.json: phase → "build".
+**Relay loop dispatch:**
 
-If screenshot mode: skip build, present recommendations only.
+1. Generate a nonce: `openssl rand -hex 4`
+2. Dispatch builder subagent with `model: "sonnet"`:
+   - Workflow instructions
+   - Action plan and review notes from baton files
+   - Platform reference (if applicable)
+   - Context from baton file
+   - The nonce
+   - Auto mode flag
+   - Previous Q&A pairs (empty on first dispatch)
+3. Collect output. Parse for `QUESTION__{nonce}:` lines.
+4. **Conditional relay:** If QUESTION lines found AND not --auto:
+   - Present questions to user (Stuck/Ethics decisions with options)
+   - Collect answers
+   - Re-dispatch builder with: original inputs + Q&A pairs only + same nonce
+   - Max 3 total dispatches.
+5. If no QUESTION lines (or --auto): use the build output as-is.
+6. Write to docs/cro/{engagement-id}/build-log.md.
+7. Update meta.json: phase → "build", updated → current ISO timestamp.
+
+If source_mode is "url-dual" and no local source code is available: skip build, present recommendations only.
 </phase_build>
 
 <checkpoint_build>
