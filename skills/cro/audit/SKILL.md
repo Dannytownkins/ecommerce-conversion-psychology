@@ -52,7 +52,7 @@ Before dispatching auditors:
 <engagement_setup>
 1. Generate engagement ID: YYYY-MM-DD-{8-hex} via `openssl rand -hex 4` (fallback: `python -c "import secrets; print(secrets.token_hex(4))"`)
 2. Create directory: docs/cro/{engagement-id}/
-3. On first engagement ever: check if docs/cro/ is in .gitignore. If not, suggest adding it.
+3. Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 4. Detect legacy file: if docs/cro-action-plan.md exists, inform user it will be preserved but not used.
 5. Write context.md (write-once, locked after this step)
 6. Write meta.json with schema_version: 2, phase: "pending", source_mode from mode_detection
@@ -352,10 +352,21 @@ Update meta.json: phase → "complete".
 
 <go_back_protocol>
 When user chooses to go back:
-1. Write updated meta.json to temp file, rename over original (atomic replace)
-2. Delete downstream phase files (e.g., going back to audit deletes plan.md, review.md, build-log.md)
+
+**Atomicity order: delete files FIRST, then update meta.json.** If deletion fails partway, meta.json still reflects the previous (correct) phase. Resume can detect and self-heal from inconsistent state.
+
+**Single-planner mode:**
+1. Delete downstream phase files (e.g., going back to audit deletes plan.md, review.md, build-log.md)
+2. Update meta.json: phase → target phase, updated → current ISO timestamp
 3. If builder has modified files: warn user about code divergence, suggest git restore
 4. Re-dispatch target phase with fresh agents
+
+**Multi-planner mode:**
+- Going back on active PRD: delete only that PRD's downstream files (review-{slug}.md, build-log-{slug}.md). Verify file paths are children of the engagement directory before deletion. Reset that entry's phase in plans_queue.
+- Going back to audit: delete ALL plan-*.md, review-*.md, build-log-*.md, and reconciliation.md. Reset plans_queue to empty. Update meta.json phase.
+- See ${CLAUDE_PLUGIN_ROOT}/references/multi-planner-protocol.md for details.
+
+**Invariant:** If meta.json phase and file existence disagree, file existence wins. This is how resume self-heals.
 </go_back_protocol>
 
 <report_export>
