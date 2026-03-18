@@ -5,7 +5,7 @@ description: >-
   principles. Four-phase relay with structured intake for product pages,
   landing pages, pricing pages, and checkout flows.
 disable-model-invocation: true
-argument-hint: "[description-or-structured-intake] [--auto] [--min-priority level] [--platform shopify|nextjs] [--export-report] [--ab-scaffold] [--ab-tool tool-name]"
+argument-hint: "[description-or-structured-intake] [--auto] [--min-priority level] [--platform shopify|nextjs] [--visual] [--no-visual] [--ab-scaffold] [--ab-tool tool-name]"
 ---
 
 <objective>
@@ -13,7 +13,13 @@ Build a new ecommerce page from scratch using conversion psychology principles. 
 </objective>
 
 <flags>
-Same flags as /cro:audit (including --force). See audit SKILL.md for details.
+--auto: Skip all checkpoint pauses. Halts on BLOCK verdict unless --force is also set.
+--force: Override BLOCK verdicts in --auto mode. No effect without --auto.
+--min-priority [level]: Filter findings. Scale: critical > high > medium > low.
+--platform [name]: Skip platform detection. Values: shopify, nextjs, generic.
+--visual: Auto-generate visual report (annotated screenshot mockup).
+--no-visual: Skip visual report prompt, markdown only.
+--ab-scaffold: Generate A/B test scaffold after plan phase. Pair with --ab-tool [tool].
 </flags>
 
 <intake>
