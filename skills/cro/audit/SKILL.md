@@ -418,8 +418,19 @@ When user chooses to go back:
 </go_back_protocol>
 
 <report_export>
-Available at any checkpoint or via --export-report flag.
-Read ${CLAUDE_PLUGIN_ROOT}/workflows/report.md for report generator instructions.
+Available at any checkpoint when user requests a visual report.
+
+**Visual report (wireframe + findings):** Generate inline — do NOT dispatch a subagent.
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML structure
+2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
+3. Build wireframe sections from acquisition data (section boundaries, DOM elements, style metadata)
+4. Build finding cards from audit findings (with rationale + citations)
+5. Calculate scores (total, critical, high, quick wins)
+6. Fill template placeholders and write completed HTML
+Output: `docs/cro/{engagement-id}/visual-report.html`
+For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`
+
+**Text report:** Read ${CLAUDE_PLUGIN_ROOT}/workflows/report.md for text report generator instructions.
 Dispatch report subagent with all baton files from the engagement directory.
 Output: docs/cro/{engagement-id}/report.html
 </report_export>

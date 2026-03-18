@@ -43,9 +43,15 @@ Do NOT apply desktop-specific principles to mobile screenshots or vice versa. Th
 ---
 
 **If screenshots + preprocessed DOM are provided (URL mode):** Examine each screenshot one at a time against your cluster's principles. Cross-reference visual observations with the DOM to verify implementation details. Determine evidence source for each finding:
-- `VISUAL` — evidence from screenshot only
-- `CODE` — evidence from DOM only
-- `BOTH` — corroborated by both (highest confidence)
+- `VISUAL` — you can literally see this issue in one of the provided screenshots.
+  **Self-check:** "Can I point to this in a specific screenshot?" If no → use CODE.
+- `CODE` — found in the DOM but not visible at this viewport.
+  Hover states, CSS-hidden elements, responsive-hidden content = always CODE, never VISUAL.
+  If an element exists in DOM but is not visible in screenshots, note in observation:
+  "Detected in DOM but not visually rendered at this viewport."
+- `BOTH` — visible in a screenshot AND verified in the DOM (highest confidence).
+
+Misattributing CODE evidence as VISUAL is a finding accuracy violation. When in doubt, use CODE.
 
 **If only page code is provided (file path mode):** Read the source code and evaluate against principles. All findings use `SOURCE: CODE`.
 

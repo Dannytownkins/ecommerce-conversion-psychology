@@ -7,182 +7,271 @@
   <title>CRO Visual Report — {{ENGAGEMENT_ID}}</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0e0e10;
+      --surface: #18181b;
+      --surface-2: #1e1e22;
+      --border: #2a2a2e;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --critical: #ef4444;
+      --critical-bg: rgba(239, 68, 68, 0.08);
+      --critical-border: rgba(239, 68, 68, 0.3);
+      --high: #f59e0b;
+      --high-bg: rgba(245, 158, 11, 0.08);
+      --high-border: rgba(245, 158, 11, 0.3);
+      --pass: #22c55e;
+      --accent: #3b82f6;
+      --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
       line-height: 1.6;
-      color: #1a1a2e;
-      background: #f8f9fa;
-      padding: 1rem;
-      max-width: 1000px;
-      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* Header Banner */
-    .report-banner {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #fff;
+    /* ─── Header ─── */
+    .report-header {
+      border-bottom: 1px solid var(--border);
       padding: 1.5rem 2rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-    .report-banner h1 { font-size: 1.1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
-    .report-banner .warning { color: #f59e0b; font-size: 0.85rem; font-weight: 600; }
-    .report-meta-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 0.75rem; font-size: 0.8rem; opacity: 0.85; }
-    .report-meta-bar span { background: rgba(255,255,255,0.15); padding: 0.2rem 0.6rem; border-radius: 4px; }
-
-    /* Screenshot Sections */
-    .screenshot-section { margin-bottom: 1.5rem; }
-    .section-label {
-      font-size: 0.75rem;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.5rem 0;
-    }
-    .screenshot-img {
-      width: 100%;
-      max-width: 100%;
-      height: auto;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      display: block;
-    }
-    /* Mobile screenshots at 2x+ DPR have larger pixel dimensions — scale to fit container */
-    .screenshot-img.mobile {
-      max-width: 390px;
-      margin: 0 auto;
-    }
-    .device-label {
-      display: inline-block;
-      background: #1a1a2e;
-      color: #fff;
-      font-size: 0.65rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.15rem 0.5rem;
-      border-radius: 3px;
-      margin-bottom: 0.25rem;
-    }
-
-    /* CRO Callout Bars */
-    .cro-callout {
-      background: #ea580c;
-      color: #fff;
-      padding: 0.75rem 1rem;
-      border-radius: 8px;
-      margin: 0.75rem 0;
-      font-size: 0.875rem;
-      font-weight: 500;
       display: flex;
+      justify-content: space-between;
       align-items: flex-start;
-      gap: 0.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
-    .cro-callout .arrow { font-size: 1rem; flex-shrink: 0; }
-    .cro-callout .source-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.25);
-      padding: 0.1rem 0.4rem;
-      border-radius: 3px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      margin-left: 0.5rem;
-      flex-shrink: 0;
+    .report-header h1 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.02em; }
+    .report-header .subtitle { color: var(--text-muted); font-size: 0.8rem; margin-top: 0.25rem; }
+    .report-header .meta {
+      display: flex; gap: 1.25rem; font-size: 0.75rem; color: var(--text-muted); font-family: var(--mono);
+    }
+    .device-badge {
+      display: inline-block; font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 0.2rem 0.6rem; border-radius: 3px; margin-left: 0.5rem;
+    }
+    .device-badge.desktop { background: var(--accent); color: #fff; }
+    .device-badge.mobile { background: #8b5cf6; color: #fff; }
+
+    /* ─── Score Strip ─── */
+    .score-strip {
+      display: flex; border-bottom: 1px solid var(--border);
+    }
+    .score-item {
+      flex: 1; padding: 1rem 1.25rem; text-align: center; border-right: 1px solid var(--border);
+    }
+    .score-item:last-child { border-right: none; }
+    .score-value { font-size: 1.75rem; font-weight: 700; font-family: var(--mono); letter-spacing: -0.04em; }
+    .score-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-top: 0.15rem; }
+    .score-value.critical { color: var(--critical); }
+    .score-value.high { color: var(--high); }
+
+    /* ─── Main Split Panel ─── */
+    .main {
+      display: grid; grid-template-columns: 45fr 55fr; min-height: calc(100vh - 200px);
     }
 
-    /* PASS Indicators */
-    .pass-indicator {
-      border-left: 3px solid #16a34a;
-      padding: 0.4rem 0.75rem;
-      margin: 0.5rem 0;
-      font-size: 0.8rem;
-      color: #166534;
-      background: #f0fdf4;
-      border-radius: 0 4px 4px 0;
+    /* ─── Wireframe Panel (Left) ─── */
+    .wireframe-panel {
+      border-right: 1px solid var(--border); padding: 1.5rem; overflow-y: auto;
+    }
+    .wireframe-panel h2 {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-muted); margin-bottom: 1.25rem;
+    }
+    .wireframe {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; font-size: 0.75rem;
     }
 
-    /* Hidden Elements Section */
-    .hidden-section {
-      background: #fff;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 1.25rem;
-      margin: 1.5rem 0;
+    /* Wireframe sections */
+    .wf-section {
+      padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); position: relative;
     }
-    .hidden-section h2 { font-size: 1rem; color: #1a1a2e; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
-    .hidden-item { padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9; font-size: 0.875rem; }
-    .hidden-item:last-child { border-bottom: none; }
+    .wf-section:last-child { border-bottom: none; }
+    .wf-section .wf-label {
+      font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.35rem;
+    }
+    .wf-section.has-critical { background: var(--critical-bg); border-left: 3px solid var(--critical); }
+    .wf-section.has-high { background: var(--high-bg); border-left: 3px solid var(--high); }
 
-    /* Footer */
+    /* Callout markers */
+    .callout-marker {
+      position: absolute; top: 0.4rem; right: 0.4rem;
+      width: 1.4rem; height: 1.4rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700; font-family: var(--mono);
+    }
+    .callout-marker.critical { background: var(--critical); color: #fff; }
+    .callout-marker.high { background: var(--high); color: #000; }
+
+    /* Wireframe element styles — use site colors via inline styles */
+    .wf-announcement { padding: 0.4rem 0.75rem; font-size: 0.65rem; display: flex; justify-content: space-between; align-items: center; }
+    .wf-nav { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; font-size: 0.65rem; color: var(--text-muted); }
+    .wf-nav .logo { font-weight: 700; color: var(--text); font-size: 0.8rem; }
+    .wf-hero { padding: 1.25rem 1rem; text-align: center; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; }
+    .wf-hero h3 { font-size: 0.9rem; font-weight: 600; }
+    .wf-hero .wf-btn { padding: 0.35rem 1.5rem; border-radius: 4px; font-weight: 600; font-size: 0.75rem; border: none; }
+    .wf-product-grid { display: flex; gap: 0.5rem; padding: 0.5rem 0; overflow: hidden; }
+    .wf-product-card {
+      min-width: 100px; background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 0.5rem; flex-shrink: 0; font-size: 0.6rem;
+    }
+    .wf-product-card .wf-img { background: #2a2a30; height: 55px; border-radius: 3px; margin-bottom: 0.35rem; }
+    .wf-product-card .wf-title { font-weight: 500; font-size: 0.6rem; }
+    .wf-product-card .wf-price { font-weight: 600; font-size: 0.65rem; margin-top: 0.15rem; }
+    .wf-newsletter { padding: 0.75rem; text-align: center; font-size: 0.7rem; }
+    .wf-footer { padding: 0.5rem 0.75rem; font-size: 0.55rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+
+    /* Fold line */
+    .fold-line {
+      border-top: 1px dashed rgba(255,255,255,0.15); position: relative; margin: 0;
+    }
+    .fold-line::after {
+      content: attr(data-label);
+      position: absolute; top: -0.5rem; right: 0.75rem;
+      font-size: 0.5rem; color: var(--text-muted); background: var(--surface);
+      padding: 0 0.4rem; font-family: var(--mono);
+    }
+
+    /* Expandable screenshot */
+    .wf-screenshot details { margin-top: 0.5rem; }
+    .wf-screenshot summary {
+      font-size: 0.6rem; color: var(--accent); cursor: pointer; user-select: none;
+    }
+    .wf-screenshot summary:hover { text-decoration: underline; }
+    .wf-screenshot img {
+      width: 100%; max-width: 100%; height: auto; border-radius: 4px;
+      border: 1px solid var(--border); margin-top: 0.35rem;
+    }
+    .wf-screenshot img.mobile { max-width: 60%; margin: 0.35rem auto 0; display: block; }
+
+    /* ─── Findings Panel (Right) ─── */
+    .findings-panel { padding: 1.5rem; overflow-y: auto; }
+    .findings-panel h2 {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text-muted); margin-bottom: 1.25rem;
+    }
+
+    .finding-card {
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.85rem; overflow: hidden;
+    }
+    .finding-card.critical { border-color: var(--critical-border); }
+    .finding-card.high { border-color: var(--high-border); }
+
+    .finding-header {
+      padding: 0.6rem 0.85rem; display: flex; align-items: center; gap: 0.6rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .finding-card.critical .finding-header { background: var(--critical-bg); border-bottom-color: var(--critical-border); }
+    .finding-card.high .finding-header { background: var(--high-bg); border-bottom-color: var(--high-border); }
+
+    .finding-num {
+      width: 1.4rem; height: 1.4rem; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem; font-weight: 700; font-family: var(--mono); flex-shrink: 0;
+    }
+    .finding-card.critical .finding-num { background: var(--critical); color: #fff; }
+    .finding-card.high .finding-num { background: var(--high); color: #000; }
+
+    .finding-title { font-size: 0.8rem; font-weight: 600; flex: 1; }
+
+    .finding-badge {
+      font-size: 0.55rem; font-family: var(--mono); text-transform: uppercase;
+      letter-spacing: 0.06em; padding: 0.15rem 0.45rem; border-radius: 3px; font-weight: 600; flex-shrink: 0;
+    }
+    .finding-card.critical .finding-badge { background: var(--critical); color: #fff; }
+    .finding-card.high .finding-badge { background: var(--high); color: #000; }
+
+    .finding-body { padding: 0.75rem 0.85rem; }
+    .finding-body p { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem; line-height: 1.5; }
+    .finding-body p:last-child { margin-bottom: 0; }
+    .finding-body strong { color: var(--text); font-weight: 600; }
+    .finding-body code {
+      font-family: var(--mono); font-size: 0.65rem; background: var(--surface-2);
+      padding: 0.1rem 0.35rem; border-radius: 3px; border: 1px solid var(--border);
+    }
+
+    .finding-citation {
+      padding: 0.4rem 0.85rem; border-top: 1px solid var(--border);
+      font-size: 0.6rem; font-family: var(--mono); color: var(--text-muted); background: var(--surface-2);
+    }
+
+    /* ─── Footer ─── */
     .report-footer {
-      text-align: center;
-      font-size: 0.75rem;
-      color: #94a3b8;
-      padding: 1.5rem 0;
-      border-top: 1px solid #e2e8f0;
-      margin-top: 2rem;
+      text-align: center; font-size: 0.7rem; color: var(--text-muted);
+      padding: 1.25rem 0; border-top: 1px solid var(--border);
     }
 
-    /* Print */
+    /* ─── Print ─── */
     @media print {
-      body { padding: 0; background: #fff; max-width: 100%; }
-      .report-banner { break-after: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .screenshot-section { break-inside: avoid; }
-      .cro-callout { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      @page { size: A4 landscape; margin: 1cm; }
+      body { background: #fff; color: #1a1a2e; }
+      .main { display: block; }
+      .wireframe-panel { border-right: none; }
+      .report-header, .score-strip { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .finding-card { break-inside: avoid; }
+      @page { size: A4 portrait; margin: 1cm; }
     }
 
-    /* Responsive */
-    @media (max-width: 600px) {
-      body { padding: 0.5rem; }
-      .report-banner { padding: 1rem; }
-      .report-meta-bar { flex-direction: column; align-items: center; }
-      .cro-callout { flex-direction: column; }
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .main { grid-template-columns: 1fr; }
+      .wireframe-panel { border-right: none; border-bottom: 1px solid var(--border); }
+      .score-strip { flex-wrap: wrap; }
+      .score-item { min-width: 25%; }
+      .report-header { flex-direction: column; }
     }
   </style>
 </head>
 <body>
 
-  <!-- HEADER BANNER -->
-  <div class="report-banner">
-    <h1>CRO Redesign Mockup</h1>
-    <div class="warning">{{PAGE_URL}} — VISUAL GUIDE (NOT PRODUCTION CODE)</div>
-    <div class="report-meta-bar">
+  <!-- ─── HEADER ─── -->
+  <div class="report-header">
+    <div>
+      <h1>CRO Quick Scan — {{PAGE_URL}} <span class="device-badge {{DEVICE_CLASS}}">{{DEVICE}}</span></h1>
+      <div class="subtitle">{{PAGE_TYPE}} &middot; {{CLUSTERS}} Cluster</div>
+    </div>
+    <div class="meta">
+      <span>{{DATE}}</span>
+      <span>{{VIEWPORT}}</span>
+      <span>{{PLATFORM}}</span>
       <span>ID: {{ENGAGEMENT_ID}}</span>
-      <span>Date: {{DATE}}</span>
-      <span>Platform: {{PLATFORM}}</span>
-      <span>Clusters: {{CLUSTERS}}</span>
-      <span>Device: {{DEVICE}} ({{VIEWPORT}})</span>
-      <span>Source: {{SOURCE_MODE}}</span>
     </div>
   </div>
 
-  <!-- SCREENSHOT SECTIONS WITH CALLOUTS -->
-  {{SCREENSHOT_SECTIONS}}
-
-  <!-- HIDDEN ELEMENTS -->
-  <!-- {{SECTION:HIDDEN_START}} -->
-  <div class="hidden-section">
-    <h2>Hidden &amp; Dynamic Elements</h2>
-    {{HIDDEN_FINDINGS}}
+  <!-- ─── SCORE STRIP ─── -->
+  <div class="score-strip">
+    <div class="score-item"><div class="score-value">{{SCORE_TOTAL}}</div><div class="score-label">Findings</div></div>
+    <div class="score-item"><div class="score-value critical">{{SCORE_CRITICAL}}</div><div class="score-label">Critical</div></div>
+    <div class="score-item"><div class="score-value high">{{SCORE_HIGH}}</div><div class="score-label">High</div></div>
+    <div class="score-item"><div class="score-value" style="color:var(--pass)">{{SCORE_QUICKWINS}}</div><div class="score-label">Quick Wins</div></div>
   </div>
-  <!-- {{SECTION:HIDDEN_END}} -->
 
-  <!-- ADDITIONAL FINDINGS (unmapped to screenshots) -->
-  <!-- {{SECTION:ADDITIONAL_START}} -->
-  <div class="hidden-section">
-    <h2>Additional Findings</h2>
-    {{ADDITIONAL_FINDINGS}}
+  <!-- ─── MAIN SPLIT PANEL ─── -->
+  <div class="main">
+
+    <!-- LEFT: Wireframe -->
+    <div class="wireframe-panel">
+      <h2>Annotated Page Wireframe</h2>
+      <div class="wireframe">
+        {{WIREFRAME_SECTIONS}}
+      </div>
+    </div>
+
+    <!-- RIGHT: Findings -->
+    <div class="findings-panel">
+      <h2>Findings</h2>
+      {{FINDING_CARDS}}
+    </div>
+
   </div>
-  <!-- {{SECTION:ADDITIONAL_END}} -->
 
-  <!-- FOOTER -->
+  <!-- ─── FOOTER ─── -->
   <div class="report-footer">
-    <p>Generated on {{GENERATED_DATE}} by CRO Plugin v{{VERSION}}</p>
-    <p>This report is self-contained — no external resources are loaded.</p>
+    Generated {{GENERATED_DATE}} by CRO Plugin v{{VERSION}} &mdash; This report is self-contained.
   </div>
 
 </body>

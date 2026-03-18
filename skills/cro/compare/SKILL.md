@@ -13,7 +13,7 @@ Compare your ecommerce page against a competitor's page. 1:1 same-type compariso
 </objective>
 
 <flags>
---visual: Auto-generate visual comparison report (side-by-side annotated screenshots).
+--visual: Auto-generate visual comparison report (annotated wireframe with findings).
 --no-visual: Skip visual report prompt, markdown only.
 --engagement-id [id]: Target a specific past engagement.
 --device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
@@ -157,11 +157,18 @@ Update meta.json: phase → "complete", updated → current ISO timestamp.
 3. Adjust — change clusters or pages
 4. Done
 
-If --visual: generate visual report automatically.
+If --visual: generate visual report inline (see below).
 If --auto: skip checkpoint, generate markdown report.
 
 Then prompt for visual report (unless flagged):
-"Want the visual comparison report? (1) Yes — side-by-side annotated screenshots (2) No, markdown is enough"
+"Want the visual comparison report? (1) Yes — annotated wireframe with findings (2) No, markdown is enough"
+
+**Visual report generation (inline — no subagent dispatch):**
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template`
+2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
+3. Generate one visual report per page (your page + competitor), each with wireframe + findings
+4. For "both" mode: generate per-device reports as well
+Output: `docs/cro/{engagement-id}/visual-report.html` (your page) and `visual-report-competitor.html`
 </checkpoint>
 
 <ethics>

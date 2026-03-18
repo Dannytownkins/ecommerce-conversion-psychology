@@ -1,115 +1,130 @@
 ---
-name: visual-report-generator
-context: fork
+name: visual-report-generation
 ---
 
-# Visual Report Generator
+# Visual Report Generation — Coordinator Reference
 
-You produce an annotated visual report by stitching sectioned screenshots with CRO callout overlays. The report shows where each recommendation applies on the actual page.
+The coordinator produces an annotated wireframe visual report by following these steps. This is NOT a subagent workflow — the coordinator reads these instructions and generates the report inline.
 
-## Input
+## Input (already available to coordinator)
 
-1. **Screenshot paths** — 3-6 sectioned viewport captures from the acquisition agent, with section labels and scroll positions
-2. **Audit findings** — findings with SOURCE tags (VISUAL/CODE/BOTH), SECTION slugs, and recommendations
-3. **Section boundary metadata** — labels and scroll positions for each captured section
-4. **Engagement metadata** — ID, date, URL, platform, clusters analyzed, source mode
-5. **Style metadata** — extracted colors (bg, container_bg, text, cta_bg, link) from acquisition
+1. **Section boundary metadata** — from acquisition agent output (labels, scrollY, height, cluster tags)
+2. **Style metadata** — extracted colors (bg, container_bg, text, cta_bg, link)
+3. **Preprocessed DOM** — cleaned HTML from `docs/cro/{engagement-id}/dom.html`
+4. **Screenshot paths** — 3-6 sectioned viewport captures
+5. **Audit findings** — from `audit.md` (or `audit-mobile.md`) with SOURCE, SECTION, PRIORITY, OBSERVATION, RECOMMENDATION, rationale, citation
+6. **Engagement metadata** — ID, date, URL, platform, clusters, device, viewport
+7. **Template** — `templates/visual-report.html.template`
 
-## Process
+## Step 1: Build Wireframe Sections
 
-### Step 1: Map Findings to Screenshots
+For each section identified by the acquisition agent:
+
+1. **Identify section type** from the label and cluster tags:
+
+| Label Pattern | Section Type | Wireframe Block |
+|---|---|---|
+| announcement, banner, promo | Announcement bar | Dark strip with text content + link text |
+| header, nav, navigation | Navigation | Logo text + nav link names + icon placeholders |
+| hero, vehicle, selector, main banner | Hero | Dark block with key heading + form elements + CTA button |
+| category, categories, collection grid | Category grid | Row of small labeled cards |
+| product, featured, collection, shop | Product grid/carousel | Row of product card outlines with actual names/prices |
+| newsletter, email, subscribe | Newsletter | Centered heading + email input mockup |
+| footer, copyright | Footer | Two-column text links + payment icon placeholders |
+| (unmatched) | Generic section | Labeled block with "Content section" placeholder |
+
+2. **Extract key elements from DOM** for this section's scroll range:
+   - Headings (h1-h3): use actual text
+   - Buttons/CTAs: use actual button text
+   - Navigation links: use actual link text (first 6)
+   - Product cards: use actual product name + price (first 3 per section, then "N more items" note)
+   - Form fields: show as input outlines with placeholder text
+   - Images: show as gray placeholder boxes with dimensions or alt text
+
+3. **Apply extracted colors** from style metadata:
+   - Section backgrounds: use `bg` or `container_bg` as appropriate
+   - CTA buttons: use `cta_bg` for background, white text
+   - Text: use `text` color for headings, `text-muted` for body
+   - Links: use `link` color
+
+4. **Attach findings** to this section by matching SECTION slugs:
+   - Use the slug-to-section mapping from the audit workflow
+   - Add a numbered callout marker (colored circle) matching the finding's severity
+   - Apply `has-critical` or `has-high` CSS class to the wireframe section block
+
+5. **Embed screenshot** as a collapsible `<details>` element:
+   - Summary text: "View screenshot"
+   - Image: base64-encoded JPEG from the acquisition screenshots
+   - Add CSS class `mobile` to screenshot images when device is mobile
+
+## Step 2: Build Finding Cards
 
 For each FAIL or PARTIAL finding:
-1. Read the SECTION slug
-2. Match it to the closest screenshot section using the section boundary metadata and slug semantics:
-   - `primary-cta`, `cta-contrast`, `cta-placement`, `cta-copy` → hero/above-fold section
-   - `hero-layout`, `visual-hierarchy`, `above-fold-content`, `scan-pattern` → first screenshot (above-fold)
-   - `trust-badges`, `trust-above-fold` → section nearest to primary CTA
-   - `reviews-display`, `review-count`, `star-ratings`, `social-proof-*` → reviews/social proof section
-   - `price-display`, `price-anchoring`, `price-framing`, `shipping-cost-display` → product/pricing section
-   - `checkout-*`, `payment-options`, `guest-checkout` → checkout section
-   - `mobile-*` → all sections (mobile findings are cross-cutting)
-   - `page-load`, `image-optimization`, `lazy-loading`, `critical-css` → all sections
-   - `cookie-consent` → footer/bottom section
-   - `search-ux`, `filter-ux`, `sort-ux`, `category-navigation` → navigation/header section
-3. If a finding cannot be mapped to any screenshot section, add it to the "Additional Findings" text section
 
-### Step 2: Build the HTML Report
+1. Create a finding card with:
+   - **Number** — sequential, matching the wireframe callout marker
+   - **Title** — derived from SECTION slug, formatted as human-readable (e.g., `primary-cta` → "Primary CTA")
+   - **Severity badge** — CRITICAL (red) or HIGH (amber)
+   - **Observation** — from finding's OBSERVATION field
+   - **Fix** — from finding's RECOMMENDATION field
+   - **Rationale** — from finding's "Why this matters" block
+   - **Citation** — from finding's citation line
 
-Construct a self-contained HTML file:
+2. Apply severity CSS class (`critical` or `high`) to the card
 
-**Header banner:**
-- Dark background (use extracted `bg` color or default #1a1a2e)
-- Text: `CRO REDESIGN MOCKUP — [URL] — VISUAL GUIDE (NOT PRODUCTION CODE)`
-- Engagement metadata: ID, date, platform, clusters analyzed
+3. Numbers MUST match between wireframe callout markers and finding cards
 
-**Screenshot sections:**
-- Display each screenshot as a base64-embedded JPEG image in vertical sequence
-- Between/above relevant screenshots, insert CRO callout bars:
-  - Orange background (#ea580c), white text, rounded corners
-  - Format: `▲ CRO CHANGE: [RECOMMENDATION SUMMARY]`
-  - Include the SECTION slug and SOURCE tag for traceability
-  - Format SOURCE as a small badge: `[VISUAL]`, `[CODE]`, or `[BOTH]`
-- PASS findings get subtle green indicators (thin green left-border on the section label, not a full callout bar)
+## Step 3: Calculate Scores
 
-**Hidden elements section:**
-- For findings referencing non-visible states (modals, accordions, hover states, popups):
-- List as text-only annotations: "Modal/Accordion: [SECTION] — [RECOMMENDATION]"
-- This section appears after all screenshots
+Count from the findings:
+- **Total:** all FAIL + PARTIAL findings
+- **Critical:** findings with PRIORITY: CRITICAL
+- **High:** findings with PRIORITY: HIGH
+- **Quick Wins:** findings with EFFORT: Low (or QUICK_WIN: true)
 
-**Additional findings section:**
-- Findings that couldn't be mapped to a specific screenshot
-- Listed as text with their SECTION slug, SOURCE, and recommendation
+## Step 4: Add Fold Line
 
-**Footer:**
-- Engagement ID, date, clusters analyzed, source mode
-- "Generated by CRO Plugin v3.0.0"
-- "This report is self-contained — no external resources are loaded."
+Insert a fold line indicator in the wireframe at the approximate viewport boundary:
+- Desktop (1440x900): after the section whose scrollY + height exceeds 900px
+- Mobile (390x844): after the section whose scrollY + height exceeds 844px
+- Label: "approximate fold ({width}x{height})"
 
-### Step 3: Apply Styling
+## Step 5: Assemble Report
 
-Use inline CSS (no external stylesheets). Match the existing report template aesthetic:
-- Font: system font stack (-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, etc.)
-- Max width: 1000px centered (wider than text report to accommodate screenshot width)
-- Callout bars: orange (#ea580c) background, white text, 8px border-radius, 12px padding
-- Screenshots: full width within container, subtle border (1px solid #e2e8f0), 8px border-radius
-- Section labels between screenshots: small, muted text showing the section name
-- Print styles: page breaks between screenshot sections
-- Responsive: screenshots scale down on mobile
+1. Read `templates/visual-report.html.template`
+2. Replace placeholders:
+   - `{{ENGAGEMENT_ID}}` — engagement ID
+   - `{{DATE}}` — audit date
+   - `{{PAGE_URL}}` — page URL (HTML-escaped)
+   - `{{PAGE_TYPE}}` — homepage, product, etc.
+   - `{{PLATFORM}}` — shopify, nextjs, generic
+   - `{{CLUSTERS}}` — cluster name(s)
+   - `{{DEVICE}}` — Desktop or Mobile
+   - `{{DEVICE_CLASS}}` — `desktop` or `mobile` (CSS class)
+   - `{{VIEWPORT}}` — e.g., "1440x900 @ 1x" or "390x844 @ iPhone 14"
+   - `{{SOURCE_MODE}}` — url-dual, file, etc.
+   - `{{VERSION}}` — plugin version (3.1.0)
+   - `{{SCORE_TOTAL}}`, `{{SCORE_CRITICAL}}`, `{{SCORE_HIGH}}`, `{{SCORE_QUICKWINS}}` — from Step 3
+   - `{{WIREFRAME_SECTIONS}}` — assembled wireframe HTML from Step 1
+   - `{{FINDING_CARDS}}` — assembled finding card HTML from Step 2
+   - `{{GENERATED_DATE}}` — current date/time
+3. Write to `docs/cro/{engagement-id}/visual-report.html`
+   - For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`
 
-### Step 4: Security
+## Step 6: Security
 
-- HTML-escape ALL text content before insertion (finding text, recommendations, URLs)
-- CSP meta tag: `default-src 'none'; style-src 'unsafe-inline'; img-src data:; script-src 'none'; connect-src 'none'; frame-src 'none'; object-src 'none'`
-- No external resources — everything is inline or base64
-- Escape any `{{` patterns found in content (prevents template placeholder collision)
-
-## Output Rules
-
-- Return ONLY the completed HTML. No markdown, no explanation.
-- The HTML must be completely self-contained
-- All screenshots must be embedded as base64 data URIs
-- Every FAIL/PARTIAL finding must have a corresponding callout or appear in Additional Findings
-- PASS findings get subtle indicators, not prominent callouts
+- **HTML-escape** ALL text content before insertion (finding text, recommendations, URLs, product names, prices)
+- **CSP meta tag** already in the template — verify it's present
+- **No external resources** — everything is inline CSS or base64 images
+- **Escape `{{` patterns** found in user content to prevent template placeholder collision
 
 ## Quality Check
 
-Before returning, verify:
-- [ ] Every FAIL/PARTIAL finding has a callout bar at the relevant section OR appears in Additional Findings
-- [ ] All screenshots are embedded as base64
-- [ ] CSP meta tag is present and correct
+Before writing the file, verify:
+- [ ] Every FAIL/PARTIAL finding has a callout marker on the wireframe AND a finding card
+- [ ] Numbers match between wireframe markers and finding cards
+- [ ] Screenshots are base64-embedded (if available)
+- [ ] Fold line is positioned correctly
 - [ ] All text content is HTML-escaped
-- [ ] Header banner includes the "NOT PRODUCTION CODE" warning
-- [ ] Footer includes engagement metadata
-
-## Failure Mode
-
-If screenshots are missing or unreadable:
-- For partial screenshots (some available): build the report with available screenshots, note missing sections
-- For no screenshots at all (file-path mode): return `STATUS: BLOCKED — Visual report requires URL mode with sectioned screenshots. No screenshots were captured for this engagement.`
-
-End your output with:
-
-```
-STATUS: COMPLETE
-```
+- [ ] CSP meta tag is present
+- [ ] Site colors are applied to wireframe elements

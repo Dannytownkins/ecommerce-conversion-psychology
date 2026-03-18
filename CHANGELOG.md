@@ -43,10 +43,21 @@ Eliminates false positives caused by agents reading source code patterns that do
 - "Both" mode auditor concurrency capped at 3 per batch (desktop batch completes, then mobile batch). Prevents rate limit issues with 6 simultaneous Opus subagents.
 - Write order enforced: audit files written to disk first, `devices_scanned` updated in meta.json last. Preserves "file existence wins" atomicity invariant.
 
-#### Files Modified (13)
+#### Annotated Wireframe Visual Report (3 changes)
+- Visual report rewritten as split-panel dark-mode layout: DOM-derived wireframe with numbered callout markers on the left, finding cards with rationale on the right. Screenshots embedded as expandable disclosures within wireframe sections.
+- Wireframe uses the site's actual extracted colors (background, text, CTA, link) and real product names/prices from DOM. Fold line indicator shows approximate viewport boundary.
+- Visual report now generated inline by the coordinator (not dispatched as a subagent). `workflows/visual-report.md` changed from subagent instructions to coordinator reference documentation.
+
+#### SOURCE Accuracy Fix (2 changes)
+- Strict SOURCE verification rules added to `workflows/audit.md` and `workflows/quick-scan.md`: SOURCE: VISUAL requires screenshot-verifiable evidence (self-check question), DOM-only evidence must be SOURCE: CODE with explicit note "detected in DOM but not visually rendered at this viewport."
+- Prevents the class of false positives where auditors claim visual evidence for hover-only or CSS-hidden elements found only in the DOM.
+
+#### Files Modified (13 + 2 rewritten)
 - `workflows/acquire.md`, `workflows/audit.md`, `workflows/quick-scan.md`, `workflows/compare.md`
+- `workflows/visual-report.md` (rewritten — coordinator reference, no longer subagent dispatch)
 - `skills/cro/SKILL.md`, `skills/cro/audit/SKILL.md`, `skills/cro/quick-scan/SKILL.md`, `skills/cro/compare/SKILL.md`, `skills/cro/resume/SKILL.md`
-- `templates/meta.json.template`, `templates/audit.md.template`, `templates/audit-competitor.md.template`, `templates/visual-report.html.template`
+- `templates/meta.json.template`, `templates/audit.md.template`, `templates/audit-competitor.md.template`
+- `templates/visual-report.html.template` (rewritten — split-panel wireframe layout)
 
 ---
 

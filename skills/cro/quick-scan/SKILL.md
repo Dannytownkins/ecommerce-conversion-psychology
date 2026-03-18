@@ -16,7 +16,7 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 --cluster [slug]: Override auto-selected cluster. Values: visual-cta, trust-conversion, context-platform, audience-journey.
 --min-priority [level]: Filter findings. Default for quick-scan: high (only HIGH and CRITICAL).
 --platform [name]: Skip platform detection.
---visual: Auto-generate visual report (annotated screenshot mockup) without prompting.
+--visual: Auto-generate visual report (annotated wireframe with findings) without prompting.
 --no-visual: Skip output prompt, conversation output only (meta.json still created silently).
 --ephemeral: DEPRECATED — behaves as --no-visual. Prints warning: "--ephemeral is deprecated, use --no-visual".
 --device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
@@ -158,12 +158,12 @@ Format as natural language with actionable recommendations:
 Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for full multi-cluster coverage.
 
 **Then prompt for output format** (unless flagged):
-- If `--visual` is set: auto-generate visual report
+- If `--visual` is set: generate visual report inline (see below)
 - If `--no-visual` or `--ephemeral` is set: skip prompt
 - Otherwise, ask:
 
 "Want me to save this?
-1. Visual report — annotated screenshot mockup
+1. Visual report — annotated wireframe with findings
 2. Markdown — already saved to audit.md
 3. Both
 4. No, conversation is enough"
@@ -178,6 +178,21 @@ Aggregate only compares desktop-to-desktop or mobile-to-mobile — never cross-d
 
 In --auto mode: skip aggregate prompt. Aggregate only via explicit `--aggregate` flag.
 </output>
+
+<visual_report_generation>
+When generating a visual report (user selects "Visual report" or --visual flag):
+
+Generate the report inline — do NOT dispatch a subagent.
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML structure
+2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
+3. Build wireframe sections from acquisition data (section boundaries, DOM elements, style metadata)
+4. Build finding cards from audit findings (with rationale + citations)
+5. Calculate scores (total, critical, high, quick wins)
+6. Fill template placeholders and write completed HTML
+
+Output: `docs/cro/{engagement-id}/visual-report.html`
+For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`
+</visual_report_generation>
 
 <ethics>
 Same as /cro:audit — pass ethics gate to auditor.

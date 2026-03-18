@@ -87,10 +87,20 @@ Do NOT apply desktop-specific principles to mobile screenshots or vice versa. Th
 **Audit sequence per principle:**
 1. Check if the principle applies to this page type
 2. Evaluate current implementation: does it follow the principle?
-3. Determine evidence source:
-   - `VISUAL` — you can see the issue in the screenshot but it's not verifiable in the DOM (layout, color perception, visual hierarchy)
-   - `CODE` — you found the issue in the DOM but it's not visible in screenshots (hidden elements, ARIA attributes, meta tags, missing markup)
-   - `BOTH` — you can see the issue in the screenshot AND verify it in the DOM (highest confidence)
+3. Determine evidence source — **strict verification required:**
+   - `VISUAL` — you can literally see this issue in one of the provided screenshots.
+     **Self-check:** "Can I point to this in a specific screenshot?" If no → use CODE.
+     Layout issues, color contrast, visual hierarchy, element positioning = VISUAL only if visible.
+   - `CODE` — found in the DOM but not visible at this viewport.
+     Hover states, CSS-hidden elements, responsive-hidden content, elements that only
+     appear on interaction = always CODE, never VISUAL.
+     If an element exists in DOM but is not visible in screenshots, note in observation:
+     "Detected in DOM but not visually rendered at this viewport."
+   - `BOTH` — visible in a screenshot AND verified in the DOM (highest confidence).
+
+   **Misattributing CODE evidence as VISUAL is a finding accuracy violation.** This is the
+   primary source of false positives — auditors reading DOM patterns and assuming they are
+   rendered. When in doubt, use CODE.
 4. Record finding using the structured format below
 
 **When visual and code evidence contradict** (e.g., element exists in DOM but appears hidden in screenshots, or visual element has no corresponding DOM node), flag the contradiction in OBSERVATION and set SOURCE: BOTH.
