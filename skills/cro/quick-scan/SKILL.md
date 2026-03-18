@@ -150,10 +150,12 @@ Format as natural language with actionable recommendations:
 
 [1-2 sentence summary]
 
-**Top quick wins:**
-1. [Finding + specific recommendation] `[SOURCE]`
-2. [Finding + specific recommendation] `[SOURCE]`
-3. [Finding + specific recommendation] `[SOURCE]`
+**Findings:**
+1. **[Finding title]** — [specific recommendation] `[SOURCE]` **[SEVERITY]** [if EFFORT: Low, append: `QUICK WIN`]
+2. **[Finding title]** — [specific recommendation] `[SOURCE]` **[SEVERITY]** [if EFFORT: Low, append: `QUICK WIN`]
+3. **[Finding title]** — [specific recommendation] `[SOURCE]` **[SEVERITY]**
+
+Tag each finding with its severity (CRITICAL/HIGH) and append `QUICK WIN` for findings with EFFORT: Low. This makes it immediately clear which findings are easiest to act on.
 
 Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for full multi-cluster coverage.
 

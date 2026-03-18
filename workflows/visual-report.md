@@ -65,6 +65,7 @@ For each FAIL or PARTIAL finding:
    - **Number** — sequential, matching the wireframe callout marker
    - **Title** — derived from SECTION slug, formatted as human-readable (e.g., `primary-cta` → "Primary CTA")
    - **Severity badge** — CRITICAL (red) or HIGH (amber)
+   - **Quick Win badge** — if EFFORT is "Low" or QUICK_WIN is true, add `<span class="quick-win-badge">Quick Win</span>` next to the severity badge in the finding header
    - **Observation** — from finding's OBSERVATION field
    - **Fix** — from finding's RECOMMENDATION field
    - **Rationale** — from finding's "Why this matters" block
