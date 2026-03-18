@@ -1,0 +1,23 @@
+## Reconciliation Report
+
+**Engagement:** {{ENGAGEMENT_ID}}
+**Plans reconciled:** {{PLAN_COUNT}}
+**Date:** {{DATE}}
+
+### Conflicts Found: {{CONFLICT_COUNT}}
+
+<!-- Each conflict follows this format -->
+
+#### Conflict N: [SECTION slug]
+- **Plan A** (plan-{slug}.md, step #): [proposed change]
+- **Plan B** (plan-{slug}.md, step #): [proposed change]
+- **Resolution:** [what was changed and why]
+- **Priority rule applied:** [legal > ethics > user constraints > domain]
+
+### Amended Plan Steps
+
+<!-- Full updated step text for each amended step, with [RECONCILED] tag -->
+
+### No-Conflict Verification
+
+<!-- SECTION slugs checked across plans and found compatible -->

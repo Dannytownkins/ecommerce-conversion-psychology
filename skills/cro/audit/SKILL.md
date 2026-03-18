@@ -191,19 +191,34 @@ Wait for user response before proceeding.
 
 <phase_plan>
 Read ${CLAUDE_PLUGIN_ROOT}/workflows/plan.md for planner instructions.
+Read ${CLAUDE_PLUGIN_ROOT}/references/multi-planner-protocol.md for the multi-planner protocol.
 
-Dispatch planner subagent with:
+**Determine planner mode:**
+Count findings by source cluster. If 3+ clusters each have 5+ findings → multi-planner mode. Otherwise → single planner.
+
+**Single planner mode:**
+Dispatch planner subagent with `model: "sonnet"`:
 - Workflow instructions
-- Audit findings (from docs/cro/{engagement-id}/audit.md)
+- ALL audit findings (from docs/cro/{engagement-id}/audit.md)
 - Context (from docs/cro/{engagement-id}/context.md)
 - Ethics gate content
 - Conflict resolution rules (from ${CLAUDE_PLUGIN_ROOT}/references/conflict-resolution.md)
 
 Collect output. Write to docs/cro/{engagement-id}/plan.md.
-Update meta.json: phase → "plan".
+Update meta.json: phase → "plan", updated → current ISO timestamp.
+
+**Multi-planner mode:**
+Follow ${CLAUDE_PLUGIN_ROOT}/references/multi-planner-protocol.md:
+1. Group findings by source cluster
+2. Dispatch parallel planners (model: sonnet), one per cluster
+3. Write outputs to plan-{cluster-slug}.md
+4. Dispatch reconciler (model: opus) with all PRDs
+5. Write reconciliation.md, update amended PRD files
+6. Update meta.json: phase → "plan", plans_queue populated, reconciled → true
 </phase_plan>
 
 <checkpoint_plan>
+**Single planner mode:**
 ## Plan Complete
 
 [Summary]
@@ -217,6 +232,14 @@ Update meta.json: phase → "plan".
 6. Stop here
 
 If --auto: skip checkpoint, proceed to review. If --ab-scaffold: generate scaffold after writing plan.
+
+**Multi-planner mode:**
+Follow the checkpoint format in ${CLAUDE_PLUGIN_ROOT}/references/multi-planner-protocol.md:
+- Show PRD summary per cluster with step counts and priority breakdowns
+- Note reconciler results if conflicts were resolved
+- Offer: Build all sequentially / Pick one / Deepen a plan / Save and resume
+- If --auto: select "Build all in recommended priority order", skip checkpoint
+- Sequential review/build follows the protocol in multi-planner-protocol.md
 </checkpoint_plan>
 
 <phase_review>
