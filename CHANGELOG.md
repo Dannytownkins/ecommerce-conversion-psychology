@@ -1,5 +1,71 @@
 # Changelog
 
+## 3.0.0 — 2026-03-17
+
+### Accuracy, Architecture & Visual Reports — Major Release
+
+#### Breaking Changes (3 changes)
+- meta.json schema bumped from v1 to v2. New fields: `source_mode`, `plans_queue`, `reconciled`. Resume skill handles both v1 and v2 schemas with forward compatibility (unknown versions skipped with warning).
+- `--ephemeral` flag deprecated as no-op (prints warning, behaves as `--no-visual`). Replaced by `--visual` / `--no-visual` flags.
+- `--export-report` flag removed. Text HTML report remains available at checkpoints. Visual report controlled by `--visual` flag.
+
+#### Dual-Source Acquisition (4 changes)
+- New `workflows/acquire.md`: acquisition agent captures 3-6 sectioned viewport screenshots (JPEG, 1x DPR, quality 80) + preprocessed rendered DOM before auditor dispatch. Replaces single full-page screenshot approach.
+- DOM preprocessing strips scripts, styles, SVGs, data-attributes, duplicate template elements, and sensitive form fields. 60-80% size reduction. Hard cap at 300KB with skeleton extraction fallback.
+- Post-navigation URL re-validation prevents SSRF via redirects. Auth-protected pages detected and warned. 30s navigation timeout.
+- New SOURCE field on every finding: VISUAL (screenshot evidence), CODE (DOM evidence), or BOTH (corroborated by both sources).
+
+#### Coordinator Relay Loops (4 changes)
+- Reviewer and builder can now ask questions through the coordinator using nonce-prefixed single-line JSON markers. Coordinator relays questions to user and re-dispatches with Q&A pairs.
+- Relay iterations are conditional — only fire when QUESTION blocks detected. Max 3 iterations. After 3rd, user decides (not forced verdict).
+- New `references/relay-loop-protocol.md` documents the nonce system, parsing rules, conditional iterations, Q&A delta re-dispatch, and auto mode behavior.
+- `--auto` mode: reviewer/builder produce best-effort output without questions. BLOCK verdicts still halt unless `--force`.
+
+#### Multi-Planner Architecture (5 changes)
+- Heavy audits (3+ clusters each with 5+ findings) spawn parallel planners per cluster, producing focused PRDs per area.
+- New `workflows/reconcile.md`: reconciler identifies cross-plan conflicts by SECTION slug and resolves using priority hierarchy (legal > ethics > user constraints > domain).
+- New `references/multi-planner-protocol.md` documents trigger criteria, dispatch, file naming, reconciliation, sequential review/build, plans_queue schema, and go-back protocol.
+- Sequential review/build per PRD — one at a time. `current_plan` and top-level `phase` derived from `plans_queue` (not stored independently).
+- Removed 12-step hard cap on planner. Replaced with tiered grouping: Critical+High first, Medium+Low second.
+
+#### Visual Reports (3 changes)
+- New `workflows/visual-report.md`: stitches sectioned screenshots with CRO callout overlays. Orange callout bars show recommendations at the relevant page section. Base64-embedded, self-contained HTML.
+- New `templates/visual-report.html.template` with CSP: `default-src 'none'; style-src 'unsafe-inline'; img-src data:; script-src 'none'`.
+- Text report (`workflows/report.md`) now dynamically strips inapplicable sections. Quick-scan shows findings only. Build-from-scratch skips audit. Compare uses side-by-side layout.
+
+#### Model Pinning (1 change)
+- Tiered model pinning: Haiku for mechanical agents (acquisition, visual report), Sonnet for analysis (auditors, planners, builder), Opus for synthesis (reconciler, reviewer). Ensures consistent quality regardless of parent model.
+
+#### Output Tiering (3 changes)
+- Quick-scan defaults to conversation output + silent meta.json creation. User prompted to save (visual/markdown/both).
+- Full audit defaults to markdown (baton system needs it) + visual report prompt.
+- Compare mode: sequential acquisition (serialize page capture, parallelize auditors).
+
+#### Housekeeping (6 changes)
+- meta.json `updated` field written on every phase transition.
+- Auditor/planner retry: one automatic retry on failure before SKIP.
+- `--auto` build requires clean git state (aborts on dirty working tree).
+- Go-back atomicity: delete downstream files first, then update meta.json. File existence is source of truth for recovery.
+- Resume skill handles schema v1 (legacy) and v2 (new). Self-healing phase inference verifies plans_queue against filesystem.
+- A/B scaffold: graceful fallback for unknown tools.
+
+#### New Files (7)
+- `workflows/acquire.md` — page acquisition agent
+- `workflows/reconcile.md` — cross-plan conflict reconciler
+- `workflows/visual-report.md` — screenshot-based visual report generator
+- `references/relay-loop-protocol.md` — relay loop specification
+- `references/multi-planner-protocol.md` — multi-planner specification
+- `templates/visual-report.html.template` — visual report HTML template
+- `templates/reconciliation.md.template` — reconciliation output template
+
+#### Totals
+- 24 reference files, 18 domain + 9 operational (2 new operational)
+- 9 workflow files (3 new: acquire, reconcile, visual-report)
+- 8 template files (2 new: visual-report.html, reconciliation.md)
+- 5 commands: /cro:audit, /cro:build, /cro:quick-scan, /cro:compare, /cro:resume
+
+---
+
 ## 2.2.0 — 2026-03-17
 
 ### Plugin Hardening — Structural Consolidation, Safety, and UX
