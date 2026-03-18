@@ -84,7 +84,7 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 **Serialize acquisition, then parallelize auditors:**
 
 **Step 1: Acquire your page** (if URL)
-- Validate URL, dispatch acquisition agent (model: sonnet) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
+- Validate URL, dispatch acquisition agent (model: opus) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
 - Pass viewport dimensions and device context based on selected device:
   - Desktop: viewport 1440×900, device "desktop"
   - Mobile: viewport 390×844 (device preset "iPhone 14"), device "mobile"
@@ -94,7 +94,7 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 - Set source_mode in meta.json
 
 **Step 2: Acquire competitor page** (if URL)
-- Validate URL, dispatch acquisition agent (model: sonnet)
+- Validate URL, dispatch acquisition agent (model: opus)
 - Same viewport/device handling as Step 1
 - Collect screenshots + preprocessed DOM + metadata
 - If acquisition fails → note it, proceed with your page data only (comparison will be partial)

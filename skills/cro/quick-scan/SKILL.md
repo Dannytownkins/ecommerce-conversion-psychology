@@ -36,7 +36,7 @@ Determine input type from $ARGUMENTS:
 1. Validate URL using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
 2. Dispatch acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
-   - Dispatch via Agent tool with `model: "sonnet"`
+   - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
      - Desktop: viewport 1440×900, device "desktop"
      - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"

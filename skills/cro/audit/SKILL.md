@@ -34,7 +34,7 @@ How to acquire page data:
 1. **File path provided** → read directly. Set `source_mode: "file"` in meta.json. No acquisition agent needed.
 2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md, then dispatch the acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
-   - Dispatch via Agent tool with `model: "sonnet"` — the acquisition agent is mechanical, not analytical
+   - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
      - Desktop: viewport 1440×900, device "desktop"
      - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"
@@ -245,7 +245,7 @@ Read ${CLAUDE_PLUGIN_ROOT}/references/multi-planner-protocol.md for the multi-pl
 Count findings by source cluster. If 3+ clusters each have 5+ findings → multi-planner mode. Otherwise → single planner.
 
 **Single planner mode:**
-Dispatch planner subagent with `model: "sonnet"`:
+Dispatch planner subagent with `model: "opus"`:
 - Workflow instructions
 - ALL audit findings (from docs/cro/{engagement-id}/audit.md)
 - Context (from docs/cro/{engagement-id}/context.md)
@@ -258,7 +258,7 @@ Update meta.json: phase → "plan", updated → current ISO timestamp.
 **Multi-planner mode:**
 Follow ${CLAUDE_PLUGIN_ROOT}/references/multi-planner-protocol.md:
 1. Group findings by source cluster
-2. Dispatch parallel planners (model: sonnet), one per cluster
+2. Dispatch parallel planners (model: opus), one per cluster
 3. Write outputs to plan-{cluster-slug}.md
 4. Dispatch reconciler (model: opus) with all PRDs
 5. Write reconciliation.md, update amended PRD files
@@ -362,7 +362,7 @@ If `--auto` and project is a git repo: run `git status --porcelain`. If output i
 **Relay loop dispatch:**
 
 1. Generate a nonce: `openssl rand -hex 4`
-2. Dispatch builder subagent with `model: "sonnet"`:
+2. Dispatch builder subagent with `model: "opus"`:
    - Workflow instructions
    - Action plan and review notes from baton files
    - Platform reference (if applicable)

@@ -30,7 +30,7 @@ Eliminates false positives caused by agents reading source code patterns that do
 - Updated finding format in `workflows/audit.md`, `workflows/quick-scan.md`, and `templates/audit.md.template`.
 
 #### Model Upgrade (1 change)
-- Full audit and compare auditors upgraded from Sonnet to Opus 4.6 for better cross-referencing of screenshots against DOM and device-appropriate principle application. Quick-scan auditors remain on Sonnet.
+- ALL subagent dispatches upgraded to Opus 4.6 — acquisition, auditors, planners, reconciler, reviewer, builder. No more tiered pinning. Testing showed Sonnet produced color misidentification and SOURCE attribution errors that Opus eliminated completely. Users running on Opus expect Opus quality throughout the pipeline.
 
 #### Downstream Consumer Updates (5 changes)
 - `meta.json` schema: new `devices_requested` and `devices_scanned` fields (added to template and validation lists in audit/quick-scan/compare SKILLs).
