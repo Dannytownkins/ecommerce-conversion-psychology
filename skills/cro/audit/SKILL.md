@@ -5,7 +5,7 @@ description: >-
   (audit, plan, review, build). Covers product pages, checkout flows, carts,
   pricing, landing pages, and category pages using research-backed psychology.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--export-report] [--ab-scaffold] [--engagement-id id]"
+argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--visual] [--no-visual] [--ab-scaffold] [--engagement-id id]"
 ---
 
 <objective>
@@ -25,14 +25,18 @@ Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce
 <mode_detection>
 $ARGUMENTS must contain a URL or file path. If ambiguous, ask: "Are we auditing an existing page? Provide a URL or file path."
 
-How to acquire page code:
-1. File path provided → read directly
-2. URL provided → ask: "Do you have the source code locally? Provide the file path, or I can use agent-browser to capture the page visually."
-3. agent-browser available → screenshot mode (visual audit, no build phase)
-4. agent-browser unavailable → prompt user to paste code or provide file path
-5. Never silently fail — always tell the user what is happening
-
-For URLs: validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md before any agent-browser fetch.
+How to acquire page data:
+1. **File path provided** → read directly. Set `source_mode: "file"` in meta.json. No acquisition agent needed.
+2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md, then dispatch the acquisition agent:
+   - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
+   - Dispatch via Agent tool with `model: "haiku"` — the acquisition agent is mechanical, not analytical
+   - Pass the validated URL and viewport dimensions (default 1280x800)
+   - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, style metadata
+   - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
+   - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
+   - Set `source_mode: "url-dual"` in meta.json
+3. **No agent-browser and no file path** → prompt user to paste code or provide file path. Set `source_mode: "file"` or `"description"`.
+4. Never silently fail — always tell the user what is happening
 </mode_detection>
 
 <progress_memory>
@@ -51,7 +55,7 @@ Before dispatching auditors:
 3. On first engagement ever: check if docs/cro/ is in .gitignore. If not, suggest adding it.
 4. Detect legacy file: if docs/cro-action-plan.md exists, inform user it will be preserved but not used.
 5. Write context.md (write-once, locked after this step)
-6. Write meta.json with schema_version: 1, phase: "pending"
+6. Write meta.json with schema_version: 2, phase: "pending", source_mode from mode_detection
 
 After writing meta.json, re-read it and verify all required fields are present:
 - `id`: string, format YYYY-MM-DD-{8hex}
@@ -61,8 +65,9 @@ After writing meta.json, re-read it and verify all required fields are present:
 - `platform`: one of [shopify, nextjs, generic]
 - `page.type`: must match the page type table
 - `clusters_used`: array of cluster slug strings
-Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
+Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`, `source_mode`, `plans_queue`, `reconciled`
 If any required field is missing or invalid, fix it before proceeding.
+Always update the `updated` field to the current ISO timestamp on every phase transition.
 </engagement_setup>
 
 <platform_detection>
@@ -97,19 +102,26 @@ Override rules:
 </domain_cluster_routing>
 
 <phase_audit>
-Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message.
+Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message. Use `model: "sonnet"` for all auditor dispatches — this ensures consistent analysis quality regardless of parent model.
 
 Each Agent call contains:
 - The audit workflow instructions (read from ${CLAUDE_PLUGIN_ROOT}/workflows/audit.md)
 - Reference file paths for that cluster ONLY (at ${CLAUDE_PLUGIN_ROOT}/references/)
-- The page code or screenshots
 - Ethics gate content (read from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md)
 - Min-priority filter if specified
 
-Collect all outputs. Write combined findings to docs/cro/{engagement-id}/audit.md.
-Update meta.json: phase → "audit".
+**Input varies by source mode:**
 
-If an auditor fails: write SKIP finding for that cluster, inform user at checkpoint.
+- **URL mode (source_mode: url-dual):** Pass each auditor the sectioned screenshots AND the preprocessed DOM from the acquisition agent. **Segment DOM by cluster:** use the section boundary metadata from acquisition to pass each auditor only the DOM sections relevant to their cluster's page areas (e.g., hero/CTA sections to visual-cta, checkout/trust sections to trust-conversion). This reduces per-auditor context significantly.
+- **File path mode (source_mode: file):** Pass the page source code directly. No screenshots.
+- **Description mode (source_mode: description):** Pass the text description.
+
+Collect all outputs. Verify each output ends with `STATUS: COMPLETE` or `STATUS: PARTIAL`.
+
+Write combined findings to docs/cro/{engagement-id}/audit.md.
+Update meta.json: phase → "audit", updated → current ISO timestamp.
+
+**Auditor retry:** If an auditor returns `STATUS: PARTIAL`, SKIP, or fails entirely: retry once automatically with the same inputs. If the retry also fails: write SKIP finding for that cluster, offer "Re-run [cluster]" at checkpoint.
 
 If --min-priority set and zero findings remain after filter: "No findings at [PRIORITY] or above. Options: (1) Lower the filter, (2) View all findings, (3) Stop here."
 </phase_audit>

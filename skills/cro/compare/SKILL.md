@@ -5,7 +5,7 @@ description: >-
   comparison with side-by-side scoring and gap analysis. Supports URLs
   (via agent-browser) and local file paths.
 disable-model-invocation: true
-argument-hint: "[your-url-or-path] [competitor-url-or-path] [--export-report] [--engagement-id id]"
+argument-hint: "[your-url-or-path] [competitor-url-or-path] [--visual] [--no-visual] [--engagement-id id]"
 ---
 
 <objective>
@@ -13,7 +13,8 @@ Compare your ecommerce page against a competitor's page. 1:1 same-type compariso
 </objective>
 
 <flags>
---export-report: Generate HTML comparison report automatically.
+--visual: Auto-generate visual comparison report (side-by-side annotated screenshots).
+--no-visual: Skip visual report prompt, markdown only.
 --engagement-id [id]: Target a specific past engagement.
 </flags>
 
@@ -21,22 +22,23 @@ Compare your ecommerce page against a competitor's page. 1:1 same-type compariso
 Accept both inputs as arguments: /cro:compare [your-url-or-path] [competitor-url-or-path]
 
 Supports:
-- Two URLs (via agent-browser for screenshots)
+- Two URLs (via acquisition agent)
 - Two local file paths (direct read — preferred when available)
 - Mixed (one URL, one file path)
 
 If only one provided, ask for the other.
-For URLs: validate using ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md before fetching.
+For URLs: validate using ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md before dispatching acquisition.
 </intake>
 
 <page_type_validation>
 Determine page type for both pages.
 If types differ: "These appear to be different page types ([type-a] vs [type-b]). Compare anyway, or provide matching pages?"
+If --auto and types differ: proceed with comparison despite mismatch, note it in output.
 If user proceeds despite mismatch, note it in the comparison output.
 </page_type_validation>
 
 <engagement_setup>
-Same as /cro:audit but with type: "compare" in meta.json.
+Same as /cro:audit but with type: "compare", schema_version: 2 in meta.json.
 Store compare_target URL/path in meta.json.
 
 After writing meta.json, re-read it and verify all required fields are present:
@@ -47,17 +49,39 @@ After writing meta.json, re-read it and verify all required fields are present:
 - `platform`: one of [shopify, nextjs, generic]
 - `page.type`: must match the page type table
 - `clusters_used`: array of cluster slug strings
-Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
+Optional: `blocked`, `quick_scan`, `compare_target`, `page.url`, `page.file_path`, `min_priority`, `source_mode`, `plans_queue`, `reconciled`
 If any required field is missing or invalid, fix it before proceeding.
+Always update the `updated` field to current ISO timestamp on phase transitions.
+
+Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 </engagement_setup>
+
+<acquisition>
+**Serialize acquisition, then parallelize auditors:**
+
+**Step 1: Acquire your page** (if URL)
+- Validate URL, dispatch acquisition agent (model: haiku) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
+- Collect screenshots + preprocessed DOM + metadata
+- If acquisition returns STATUS: BLOCKED → stop entirely, report error, do NOT proceed to competitor
+- Set source_mode in meta.json
+
+**Step 2: Acquire competitor page** (if URL)
+- Validate URL, dispatch acquisition agent (model: haiku)
+- Collect screenshots + preprocessed DOM + metadata
+- If acquisition fails → note it, proceed with your page data only (comparison will be partial)
+
+**File path inputs:** read directly, no acquisition needed.
+</acquisition>
 
 <dispatch>
 1. Select clusters using page-type table (same as /cro:audit)
-2. Dispatch ALL auditors in parallel (up to 6: 3 per page)
-   - Each auditor gets: audit workflow, cluster references, page code/screenshots, ethics gate
+2. **Dispatch ALL auditors in parallel** (up to 6: 3 per page) using `model: "sonnet"`:
+   - Each auditor gets: audit workflow, cluster references, ethics gate
+   - **URL mode:** pass sectioned screenshots + preprocessed DOM (segmented by cluster)
+   - **File path mode:** pass source code directly
    - Your page auditors write findings for audit.md
    - Competitor page auditors write findings for audit-competitor.md
-3. Handle partial failure: a failed cluster produces "No data available for [cluster]"
+3. **Auditor retry:** if an auditor fails, retry once. If retry fails: "No data available for [cluster]"
 4. After all auditors complete: dispatch compare workflow
 
 Dispatch compare.md workflow with:
@@ -77,7 +101,7 @@ The compare workflow produces:
 
 Write output to docs/cro/{engagement-id}/compare.md.
 Also write audit.md and audit-competitor.md from auditor outputs.
-Update meta.json: phase → "complete".
+Update meta.json: phase → "complete", updated → current ISO timestamp.
 </compare_workflow>
 
 <checkpoint>
@@ -92,11 +116,15 @@ Update meta.json: phase → "complete".
 
 **Options:**
 1. Run full audit on your page (/cro:audit)
-2. Export comparison report
+2. Generate visual comparison report
 3. Adjust — change clusters or pages
 4. Done
 
-If --export-report: generate report automatically.
+If --visual: generate visual report automatically.
+If --auto: skip checkpoint, generate markdown report.
+
+Then prompt for visual report (unless flagged):
+"Want the visual comparison report? (1) Yes — side-by-side annotated screenshots (2) No, markdown is enough"
 </checkpoint>
 
 <ethics>
