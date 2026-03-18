@@ -12,6 +12,7 @@
 
 FINDING: [PASS|FAIL|PARTIAL|SKIP]
 SECTION: [canonical-slug]
+SOURCE: [VISUAL|CODE|BOTH]
 OBSERVATION: [specific observation about the page]
 RECOMMENDATION: [actionable recommendation with citation]
 REFERENCE: [reference-file.md — section name]

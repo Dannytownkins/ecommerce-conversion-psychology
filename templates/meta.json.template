@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "id": "{{ENGAGEMENT_ID}}",
   "created": "{{CREATED_ISO}}",
   "updated": "{{UPDATED_ISO}}",
@@ -12,9 +12,12 @@
     "type": null
   },
   "platform": "generic",
+  "source_mode": null,
   "clusters_used": [],
   "min_priority": null,
   "compare_target": null,
   "quick_scan": false,
-  "blocked": false
+  "blocked": false,
+  "plans_queue": [],
+  "reconciled": false
 }
