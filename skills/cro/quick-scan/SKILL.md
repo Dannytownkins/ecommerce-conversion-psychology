@@ -115,7 +115,7 @@ In automated mode (no human interaction), use default without asking.
 </cluster_selection>
 
 <dispatch>
-Dispatch ONE auditor per device with `model: "sonnet"`:
+Dispatch ONE auditor per device with `model: "opus"`:
 - Quick-scan workflow from ${CLAUDE_PLUGIN_ROOT}/workflows/quick-scan.md
 - Reference files for selected cluster ONLY (from ${CLAUDE_PLUGIN_ROOT}/references/)
 - Ethics gate from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md
@@ -130,7 +130,7 @@ Dispatch ONE auditor per device with `model: "sonnet"`:
 Write findings to docs/cro/{engagement-id}/audit.md. Update meta.json: phase → "complete", `devices_scanned` → matches selected device.
 
 **Both mode:**
-Dispatch TWO auditors (one per device, serially) with `model: "sonnet"`:
+Dispatch TWO auditors (one per device, serially) with `model: "opus"`:
 1. Desktop auditor → write to `audit.md`
 2. Mobile auditor → write to `audit-mobile.md`
 Write audit files first, THEN update meta.json: phase → "complete", `devices_scanned: ["desktop", "mobile"]`.
