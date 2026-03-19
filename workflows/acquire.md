@@ -21,20 +21,46 @@ You capture page data for CRO analysis. Your job is purely mechanical: navigate,
 
 ### Step 1: Navigate and Validate
 
-Navigate to the URL via agent-browser. Set viewport explicitly before navigation based on device context:
+Navigate to the URL via agent-browser. You MUST set the viewport/device before navigating.
 
-```
-Desktop: agent-browser set viewport {width} {height}
-         (DPR defaults to 1x — no extra flags needed)
+> **CRITICAL SEQUENCING: `set device` (or `set viewport`) MUST complete before `goto`.** If navigation happens first, agent-browser defaults to a desktop-width viewport and all screenshots will be captured at the wrong dimensions. These are two separate commands that must run in order — never combine them.
 
-Mobile:  agent-browser set device "iPhone 14"
-         (sets viewport 390x844, DPR 3x, and mobile user-agent automatically)
-         To change the mobile device preset, update this line and the corresponding
-         viewport dimensions in the SKILL.md files and CHANGELOG.
+> **Do NOT pass `--device` as a flag on `goto`.** The `goto` command does not accept a device flag. Device/viewport must always be set as a separate preceding command.
 
-         Alternative for exact 2x DPR:
-         agent-browser --args "--force-device-scale-factor=2" set viewport {width} {height}
-```
+Follow these steps in exact order:
+
+**Desktop:**
+
+1. Set viewport:
+   ```
+   agent-browser set viewport {width} {height}
+   ```
+   DPR defaults to 1x — no extra flags needed.
+
+2. Then navigate:
+   ```
+   agent-browser goto "{url}"
+   ```
+
+**Mobile:**
+
+1. Set device preset:
+   ```
+   agent-browser set device "iPhone 14"
+   ```
+   Sets viewport 390x844, DPR 3x, and mobile user-agent automatically.
+   To change the mobile device preset, update this line and the corresponding
+   viewport dimensions in the SKILL.md files and CHANGELOG.
+
+   Alternative for exact 2x DPR:
+   ```
+   agent-browser --args "--force-device-scale-factor=2" set viewport {width} {height}
+   ```
+
+2. Then navigate:
+   ```
+   agent-browser goto "{url}"
+   ```
 
 **agent-browser is REQUIRED for URL input.** If agent-browser is not available and the input is a URL, return immediately:
 
@@ -112,6 +138,8 @@ Capture settings:
 - Device pixel ratio: determined by device context (1x for desktop, set by device preset for mobile)
 - Format: JPEG, quality 80
 - Viewport: as specified in input (no default — coordinator must specify)
+
+**Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, iPhone 14 at 390px CSS width with 3x DPR produces 1170px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
 
 Cap at 6 screenshots total. Minimum 3.
 
