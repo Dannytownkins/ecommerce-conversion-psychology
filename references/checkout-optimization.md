@@ -16,7 +16,7 @@
 
 ---
 
-## Finding 1: Extra Costs Are the #1 Abandonment Driver
+### Finding 1: Extra Costs Are the #1 Abandonment Driver
 
 - **Source**: Baymard Institute, 2024-2025, baymard.com/lists/cart-abandonment-rate
 - **Methodology**: Quantitative survey of US online shoppers; meta-analysis of 50 cart abandonment studies
@@ -27,7 +27,7 @@
 
 ---
 
-## Finding 2: The 70% Average Cart Abandonment Rate
+### Finding 2: The 70% Average Cart Abandonment Rate
 
 - **Source**: Baymard Institute, 2025-2026, baymard.com/lists/cart-abandonment-rate
 - **Methodology**: Meta-analysis of 50 different studies containing cart abandonment statistics
@@ -38,7 +38,7 @@
 
 ---
 
-## Finding 3: Full Abandonment Reasons Breakdown
+### Finding 3: Full Abandonment Reasons Breakdown
 
 - **Source**: Baymard Institute, 2024, baymard.com/blog/cart-abandonment; corroborated by Statista
 - **Methodology**: Quantitative survey of US online shoppers (excluding "just browsing" segment)
@@ -58,7 +58,7 @@
 
 ---
 
-## Finding 4: Shipping Cost Timing -- Early vs. Late Disclosure
+### Finding 4: Shipping Cost Timing -- Early vs. Late Disclosure
 
 - **Source**: Baymard Institute; ShipperHQ Blog, 2026; GrowthSuite
 - **Methodology**: Analysis of checkout abandonment patterns correlated with cost disclosure timing
@@ -69,7 +69,7 @@
 
 ---
 
-## Finding 5: Guest Checkout vs. Forced Account Creation
+### Finding 5: Guest Checkout vs. Forced Account Creation
 
 - **Source**: Baymard Institute; PayPal US; Krepling Pay, 2026
 - **Methodology**: Multiple studies including PayPal conversion data and Baymard survey research
@@ -80,7 +80,7 @@
 
 ---
 
-## Finding 6: Form Field Count -- 14.88 Average Fields vs. 7-8 Minimum
+### Finding 6: Form Field Count -- 14.88 Average Fields vs. 7-8 Minimum
 
 - **Source**: Baymard Institute, 2025, baymard.com/blog/checkout-flow-average-form-fields
 - **Methodology**: Benchmark audit of top e-commerce checkout flows
@@ -91,7 +91,7 @@
 
 ---
 
-## Finding 7: Per-Field Conversion Impact
+### Finding 7: Per-Field Conversion Impact
 
 - **Source**: Venture Harbour, 2026; CXL Institute
 - **Methodology**: Multiple A/B test case studies compiled across industries
@@ -102,7 +102,7 @@
 
 ---
 
-## Finding 8: Progress Indicators Improve Completion
+### Finding 8: Progress Indicators Improve Completion
 
 - **Source**: PMC/NIH academic study; Yieldify; Neil Patel
 - **Methodology**: Academic controlled experiments (PMC); e-commerce A/B tests (Yieldify)
@@ -113,7 +113,7 @@
 
 ---
 
-## Finding 9: Inline Validation Outperforms Top-of-Form Errors
+### Finding 9: Inline Validation Outperforms Top-of-Form Errors
 
 - **Source**: Baymard Institute; Smashing Magazine; CXL
 - **Methodology**: Usability testing (Baymard); A/B testing and eye-tracking studies
@@ -124,7 +124,7 @@
 
 ---
 
-## Finding 10: Address Autocomplete Lifts Conversion 1.5-2%
+### Finding 10: Address Autocomplete Lifts Conversion 1.5-2%
 
 - **Source**: Google Maps Platform; DevPress; Google Autocomplete case study PDF
 - **Methodology**: A/B testing with Google Places Autocomplete API integration
@@ -135,7 +135,7 @@
 
 ---
 
-## Finding 11: One-Page vs. Multi-Step Checkout -- Context-Dependent
+### Finding 11: One-Page vs. Multi-Step Checkout -- Context-Dependent
 
 - **Source**: Elastic Path A/B test; Digismoothie 2024 analysis; Baymard Institute
 - **Methodology**: A/B split tests across multiple e-commerce stores; Baymard benchmark research
@@ -146,7 +146,7 @@
 
 ---
 
-## Finding 12: Trust Signals and Credit Card Security Concerns
+### Finding 12: Trust Signals and Credit Card Security Concerns
 
 - **Source**: Baymard Institute, 2024, baymard.com/blog/cart-abandonment
 - **Methodology**: Quantitative survey of US online shoppers
@@ -157,7 +157,7 @@
 
 ---
 
-## Finding 13: Limited Payment Methods Cause 13% Abandonment
+### Finding 13: Limited Payment Methods Cause 13% Abandonment
 
 - **Source**: Baymard Institute, 2024, baymard.com/blog/cart-abandonment
 - **Methodology**: Quantitative survey of US online shoppers
@@ -168,7 +168,7 @@
 
 ---
 
-## Finding 14: Payment Method Visibility Before Checkout
+### Finding 14: Payment Method Visibility Before Checkout
 
 - **Source**: Stripe Blog; Stripe Express Checkout Element docs
 - **Methodology**: Stripe's testing across merchants using dynamic payment method surfacing
@@ -179,7 +179,7 @@
 
 ---
 
-## Finding 15: Express Checkout Conversion Lifts (Shop Pay, Apple Pay)
+### Finding 15: Express Checkout Conversion Lifts (Shop Pay, Apple Pay)
 
 - **Source**: Shopify Enterprise Blog; Stripe Apple Pay Best Practices; Xola
 - **Methodology**: Shopify's internal data (Shop Pay); Stripe's Express Checkout Element A/B data; third-party consulting firm study
@@ -193,7 +193,7 @@
 
 ---
 
-## Finding 16: Cart Recovery Email Timing and Effectiveness
+### Finding 16: Cart Recovery Email Timing and Effectiveness
 
 - **Source**: Klaviyo Abandoned Cart Benchmarks; Rejoiner; TargetBay 2025 Report
 - **Methodology**: Analysis of email performance metrics across thousands of e-commerce stores
@@ -211,7 +211,7 @@
 
 ---
 
-## Finding 17: Coupon Code Field Increases Abandonment
+### Finding 17: Coupon Code Field Increases Abandonment
 
 - **Source**: Zuko Blog; PayPal & ComScore study; Upsellit
 - **Methodology**: PayPal/ComScore quantitative study; behavioral analysis of checkout flows
@@ -222,7 +222,7 @@
 
 ---
 
-## Finding 18: Cart Summary Visibility During Checkout
+### Finding 18: Cart Summary Visibility During Checkout
 
 - **Source**: GrowthSuite; Design Studio UX; Baymard Institute checkout UX guidelines
 - **Methodology**: UX best practice analysis and checkout conversion benchmarking
@@ -233,7 +233,7 @@
 
 ---
 
-## Finding 19: Slow Delivery as Abandonment Driver
+### Finding 19: Slow Delivery as Abandonment Driver
 
 - **Source**: Baymard Institute, 2024, baymard.com/blog/cart-abandonment
 - **Methodology**: Quantitative survey of US online shoppers
@@ -244,7 +244,7 @@
 
 ---
 
-## Finding 20: Website Errors and Technical Issues
+### Finding 20: Website Errors and Technical Issues
 
 - **Source**: Baymard Institute, 2025, baymard.com/blog/cart-abandonment
 - **Methodology**: Quantitative survey of US online shoppers
@@ -255,7 +255,7 @@
 
 ---
 
-## Finding 21: Accessible Checkout Design
+### Finding 21: Accessible Checkout Design
 
 - **Source**: (a) Baymard Institute, ongoing checkout UX research; (b) W3C WCAG 2.2; (c) Adrian Roselli, accessibility expert guidance
 - **Methodology**: (a) Baymard: large-scale moderated usability testing including users with disabilities. (b) WCAG standards. (c) Expert analysis of form accessibility patterns.
@@ -266,7 +266,7 @@
 
 ---
 
-## Finding 22: Cart Recovery Channels — Push, Email, SMS Cascade
+### Finding 22: Cart Recovery Channels — Push, Email, SMS Cascade
 
 - **Source**: Cross-reference to post-purchase-psychology.md Finding 15
 - **Methodology**: See post-purchase-psychology.md for full methodology details.
