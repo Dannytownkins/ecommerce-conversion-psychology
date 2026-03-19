@@ -151,11 +151,11 @@ Format as natural language with actionable recommendations:
 [1-2 sentence summary]
 
 **Findings:**
-1. **[Finding title]** — [specific recommendation] `[SOURCE]` **[SEVERITY]** [if EFFORT: Low, append: `QUICK WIN`]
-2. **[Finding title]** — [specific recommendation] `[SOURCE]` **[SEVERITY]** [if EFFORT: Low, append: `QUICK WIN`]
-3. **[Finding title]** — [specific recommendation] `[SOURCE]` **[SEVERITY]**
+1. **[SEVERITY]** **[Finding title]** — [specific recommendation] `[EVIDENCE_TIER]` [if EFFORT: Low, append: `QUICK WIN`]
+2. **[SEVERITY]** **[Finding title]** — [specific recommendation] `[EVIDENCE_TIER]` [if EFFORT: Low, append: `QUICK WIN`]
+3. **[SEVERITY]** **[Finding title]** — [specific recommendation] `[EVIDENCE_TIER]`
 
-Tag each finding with its severity (CRITICAL/HIGH) and append `QUICK WIN` for findings with EFFORT: Low. This makes it immediately clear which findings are easiest to act on.
+Lead with severity (CRITICAL/HIGH/MEDIUM/LOW). Do NOT show PASS/FAIL in conversation output — findings are implicitly actionable. Show the evidence tier (Gold/Silver/Bronze) so users know citation credibility. Append `QUICK WIN` for findings with EFFORT: Low.
 
 Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for full multi-cluster coverage.
 

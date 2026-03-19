@@ -117,11 +117,17 @@ OBSERVATION: [what was observed on the page, max 2 sentences]
 RECOMMENDATION: [specific, implementable action — not vague advice]
 REFERENCE: [filename:principle-name or principle number]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
+EVIDENCE_TIER: [Gold|Silver|Bronze]
+QUALITY_FLAG: [optional — only when citation quality notably diverges from tier norm]
 **Why this matters:** [2-3 sentence concise rationale explaining the psychology/research behind this finding]
 ↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year])
 ```
 
 The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
+
+**Evidence tier:** Look up the `Evidence Tier` field from the cited finding in the reference file. If the reference file finding has no `Evidence Tier` field, default to Bronze.
+
+**SOURCE rendering note:** SOURCE is retained in the structured output for accuracy tracking and progress comparison, but is **not rendered in visual reports** — it is collapsed into a "Technical details" expander. Do not remove SOURCE from the output format.
 
 **Priority definitions:**
 - **CRITICAL** — Ethics violation, legal compliance issue. Fix immediately.

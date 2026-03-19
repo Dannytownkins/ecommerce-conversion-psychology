@@ -20,6 +20,8 @@ REFERENCE: [reference-file.md — section name]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 EFFORT: [Low|Medium|High]
 QUICK_WIN: [true|false]
+EVIDENCE_TIER: [Gold|Silver|Bronze]
+QUALITY_FLAG: [optional — only when citation quality diverges from tier norm]
 **Why this matters:** [2-3 sentence rationale]
 ↳ [reference-file.md], Finding [N] ([Study/Author], [Year])
 

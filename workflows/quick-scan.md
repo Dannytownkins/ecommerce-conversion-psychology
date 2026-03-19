@@ -80,11 +80,15 @@ REFERENCE: [reference-file.md — principle name]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 EFFORT: [Low|Medium|High]
 QUICK_WIN: true
+EVIDENCE_TIER: [Gold|Silver|Bronze]
+QUALITY_FLAG: [optional — only when citation quality notably diverges from tier norm]
 **Why this matters:** [2-3 sentence concise rationale explaining the psychology/research behind this finding]
 ↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year])
 ```
 
 The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
+
+**Evidence tier:** Look up the `Evidence Tier` field from the cited finding in the reference file. If the reference file finding has no `Evidence Tier` field, default to Bronze.
 
 Limit to 3-5 findings maximum. Prioritize by impact-to-effort ratio.
 
