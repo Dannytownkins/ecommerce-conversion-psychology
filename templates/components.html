@@ -1,0 +1,347 @@
+<!-- CRO Visual Report Component Library v3.2.0
+     Assembly: Follow the manifest in workflows/visual-report.md
+     Markers: <!-- BEGIN:name --> / <!-- END:name --> delimit each component
+     Slots:   {slot:name} marks data insertion points
+     Theme:   CSS custom properties; add class "theme-light" or "theme-dark" to <html>
+     Security: Nonce-based CSP; generate unique nonce per report -->
+
+
+<!-- BEGIN:report-shell -->
+<!DOCTYPE html>
+<html lang="en" class="{slot:theme-class}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-{slot:nonce}'; style-src 'unsafe-inline'; img-src data:; font-src data:;">
+<!-- Security: nonce-based CSP. Do not serve this file from a public URL. -->
+<title>CRO Report — {slot:page-url}</title>
+<style>
+/* === FONTS === */
+{slot:font-css}
+
+/* === RESET & BASE === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* === THEME TOKENS === */
+.theme-dark {
+  --bg: #0e0e10; --surface: #18181b; --surface-2: #1e1e22;
+  --border: #2a2a2e; --text: #e4e4e7; --text-muted: #a1a1aa;
+  --badge-bg-subtle: rgba(255,255,255,0.06);
+}
+.theme-light {
+  --bg: #ffffff; --surface: #f8f9fa; --surface-2: #f1f3f5;
+  --border: #e2e4e7; --text: #1a1a2e; --text-muted: #6b7280;
+  --badge-bg-subtle: rgba(0,0,0,0.04);
+}
+:root {
+  --critical: #ef4444; --critical-bg: rgba(239,68,68,0.08); --critical-border: rgba(239,68,68,0.3);
+  --high: #f59e0b; --high-bg: rgba(245,158,11,0.08); --high-border: rgba(245,158,11,0.3);
+  --medium: #3b82f6; --medium-bg: rgba(59,130,246,0.08); --medium-border: rgba(59,130,246,0.3);
+  --low: #6b7280; --low-bg: rgba(107,114,128,0.08); --low-border: rgba(107,114,128,0.3);
+  --gold-bg: #F5E6D3; --gold-text: #8B5E00; --gold-border: #8B5E00;
+  --silver-bg: #E2E8F0; --silver-text: #475569; --silver-border: #475569;
+  --bronze-bg: #F4E4D8; --bronze-text: #744210; --bronze-border: #744210;
+  --radius: 6px; --radius-lg: 10px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 15px; line-height: 1.6;
+  background: var(--bg); color: var(--text);
+}
+code, .mono { font-family: 'JetBrains Mono', ui-monospace, 'Cascadia Code', 'Fira Code', monospace; font-size: 0.875em; }
+a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+a:hover { opacity: 0.8; }
+</style>
+</head>
+<body>
+{slot:body-content}
+</body>
+</html>
+<!-- END:report-shell -->
+
+
+<!-- BEGIN:report-header -->
+<header style="padding: 1.5rem 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.75rem;">
+  <div>
+    <h1 style="font-size: 1.25rem; font-weight: 600; letter-spacing: -0.01em;">CRO Scan Report</h1>
+    <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.25rem;">
+      <a href="{slot:page-url}" rel="noopener noreferrer" target="_blank">{slot:page-url}</a>
+    </p>
+  </div>
+  <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+    <span class="meta-badge {slot:device-class}">{slot:device}</span>
+    <span class="meta-badge">{slot:viewport}</span>
+    <span class="meta-badge">{slot:platform}</span>
+    <span style="color: var(--text-muted); font-size: 0.8rem;" class="mono">{slot:date} &middot; {slot:engagement-id}</span>
+  </div>
+</header>
+<style>
+.meta-badge {
+  display: inline-block; padding: 0.2rem 0.6rem; border-radius: var(--radius);
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+  background: var(--badge-bg-subtle); color: var(--text-muted); border: 1px solid var(--border);
+}
+.meta-badge.desktop { background: rgba(59,130,246,0.1); color: #3b82f6; border-color: rgba(59,130,246,0.3); }
+.meta-badge.mobile { background: rgba(139,92,246,0.1); color: #8b5cf6; border-color: rgba(139,92,246,0.3); }
+</style>
+<!-- END:report-header -->
+
+
+<!-- BEGIN:score-summary-strip -->
+<div style="display: flex; gap: 1rem; padding: 1rem 2rem; border-bottom: 1px solid var(--border); flex-wrap: wrap;">
+  <div class="score-card">
+    <span class="score-num">{slot:score-total}</span>
+    <span class="score-label">Findings</span>
+  </div>
+  <div class="score-card" style="--accent: var(--critical);">
+    <span class="score-num" style="color: var(--critical);">{slot:score-critical}</span>
+    <span class="score-label">Critical</span>
+  </div>
+  <div class="score-card" style="--accent: var(--high);">
+    <span class="score-num" style="color: var(--high);">{slot:score-high}</span>
+    <span class="score-label">High</span>
+  </div>
+  <div class="score-card">
+    <span class="score-num" style="color: #22c55e;">{slot:score-quickwins}</span>
+    <span class="score-label">Quick Wins</span>
+  </div>
+</div>
+<style>
+.score-card { display: flex; flex-direction: column; align-items: center; min-width: 4.5rem; padding: 0.5rem 1rem; background: var(--surface); border-radius: var(--radius); border: 1px solid var(--border); }
+.score-num { font-size: 1.5rem; font-weight: 700; line-height: 1.2; }
+.score-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-top: 0.15rem; }
+</style>
+<!-- END:score-summary-strip -->
+
+
+<!-- BEGIN:split-panel-layout -->
+<div class="report-panels" style="display: grid; grid-template-columns: 45fr 55fr; height: calc(100vh - 160px); overflow: hidden;">
+  <div class="screenshot-column" id="screenshot-panel" style="overflow-y: auto; scroll-snap-type: y mandatory; border-right: 1px solid var(--border); padding: 1rem; background: var(--surface);">
+    {slot:left-panel-content}
+  </div>
+  <div class="findings-column" id="findings-panel" style="overflow-y: auto; padding: 1.5rem 2rem;">
+    {slot:right-panel-content}
+  </div>
+</div>
+<!-- END:split-panel-layout -->
+
+
+<!-- BEGIN:screenshot-panel -->
+<div class="screenshot-section" id="{slot:screenshot-id}" style="scroll-snap-align: start; margin-bottom: 1rem;">
+  <p style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">{slot:section-label}</p>
+  <div style="position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border);">
+    <img src="data:image/jpeg;base64,{slot:screenshot-base64}" style="width: 100%; display: block;" alt="{slot:section-label}" />
+    <svg viewBox="0 0 {slot:viewbox-width} {slot:viewbox-height}" preserveAspectRatio="xMinYMin meet"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+      {slot:svg-markers}
+    </svg>
+  </div>
+</div>
+<!-- END:screenshot-panel -->
+
+
+<!-- BEGIN:svg-callout-marker -->
+<g class="callout-marker" data-finding="{slot:finding-id}" style="pointer-events: auto; cursor: pointer;">
+  <circle cx="{slot:marker-cx}" cy="{slot:marker-cy}" r="18" fill="{slot:severity-color}" opacity="0.9" />
+  <text x="{slot:marker-cx}" y="{slot:marker-cy}" text-anchor="middle" dy="0.35em" fill="white" font-family="Inter, sans-serif" font-size="13" font-weight="700">{slot:marker-number}</text>
+</g>
+<style>
+.callout-marker { transition: opacity 150ms ease-out, transform 150ms ease-out; transform-origin: center; }
+.callout-marker.marker-active { opacity: 1 !important; }
+.callout-marker.marker-active circle { r: 22; }
+</style>
+<!-- END:svg-callout-marker -->
+
+
+<!-- BEGIN:wireframe-fallback-section -->
+<div class="screenshot-section" id="{slot:screenshot-id}" style="scroll-snap-align: start; margin-bottom: 1rem;">
+  <p style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;">{slot:section-label} <span style="opacity: 0.6;">(wireframe — screenshot obscured)</span></p>
+  <div style="position: relative; border-radius: var(--radius); overflow: hidden; border: 1px dashed var(--border); padding: 2rem; min-height: 120px; background: var(--surface-2); display: flex; align-items: center; justify-content: center;">
+    <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+      <div style="font-weight: 600; margin-bottom: 0.25rem;">{slot:wireframe-label}</div>
+      <div style="font-size: 0.75rem; opacity: 0.7;">{slot:wireframe-description}</div>
+    </div>
+    <svg viewBox="0 0 400 120" preserveAspectRatio="xMinYMin meet"
+         style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;">
+      {slot:svg-markers}
+    </svg>
+  </div>
+</div>
+<!-- END:wireframe-fallback-section -->
+
+
+<!-- BEGIN:finding-card -->
+<div class="finding-card {slot:severity-class}" data-severity="{slot:severity}" data-finding-id="{slot:finding-id}" data-screenshot="{slot:screenshot-id}" style="cursor: pointer;">
+  <div class="finding-header">
+    <span class="finding-num" style="background: {slot:severity-color};">{slot:finding-number}</span>
+    <span class="finding-title">{slot:finding-title}</span>
+    <span class="severity-badge {slot:severity-class}">{slot:severity}</span>
+    {slot:quick-win-badge}
+  </div>
+  <div class="finding-body">
+    <p><strong>Observation:</strong> {slot:observation}</p>
+    <p style="margin-top: 0.5rem;"><strong>Fix:</strong> {slot:recommendation}</p>
+  </div>
+  <div class="finding-citation" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border);">
+    {slot:citation-content}
+  </div>
+  <details class="finding-rationale" style="margin-top: 0.5rem;">
+    <summary style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer; user-select: none;">Why this matters</summary>
+    <p style="font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.5; color: var(--text-muted);">{slot:rationale}</p>
+  </details>
+  <details class="finding-technical" style="margin-top: 0.25rem;">
+    <summary style="font-size: 0.75rem; color: var(--text-muted); cursor: pointer; user-select: none; opacity: 0.7;">Technical details</summary>
+    <div style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);" class="mono">
+      SOURCE: {slot:source} &middot; SECTION: {slot:section-slug} &middot; EFFORT: {slot:effort}
+    </div>
+  </details>
+</div>
+<style>
+.finding-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 1.25rem; margin-bottom: 1rem; transition: border-color 150ms ease;
+  border-left: 3px solid var(--border);
+}
+.finding-card:hover { border-color: var(--text-muted); }
+.finding-card.critical { border-left-color: var(--critical); background: var(--critical-bg); }
+.finding-card.high { border-left-color: var(--high); background: var(--high-bg); }
+.finding-card.medium { border-left-color: var(--medium); }
+.finding-card.low { border-left-color: var(--low); }
+.finding-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
+.finding-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.75rem; height: 1.75rem; border-radius: 50%; color: white;
+  font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+}
+.finding-title { font-weight: 600; font-size: 1rem; flex: 1; }
+.severity-badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: var(--radius);
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.severity-badge.critical { background: var(--critical-bg); color: var(--critical); border: 1px solid var(--critical-border); }
+.severity-badge.high { background: var(--high-bg); color: var(--high); border: 1px solid var(--high-border); }
+.severity-badge.medium { background: var(--medium-bg); color: var(--medium); border: 1px solid var(--medium-border); }
+.severity-badge.low { background: var(--low-bg); color: var(--low); border: 1px solid var(--low-border); }
+.quick-win-badge {
+  display: inline-block; padding: 0.15rem 0.5rem; border-radius: var(--radius);
+  font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  background: rgba(34,197,94,0.1); color: #22c55e; border: 1px solid rgba(34,197,94,0.3);
+}
+.finding-body { font-size: 0.9rem; line-height: 1.6; }
+.finding-citation { font-size: 0.85rem; }
+</style>
+<!-- END:finding-card -->
+
+
+<!-- BEGIN:evidence-tier-badge -->
+<span class="evidence-badge evidence-{slot:tier}">
+  {slot:tier-icon} {slot:tier-label}
+</span>
+<style>
+.evidence-badge {
+  display: inline-flex; align-items: center; gap: 0.25rem;
+  padding: 0.15rem 0.5rem; border-radius: var(--radius);
+  font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+  border-left: 3px solid transparent;
+}
+.evidence-gold   { background: var(--gold-bg); color: var(--gold-text); border-left-color: var(--gold-border); }
+.evidence-silver { background: var(--silver-bg); color: var(--silver-text); border-left-color: var(--silver-border); }
+.evidence-bronze { background: var(--bronze-bg); color: var(--bronze-text); border-left-color: var(--bronze-border); }
+</style>
+<!-- END:evidence-tier-badge -->
+
+
+<!-- BEGIN:screenshot-only-banner -->
+<div style="padding: 0.75rem 2rem; background: rgba(245,158,11,0.08); border-bottom: 1px solid rgba(245,158,11,0.2); font-size: 0.85rem; color: var(--high);">
+  Based on screenshot only &mdash; DOM and interaction patterns not assessed.
+</div>
+<!-- END:screenshot-only-banner -->
+
+
+<!-- BEGIN:all-obscured-banner -->
+<div style="padding: 0.75rem 2rem; background: rgba(245,158,11,0.08); border-bottom: 1px solid rgba(245,158,11,0.2); font-size: 0.85rem; color: var(--high);">
+  All screenshots were obscured by overlays &mdash; wireframe rendering used. For a screenshot-based report, dismiss popups and re-scan.
+</div>
+<!-- END:all-obscured-banner -->
+
+
+<!-- BEGIN:print-layout-overrides -->
+<style>
+@media print {
+  body { background: white !important; color: #1a1a2e !important; font-size: 12px; }
+  .report-panels { display: block !important; height: auto !important; overflow: visible !important; }
+  .screenshot-column, .findings-column {
+    width: 100% !important; height: auto !important; overflow: visible !important;
+    border: none !important; padding: 0.5rem 0 !important;
+  }
+  .screenshot-column { border-bottom: 1px solid #ccc !important; margin-bottom: 1rem; padding-bottom: 1rem !important; }
+  .finding-card { break-inside: avoid; page-break-inside: avoid; }
+  .screenshot-section { break-inside: avoid; page-break-inside: avoid; }
+  .severity-badge, .evidence-badge, .quick-win-badge, .meta-badge {
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
+  }
+  .finding-card.critical, .finding-card.high {
+    print-color-adjust: exact; -webkit-print-color-adjust: exact;
+  }
+  .finding-num { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+  details[open] > summary { display: none; }
+  details { display: block !important; }
+  details > *:not(summary) { display: block !important; }
+}
+</style>
+<!-- END:print-layout-overrides -->
+
+
+<!-- BEGIN:interaction-script -->
+<!-- COPY THIS SCRIPT VERBATIM — DO NOT MODIFY -->
+<script nonce="{slot:nonce}">
+(async function() {
+  // Wait for all images to decode before attaching handlers
+  const images = [...document.querySelectorAll('.screenshot-section img')];
+  await Promise.allSettled(images.map(img => img.decode ? img.decode() : Promise.resolve()));
+
+  // --- Click-to-scroll: Finding card → Screenshot ---
+  document.querySelectorAll('.finding-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      if (e.target.closest('a') || e.target.closest('details') || e.target.closest('summary')) return;
+      const sid = this.dataset.screenshot;
+      const target = document.getElementById(sid);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      highlightMarker(this.dataset.findingId);
+    });
+  });
+
+  // --- Click-to-scroll: SVG marker → Finding card ---
+  document.querySelectorAll('.callout-marker').forEach(marker => {
+    marker.addEventListener('click', function() {
+      const fid = this.dataset.finding;
+      const card = document.querySelector('.finding-card[data-finding-id="' + fid + '"]');
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      highlightMarker(fid);
+    });
+  });
+
+  // --- Marker highlight (only toggle on change) ---
+  let activeMarker = null;
+  function highlightMarker(markerId) {
+    if (activeMarker === markerId) return;
+    if (activeMarker) {
+      const prev = document.querySelector('.callout-marker[data-finding="' + activeMarker + '"]');
+      if (prev) prev.classList.remove('marker-active');
+    }
+    const next = document.querySelector('.callout-marker[data-finding="' + markerId + '"]');
+    if (next) next.classList.add('marker-active');
+    activeMarker = markerId;
+  }
+})();
+</script>
+<!-- END:interaction-script -->
+
+
+<!-- BEGIN:report-footer -->
+<footer style="padding: 1rem 2rem; border-top: 1px solid var(--border); font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+  <span>Generated {slot:generated-date} &middot; CRO Plugin v{slot:version}</span>
+  <span class="mono">{slot:engagement-id}</span>
+</footer>
+<!-- END:report-footer -->

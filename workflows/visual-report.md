@@ -2,80 +2,79 @@
 name: visual-report-generation
 ---
 
-# Visual Report Generation — Coordinator Reference
+# Visual Report Generation — Coordinator Reference (v3.2)
 
-The coordinator produces an annotated wireframe visual report by following these steps. This is NOT a subagent workflow — the coordinator reads these instructions and generates the report inline.
+The coordinator produces an annotated screenshot visual report by following these steps. This is NOT a subagent workflow — the coordinator reads these instructions and generates the report inline.
 
 ## Input (already available to coordinator)
 
 1. **Section boundary metadata** — from acquisition agent output (labels, scrollY, height, cluster tags)
-2. **Style metadata** — extracted colors (bg, container_bg, text, cta_bg, link)
+2. **Style metadata** — extracted colors (bg, container_bg, text, cta_bg, link) + **luminance** value (0-1)
 3. **Preprocessed DOM** — cleaned HTML from `docs/cro/{engagement-id}/dom.html`
-4. **Screenshot paths** — 3-6 sectioned viewport captures
-5. **Audit findings** — from `audit.md` (or `audit-mobile.md`) with SOURCE, SECTION, PRIORITY, OBSERVATION, RECOMMENDATION, rationale, citation
+4. **Screenshot images** — 3-6 sectioned viewport captures (base64 JPEG)
+5. **Audit findings** — from `audit.md` (or `audit-mobile.md`) with SOURCE, SECTION, PRIORITY, EVIDENCE_TIER, QUALITY_FLAG, OBSERVATION, RECOMMENDATION, rationale, citation
 6. **Engagement metadata** — ID, date, URL, platform, clusters, device, viewport
-7. **Template** — `templates/visual-report.html.template`
+7. **Component library** — `templates/components.html`
+8. **Font CSS** — `templates/fonts.css.fragment`
 
-## Step 1: Build Wireframe Sections
+## Step 1: Build Screenshot Panels
 
-For each section identified by the acquisition agent:
+For each section screenshot from the acquisition agent:
 
-1. **Identify section type** from the label and cluster tags:
+1. **Resize to display resolution** — max 800px wide at JPEG quality 65 before base64 encoding. This reduces file size by 40-60%.
 
-| Label Pattern | Section Type | Wireframe Block |
-|---|---|---|
-| announcement, banner, promo | Announcement bar | Dark strip with text content + link text |
-| header, nav, navigation | Navigation | Logo text + nav link names + icon placeholders |
-| hero, vehicle, selector, main banner | Hero | Dark block with key heading + form elements + CTA button |
-| category, categories, collection grid | Category grid | Row of small labeled cards |
-| product, featured, collection, shop | Product grid/carousel | Row of product card outlines with actual names/prices |
-| newsletter, email, subscribe | Newsletter | Centered heading + email input mockup |
-| footer, copyright | Footer | Two-column text links + payment icon placeholders |
-| (unmatched) | Generic section | Labeled block with "Content section" placeholder |
+2. **Evaluate obscuration** — check if overlay elements (modals, popups, cookie banners) cover >30% of the viewport area in this screenshot:
+   - **Clean screenshot** → use the `screenshot-panel` component
+   - **Obscured screenshot** → use the `wireframe-fallback-section` component. Generate a simplified label from DOM content (heading text, section type).
 
-2. **Extract key elements from DOM** for this section's scroll range:
-   - Headings (h1-h3): use actual text
-   - Buttons/CTAs: use actual button text
-   - Navigation links: use actual link text (first 6)
-   - Product cards: use actual product name + price (first 3 per section, then "N more items" note)
-   - Form fields: show as input outlines with placeholder text
-   - Images: show as gray placeholder boxes with dimensions or alt text
+3. **Set SVG viewBox** — match the screenshot's pixel dimensions (width x height after resize).
 
-3. **Apply extracted colors** from style metadata:
-   - Section backgrounds: use `bg` or `container_bg` as appropriate
-   - CTA buttons: use `cta_bg` for background, white text
-   - Text: use `text` color for headings, `text-muted` for body
-   - Links: use `link` color
+4. Stack all screenshot panels vertically in the left panel div. Each gets `scroll-snap-align: start`.
 
-4. **Attach findings** to this section by matching SECTION slugs:
-   - Use the slug-to-section mapping from the audit workflow
-   - Add a numbered callout marker (colored circle) matching the finding's severity
-   - Apply `has-critical` or `has-high` CSS class to the wireframe section block
+## Step 2: Place SVG Markers + Build Finding Cards
 
-5. **Embed screenshot** as a collapsible `<details>` element:
-   - Summary text: "View screenshot"
-   - Image: base64-encoded JPEG from the acquisition screenshots
-   - Add CSS class `mobile` to screenshot images when device is mobile
+For each FAIL or PARTIAL finding (ordered by page position, top to bottom):
 
-## Step 2: Build Finding Cards
+1. **Map to screenshot** — find the screenshot whose scrollY range contains the finding's SECTION scrollY:
+   ```
+   screenshot match: finding_scrollY >= screenshot_scrollY AND finding_scrollY < (screenshot_scrollY + screenshot_height)
+   ```
 
-For each FAIL or PARTIAL finding:
+2. **Calculate marker position** within the screenshot's SVG viewBox:
+   ```
+   marker_y = (finding_scrollY - screenshot_scrollY) / screenshot_height * viewBox_height
+   marker_x = viewBox_width * 0.9   (right-aligned, out of the way)
+   ```
+   Do NOT estimate horizontal positions — default to 90% from left.
 
-1. Create a finding card with:
-   - **Number** — sequential, matching the wireframe callout marker
-   - **Title** — derived from SECTION slug, formatted as human-readable (e.g., `primary-cta` → "Primary CTA")
-   - **Severity badge** — CRITICAL (red) or HIGH (amber)
-   - **Quick Win badge** — if EFFORT is "Low" or QUICK_WIN is true, add `<span class="quick-win-badge">Quick Win</span>` next to the severity badge in the finding header
-   - **Observation** — from finding's OBSERVATION field
-   - **Fix** — from finding's RECOMMENDATION field
-   - **Rationale** — from finding's "Why this matters" block
-   - **Citation** — from finding's citation line
+3. **Add SVG callout marker** — use the `svg-callout-marker` component inside the screenshot's SVG overlay. Set severity color:
+   - CRITICAL → `#ef4444` (red)
+   - HIGH → `#f59e0b` (amber)
+   - MEDIUM → `#3b82f6` (blue)
+   - LOW → `#6b7280` (gray)
 
-2. Apply severity CSS class (`critical` or `high`) to the card
+4. **Build finding card** — use the `finding-card` component:
+   - Number matches the SVG marker number
+   - `data-finding-id` = sequential finding number (e.g., "1", "2", "3")
+   - `data-screenshot` = the screenshot panel's `id` attribute
+   - Title = human-readable SECTION slug (e.g., `primary-cta` → "Primary CTA")
+   - Quick Win badge: include if EFFORT is "Low" or QUICK_WIN is true
 
-3. Numbers MUST match between wireframe callout markers and finding cards
+5. **Build citation content** — for each finding's citation line:
+   - **Sanitize URL**: reject any URL that is not `http:` or `https:` scheme. Rejected URLs render as plain text.
+   - Add `rel="noopener noreferrer" target="_blank"` to all citation links
+   - Insert an `evidence-tier-badge` component (Gold/Silver/Bronze) from the finding's EVIDENCE_TIER field
+   - If QUALITY_FLAG is present, add italic text: `<em style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">{quality_flag}</em>`
+   - If no EVIDENCE_TIER in finding data, default to Bronze
 
-## Step 3: Calculate Scores
+## Step 3: Theme Selection
+
+Read the `luminance` field from acquisition style metadata:
+- If luminance > 0.5 → set `{slot:theme-class}` to `theme-light`
+- If luminance <= 0.5 or absent → set `{slot:theme-class}` to `theme-dark`
+- Screenshot-only mode (`source_mode: "screenshot"`) → always `theme-dark`
+
+## Step 4: Calculate Scores
 
 Count from the findings:
 - **Total:** all FAIL + PARTIAL findings
@@ -83,49 +82,79 @@ Count from the findings:
 - **High:** findings with PRIORITY: HIGH
 - **Quick Wins:** findings with EFFORT: Low (or QUICK_WIN: true)
 
-## Step 4: Add Fold Line
+## Step 5: Generate Nonce
 
-Insert a fold line indicator in the wireframe at the approximate viewport boundary:
-- Desktop (1440x900): after the section whose scrollY + height exceeds 900px
-- Mobile (390x844): after the section whose scrollY + height exceeds 844px
-- Label: "approximate fold ({width}x{height})"
+Generate a unique nonce for the CSP: 16 random hexadecimal characters (e.g., `a8f3k19mpq2x7b4e`). This nonce is used in both the CSP meta tag and the script tag.
 
-## Step 5: Assemble Report
+## Step 6: Assemble Report
 
-1. Read `templates/visual-report.html.template`
-2. Replace placeholders:
-   - `{{ENGAGEMENT_ID}}` — engagement ID
-   - `{{DATE}}` — audit date
-   - `{{PAGE_URL}}` — page URL (HTML-escaped)
-   - `{{PAGE_TYPE}}` — homepage, product, etc.
-   - `{{PLATFORM}}` — shopify, nextjs, generic
-   - `{{CLUSTERS}}` — cluster name(s)
-   - `{{DEVICE}}` — Desktop or Mobile
-   - `{{DEVICE_CLASS}}` — `desktop` or `mobile` (CSS class)
-   - `{{VIEWPORT}}` — e.g., "1440x900 @ 1x" or "390x844 @ iPhone 14"
-   - `{{SOURCE_MODE}}` — url-dual, file, etc.
-   - `{{VERSION}}` — plugin version (3.1.0)
-   - `{{SCORE_TOTAL}}`, `{{SCORE_CRITICAL}}`, `{{SCORE_HIGH}}`, `{{SCORE_QUICKWINS}}` — from Step 3
-   - `{{WIREFRAME_SECTIONS}}` — assembled wireframe HTML from Step 1
-   - `{{FINDING_CARDS}}` — assembled finding card HTML from Step 2
-   - `{{GENERATED_DATE}}` — current date/time
-3. Write to `docs/cro/{engagement-id}/visual-report.html`
-   - For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`
+Read `templates/components.html` and `templates/fonts.css.fragment`.
 
-## Step 6: Security
+**ASSEMBLY ORDER (always this exact sequence):**
+
+```
+ 1. report-shell          (outer wrapper — <head>, opens <body>)
+       Fill {slot:font-css} with contents of fonts.css.fragment
+       Fill {slot:nonce} with the generated nonce
+       Fill {slot:theme-class} from Step 3
+ 2.   report-header        (inside body)
+ 3.   score-summary-strip
+ 4.   [screenshot-only-banner — only if source_mode is "screenshot"]
+ 5.   [all-obscured-banner — only if ALL screenshots were obscured]
+ 6.   split-panel-layout   (opens left/right grid)
+ 7.     LEFT PANEL: for each screenshot section (top to bottom):
+ 8.       screenshot-panel  (with SVG overlay container)
+ 9.         OR wireframe-fallback-section (if obscured)
+10.       for each finding mapped to this screenshot:
+11.         svg-callout-marker (inside the SVG overlay)
+12.     RIGHT PANEL:
+13.       for each finding (ordered by page position, top to bottom):
+14.         finding-card (with nested evidence-tier-badge in citation)
+15.   print-layout-overrides
+16.   interaction-script    *** COPY VERBATIM — DO NOT MODIFY ***
+17.   report-footer
+18. close report-shell
+```
+
+**Fill all `{slot:*}` placeholders** with engagement data. Use HTML-escaping on all text content.
+
+**Hardcode MIME types** for base64 data: always `data:image/jpeg;base64,...` — never derive from input.
+
+Write to `docs/cro/{engagement-id}/visual-report.html`
+- For `--device both`: write `visual-report-desktop.html` and `visual-report-mobile.html` separately.
+
+## Step 7: Security
 
 - **HTML-escape** ALL text content before insertion (finding text, recommendations, URLs, product names, prices)
-- **CSP meta tag** already in the template — verify it's present
-- **No external resources** — everything is inline CSS or base64 images
-- **Escape `{{` patterns** found in user content to prevent template placeholder collision
+- **Sanitize citation URLs** — allowlist `http:` and `https:` schemes only. Reject `javascript:`, `data:`, and all other schemes. Rejected URLs render as plain text.
+- **Nonce-based CSP** — the report shell includes a CSP meta tag with the generated nonce. Only the interaction-script (with matching nonce) can execute.
+- **No external resources** — everything is inline CSS, base64 fonts, or base64 images
+- **Escape `{slot:` patterns** found in user content to prevent placeholder collision
+- **`rel="noopener noreferrer"`** on ALL external links
 
-## Quality Check
+## Screenshot-Only Mode
+
+When `source_mode` is `"screenshot"` (user provided screenshots, no URL scan):
+
+- No acquisition metadata available — **skip SVG marker overlay entirely**
+- Screenshots rendered without callout markers (no scrollY data for positioning)
+- Findings reference sections by name only (no numbered markers matching to screenshots)
+- Prepend `screenshot-only-banner` component after score-summary-strip
+- All findings have SOURCE: VISUAL
+- Theme: always `theme-dark` (no luminance data available)
+- Finding cards still get `data-screenshot` attributes pointing to the closest screenshot by label match
+
+## Post-Assembly Validation
 
 Before writing the file, verify:
-- [ ] Every FAIL/PARTIAL finding has a callout marker on the wireframe AND a finding card
-- [ ] Numbers match between wireframe markers and finding cards
-- [ ] Screenshots are base64-embedded (if available)
-- [ ] Fold line is positioned correctly
+
+- [ ] No `{slot:*}` markers remain in the output
+- [ ] No `<!-- BEGIN:` or `<!-- END:` markers remain
+- [ ] Finding card count matches SVG marker count (except screenshot-only mode)
+- [ ] Every finding card has `data-severity`, `data-finding-id`, and `data-screenshot` attributes
+- [ ] The interaction-script is present and unmodified, with matching nonce
+- [ ] CSP meta tag is present with the correct nonce
+- [ ] All citation URLs are `http:` or `https:` only (no `javascript:` or `data:` schemes)
 - [ ] All text content is HTML-escaped
-- [ ] CSP meta tag is present
-- [ ] Site colors are applied to wireframe elements
+- [ ] No external resource references (all fonts/images are base64 inline)
+- [ ] Screenshots use `data:image/jpeg;base64,...` (hardcoded MIME type)
