@@ -84,7 +84,9 @@ Target 3–6 sections that together cover the full page.
 - If fewer than 3 natural boundaries exist, use scroll positions at 33% and 66% of page height as fallback boundaries.
 - If more than 6 boundaries exist, merge adjacent small sections until you have at most 6.
 
-Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px], "clusters": ["relevant-cluster-slugs"] }`.
+Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px], "clusters": ["relevant-cluster-slugs"], "occluded": false }`.
+
+**Occlusion detection:** After identifying section boundaries, check each section for overlays that block >30% of the viewport (modals, popups, cookie banners, chat widgets). If a section is >30% occluded, set `"occluded": true` in that section's metadata. The visual report generator uses wireframe rendering only for occluded sections — screenshots are the primary visual for all non-occluded sections.
 
 **Section-to-cluster mapping:** Tag each section with the cluster slugs most relevant to its content:
 - Sections containing CTAs, hero areas, product images, visual hierarchy → `visual-cta`
@@ -171,7 +173,7 @@ SCREENSHOTS: [number captured]
 [For each: { "index": N, "label": "[section name]", "scrollY": N, "path": "[screenshot file path]" }]
 
 SECTIONS: [number of boundaries detected]
-[Array of section boundary metadata objects]
+[Array of section boundary metadata objects, each with: label, scrollY, height, clusters, occluded, captured_sections (array of SECTION slugs mapped to this screenshot)]
 
 DOM_SIZE: [size in bytes after preprocessing, or "reused" if dom_file was provided]
 DOM_MODE: [full | skeleton | reused]
