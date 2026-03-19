@@ -33,10 +33,17 @@
 #### meta.json Schema (1 change)
 - `meta.json` gains `screenshot_input` object and `source_mode: "screenshot"` value for screenshot-only engagements.
 
+#### Marketplace Restructure
+- Repo restructured as a Claude Code marketplace plugin. All files moved into `plugins/cro/` directory.
+- Added `.claude-plugin/marketplace.json` at repo root for marketplace discovery.
+- Skills flattened from `skills/cro/audit/` to `skills/audit/` for proper `cro:*` namespace registration.
+- Install method changed from manual `cp`/`ln -sf` to `claude plugin marketplace add` + `claude plugin install`.
+
 #### Files Modified
-- `skills/cro/SKILL.md`, `skills/cro/compare/SKILL.md`, `skills/cro/resume/SKILL.md`
-- `.claude-plugin/plugin.json`
-- `templates/components.html` (new)
+- All files moved under `plugins/cro/`
+- `.claude-plugin/marketplace.json` (new)
+- `plugins/cro/.claude-plugin/plugin.json` (moved, added repository/license/keywords)
+- `README.md` (updated install instructions and architecture)
 
 ---
 
