@@ -1,6 +1,6 @@
 # Source Citations
 
-All source URLs for findings in the reference files. This file is for human verification only — agents do not read it.
+All source URLs for findings in the reference files. This file serves as a reference index for URL lookup when a reference file's **Source** field does not include a direct URL. Agents may read this file to resolve ambiguous citation URLs.
 
 To check a citation, ask Claude Code:
 "Check docs/citations.md for the source of [finding description]"

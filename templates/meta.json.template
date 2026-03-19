@@ -21,5 +21,23 @@
   "quick_scan": false,
   "blocked": false,
   "plans_queue": [],
-  "reconciled": false
+  "reconciled": false,
+  "screenshot_input": null
 }
+
+<!--
+  source_mode values:
+    "url"         — Page scanned via URL with agent-browser
+    "file-path"   — Local file path provided
+    "pasted-code" — Code pasted directly
+    "screenshot"  — User-provided screenshot image (no URL, no DOM)
+
+  screenshot_input (only when source_mode is "screenshot"):
+    {
+      "description": "user's description of what the screenshot shows",
+      "device_context": "desktop" | "mobile" | "unknown"
+    }
+
+  When source_mode is NOT "screenshot", screenshot_input is null.
+  Backward compatible: existing meta.json files without screenshot_input are valid.
+-->

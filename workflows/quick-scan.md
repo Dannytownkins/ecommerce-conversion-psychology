@@ -64,7 +64,27 @@ Select the 3-5 findings with the highest impact-to-effort ratio. Each finding mu
 - Concise (one paragraph per finding)
 
 ### Step 4: Ethics Check
-Check all findings against the ethics gate. Any ethics violation is PRIORITY: CRITICAL regardless of quick-scan context.
+Check all findings against the ethics gate. Any ethics violation is PRIORITY: CRITICAL regardless of quick-scan context. Ethics violations MUST appear as structured findings in your output (not just checked internally):
+
+```
+FINDING: FAIL
+SECTION: [relevant slug]
+SOURCE: [VISUAL|CODE|BOTH]
+OBSERVATION: [what violates the rule — cite specific regulation]
+RECOMMENDATION: [specific fix referencing the regulation]
+REFERENCE: ethics-gate.md — [section name]
+PRIORITY: CRITICAL
+EFFORT: [Low|Medium|High]
+QUICK_WIN: true
+**Why this matters:** [Regulatory context + potential penalty amounts from ethics-gate.md]
+↳ ethics-gate.md ([Regulation Name], [Year]) [Gold]
+  URL: [regulation URL if available]
+```
+
+If no ethics violations found, include at the end of your output:
+```
+ETHICS: CLEAR — No dark patterns detected.
+```
 
 ## Output Format
 
@@ -81,8 +101,11 @@ PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 EFFORT: [Low|Medium|High]
 QUICK_WIN: true
 **Why this matters:** [2-3 sentence concise rationale explaining the psychology/research behind this finding]
-↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year])
+↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year]) [Gold|Silver|Bronze]
+  URL: [source URL from the reference file's **Source** field]
 ```
+
+**Evidence tier lookup:** For each citation, read the cited finding's `**Evidence Tier**` field from the reference file. Append the tier tag `[Gold|Silver|Bronze]` to the citation line. On the next line, include `URL:` followed by the source URL from the finding's `**Source**` field. If the finding has no Evidence Tier field yet, default to `[Bronze]`.
 
 The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
 

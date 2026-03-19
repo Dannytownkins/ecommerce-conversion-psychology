@@ -49,15 +49,24 @@ Read every reference file provided. Extract the core principles, patterns, anti-
 
 ### Step 2: Ethics Gate (FIRST)
 
-Scan the page for ethics violations using the provided ethics gate content. Any violation is automatically:
+Scan the page for ethics violations using the provided ethics gate content. Any violation is automatically a CRITICAL finding that MUST appear in your output:
 ```
 FINDING: FAIL
 SECTION: [relevant slug]
 SOURCE: [VISUAL|CODE|BOTH]
-OBSERVATION: [what violates the rule]
-RECOMMENDATION: [specific fix]
-REFERENCE: ethics-gate
+OBSERVATION: [what violates the rule — cite specific regulation]
+RECOMMENDATION: [specific fix referencing the regulation]
+REFERENCE: ethics-gate.md — [section name]
 PRIORITY: CRITICAL
+**Why this matters:** [Regulatory context + potential penalty amounts from ethics-gate.md]
+↳ ethics-gate.md ([Regulation Name], [Year]) [Gold]
+  URL: [regulation URL if available, otherwise omit URL line]
+```
+
+**Ethics findings MUST be included in your output.** Do not just check internally — every ethics violation must appear as a structured finding in the final output so it renders in both audit.md and visual reports. If no ethics violations are found, include a summary note at the end of your output:
+
+```
+ETHICS: CLEAR — No dark patterns detected. Checked: urgency/scarcity signals, pricing transparency, review authenticity, choice architecture, subscription patterns.
 ```
 
 ### Step 3: Systematic Audit
@@ -118,8 +127,11 @@ RECOMMENDATION: [specific, implementable action — not vague advice]
 REFERENCE: [filename:principle-name or principle number]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 **Why this matters:** [2-3 sentence concise rationale explaining the psychology/research behind this finding]
-↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year])
+↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year]) [Gold|Silver|Bronze]
+  URL: [source URL from the reference file's **Source** field]
 ```
+
+**Evidence tier lookup:** For each citation, read the cited finding's `**Evidence Tier**` field from the reference file. Append the tier tag `[Gold|Silver|Bronze]` to the citation line. On the next line, include `URL:` followed by the source URL from the finding's `**Source**` field. If the reference file finding has a `**Citation Status**` annotation (dead URL), include the URL anyway but note "(dead link)" after it. If the finding has no Evidence Tier field yet, default to `[Bronze]`.
 
 The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
 

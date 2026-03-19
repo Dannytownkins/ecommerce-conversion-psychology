@@ -21,7 +21,34 @@ PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 EFFORT: [Low|Medium|High]
 QUICK_WIN: [true|false]
 **Why this matters:** [2-3 sentence rationale]
-↳ [reference-file.md], Finding [N] ([Study/Author], [Year])
+↳ [reference-file.md], Finding [N] ([Study/Author], [Year]) [Gold|Silver|Bronze]
+  URL: [source URL from the reference file's Source field]
+
+---
+
+## Ethics Compliance
+
+<!-- MANDATORY: This section must appear in every audit output. -->
+<!-- If the ethics gate (references/ethics-gate.md) flags any violations, list each as a CRITICAL finding below. -->
+<!-- If no violations are detected, include the "No dark patterns detected" line. -->
+
+<!-- Example violation format:
+FINDING: FAIL
+SECTION: [canonical-slug]
+SOURCE: [VISUAL|CODE|BOTH]
+OBSERVATION: [specific ethics violation observed]
+RECOMMENDATION: [specific fix referencing the relevant regulation]
+REFERENCE: ethics-gate.md — [section name]
+PRIORITY: CRITICAL
+EFFORT: [Low|Medium|High]
+QUICK_WIN: [true|false]
+**Why this matters:** [Regulatory context + potential penalties]
+↳ ethics-gate.md ([Regulation], [Year]) [Gold]
+  URL: [regulation URL if available]
+-->
+
+<!-- If no violations: -->
+<!-- Ethics check: No dark patterns detected. Page complies with EU DSA Art 25, FTC Fake Reviews Rule, and CA SB-478 requirements checked. -->
 
 ---
 
