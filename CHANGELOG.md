@@ -1,5 +1,45 @@
 # Changelog
 
+## 4.0.0 — 2026-03-19
+
+### Evidence Tiers, Annotated Screenshots & Component Library — Major Release
+
+#### Evidence Tier System (1 change)
+- 300 classified findings tagged with credibility tiers: Gold (peer-reviewed RCT/meta-analysis), Silver (large-N observational or vendor A/B test), Bronze (expert consensus, small-N, or directional). Clickable citation URLs with evidence tier badges in all report output.
+
+#### Component Library (1 change)
+- New `templates/components.html` — shared component library enforcing structural consistency across all visual report output. All reports render from the same building blocks.
+
+#### Annotated Screenshot Reports (2 changes)
+- Annotated screenshots replace wireframes as the primary visual in reports. Findings are overlaid directly on captured screenshots with numbered callout markers.
+- Bidirectional scroll-sync between screenshot panel and finding cards using a 4-state state machine (idle, user-scrolling-left, user-scrolling-right, programmatic-sync). Clicking a finding scrolls to the screenshot region and vice versa.
+
+#### Screenshot-Only Input Mode (1 change)
+- New `source_mode: "screenshot"` for engagements where only a screenshot is provided (no URL, no source code). `meta.json` gains `screenshot_input` object storing filename and dimensions. Resume skill detects cross-mode changes between engagements.
+
+#### Ethics Compliance (1 change)
+- Ethics compliance section is now mandatory in all reports (audit, quick-scan, compare, build). Compare mode validates ethics independently for both pages.
+
+#### Report Design System (4 changes)
+- Dark chrome design system with WCAG AA contrast ratios throughout all visual report output.
+- Base64 embedded Inter and JetBrains Mono fonts — no external font requests, fully self-contained.
+- Print CSS with token reassignment for clean paper output.
+- PASS/FAIL/PARTIAL/SKIP verdicts hidden from visual output (kept in data model for programmatic consumers). SOURCE moved to collapsible Technical Details section.
+
+#### Auto-Save & Export (2 changes)
+- `audit.md` and `meta.json` saved silently on every phase transition — no save prompt.
+- Full audit 4-option export dialogue at completion (markdown, visual, both, skip).
+
+#### meta.json Schema (1 change)
+- `meta.json` gains `screenshot_input` object and `source_mode: "screenshot"` value for screenshot-only engagements.
+
+#### Files Modified
+- `skills/cro/SKILL.md`, `skills/cro/compare/SKILL.md`, `skills/cro/resume/SKILL.md`
+- `.claude-plugin/plugin.json`
+- `templates/components.html` (new)
+
+---
+
 ## 3.1.0 — 2026-03-18
 
 ### Viewport-Aware Scanning & Audit Accuracy

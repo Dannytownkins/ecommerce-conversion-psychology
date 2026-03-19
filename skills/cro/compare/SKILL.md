@@ -134,6 +134,7 @@ The compare workflow produces:
 - Side-by-side scores per domain
 - Gap analysis: what competitor does better, what you do better
 - Specific actionable items: "Competitor has X, you're missing it"
+- Evidence tier badges on every finding: Gold (peer-reviewed RCT/meta-analysis), Silver (large-N observational or vendor A/B test), Bronze (expert consensus, small-N, or directional). Clickable citation URLs where available.
 - Ethics check: if competitor uses a dark pattern, flag it: "Competitor uses [practice] — this violates [regulation]. Do not replicate. Ethical alternative: [Y]."
 
 Write output to docs/cro/{engagement-id}/compare.md.
@@ -174,4 +175,5 @@ Output: `docs/cro/{engagement-id}/visual-report.html` (your page) and `visual-re
 <ethics>
 Pass ethics gate to ALL subagents including the compare workflow.
 The compare workflow must re-validate synthesized gap recommendations against the ethics gate.
+Ethics compliance section is mandatory in comparison output for both your page and the competitor page. Each page's findings must independently pass the ethics gate.
 </ethics>

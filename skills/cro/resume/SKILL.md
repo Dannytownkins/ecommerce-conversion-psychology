@@ -98,7 +98,8 @@ If `meta.json` has `blocked: true` or `review.md` (or any `review-{slug}.md`) co
 When reading any meta.json, validate:
 - `phase` is one of the allowed enum values
 - If `plans_queue` exists, each entry's `file` matches the pattern `plan-{slug}.md` and contains no path separators
-- `source_mode` (if present) is one of: `url-dual`, `url-screenshot`, `file`, `description`
+- `source_mode` (if present) is one of: `url-dual`, `url-screenshot`, `screenshot`, `file`, `description`
+- `screenshot_input` (if present) is an object with at least `filename` (string)
 - `schema_version` is a known value (1 or 2)
 
 If validation fails, warn: "meta.json for engagement {id} has invalid data: [details]. This engagement may be corrupted."
@@ -112,6 +113,13 @@ When resuming an engagement:
 4. **Partial failure retry:** If `devices_requested` includes a device not in `devices_scanned` (e.g., user requested "both" but only desktop completed), offer:
    "Mobile scanning failed in the previous session. Would you like to retry the mobile scan?"
    If yes, hand off to the coordinator with `--device mobile`.
+
+### Cross-Mode Re-Audit Detection
+
+When resuming an engagement, compare the current `source_mode` in meta.json against the mode that would be used for a new engagement on the same target:
+- If `source_mode` changed between engagements (e.g., previous was `url-dual`, now the user provides a screenshot via `screenshot` mode), note the mode difference to the user:
+  "Previous engagement used **{old_mode}** input. This session is using **{new_mode}**. Findings may not be directly comparable due to different input sources."
+- If `source_mode` is `screenshot` and `screenshot_input` is present, restore the screenshot context (filename, dimensions if stored) when handing off to the coordinator.
 
 ### Resuming
 

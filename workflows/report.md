@@ -65,12 +65,14 @@ NO EXCEPTIONS. This prevents XSS attacks from crafted page content.
 ### Step 4: Fill Template
 Insert escaped content into the remaining HTML template sections:
 - Header: engagement ID, date, type, page URL, platform, source mode
+- Score summary: show CRITICAL/HIGH/MEDIUM/LOW severity counts only. Do NOT include a PASS count.
 - Executive summary: 2-3 sentence overview with key metrics
-- Findings: list with status badges (PASS/FAIL/PARTIAL/SKIP), priority badges, and SOURCE badges (VISUAL/CODE/BOTH)
+- Findings: list led by severity badge (CRITICAL/HIGH/MEDIUM/LOW). Do NOT display finding status (PASS/FAIL/PARTIAL/SKIP). Include evidence tier badge inline next to any cited stat (gold/silver/bronze per evidence-quality.md). Include clickable citation URLs as `<a href="...">` links. Move SOURCE (VISUAL/CODE/BOTH) into a "Technical details" collapsible section within each finding (not top-level).
 - Action plan: table with all columns (What, Where, Why, Effort, Impact, Test, Priority)
 - Review notes: verdict and findings
 - Build log: implementation status table
 - For compare mode: your page findings, competitor findings, gap analysis table
+- Ethics section: MANDATORY in every report. Render before the footer. If violations found, render each as a finding card with ethics badge. If no violations found, render the "Ethics check: No dark patterns detected" clear block. This section cannot be omitted or collapsed.
 - Footer: generation date, disclaimer
 - If visual report exists: add link in header: "Visual report: visual-report.html"
 
@@ -82,7 +84,7 @@ For sections that were kept but have no content:
 - For zero findings: "No findings at this priority level"
 
 ### Step 6: Write Output
-Write the completed HTML to docs/cro/{engagement-id}/report.html
+Write the completed HTML to docs/cro/{engagement-id}/report.html. Do NOT prompt the user to save a markdown version — the HTML write is the final deliverable.
 
 ## Output Rules
 

@@ -3,153 +3,394 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:;">
   <title>CRO Report — {{ENGAGEMENT_ID}}</title>
+  <!-- FONT EMBED: Copy the entire contents of templates/font-embed.css into a <style> block here, BEFORE the design tokens below. -->
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — from components.html Section 1
+       ============================================================ */
+    :root {
+      /* Surfaces (ascending elevation) */
+      --bg-body: #0e0e10;
+      --bg-surface: #141418;
+      --bg-elevated: #1a1a1f;
+      --bg-hover: #2e2e36;
+      --bg-active: #3f3f46;
+
+      /* Borders */
+      --border-default: rgba(255,255,255,0.08);
+      --border-strong: rgba(255,255,255,0.12);
+      --border-emphasis: rgba(255,255,255,0.16);
+
+      /* Text */
+      --text-primary: #e4e4e7;
+      --text-secondary: #a1a1aa;
+      --text-tertiary: #71717a;
+      --text-muted: #52525b;
+
+      /* Severity colors */
+      --severity-critical: #f87171;
+      --severity-critical-bg: #2c1113;
+      --severity-high: #fbbf24;
+      --severity-high-bg: #2c1d0e;
+      --severity-medium: #60a5fa;
+      --severity-medium-bg: #0f1a2e;
+      --severity-low: #a1a1aa;
+      --severity-low-bg: #1a1a1f;
+
+      /* Severity card borders */
+      --border-critical: rgba(248,113,113,0.25);
+      --border-high: rgba(251,191,36,0.20);
+      --border-medium: rgba(96,165,250,0.20);
+      --border-low: rgba(161,161,170,0.12);
+
+      /* Evidence tier colors */
+      --tier-gold: #fbbf24;
+      --tier-gold-bg: #2c1d0e;
+      --tier-silver: #a1a1aa;
+      --tier-silver-bg: #1a1a1f;
+      --tier-bronze: #cd7f32;
+      --tier-bronze-bg: #2c1a0e;
+
+      /* Typography */
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      --text-xs: 0.75rem;
+      --text-sm: 0.8125rem;
+      --text-base: 0.875rem;
+      --text-lg: 1rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 2rem;
+
+      /* Spacing */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+
+      /* Radii */
+      --radius-sm: 0.375rem;
+      --radius-md: 0.5rem;
+      --radius-lg: 0.75rem;
+      --radius-xl: 1rem;
+    }
+  </style>
   <style>
     /* Reset & Base */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
       line-height: 1.6;
-      color: #1a1a2e;
-      background: #f8f9fa;
-      padding: 2rem 1rem;
+      color: var(--text-primary);
+      background: var(--bg-body);
+      padding: var(--space-8) var(--space-4);
       max-width: 900px;
       margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
+    a { color: var(--severity-medium); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     /* Header */
     .report-header {
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      color: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      margin-bottom: 2rem;
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+      padding: var(--space-8);
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-8);
+      border: 1px solid var(--border-strong);
     }
-    .report-header h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-    .report-meta { display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.85rem; opacity: 0.85; }
-    .report-meta span { background: rgba(255,255,255,0.15); padding: 0.25rem 0.75rem; border-radius: 4px; }
+    .report-header h1 { font-size: var(--text-2xl); font-weight: 700; margin-bottom: var(--space-2); letter-spacing: -0.02em; }
+    .report-meta { display: flex; flex-wrap: wrap; gap: var(--space-3); font-size: var(--text-sm); color: var(--text-secondary); }
+    .report-meta span { background: var(--bg-active); padding: var(--space-1) var(--space-3); border-radius: var(--radius-sm); border: 1px solid var(--border-strong); }
 
     /* Sections */
     .section {
-      background: #fff;
-      border-radius: 8px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 1.5rem;
-      border: 1px solid #e2e8f0;
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6) var(--space-8);
+      margin-bottom: var(--space-6);
+      border: 1px solid var(--border-strong);
     }
     .section h2 {
-      font-size: 1.15rem;
-      color: #1a1a2e;
-      border-bottom: 2px solid #e2e8f0;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
+      font-size: var(--text-xl);
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: var(--space-2);
+      margin-bottom: var(--space-4);
+      font-weight: 600;
     }
 
-    /* Score Cards */
-    .score-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+    /* Score Strip — severity counts only, no PASS */
+    .score-strip {
+      display: flex;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
     }
-    .score-card {
-      background: #f8f9fa;
-      border-radius: 8px;
-      padding: 1rem;
-      text-align: center;
-      border: 1px solid #e2e8f0;
+    .score-strip__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-default);
     }
-    .score-card .number { font-size: 1.75rem; font-weight: 700; }
-    .score-card .label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; }
+    .score-strip__item--critical { background: var(--severity-critical-bg); border-color: var(--border-critical); }
+    .score-strip__item--high { background: var(--severity-high-bg); border-color: var(--border-high); }
+    .score-strip__item--medium { background: var(--severity-medium-bg); border-color: var(--border-medium); }
+    .score-strip__item--low { background: var(--severity-low-bg); border-color: var(--border-low); }
+    .score-strip__count {
+      font-family: var(--font-mono);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-strip__item--critical .score-strip__count { color: var(--severity-critical); }
+    .score-strip__item--high .score-strip__count { color: var(--severity-high); }
+    .score-strip__item--medium .score-strip__count { color: var(--severity-medium); }
+    .score-strip__item--low .score-strip__count { color: var(--severity-low); }
+    .score-strip__label {
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+    }
 
-    /* Badges */
+    /* Severity Badges */
     .badge {
       display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: 600;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.03em;
+      letter-spacing: 0.04em;
     }
-    .badge-pass, .badge-effort-low, .badge-impact-high { background: #dcfce7; color: #166534; }
-    .badge-fail, .badge-effort-high { background: #fee2e2; color: #991b1b; }
-    .badge-partial, .badge-effort-medium { background: #fef9c3; color: #854d0e; }
-    .badge-skip, .badge-impact-low { background: #f1f5f9; color: #475569; }
-    .badge-critical { background: #7f1d1d; color: #fff; }
-    .badge-high { background: #dc2626; color: #fff; }
-    .badge-medium { background: #f59e0b; color: #fff; }
-    .badge-low { background: #6b7280; color: #fff; }
-    .badge-impact-medium { background: #dbeafe; color: #1e40af; }
+    .badge-critical { background: var(--severity-critical-bg); color: var(--severity-critical); }
+    .badge-high { background: var(--severity-high-bg); color: var(--severity-high); }
+    .badge-medium { background: var(--severity-medium-bg); color: var(--severity-medium); }
+    .badge-low { background: var(--severity-low-bg); color: var(--severity-low); }
+    .badge-effort-low { background: rgba(34,197,94,0.08); color: #4ade80; }
+    .badge-effort-medium { background: var(--severity-high-bg); color: var(--severity-high); }
+    .badge-effort-high { background: var(--severity-critical-bg); color: var(--severity-critical); }
+    .badge-impact-high { background: rgba(34,197,94,0.08); color: #4ade80; }
+    .badge-impact-medium { background: var(--severity-medium-bg); color: var(--severity-medium); }
+    .badge-impact-low { background: var(--severity-low-bg); color: var(--severity-low); }
+
+    /* Evidence Tier Badges */
+    .tier-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.125rem 0.5rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.4;
+    }
+    .tier-badge--gold { background: var(--tier-gold-bg); color: var(--tier-gold); border: 1px solid rgba(251,191,36,0.20); }
+    .tier-badge--silver { background: var(--tier-silver-bg); color: var(--tier-silver); border: 1px solid rgba(161,161,170,0.15); }
+    .tier-badge--bronze { background: var(--tier-bronze-bg); color: var(--tier-bronze); border: 1px solid rgba(205,127,50,0.20); }
+
+    /* Ethics Badge */
+    .ethics-badge {
+      display: inline-flex;
+      padding: var(--space-1) var(--space-2);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      background: var(--severity-critical-bg);
+      color: var(--severity-critical);
+      border: 1px solid var(--border-critical);
+    }
 
     /* Tables */
-    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
-    th { background: #f8f9fa; text-align: left; font-weight: 600; }
-    th, td { padding: 0.625rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; font-size: var(--text-base); }
+    th { background: var(--bg-elevated); text-align: left; font-weight: 600; color: var(--text-secondary); }
+    th, td { padding: 0.625rem 0.75rem; border-bottom: 1px solid var(--border-default); color: var(--text-secondary); }
     tr:last-child td { border-bottom: none; }
 
-    /* Findings List */
+    /* Finding Cards — severity-led, no status display */
     .finding {
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      border-radius: 6px;
-      border-left: 4px solid #e2e8f0;
-      background: #f8f9fa;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-4);
+      overflow: hidden;
+      padding: var(--space-4) var(--space-5);
     }
-    .finding-fail { border-left-color: #dc2626; }
-    .finding-pass { border-left-color: #16a34a; }
-    .finding-partial { border-left-color: #f59e0b; }
-    .finding-critical { border-left-color: #7f1d1d; background: #fef2f2; }
-    .finding .finding-header { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.5rem; }
-    .finding .finding-body { font-size: 0.875rem; color: #374151; }
-    .finding .finding-rec { margin-top: 0.5rem; font-size: 0.875rem; color: #1a1a2e; font-weight: 500; }
+    .finding--critical { border-color: var(--border-critical); }
+    .finding--high { border-color: var(--border-high); }
+    .finding--medium { border-color: var(--border-medium); }
+    .finding--low { border-color: var(--border-low); }
+    .finding .finding-header { display: flex; gap: var(--space-3); align-items: center; margin-bottom: var(--space-2); }
+    .finding .finding-body { font-size: var(--text-base); color: var(--text-secondary); line-height: 1.6; }
+    .finding .finding-rec { margin-top: var(--space-2); font-size: var(--text-base); color: var(--text-primary); font-weight: 500; }
+    .finding .finding-citation {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) 0;
+      border-top: 1px solid var(--border-default);
+      font-size: var(--text-xs);
+      color: var(--text-tertiary);
+      margin-top: var(--space-3);
+    }
+    .finding .finding-citation a {
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      color: var(--severity-medium);
+      word-break: break-all;
+    }
+    .finding .finding-citation a:hover { text-decoration: underline; }
+
+    /* Technical details (collapsible) — houses SOURCE */
+    .finding details.finding-technical {
+      border-top: 1px solid var(--border-default);
+      margin-top: var(--space-3);
+    }
+    .finding details.finding-technical summary {
+      padding: var(--space-3) 0;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      list-style: none;
+    }
+    .finding details.finding-technical summary::before {
+      content: '\25B6\00A0';
+      font-size: 0.7em;
+      display: inline-block;
+      transition: transform 0.15s ease;
+    }
+    .finding details.finding-technical[open] summary::before {
+      transform: rotate(90deg);
+    }
+    .finding .finding-tech-row {
+      display: flex;
+      gap: var(--space-2);
+      padding: var(--space-1) 0;
+      font-size: var(--text-sm);
+    }
+    .finding .finding-tech-label { font-weight: 600; color: var(--text-tertiary); min-width: 5rem; }
+    .finding .finding-tech-value { color: var(--text-secondary); }
 
     /* Compare Mode */
-    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
 
     /* Build Log Statuses */
-    .status-done { color: #16a34a; font-weight: 600; }
-    .status-adapted { color: #f59e0b; font-weight: 600; }
-    .status-stuck { color: #dc2626; font-weight: 600; }
-    .status-skipped { color: #6b7280; font-weight: 600; }
+    .status-done { color: #4ade80; font-weight: 600; }
+    .status-adapted { color: var(--severity-high); font-weight: 600; }
+    .status-stuck { color: var(--severity-critical); font-weight: 600; }
+    .status-skipped { color: var(--severity-low); font-weight: 600; }
 
     /* Not Completed */
     .not-completed {
       text-align: center;
-      padding: 2rem;
-      color: #94a3b8;
+      padding: var(--space-8);
+      color: var(--text-muted);
       font-style: italic;
+    }
+
+    /* Ethics Section */
+    .ethics-section {
+      background: var(--bg-surface);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6) var(--space-8);
+      margin-bottom: var(--space-6);
+      border: 1px solid var(--border-strong);
+    }
+    .ethics-section h2 {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-default);
+      padding-bottom: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .ethics-section__clear {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      background: rgba(34,197,94,0.08);
+      border: 1px solid rgba(34,197,94,0.15);
+      color: #4ade80;
+      font-size: var(--text-sm);
+    }
+    .ethics-section__check {
+      font-size: var(--text-lg);
+      font-weight: 700;
     }
 
     /* Footer */
     .report-footer {
       text-align: center;
-      font-size: 0.75rem;
-      color: #94a3b8;
-      padding: 1.5rem 0;
-      border-top: 1px solid #e2e8f0;
-      margin-top: 2rem;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      padding: var(--space-6) 0;
+      border-top: 1px solid var(--border-default);
+      margin-top: var(--space-8);
     }
 
     /* Print */
     @media print {
-      body { padding: 0; background: #fff; max-width: 100%; }
-      .report-header { break-after: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .section { break-inside: avoid; border: 1px solid #ccc; }
-      .badge, .score-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      :root {
+        --bg-body: #ffffff;
+        --bg-surface: #f8f8f8;
+        --bg-elevated: #f0f0f2;
+        --text-primary: #111111;
+        --text-secondary: #444444;
+        --text-tertiary: #666666;
+        --text-muted: #999999;
+        --border-default: #e0e0e0;
+        --border-strong: #cccccc;
+        --severity-critical: #dc2626;
+        --severity-critical-bg: #fef2f2;
+        --severity-high: #d97706;
+        --severity-high-bg: #fffbeb;
+        --severity-medium: #2563eb;
+        --severity-medium-bg: #eff6ff;
+        --severity-low: #6b7280;
+        --severity-low-bg: #f3f4f6;
+        --border-critical: #fca5a5;
+        --border-high: #fcd34d;
+        --border-medium: #93c5fd;
+        --border-low: #d1d5db;
+      }
+      body { padding: 0; max-width: 100%; }
+      .report-header { break-after: avoid; }
+      .section, .ethics-section { break-inside: avoid; }
+      .badge, .score-strip__item, .tier-badge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       @page { size: A4; margin: 1.5cm; }
     }
 
     /* Responsive */
     @media (max-width: 600px) {
-      body { padding: 0.5rem; }
-      .report-header { padding: 1.25rem; }
-      .report-meta { flex-direction: column; gap: 0.5rem; }
-      .section { padding: 1rem; }
+      body { padding: var(--space-2); }
+      .report-header { padding: var(--space-5); }
+      .report-meta { flex-direction: column; gap: var(--space-2); }
+      .section, .ethics-section { padding: var(--space-4); }
       .compare-grid { grid-template-columns: 1fr; }
-      .score-cards { grid-template-columns: 1fr 1fr; }
-      table { font-size: 0.75rem; }
+      .score-strip { flex-wrap: wrap; }
+      table { font-size: var(--text-xs); }
       th, td { padding: 0.4rem; }
     }
   </style>
@@ -171,22 +412,22 @@
   <!-- EXECUTIVE SUMMARY -->
   <div class="section">
     <h2>Executive Summary</h2>
-    <div class="score-cards">
-      <div class="score-card">
-        <div class="number" style="color: #dc2626;">{{CRITICAL_COUNT}}</div>
-        <div class="label">Critical</div>
+    <div class="score-strip">
+      <div class="score-strip__item score-strip__item--critical">
+        <span class="score-strip__count">{{CRITICAL_COUNT}}</span>
+        <span class="score-strip__label">Critical</span>
       </div>
-      <div class="score-card">
-        <div class="number" style="color: #f59e0b;">{{HIGH_COUNT}}</div>
-        <div class="label">High</div>
+      <div class="score-strip__item score-strip__item--high">
+        <span class="score-strip__count">{{HIGH_COUNT}}</span>
+        <span class="score-strip__label">High</span>
       </div>
-      <div class="score-card">
-        <div class="number" style="color: #6b7280;">{{MEDIUM_COUNT}}</div>
-        <div class="label">Medium</div>
+      <div class="score-strip__item score-strip__item--medium">
+        <span class="score-strip__count">{{MEDIUM_COUNT}}</span>
+        <span class="score-strip__label">Medium</span>
       </div>
-      <div class="score-card">
-        <div class="number" style="color: #16a34a;">{{PASS_COUNT}}</div>
-        <div class="label">Passed</div>
+      <div class="score-strip__item score-strip__item--low">
+        <span class="score-strip__count">{{LOW_COUNT}}</span>
+        <span class="score-strip__label">Low</span>
       </div>
     </div>
     <p>{{EXECUTIVE_SUMMARY}}</p>
@@ -196,6 +437,29 @@
   <!-- {{SECTION:FINDINGS_START}} -->
   <div class="section">
     <h2>Audit Findings</h2>
+    <!-- Each finding card: severity badge leads, NO status (PASS/FAIL/PARTIAL/SKIP) displayed.
+         Evidence tier badge inline next to cited stats. Citation URLs as clickable links.
+         SOURCE moved into collapsible "Technical details" section.
+         Example structure per finding:
+         <div class="finding finding--{{SEVERITY}}">
+           <div class="finding-header">
+             <span class="badge badge-{{SEVERITY}}">{{SEVERITY_LABEL}}</span>
+             <strong>{{FINDING_TITLE}}</strong>
+             <span class="tier-badge tier-badge--{{TIER}}">{{TIER_LABEL}}</span>
+           </div>
+           <div class="finding-body">{{OBSERVATION}}</div>
+           <div class="finding-rec">{{RECOMMENDATION}}</div>
+           <div class="finding-citation">
+             <span>{{STUDY_AUTHOR}}, {{YEAR}}</span>
+             <a href="{{CITATION_URL}}">{{CITATION_URL_DISPLAY}}</a>
+           </div>
+           <details class="finding-technical">
+             <summary>Technical details</summary>
+             <div class="finding-tech-row"><span class="finding-tech-label">Source:</span> <span class="finding-tech-value">{{SOURCE_TYPE}}</span></div>
+             <div class="finding-tech-row"><span class="finding-tech-label">Section:</span> <span class="finding-tech-value">{{SECTION_SLUG}}</span></div>
+           </details>
+         </div>
+    -->
     {{FINDINGS_CONTENT}}
   </div>
   <!-- {{SECTION:FINDINGS_END}} -->
@@ -285,6 +549,19 @@
     </div>
   </div>
   <!-- {{SECTION:SCREENSHOT_END}} -->
+
+  <!-- ETHICS COMPLIANCE — MANDATORY in every report, cannot be omitted -->
+  <div class="ethics-section">
+    <h2>Ethics Compliance</h2>
+    {{ETHICS_CONTENT}}
+    <!-- If no violations:
+    <div class="ethics-section__clear">
+      <span class="ethics-section__check">&#10003;</span>
+      Ethics check: No dark patterns detected. Checked: urgency/scarcity signals, pricing transparency, review authenticity, choice architecture, subscription patterns.
+    </div>
+    -->
+    <!-- If violations found: render each as a finding card with ethics-badge instead of severity badge -->
+  </div>
 
   <!-- FOOTER -->
   <div class="report-footer">
