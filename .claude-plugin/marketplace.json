@@ -10,10 +10,7 @@
       "name": "cro",
       "description": "Conversion rate optimization toolkit with audit, build, compare, and quick-scan commands",
       "category": "productivity",
-      "source": {
-        "source": "local",
-        "path": "plugins/cro"
-      }
+      "source": "./plugins/cro"
     }
   ]
 }
