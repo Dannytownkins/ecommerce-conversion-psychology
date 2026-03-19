@@ -82,6 +82,10 @@
     .badge-medium { background: #f59e0b; color: #fff; }
     .badge-low { background: #6b7280; color: #fff; }
     .badge-impact-medium { background: #dbeafe; color: #1e40af; }
+    /* Evidence tier badges (WCAG AAA compliant) */
+    .badge-gold { background: #F5E6D3; color: #8B5E00; border-left: 3px solid #8B5E00; }
+    .badge-silver { background: #E2E8F0; color: #475569; border-left: 3px solid #475569; }
+    .badge-bronze { background: #F4E4D8; color: #744210; border-left: 3px solid #744210; }
 
     /* Tables */
     table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }

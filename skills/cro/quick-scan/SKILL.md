@@ -30,7 +30,17 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 Determine input type from $ARGUMENTS:
 - URL → existing page scan (dispatch acquisition agent, then auditor)
 - File path → existing page scan (read directly)
+- Screenshot(s) → screenshot-only scan (no acquisition agent, no DOM — see below)
 - Description text → from-scratch scan (auditor evaluates against principles without page code, outputs "the 5 most important things to get right")
+
+**Screenshot-only mode:** If the user provides image(s) + a description (e.g., "this is my mobile homepage") instead of a URL or file path:
+- Accept up to 6 screenshots, each with a brief label (e.g., "hero section", "product grid")
+- Skip acquisition agent entirely — no URL validation, no agent-browser, no DOM extraction
+- Set `source_mode: "screenshot"` in meta.json
+- Pass screenshots directly to the quick-scan auditor(s)
+- All findings are `SOURCE: VISUAL` by definition (no DOM available)
+- Skip device selection (no viewport rendering)
+- Visual reports in screenshot-only mode render screenshots without SVG markers and include a limitations banner
 
 **URL acquisition:**
 1. Validate URL using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
@@ -164,13 +174,12 @@ Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for 
 - If `--no-visual` or `--ephemeral` is set: skip prompt
 - Otherwise, ask:
 
-"Want me to save this?
-1. Visual report — annotated wireframe with findings
-2. Markdown — already saved to audit.md
-3. Both
-4. No, conversation is enough"
+"Want an annotated visual report too?"
 
-In --auto mode: skip prompt, default to markdown only (audit.md already written).
+Yes → generate visual report (see visual_report_generation below).
+No → done (audit.md already saved silently).
+
+In --auto mode: skip prompt, no visual report (audit.md already written).
 
 **Quick-scan aggregate:** After presenting results, if 2+ previous quick-scans exist for the same URL AND same device (check docs/cro/*/meta.json for matching `url_normalized` with `quick_scan: true` AND matching device in `devices_scanned`):
 
@@ -185,12 +194,12 @@ In --auto mode: skip aggregate prompt. Aggregate only via explicit `--aggregate`
 When generating a visual report (user selects "Visual report" or --visual flag):
 
 Generate the report inline — do NOT dispatch a subagent.
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML structure
-2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
-3. Build wireframe sections from acquisition data (section boundaries, DOM elements, style metadata)
-4. Build finding cards from audit findings (with rationale + citations)
-5. Calculate scores (total, critical, high, quick wins)
-6. Fill template placeholders and write completed HTML
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for the component library
+2. Read `${CLAUDE_PLUGIN_ROOT}/templates/fonts.css.fragment` for embedded font CSS
+3. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for the assembly manifest and generation instructions
+4. Follow the assembly manifest exactly — screenshot panels with SVG overlays, finding cards with evidence tier badges
+5. Generate a unique nonce for the CSP, fill all {slot:*} placeholders, run post-assembly validation
+6. Write completed HTML
 
 Output: `docs/cro/{engagement-id}/visual-report.html`
 For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`

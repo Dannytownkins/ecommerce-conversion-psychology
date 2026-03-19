@@ -19,7 +19,7 @@ Available commands:
 
 /cro:audit [url-or-path]           Full CRO audit with plan, review, and build phases
 /cro:build [description]           Build a new ecommerce page from scratch
-/cro:quick-scan [url-or-desc]      Quick scan — one cluster, 3-5 quick wins
+/cro:quick-scan [url-or-desc-or-screenshot]  Quick scan — one cluster, 3-5 quick wins (accepts URLs, file paths, screenshots, or descriptions)
 /cro:compare [url] [competitor]    1:1 competitor comparison with gap analysis
 /cro:resume [--engagement-id <id>] List & resume in-progress engagements
 

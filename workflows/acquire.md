@@ -145,7 +145,13 @@ Extract computed styles from the rendered page for downstream use by the visual 
 - Primary CTA color (computed background-color of the first `<button>` or `[role="button"]` or `.btn` element)
 - Link color (computed color of the first `<a>`)
 
-Return as: `{ "bg": "#...", "container_bg": "#...", "text": "#...", "cta_bg": "#...", "link": "#..." }`
+Compute **relative luminance** from the `bg` color for theme detection:
+```
+R, G, B = (channel / 255) for each channel of bg color
+luminance = 0.2126 * R + 0.7152 * G + 0.0722 * B
+```
+
+Return as: `{ "bg": "#...", "container_bg": "#...", "text": "#...", "cta_bg": "#...", "link": "#...", "luminance": 0.XX }`
 
 ### Step 6: Pre-Hydration Check
 

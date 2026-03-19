@@ -12,7 +12,7 @@
     "type": null
   },
   "platform": "generic",
-  "source_mode": null,
+  "source_mode": null,  // "url-dual" | "file" | "description" | "screenshot"
   "devices_requested": [],
   "devices_scanned": [],
   "clusters_used": [],
