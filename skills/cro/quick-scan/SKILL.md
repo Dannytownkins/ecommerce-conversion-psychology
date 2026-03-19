@@ -30,7 +30,18 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 Determine input type from $ARGUMENTS:
 - URL → existing page scan (dispatch acquisition agent, then auditor)
 - File path → existing page scan (read directly)
+- Image file (PNG, JPEG, WebP, or SVG) → screenshot-only scan (see below)
 - Description text → from-scratch scan (auditor evaluates against principles without page code, outputs "the 5 most important things to get right")
+
+**Screenshot-only mode:** If the user provides an image file (detected by extension: .png, .jpg, .jpeg, .webp, .svg) or drops an image:
+1. Skip acquisition workflow entirely — no agent-browser, no DOM capture
+2. Set `source_mode: "screenshot"` in meta.json
+3. Populate `screenshot_input`: `{ "description": "[user's description]", "device_context": "[desktop|mobile|unknown]" }`
+   - Infer device_context from description ("mobile homepage" → mobile) or image dimensions (width < 500px → mobile)
+   - If ambiguous, ask: "Is this a desktop or mobile screenshot?"
+4. Pass the screenshot image directly to the auditor. All findings will be `SOURCE: VISUAL` by definition.
+5. The auditor estimates SVG marker coordinates from visual analysis of the screenshot.
+6. Add limitations banner in visual report: "Based on screenshot only — DOM and interaction patterns not assessed."
 
 **URL acquisition:**
 1. Validate URL using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
@@ -159,18 +170,16 @@ Tag each finding with its severity (CRITICAL/HIGH) and append `QUICK WIN` for fi
 
 Scan another area with `--cluster [name]`, or run `/cro:audit [same-input]` for full multi-cluster coverage.
 
-**Then prompt for output format** (unless flagged):
+**Auto-save:** audit.md + meta.json are ALWAYS saved silently after every scan. No prompting for markdown save.
+
+**Then prompt for visual report** (unless flagged):
 - If `--visual` is set: generate visual report inline (see below)
 - If `--no-visual` or `--ephemeral` is set: skip prompt
 - Otherwise, ask:
 
-"Want me to save this?
-1. Visual report — annotated wireframe with findings
-2. Markdown — already saved to audit.md
-3. Both
-4. No, conversation is enough"
+"Want an annotated visual report too? (dark-mode HTML with screenshot annotations and scroll-sync)"
 
-In --auto mode: skip prompt, default to markdown only (audit.md already written).
+In --auto mode: skip prompt.
 
 **Quick-scan aggregate:** After presenting results, if 2+ previous quick-scans exist for the same URL AND same device (check docs/cro/*/meta.json for matching `url_normalized` with `quick_scan: true` AND matching device in `devices_scanned`):
 
@@ -182,15 +191,18 @@ In --auto mode: skip aggregate prompt. Aggregate only via explicit `--aggregate`
 </output>
 
 <visual_report_generation>
-When generating a visual report (user selects "Visual report" or --visual flag):
+When generating a visual report (user says yes or --visual flag):
 
 Generate the report inline — do NOT dispatch a subagent.
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML structure
-2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
-3. Build wireframe sections from acquisition data (section boundaries, DOM elements, style metadata)
-4. Build finding cards from audit findings (with rationale + citations)
-5. Calculate scores (total, critical, high, quick wins)
-6. Fill template placeholders and write completed HTML
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for component definitions (~38KB — this is what you assemble from)
+2. Copy `${CLAUDE_PLUGIN_ROOT}/templates/font-embed.css` into `<head>` verbatim (do NOT read/interpret — just copy)
+3. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML skeleton
+4. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for assembly instructions
+5. Assemble components: header, score strip, screenshot panel with SVG markers, finding cards, ethics section, export footer
+6. Inject scroll-sync JS from components.html
+7. Write completed self-contained HTML
+
+**You MUST use the HTML/CSS/JS from components.html exactly as written. Do not modify component structure. Do not add custom CSS. Only populate content placeholders.**
 
 Output: `docs/cro/{engagement-id}/visual-report.html`
 For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`

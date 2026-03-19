@@ -214,6 +214,8 @@ Summary: X FIXED, Y REGRESSED, Z UNCHANGED, W NEW, V RESOLVED
 </progress_comparison>
 
 <checkpoint_audit>
+**Auto-save:** audit.md + meta.json are ALWAYS saved silently after every scan. No prompting for markdown save.
+
 Present natural language summary (not raw tables):
 
 ## Audit Complete
@@ -230,7 +232,11 @@ Present natural language summary (not raw tables):
 **Options:**
 1. Proceed to planning
 2. Adjust — tell me what to change
-3. Export report
+3. Export — How would you like this exported?
+   1. Markdown only (already saved)
+   2. Annotated visual report (dark-mode HTML with scroll-sync)
+   3. Both markdown + visual report
+   4. Skip additional exports
 4. Stop here
 
 If --auto: skip this checkpoint, proceed to plan.
@@ -420,13 +426,17 @@ When user chooses to go back:
 <report_export>
 Available at any checkpoint when user requests a visual report.
 
-**Visual report (wireframe + findings):** Generate inline — do NOT dispatch a subagent.
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML structure
-2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
-3. Build wireframe sections from acquisition data (section boundaries, DOM elements, style metadata)
-4. Build finding cards from audit findings (with rationale + citations)
-5. Calculate scores (total, critical, high, quick wins)
-6. Fill template placeholders and write completed HTML
+**Visual report (annotated screenshots + findings):** Generate inline — do NOT dispatch a subagent.
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for component definitions (~38KB — this is what you assemble from)
+2. Copy `${CLAUDE_PLUGIN_ROOT}/templates/font-embed.css` into `<head>` verbatim (do NOT read/interpret — just copy)
+3. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML skeleton
+4. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for assembly instructions
+5. Assemble components: header, score strip, screenshot panel with SVG markers, finding cards, ethics section, export footer
+6. Inject scroll-sync JS from components.html
+7. Write completed self-contained HTML
+
+**You MUST use the HTML/CSS/JS from components.html exactly as written. Do not modify component structure. Do not add custom CSS. Only populate content placeholders.**
+
 Output: `docs/cro/{engagement-id}/visual-report.html`
 For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`
 
