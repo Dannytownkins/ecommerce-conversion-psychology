@@ -34,6 +34,7 @@
 ### Finding 1: The HubSpot Red vs. Green Button Test -- A Contrast Study Misinterpreted as a Color Study
 
 - **Source**: HubSpot (Performable), ~2011; CXL analysis (Peep Laja)
+- **Evidence Tier**: Bronze
 - **URL**: (removed) /
 - **Methodology**: A/B test on a landing page, ~2,000 visitors, comparing red vs. green CTA button
 - **Key Finding**: The red button outperformed the green button by 21% in clicks
@@ -47,6 +48,7 @@
 ### Finding 2: Contrast and Visual Hierarchy Drive CTA Performance, Not Specific Colors
 
 - **Source**: CXL (Peep Laja / Ott Niggulis), ongoing analysis; Speero
+- **Evidence Tier**: Silver
 - **URL**: (removed) /
 - **Methodology**: Meta-analysis of multiple A/B tests and case studies across industries
 - **Key Finding**: There is no single best button color. What matters is how much a button color contrasts with the surrounding page. Orange button tests almost always compared orange to NO button at all. The "winning" colors in tests are consistently those that create the most visual contrast against the page background.
@@ -60,6 +62,7 @@
 ### Finding 3: Verizon -- Red Buttons Lost to Gray Because Red Was the Brand Color
 
 - **Source**: CXL, referencing Verizon's internal testing
+- **Evidence Tier**: Silver
 - **URL**: (removed)
 - **Methodology**: A/B test on Verizon's website
 - **Key Finding**: Dark gray buttons boosted clicks by 10% over red buttons. Verizon's branding is red, so red buttons blended into the page and failed to contrast with surrounding elements.
@@ -73,6 +76,7 @@
 ### Finding 4: Labrecque & Milne (2012) -- Color-Brand Personality Mapping
 
 - **Source**: Labrecque, L.I. & Milne, G.R. (2012). "Exciting red and competent blue: the importance of color in marketing." Journal of the Academy of Marketing Science, 40, 711-727.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Four studies examining how color (hue, saturation, value) maps onto Aaker's brand personality dimensions. Used fictional brand logos to isolate color effects.
 - **Key Finding**:
@@ -90,6 +94,7 @@
 ### Finding 5: Bottomley & Doyle (2006) -- Color-Product Congruence
 
 - **Source**: Bottomley, P.A. & Doyle, J.R. (2006). "The interactive effects of colors and products on perceptions of brand logo appropriateness." Marketing Theory, 6(1), 63-83.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Two experiments testing color-product type congruence
 - **Key Finding**: Functional products (e.g., banks) are better served by functional colors (blue -- dependable, trustworthy). Sensory-social products (e.g., nightclubs) are better served by sensory-social colors (red -- exciting, stimulating). Congruence between color and product positioning improves perceived appropriateness.
@@ -103,6 +108,7 @@
 ### Finding 6: Elliot & Maier (2014) -- Color-in-Context Theory
 
 - **Source**: Elliot, A.J. & Maier, M.A. (2014). "Color-in-Context Theory." Advances in Experimental Social Psychology, 49, 61-125.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Theoretical framework supported by extensive empirical review covering achievement, affiliation, and consumer contexts
 - **Key Finding**: Color effects are fundamentally context-dependent. The same color can have opposite effects in different contexts:
@@ -120,6 +126,8 @@
 ### Finding 7: Joe Hallock -- Color Preference Demographics
 
 - **Source**: Hallock, J. "Colour Assignment." University of Washington survey.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Modest N=232 with no peer review; frequently over-cited relative to its rigor
 - **URL**: (removed)
 - **Methodology**: Online survey, 232 respondents from 22 countries, asking favorite/least favorite colors across 8 options. Broken down by gender and age.
 - **Key Finding**:
@@ -138,6 +146,7 @@
 ### Finding 8: Su & Cui (2019) -- Blue Increases Trust Over Red
 
 - **Source**: Su, L., Cui, A.P., & Walsh, M.F. (2019). "Trustworthy Blue or Untrustworthy Red: The Influence of Colors on Trust." Journal of Marketing Theory and Practice, 27(3), 269-281.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Three studies using both implicit and explicit measures of trust, manipulating blue vs. red in brand/logo contexts
 - **Key Finding**: Across all three studies, blue consistently increased trust perceptions more than red. The blue color scheme was perceived as most trustworthy; black as least trustworthy.
@@ -151,6 +160,7 @@
 ### Finding 9: Website Background Color as a Priming Tool
 
 - **Source**: Mandel, N. & Johnson, E.J. (2002). "When Web Pages Influence Choice: Effects of Visual Primes on Experts and Novices." Journal of Consumer Research, 29(2), 235-245.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Online experiments manipulating background images and colors on product comparison pages
 - **Key Finding**: Background visuals primed different decision criteria. Participants shown penny/money backgrounds prioritized cost and chose cheaper products. Participants shown cloud/comfort backgrounds prioritized comfort and chose more comfortable products. The effect operated through different mechanisms for experts (direct priming) vs. novices (changed information search patterns).
@@ -164,6 +174,7 @@
 ### Finding 10: White Backgrounds and Perceived Product Quality
 
 - **Source**: eBay internal data; Shopify internal data; Szulc & Musielak (2022) survey; industry consensus
+- **Evidence Tier**: Silver
 - **URL**: (removed)
 - **Methodology**: Mixed -- eBay click-through data, Shopify conversion data, consumer surveys
 - **Key Finding**:
@@ -181,6 +192,7 @@
 ### Finding 11: Color Saturation and Perceived Product Potency
 
 - **Source**: Labrecque, L.I., Sohn, S., Seegebarth, B., & Ashley, C. (2025). "Color Me Effective: The Impact of Color Saturation on Perceptions of Potency and Product Efficacy." Journal of Marketing, forthcoming.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Experimental studies examining how color saturation affects perceived product effectiveness
 - **Key Finding**: Products with highly saturated colors (vivid reds, deep blues, vibrant greens) are perceived as more potent and effective. Consumers use saturation as a heuristic for product strength. However, this effect REVERSES for products emphasizing gentleness -- high saturation hurts perceived gentleness.
@@ -194,6 +206,7 @@
 ### Finding 12: Low Saturation and Luxury Brand Perception
 
 - **Source**: Journal of Consumer Research (2025). "Color of Status: Color Saturation, Brand Heritage, and Perceived Status of Luxury Brands."
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Experimental studies on luxury brand color perception
 - **Key Finding**: Less saturated (muted, desaturated) colors enhance consumers' perception of luxury brand status. The mechanism: consumers associate desaturated colors with the passage of time, which signals brand heritage and elevated status.
@@ -207,6 +220,7 @@
 ### Finding 13: Background Color, Price Sensitivity, and Patronage Intent
 
 - **Source**: ScienceDirect (2017). "Do Colors Change Realities in Online Shopping?"
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Experimental study manipulating background color (red vs. blue) and brightness levels in online shopping contexts
 - **Key Finding**: Consumers viewing red or high-brightness backgrounds react more negatively to high prices. Consumers viewing blue or low-brightness backgrounds maintain high patronage intentions regardless of price level.
@@ -220,6 +234,7 @@
 ### Finding 14: Warm vs. Cool Colors and Arousal/Satisfaction Trade-off
 
 - **Source**: Multiple studies, synthesized in marketing literature reviews; Frontiers in Neuroscience (2022)
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Experimental and eye-tracking studies
 - **Key Finding**: Warm colors (red, orange, yellow) produce higher arousal levels. Cool colors (blue, green) produce higher satisfaction levels. For hedonic products, warm colors boost purchase intent. For utilitarian products, cool colors are more effective. Vice/indulgent foods benefit from warm colors; virtue/health foods from cool colors.
@@ -233,6 +248,7 @@
 ### Finding 15: Cultural Color Associations -- Red in China vs. Western Markets
 
 - **Source**: Multiple sources; PMC cross-cultural study (2023); Eriksen Translations cultural review
+- **Evidence Tier**: Gold
 - **URL**: (removed) /
 - **Methodology**: PMC study: Implicit Association Test (IAT) with participants from Austria/Germany vs. Mainland China/Macau. Other sources: ethnographic and survey research.
 - **Key Finding**: Western participants showed significantly stronger red-negative valence associations than Chinese participants. In China, red symbolizes luck, joy, and prosperity and dominates celebrations. In South Africa, red is associated with mourning. White symbolizes death/mourning in China, India, and Japan -- the opposite of Western associations with purity.
@@ -246,6 +262,7 @@
 ### Finding 16: WCAG Color Contrast and Conversion Alignment
 
 - **Source**: W3C WCAG 2.1; Semrush study (10,000 websites); accessibility-commerce case studies
+- **Evidence Tier**: Gold
 - **URL**: (removed) /
 - **Methodology**: WCAG: W3C standards. Semrush: analysis of 10,000 websites comparing WCAG compliance to organic traffic. Case studies: before/after accessibility improvements.
 - **Key Finding**:
@@ -264,6 +281,8 @@
 ### Finding 17: Singh (2006) -- The "62-90% Color Decision" Claim
 
 - **Source**: Singh, S. (2006). "Impact of color on marketing." Management Decision, 44(6), 783-789.
+- **Evidence Tier**: Gold
+- **Quality Flag**: Published in a peer-reviewed journal but is a narrative review citing non-peer-reviewed sources; the 62-90% claim lacks experimental validation
 - **URL**: (removed)
 - **Methodology**: Narrative literature review (NOT original experimental research)
 - **Key Finding**: The paper claims "people make up their minds within 90 seconds of their initial interactions with either people or products, and about 62-90 percent of the assessment is based on colors alone."
@@ -277,6 +296,7 @@
 ### Finding 18: Google's 41 Shades of Blue
 
 - **Source**: Google, ~2009, reported by Doug Bowman (former Google design lead); referenced by Speero
+- **Evidence Tier**: Silver
 - **Methodology**: A/B testing 41 different shades of blue for link colors across Google's massive user base
 - **Key Finding**: Google tested 41 shades of blue for their link colors to determine which shade generated the most clicks. The reported outcome was approximately $200 million in additional annual ad revenue from the winning shade. However, the difference between shades was marginal on a per-user basis -- it only mattered at Google's scale (billions of searches).
 - **E-Commerce Application**: For sites with massive traffic, micro-optimizations in color shade can accumulate meaningful revenue. For typical e-commerce sites, testing 41 shades of blue is a waste of resources. Focus on the contrast and visual hierarchy principles instead.
@@ -289,6 +309,7 @@
 ### Finding 19: Seasonal Color Adaptation
 
 - **Source**: Marketing practitioner consensus; limited academic research
+- **Evidence Tier**: Bronze
 - **Methodology**: Primarily observational and practitioner-reported; some eye-tracking data on temporal attention patterns
 - **Key Finding**: Warm colors increase visual attention at the beginning of time periods; cool colors increase attention at the end. Seasonal holiday colors (green/red for Christmas, pastels for spring) align with consumer expectations. Brands that adapt seasonal palettes report engagement improvements, but controlled experimental data is sparse.
 - **E-Commerce Application**: Seasonal color adaptation is standard practice (holiday themes, seasonal campaigns) and aligns with consumer expectations. However, there is almost no rigorous A/B test data showing that seasonal color changes specifically drive conversion improvements beyond novelty effects.
@@ -301,6 +322,7 @@
 ### Finding 20: Persuasive Colors for Trust Vary by Culture -- Dutch Blue or Russian Red
 
 - **Source**: Oyibo, K. & Vassileva, J. (2021). "Persuasive colours for trust in E-commerce: Dutch blue or Russian red?" Behaviour & Information Technology.
+- **Evidence Tier**: Gold
 - **URL**: (removed)
 - **Methodology**: Cross-cultural study comparing color-trust associations between Dutch and Russian e-commerce users
 - **Key Finding**: Color-context congruence enhances online trust, and trust mediates the relationship between color-context congruence and behavioral intentions. Green was perceived as more trustworthy than blue when used in an outdoor-activity website context, demonstrating that context overrides general color-trust associations.
@@ -314,6 +336,7 @@
 ### Finding 21: Dark Mode Disrupts CTA and Trust Badge Contrast
 
 - **Source**: (a) W3C WCAG 2.1 AA / WebAIM Contrast Checker; (b) Google Material Design Dark Theme Guidelines; (c) Gazit et al., 2025, Ergonomics (Tandfonline); (d) Email on Acid, 2022; (e) Trusted Shops, 2023
+- **Evidence Tier**: Gold
 - **Methodology**: (a) Standards reference: WCAG 2.0 AA requires 4.5:1 for normal text, 3:1 for large text in both light and dark themes. (b) Guidelines synthesis. (c) Lab experiment: N=31 (lab) + N=89 (online), participants adjusted logo colors for dark backgrounds; mean L* decrease of 7.74 for bright colors, increase of 11.65 for dark colors. (d,e) Practitioner analysis of rendering issues in dark mode email/web contexts.
 - **Key Finding**: Dark mode breaks CTA visibility, trust badge legibility, and brand logo rendering unless specifically adapted. Material Design recommends **dark grey (#121212) not pure black** and **desaturating accent colors to the 200 tonal range** (~20 points). Logos with non-transparent backgrounds display as white rectangles; black logos on transparent backgrounds become invisible. Trust badges (Norton, McAfee, Trustpilot) designed for white backgrounds lose contrast and credibility on dark surfaces. **Gazit et al. found users instinctively adjust bright colors darker and dark colors brighter** for dark backgrounds — suggesting current light-mode designs need systematic color adaptation, not just inversion.
 - **E-Commerce Application**: Provide SVG trust badges with transparent backgrounds and use CSS `prefers-color-scheme` to swap assets between themes. Test all CTA buttons in both light and dark mode — a green "Add to Cart" that pops on white may blend or appear muted on dark backgrounds. Desaturate accent colors for dark mode. Validate all text meets WCAG 4.5:1 contrast in both themes. Red (traditionally urgency/sale) becomes less prominent against dark backgrounds.
@@ -325,6 +348,7 @@
 ### Finding 22: Dark Mode Affects Reading Performance and Sentiment — Context Determines Which Mode is Better
 
 - **Source**: (a) Piepenbrock, Mayr & Buchner, 2013, Ergonomics (peer-reviewed); (b) Ergonomics, 2025 (peer-reviewed, N=173); (c) ACM ETRA, 2025 (peer-reviewed); (d) Muangsrinoon & Boonbrahm, 2024, IJCESEN (systematic review of 33 studies)
+- **Evidence Tier**: Gold
 - **Methodology**: (a) Controlled lab study comparing light-on-dark vs dark-on-light text for visual acuity tasks across age groups. (b) N=173 participants, cognitive performance in light vs dark interfaces. (c) Eye-tracking study measuring pupil dilation and perceived workload across task complexities. (d) Systematic review of 33 prior studies on dark/light mode effects.
 - **Key Finding**: The evidence is genuinely mixed and context-dependent. **Light mode produces better performance for high-acuity reading tasks** — Piepenbrock found light backgrounds advantageous for visual acuity; Ergonomics 2025 found cognitive scores higher in light mode. **Dark mode reduces perceived workload for medium-complexity browsing** — ETRA 2025 found lower subjective workload but higher pupil dilation in dark mode. Muangsrinoon's systematic review suggests dark interfaces may **alter sentiment perception**, potentially making content feel more negative. One contradictory finding: Muhamad & Mokhtar (2024, N=30) found dark mode had HIGHER reading speed (136.27 vs 128.42 wpm) — but with a small, young-adult-only sample.
 - **E-Commerce Application**: For browsing and discovery (homepages, category pages), dark mode is acceptable and may reduce perceived effort. For fine-detail reading (spec sheets, size charts, pricing tables, checkout forms), light mode may produce better comprehension and fewer errors. Implement both themes and respect user preference via `prefers-color-scheme`. Do not force either mode. Consider that urgency/scarcity cues may land differently on dark backgrounds due to sentiment effects.

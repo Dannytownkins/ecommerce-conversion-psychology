@@ -25,6 +25,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 1: The 0.1-Second Revenue Effect
 
 - **Source**: Google/Deloitte, 2020, "Milliseconds Make Millions"
+- **Evidence Tier**: Silver
 - **Methodology**: Analysis of 37 European and American brand sites, 30+ million user sessions, mobile load times monitored hourly for 30 days (late 2019).
 - **Key Finding**: A 0.1-second improvement in mobile load time increased retail conversions by **8.4%** and average order value by **9.2%**. Travel conversions increased by **10.1%**. Luxury brand page views per session increased by **8.6%**.
 - **E-Commerce Application**: Even micro-optimizations (eliminating one render-blocking resource, optimizing a single image) can produce measurable revenue impact. Prioritize the fastest wins.
@@ -34,6 +35,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 2: Skeleton Screens -- Contradictory Evidence
 
 - **Source**: (a) Viget, 2017, "A Bone to Pick with Skeleton Screens"; (b) Bill Chung, 2020, UX Collective
+- **Evidence Tier**: Bronze
 - **Methodology**: (a) Viget: 136 mobile users randomly shown spinner, skeleton, or blank screen via animated GIFs, then asked to evaluate wait time. (b) Chung: Physical mobile device testing with participants in "half-focused" state in downtown Vancouver.
 - **Key Finding**: **Viget found skeletons performed worst** -- users perceived longer wait times with skeletons than with spinners or blank screens. **Chung found skeletons performed best**, but only marginally shorter perceived duration vs. spinner and blank screen.
 - **E-Commerce Application**: Do not blindly adopt skeleton screens. Test them against your specific content type. Skeletons work best when they closely match the final layout (reducing layout shift). Poorly designed skeletons that don't match final content may increase perceived wait time by setting expectations that are then violated. **Note:** Finding 13 refines this finding — animation quality matters more than the skeleton-vs-spinner pattern choice. NNGroup (2023) recommends skeletons for full-page loads under 10 seconds and spinners for individual module loads under 10 seconds. The differentiator is use case (full-page vs module), not duration.
@@ -43,6 +45,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 3: Progress Indicators and Willingness to Wait
 
 - **Source**: Nielsen Norman Group, "Progress Indicators Make a Slow System Less Insufferable"
+- **Evidence Tier**: Gold
 - **Methodology**: UX research synthesis across multiple studies on progress indicator design.
 - **Key Finding**: Users shown a **moving progress bar** experienced higher satisfaction and were willing to wait **3x longer** than users shown no indicator. Determinate progress bars (showing percentage) outperform indeterminate ones (spinning/pulsing) because they reduce uncertainty.
 - **E-Commerce Application**: For any operation over 1 second (checkout processing, search filtering, page transitions), show a determinate progress indicator. For operations under 1 second, no indicator needed. Between 0.1-1s, a subtle animation suffices.
@@ -52,6 +55,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 4: The Three Response Time Thresholds
 
 - **Source**: Jakob Nielsen / NNGroup, "Response Times: The 3 Important Limits"
+- **Evidence Tier**: Gold
 - **Methodology**: Literature synthesis from Miller (1968), Card et al. (1983), and Nielsen's own research.
 - **Key Finding**: Three critical thresholds: **0.1 seconds** -- feels instantaneous, user feels they caused the result. **1 second** -- user notices delay but stays in flow, feels in control. **10 seconds** -- user loses attention entirely, may abandon.
 - **E-Commerce Application**: Target 0.1s for micro-interactions (add-to-cart, filter toggles, UI state changes). Target under 1s for page transitions and search results. Never exceed 10s for any operation without a progress indicator and the option to cancel.
@@ -61,6 +65,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 5: Core Web Vitals and Conversion -- The Rakuten 24 Case
 
 - **Source**: web.dev / Rakuten, 2021, "How Rakuten 24's investment in Core Web Vitals increased revenue per visitor by 53.37%"
+- **Evidence Tier**: Silver
 - **Methodology**: A/B test on high-traffic landing page, 50/50 traffic split between optimized (version A) and original (version B). Measured CWV alongside conversion and revenue.
 - **Key Finding**: Optimized version improved CLS by **92.72%**, FID by **7.95%**, FCP by **8.45%**, TTFB by **18.03%**. Business results: conversion rate up **33.13%**, revenue per visitor up **53.37%**. Separately, good LCP correlated with up to **61.13%** conversion rate increase and **26.09%** revenue per visitor increase.
 - **E-Commerce Application**: CLS is the most underrated metric -- layout shifts during loading erode trust and cause misclicks. Prioritize: (1) fix CLS by reserving space for images/ads, (2) improve LCP by optimizing hero content, (3) reduce INP for interactive elements.
@@ -70,6 +75,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 6: The "3-Second Rule" -- Origin and Current Validity
 
 - **Source**: Google/SOASTA, 2016-2017; Akamai, 2010-2016
+- **Evidence Tier**: Silver
 - **Methodology**: Google/SOASTA analyzed mobile sessions. Akamai tracked abandonment across CDN-served sites. Earlier Akamai studies (2006, 2010) tracked evolving expectations.
 - **Key Finding**: Google found **53% of mobile visits abandoned** if page took >3 seconds. Akamai's peak conversion rate of **4.75%** occurred at **3.3 seconds** load time; one additional second dropped conversion to **3.52%** (a **26% drop**). [CITATION LAUNDERED: The widely-cited Akamai '1 second = 7% conversion reduction' statistic traces to reports from 2006 and 2014 with varying methodologies. No auditable primary study exists for the specific 7% figure.] The 2010 Akamai study found **57% abandonment** at 3 seconds, up from lower thresholds in 2006.
 - **E-Commerce Application**: The 3-second threshold remains a useful engineering target, but expectations are tightening. Aim for under 2 seconds on mobile. The trend shows users becoming less patient over time, not more.
@@ -79,6 +85,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 7: Speed as a Trust Signal
 
 - **Source**: Multiple: Unbounce Page Speed Report; Queue-it ecommerce speed statistics
+- **Evidence Tier**: Bronze
 - **Methodology**: Consumer surveys and behavioral analysis across ecommerce sites.
 - **Key Finding**: **70% of consumers** say page speed impacts their willingness to buy from an online retailer. **78% of consumers** report negative emotions from slow/unreliable websites. Sites loading in 1 second convert **3x more** than those loading in 5 seconds, and **5x more** than those loading in 10 seconds.
 - **E-Commerce Application**: Speed is not just a UX metric -- it is a brand trust signal. Customers unconsciously associate website speed with business reliability. A slow checkout page specifically undermines trust at the critical conversion moment.
@@ -88,6 +95,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 8: Optimistic UI and Perceived Instantaneity
 
 - **Source**: Simon Hearne, 2021, "Optimistic UI Patterns for Improved Perceived Performance"; Smashing Magazine, 2016
+- **Evidence Tier**: Bronze
 - **Methodology**: Analysis of optimistic UI implementations (Instagram, Facebook, Twitter) and their impact on perceived responsiveness.
 - **Key Finding**: Optimistic UI eliminates perceived latency for discrete actions by showing the result immediately and rolling back only on failure. Instagram (pioneered by Mike Krieger) shows heart animation instantly while server communication happens in background. The pattern moves interactions from the 1-second threshold to the 0.1-second (instantaneous) threshold.
 - **E-Commerce Application**: Apply to: add-to-cart (show item in cart immediately), wishlist/favorites, quantity changes, filter selections. Do NOT apply to: payment processing, order placement, or any action where false success has real consequences.
@@ -97,6 +105,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 9: Above-the-Fold Content Loading Priority
 
 - **Source**: web.dev Fetch Priority API documentation; Smashing Magazine, 2022
+- **Evidence Tier**: Silver
 - **Methodology**: Web performance best practices synthesis and browser rendering pipeline analysis.
 - **Key Finding**: Text renders fastest and should be the LCP element when possible. Above-the-fold images should use `fetchpriority="high"` and never be lazy-loaded. In carousels, only the first visible image needs high priority. A 1-second delay in above-fold content visibility results in a **7% conversion reduction**.
 - **E-Commerce Application**: Optimal loading order for a product page: (1) Product title + price text, (2) Primary product image (high priority, not lazy-loaded), (3) Add-to-cart CTA, (4) Product description, (5) Secondary images (lazy-loaded), (6) Reviews and recommendations. Never lazy-load hero or primary product images.
@@ -106,6 +115,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 10: Animation Duration Sweet Spot
 
 - **Source**: NNGroup, "Executing UX Animations: Duration and Motion Characteristics"
+- **Evidence Tier**: Gold
 - **Methodology**: UX research synthesis on animation timing and user perception.
 - **Key Finding**: Optimal UI animation duration is **200-500ms**. Below 100ms, animation is invisible. Above 1 second, it feels like a delay. Web-specific interactions should target **150-200ms**. Animations must render at **60fps** or users notice jank, which hurts perceived quality more than no animation at all.
 - **E-Commerce Application**: Use 150-200ms transitions for hover states, button feedback, and micro-interactions. Use 300-500ms for page transitions, modal openings, and accordion expansions. Remove or reduce animations on low-powered devices and when `prefers-reduced-motion` is set. Never animate anything that blocks the user from their goal.
@@ -115,6 +125,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 11: Lazy Loading and Product Image Perception
 
 - **Source**: Cloud Four, "Stop Lazy Loading Product and Hero Images"; ImageKit lazy loading guide
+- **Evidence Tier**: Bronze
 - **Methodology**: Performance analysis and UX assessment of lazy loading implementations across ecommerce sites.
 - **Key Finding**: Lazy loading above-the-fold product images **hurts LCP** and perceived speed. Using blurred low-resolution placeholders or dominant-color placeholders creates a fluid transition that maintains perceived quality. However, low-resolution placeholder images that look pixelated can make products seem lower quality.
 - **E-Commerce Application**: Never lazy-load the primary product image or hero images. For product grids below the fold, use LQIP (Low Quality Image Placeholder) with blur-up technique -- the dominant color or a tiny blurred version loads instantly, then the full image fades in. This maintains perceived quality while improving initial load.
@@ -124,6 +135,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 12: Vodafone and the LCP-to-Sales Pipeline
 
 - **Source**: web.dev, "The business impact of Core Web Vitals"
+- **Evidence Tier**: Silver
 - **Methodology**: Real-world A/B testing and production metric correlation across multiple brands.
 - **Key Finding**: Vodafone's **31% improvement in LCP** led to **8% more sales**, a **15% improvement** in cart-to-visit rate, and **11% more organic traffic**. This demonstrates the full chain: speed improvement -> better engagement -> higher conversion -> more revenue, compounded by SEO benefits from better CWV scores.
 - **E-Commerce Application**: LCP improvements have a compounding effect -- they improve both direct conversion (users experience faster pages) and indirect acquisition (Google ranks faster pages higher, sending more traffic). Prioritize LCP as the single highest-ROI performance metric.
@@ -133,6 +145,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 13: Animation Type Matters More Than Skeleton vs Spinner
 
 - **Source**: (a) Wang et al., 2025, MDPI Journal of Theoretical and Applied Electronic Commerce Research; (b) Harrison, Yeo & Hudson, 2010, ACM CHI
+- **Evidence Tier**: Gold
 - **Methodology**: (a) Wang: 4 online experiments (N=198, 411, 400, 400; total N=1,409) comparing dynamic vs static loading animations using Attentional Gate Theory. (b) Harrison: Controlled lab experiment testing ribbed, backward-decelerating progress bars at CMU.
 - **Key Finding**: (a) Dynamic/animated loading indicators significantly reduced perceived wait time compared to static indicators. (b) Backward-decelerating ribbed progress bars reduced perceived duration by **~11-12%** (p<0.001). The pattern of the loading indicator (skeleton vs spinner) is less important than the quality of its animation.
 - **E-Commerce Application**: Use subtle motion and shimmer on loading placeholders. Use accelerating-feel or backward-decelerating progress bars for determinate waits (checkout processing, payment). Avoid static loading indicators entirely.
@@ -142,6 +155,8 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 14: Shimmer Direction and Multi-Stage Loading Patterns
 
 - **Source**: (a) Bill Chung, 2017, UX Collective; (b) Erwin Hofman, practitioner study; (c) Yin et al., 2025, MDPI Applied Sciences
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Yin et al. is peer-reviewed (MDPI Applied Sciences) but small N=90; practitioner sources have very small samples (~20 each)
 - **Methodology**: (a) Chung: Street-intercept testing, ~20 participants, compared wave/shimmer vs pulse vs static. (b) Hofman: Independent practitioner A/B comparison, ~20 participants. (c) Yin: Lab experiment, N=90, ages 20-29, repeated-measures ANOVA, 4-second constant wait.
 - **Key Finding**: (a,b) Slow left-to-right shimmer animation was perceived as having the **shortest loading duration** compared to pulse and static alternatives. Two independent practitioner studies converge on the same direction. (c) Multi-stage loading patterns (e.g., spinner transitioning to skeleton) showed context-dependent results — some sequences outperformed single-stage, but blank+spinner often performed best.
 - **E-Commerce Application**: Use slow left-to-right shimmer (the Facebook/Google pattern) for skeleton placeholders. For category/search pages with filter loading, consider multi-stage patterns (spinner for initial response, skeleton for content layout). Test multi-stage patterns rather than assuming they outperform single-stage.
@@ -151,6 +166,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 15: Skeleton Fidelity — Match the Final Layout or Don't Use Them
 
 - **Source**: (a) Tim Kadlec, 2020, web performance consultant; (b) NNGroup, 2023, "Skeleton Screens 101"
+- **Evidence Tier**: Gold
 - **Methodology**: (a) Kadlec: Expert practitioner analysis of skeleton screen implementations across production sites. (b) NNGroup: Expert synthesis and usability review.
 - **Key Finding**: Skeleton screens convert passive waiting into active scanning — but **only when the skeleton closely matches the final layout structure**. A skeleton that doesn't match creates jarring "content shift" that actively harms perception, potentially worse than showing no skeleton at all. NNGroup independently warns against "frame-display" skeletons that don't show content structure. Both sources emphasize that **poorly matched skeletons are worse than spinners**.
 - **E-Commerce Application**: Skeleton shapes must match product card dimensions, image aspect ratios, and text line heights. On product listing pages, the skeleton grid must match the final grid exactly. If you cannot match the layout, use a spinner instead. Reserve space for all dynamic elements to prevent Cumulative Layout Shift (CLS).
@@ -160,6 +176,8 @@ Page performance psychology reveals that **perceived speed often matters more th
 ### Finding 16: Skeleton Screen Accessibility Requirements
 
 - **Source**: Adrian Roselli, 2020, "More Accessible Skeletons"
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Adrian Roselli is a recognized accessibility expert; guidance is consistent with WCAG standards despite being a blog post
 - **Methodology**: Accessibility expert analysis of skeleton screen implementations and screen reader behavior.
 - **Key Finding**: Skeleton screen implementations without ARIA attributes create **accessibility barriers for screen reader users**. Recommended implementation: use `aria-busy="true"` on the container while loading, `role="status"` for live regions, and ensure skeleton elements are hidden from assistive technology with `aria-hidden="true"`. **Important caveat**: Roselli notes that few screen readers actually honor `aria-busy` at the time of writing — test with actual assistive technology.
 - **E-Commerce Application**: When implementing skeleton screens on product grids, search results, or checkout loading states: (1) wrap the loading region in `aria-busy="true"`, (2) announce loading completion with `aria-live="polite"`, (3) hide decorative skeleton shapes from screen readers. This is implementation guidance, not a conversion optimization — but failing to do it creates legal exposure (see accessibility lawsuit trends).
