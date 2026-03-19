@@ -33,6 +33,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: Enable Apple Pay, Google Pay, and Shop Pay (for Shopify stores). The conservative estimate (Stripe 7.4%) is the most reliable benchmark. Dynamic wallet surfacing (showing the right wallet for the user's OS/device) outperforms showing all wallets — Stripe reports +22% from dynamic surfacing for eligible users.
 - **Replication Status**: Stripe's methodology (controlled A/B holdback) is the strongest in this domain. Checkout.com and Shopify converge directionally. All sources are vendors with direct financial incentive to show wallets work. No independent replication exists.
 - **Boundary Conditions**: All sources are payment processors/platforms [VENDOR]. Shop Pay 50% is ceiling-reporting that conflates multiple variables. Stripe 7.4% is the methodologically cleanest estimate. Effect size likely varies by merchant vertical, average order value, and customer demographics.
+- **Evidence Tier**: Silver
 
 ### Finding 2: Password Friction Causes 42% of Checkout Abandonments
 
@@ -42,6 +43,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: Password friction is a primary abandonment driver. Biometric/passkey authentication eliminates it. Offer guest checkout as the default, with express wallet buttons prominently displayed. Never require account creation before showing payment options. The 168-password stat reinforces the scale of the problem — users are not going to remember yet another password for your store.
 - **Replication Status**: FIDO and Mastercard/Oxford are independent sources converging directionally. Corbado/NordPass are vendors. The general finding (passwords cause abandonment) is robust across multiple surveys. Specific percentages are self-reported.
 - **Boundary Conditions**: FIDO is an industry consortium with incentive to promote passkeys. Mastercard is [PRE-2020] and from a financial services context. All data is self-reported (users stating why they abandoned, not observed abandonment behavior). The 42% figure is the overall rate — the 50% figure applies only to ages 25-34.
+- **Evidence Tier**: Bronze
 
 ### Finding 3: Biometric Auth is 2-40x Faster Than Passwords
 
@@ -51,6 +53,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: For returning customers, biometric auth can reduce the authentication step from 30+ seconds to under 1 second. This is especially impactful on mobile where typing passwords is more frustrating. Implement passkey support alongside traditional auth — don't remove password login, but make biometric the default when available.
 - **Replication Status**: Corbado's passkey vs password timing is sourced from Google's research (credible but vendor-adjacent). MojoAuth's 0.7-second figure is vendor-sourced and could not be independently verified [UNVERIFIABLE from public sources].
 - **Boundary Conditions**: All sources are authentication vendors [VENDOR]. Corbado sells passkey infrastructure; MojoAuth sells auth solutions. The speed comparison assumes users have already enrolled in biometric auth — first-time setup takes longer. Actual speed depends on device, OS version, and biometric hardware.
+- **Evidence Tier**: Bronze
 
 ### Finding 4: Consumer Trust in Biometrics is Not Universal — Privacy Concerns Are Rising
 
@@ -60,6 +63,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: Include reassurance copy near biometric auth prompts: "Your face/fingerprint data never leaves your device — it is not sent to our servers." Keep traditional payment methods visible as fallbacks — users who don't trust biometrics should never feel forced into it. For older demographics (Finding 7), prominently display traditional auth options alongside biometric.
 - **Replication Status**: Zarco 2024 is peer-reviewed in a top retailing journal (strongest evidence in this topic). Aware is vendor-sourced but the survey methodology is disclosed (N=1,000). The privacy concern trajectory (rising year-over-year) is consistent across multiple reports.
 - **Boundary Conditions**: Zarco's study measures adoption intention, not actual checkout behavior. Aware is a biometric vendor [VENDOR, SELF-REPORT]. The 69%→88% privacy concern increase is dramatic and may reflect increased media coverage of biometric data breaches rather than a change in actual risk perception during checkout.
+- **Evidence Tier**: Gold
 
 ### Finding 5: Guest Checkout + Express Wallet Eliminates the Two Biggest Friction Points
 
@@ -69,6 +73,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: Default to guest checkout. Show express wallet buttons (Apple Pay, Google Pay, Shop Pay) above the email/login prompt. Never gate payment options behind account creation. The 19% forced-account abandonment + password friction (Finding 2) together represent the largest addressable checkout friction. Express wallets solve both in one interaction.
 - **Replication Status**: Baymard is the most credible independent source in ecommerce UX. Their 70.19% cart abandonment figure is a 50-study aggregate. The 19% forced-account figure is from their ongoing research program and is widely cited. The 35.26% theoretical improvement is a benchmark, not a guaranteed outcome.
 - **Boundary Conditions**: Baymard's 19% is self-reported (users citing their reason for leaving). The 35.26% is theoretical — fixing "all" checkout issues simultaneously is not realistic. Guest checkout may reduce repeat customer data collection, creating tension between conversion and CRM goals.
+- **Evidence Tier**: Gold
 
 ### Finding 6: Place Wallet Buttons Early — Top of Checkout, Not Bottom
 
@@ -78,6 +83,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: Move Apple Pay, Google Pay, and Shop Pay buttons to the very top of the checkout page, above the email address field. Use a visual separator ("Express Checkout" or "Pay with" header) to distinguish them from the standard checkout flow below. On mobile, these buttons should be visible without scrolling. The logic: users with wallets configured can complete their entire purchase in 1-2 taps from this position, bypassing the entire form.
 - **Replication Status**: Stripe's A/B testing is the most methodologically transparent source in this domain. The directional finding (early placement > late placement) is consistent with general UX principles (reduce steps to conversion). No independent replication outside Stripe's platform.
 - **Boundary Conditions**: Stripe is a payment processor [VENDOR] with incentive to show wallets work. The ~2x figure may vary by merchant vertical and customer demographics. Early placement may suppress upsell opportunities (Checkout.com theoretical concern — see Finding 8 context in the consolidation doc) by allowing users to bypass the cart review step.
+- **Evidence Tier**: Silver
 
 ### Finding 7: Generational Divide — 75% Gen Z/Millennial vs 16% Boomer Biometric Usage
 
@@ -87,6 +93,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: For stores with mixed-age demographics: always show both express wallet buttons AND traditional payment forms. Never hide or collapse the traditional checkout behind the express option. For stores targeting Gen Z/Millennials (fashion, beauty, DTC): lead with express wallet buttons and passkey enrollment prompts. For stores targeting Boomers (health, home, gardening): ensure traditional auth and payment flows are the default, with express options as a secondary enhancement.
 - **Replication Status**: Single study, vendor-funded (AWS co-sponsored). N=3,278 is a reasonable sample for a consumer survey. No independent replication of the specific generational breakdown.
 - **Boundary Conditions**: US-only sample. Generational attitudes toward biometrics may differ in markets with different fintech maturity (e.g., China/India where mobile payments are ubiquitous across ages). Survey is self-reported usage, not observed checkout behavior. The generational gap may be narrowing as passkey adoption increases.
+- **Evidence Tier**: Bronze
 
 ### Finding 8: Passkey Adoption Reaching Mainstream — 48% of Top 100 Sites Support Passkeys
 
@@ -96,6 +103,7 @@ Express checkout with biometric authentication represents one of the highest-ROI
 - **E-Commerce Application**: If you haven't implemented passkey support, you are falling behind the top 100 sites. Passkeys eliminate passwords entirely (Finding 2 friction) and enable biometric-speed authentication (Finding 3). Implementation priority: (1) enable Web Authentication API, (2) prompt passkey creation after successful purchase (high-trust moment), (3) offer passkey as the default login for returning users. The 75% awareness means most users will recognize and trust the passkey prompt.
 - **Replication Status**: FIDO Alliance is an industry consortium. Their data is a combination of factual tracking (website support) and survey data (consumer awareness). The 48% support figure is verifiable by checking individual sites. The 75% awareness is survey-based.
 - **Boundary Conditions**: FIDO Alliance promotes passkey adoption — their data emphasizes growth metrics. "Awareness" does not equal "willingness to use." The top 100 sites are disproportionately tech-forward; the long tail of ecommerce sites has much lower passkey adoption. Implementation complexity varies by platform (Shopify has limited native passkey support as of early 2026).
+- **Evidence Tier**: Bronze
 
 ---
 

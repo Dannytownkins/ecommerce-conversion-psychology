@@ -23,6 +23,7 @@
 - **E-Commerce Application**: Navigation menus, variant selectors, and filter panels should minimize equally-weighted options. The logarithmic relationship means going from 2 to 4 options costs the same cognitive time as going from 4 to 8 -- so the first few additions are the most expensive per-item.
 - **Replication Status**: Replicated extensively. One of the most robust findings in cognitive psychology, confirmed across decades of research (Proctor & Schneider, 2018 review).
 - **Boundary Conditions**: Applies to equally probable, unfamiliar choices. When users have strong prior preferences or when options are visually scannable (not memorized), the law's impact is attenuated. Does NOT directly apply to navigation menus where items remain visible on screen.
+- **Evidence Tier**: Gold
 
 ### Finding 2: The Jam Study -- More Choice Can Reduce Purchase
 - **Source**: Iyengar, S.S. & Lepper, M.R. (2000). "When Choice is Demotivating: Can One Desire Too Much of a Good Thing?" Journal of Personality and Social Psychology, 79(6), 995-1006.
@@ -31,6 +32,7 @@
 - **E-Commerce Application**: Product listing pages showing fewer, curated options may convert better than exhaustive catalogs. Particularly relevant for category pages and variant selectors.
 - **Replication Status**: REPLICATION CONCERNS. See Finding 4 (Scheibehenne meta-analysis). The effect is real in some contexts but not universal. The original study was a single field experiment with limited sample size.
 - **Boundary Conditions**: Effect is strongest when consumers lack prior preferences, when options are similar/hard to compare, and when the choice set is complex. Does not apply when consumers are experts or have well-defined preferences.
+- **Evidence Tier**: Gold
 
 ### Finding 3: Choice Overload Moderators -- Four Key Factors
 - **Source**: Chernev, A., Bockenholt, U., & Goodman, J. (2015). "Choice overload: A conceptual review and meta-analysis." Journal of Consumer Psychology, 25(2), 333-358. Meta-analysis of 99 observations, N=7,202.
@@ -39,6 +41,7 @@
 - **E-Commerce Application**: Choice overload interventions should target high-uncertainty shoppers (new category entrants) more than returning customers. Simplify variant presentation most aggressively for complex products where options are hard to differentiate. Browsing-mode pages (inspiration galleries) can handle more options than purchase-mode pages.
 - **Replication Status**: Replicated (meta-analytic confirmation across 99 observations).
 - **Boundary Conditions**: When consumers have clear preferences or expertise, larger assortments can actually be beneficial. Effect is weaker for hedonic/fun categories where browsing is the goal.
+- **Evidence Tier**: Gold
 
 ### Finding 4: Choice Overload Mean Effect is Near Zero
 - **Source**: Scheibehenne, B., Greifeneder, R., & Todd, P.M. (2010). "Can There Ever Be Too Many Options? A Meta-Analytic Review of Choice Overload." Journal of Consumer Research, 37(3), 409-425. Meta-analysis of 63 conditions from 50 experiments, N=5,036.
@@ -47,6 +50,7 @@
 - **E-Commerce Application**: Blindly reducing product assortment is NOT a reliable conversion strategy. The popular narrative of "fewer choices = more sales" is an oversimplification. Interventions should focus on the moderating conditions (preference uncertainty, set complexity) rather than raw option count.
 - **Replication Status**: This IS the replication/meta-analytic check. It challenges the generalizability of Iyengar & Lepper (2000).
 - **Boundary Conditions**: The near-zero mean hides significant heterogeneity. The effect IS real in specific contexts (high complexity, low expertise, similar options) -- it is just not universal.
+- **Evidence Tier**: Gold
 
 ### Finding 5: Miller's Law -- Working Memory Capacity of 7 Plus or Minus 2
 - **Source**: Miller, G.A. (1956). "The Magical Number Seven, Plus or Minus Two: Some Limits on Our Capacity for Processing Information." Psychological Review, 63(2), 81-97.
@@ -55,6 +59,7 @@
 - **E-Commerce Application**: Commonly misapplied to navigation menus. Since menu items remain visible on screen, users do not need to memorize them, and the 7-item limit does not directly constrain menu length. However, Miller's Law DOES apply to: comparison tasks (comparing more than 5-7 product attributes simultaneously is cognitively expensive), mental shortlists (users comparing products they've seen across pages), and attribute recall after leaving a product page.
 - **Replication Status**: Replicated. Foundational finding in cognitive psychology.
 - **Boundary Conditions**: Does NOT apply to recognition tasks (items visible on screen). Only applies when information must be held in working memory. Chunking can expand effective capacity.
+- **Evidence Tier**: Gold
 
 ### Finding 6: The F-Pattern -- How Users Scan Product Pages
 - **Source**: Nielsen, J. (2006). "F-Shaped Pattern for Reading Web Content." Nielsen Norman Group. Eye-tracking study with 232 users across thousands of web pages.
@@ -63,6 +68,7 @@
 - **E-Commerce Application**: Place the most critical product information (name, price, primary image, CTA) in the top-left quadrant. Start bullet points and spec labels with information-carrying words. Key differentiators should appear in the first two content blocks, not buried below. Use strong visual hierarchy (headings, whitespace) to break the F-pattern and draw eyes to conversion elements.
 - **Replication Status**: Replicated across multiple NNGroup studies. Confirmed on mobile with adaptations.
 - **Boundary Conditions**: The F-pattern emerges when content lacks strong visual hierarchy. Well-designed pages with clear headings, images, and visual cues can redirect scanning to more useful patterns (layer-cake, spotted, commitment patterns).
+- **Evidence Tier**: Gold
 
 ### Finding 7: Progressive Disclosure Reduces Overwhelm
 - **Source**: Nielsen Norman Group, multiple articles (2006-2024). Originally formulated by J.M. Keller in instructional design. NNGroup usability testing validates the principle.
@@ -71,6 +77,7 @@
 - **E-Commerce Application**: Product page information hierarchy should be: (1) Above the fold: product image, title, price, variant selector, Add to Cart; (2) First accordion/tab section: key features/description; (3) Subsequent sections: full specifications, shipping/returns, reviews. This matches observed user scanning behavior.
 - **Replication Status**: Replicated across multiple usability studies. Well-established UX principle.
 - **Boundary Conditions**: Over-hiding information can backfire. If critical purchase-decision info (sizing charts, compatibility) is hidden too deep, users may not find it and bounce instead. Progressive disclosure works best when the primary layer contains enough information for 80% of purchase decisions.
+- **Evidence Tier**: Gold
 
 ### Finding 8: Baymard Filtering Benchmarks -- Common Failures
 - **Source**: Baymard Institute (2023 benchmark update). 25 rounds of qualitative usability testing, 4,400+ test participant/site sessions. Benchmark of 68 large e-commerce sites, 6,100+ UX performance scores.
@@ -79,6 +86,7 @@
 - **E-Commerce Application**: Always show applied filters in a visible summary bar. Explain non-obvious filter terms. Promote the most-used filters (e.g., size, price) above less common ones. Allow multi-select within filter categories. These are table-stakes UX that the majority of sites still fail.
 - **Replication Status**: Replicated (longitudinal benchmarking across multiple years and hundreds of sites).
 - **Boundary Conditions**: Specific percentages reflect top-grossing US/EU sites and may not generalize to all markets. Small catalogs (<50 products) may not need complex filtering.
+- **Evidence Tier**: Gold
 
 ### Finding 9: Decision Fatigue and Variant Count
 - **Source**: Multiple sources. Winsomemarketing.com summary of research from Journal of Marketing Research and related publications. See also: Vohs et al. (2008) on decision fatigue -- BUT NOTE replication concerns.
@@ -87,6 +95,8 @@
 - **E-Commerce Application**: For products with many variants, limit simultaneously visible options per dimension. Show 5-7 color swatches with "more" expansion. Pre-filter sizes to likely matches. Avoid presenting all variant combinations as a flat matrix. Sequential decision-making (pick color, then size, then material) reduces simultaneous cognitive load vs. a combined matrix.
 - **Replication Status**: REPLICATION CONCERNS for the ego depletion mechanism (see Finding 10). The behavioral pattern of increased abandonment with more variants is consistently observed in analytics data, but the theoretical mechanism (depleted willpower) is disputed.
 - **Boundary Conditions**: Expert shoppers (e.g., someone buying their 10th pair of running shoes) handle more variants. Fashion/aesthetic categories tolerate more color options because color IS the product differentiator.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary source (winsomemarketing.com) is a marketing blog, but finding references peer-reviewed Journal of Marketing Research data
 
 ### Finding 10: Ego Depletion -- The Theoretical Foundation Has Crumbled
 - **Source**: Hagger, M.S. et al. (2016). Registered Replication Report: 23 labs, 2,000+ participants. Vohs, K.D. et al. (2021). Multi-lab replication: 36 labs, 3,531 participants. Carter & McCullough (2015) meta-analysis correcting for publication bias.
@@ -95,6 +105,7 @@
 - **E-Commerce Application**: Claims that "users run out of willpower after making choices" should be treated skeptically. While sequential decision-making does slow users down (Hick's Law provides the mechanism), the "depleted resource" model underlying much decision fatigue advice is not supported. Focus on information architecture and cognitive load reduction rather than "willpower conservation."
 - **Replication Status**: FAILED TO REPLICATE. Two large-scale pre-registered replications found near-zero effects. This is one of the most prominent replication failures in psychology.
 - **Boundary Conditions**: Fatigue, boredom, and reduced motivation during extended shopping sessions are real phenomena -- they just do not appear to operate through a "limited willpower resource" mechanism. Practical UX recommendations to simplify decisions remain valid; the theoretical justification has changed.
+- **Evidence Tier**: Gold
 
 ### Finding 11: Checkout Form Fields -- The Optimal Count
 - **Source**: Baymard Institute (2024 benchmark update). "Checkout Optimization: Minimize Form Fields." Based on 25 rounds of usability testing.
@@ -103,6 +114,7 @@
 - **E-Commerce Application**: Audit checkout forms and eliminate every non-essential field. Use address auto-complete to reduce manual entry. Combine name into one field where possible. Default to shipping = billing. Every field removed is friction removed.
 - **Replication Status**: Replicated (longitudinal benchmarking over 5+ years, consistent findings).
 - **Boundary Conditions**: B2B checkouts legitimately need more fields (company name, PO number, tax ID). International shipping may require additional fields. The 8-field ideal assumes domestic single-address orders.
+- **Evidence Tier**: Gold
 
 ### Finding 12: Default Selections Dramatically Shift Behavior
 - **Source**: Johnson, E.J. & Goldstein, D.G. (2003). "Do Defaults Save Lives?" Science, 302(5649), 1338-1339. Lab experiment + cross-country comparison.
@@ -111,6 +123,7 @@
 - **E-Commerce Application**: Pre-selecting a default variant (e.g., the most popular size, a neutral color) reduces the number of active decisions required. Analytics data suggests black/neutral colors convert at 2-3x the rate of unusual colors -- making these the default shows the highest-converting option first. However, there is an ethical dimension: dark patterns using defaults to add unwanted items to cart erode trust.
 - **Replication Status**: Replicated. The default effect is one of the most robust findings in behavioral economics, confirmed across dozens of studies and domains.
 - **Boundary Conditions**: Defaults are most powerful for low-involvement decisions or when users are uncertain. For high-involvement purchases where users have strong preferences, defaults matter less. Ethically questionable defaults (pre-checked insurance add-ons) can generate backlash and regulatory scrutiny.
+- **Evidence Tier**: Gold
 
 ### Finding 13: Color Variant Defaults and Conversion
 - **Source**: Peasy.nu analytics summary; CommandC e-commerce optimization data. Industry analytics data.
@@ -119,6 +132,7 @@
 - **E-Commerce Application**: Set the default swatch/variant to the highest-converting option (typically neutral colors). Do not bury top performers at the end of a swatch list. Consider variant-level analytics as a core optimization metric alongside page-level conversion.
 - **Replication Status**: Observed consistently in industry analytics data across multiple stores. Not a controlled experiment but a robust observational pattern.
 - **Boundary Conditions**: Category-dependent. Fashion/statement products may convert better with the hero colorway as default. Seasonal products may need dynamic defaults. The neutral-converts-best pattern is strongest in basics/essentials categories.
+- **Evidence Tier**: Bronze
 
 ### Finding 14: Pricing Table Cognitive Load -- 3-4 Tiers Maximum
 - **Source**: Multiple UX sources including NinjaTables research, Kinde SaaS pricing guidelines, CXL Institute. Rooted in Miller's Law application.
@@ -127,6 +141,7 @@
 - **E-Commerce Application**: Limit pricing tables to 3 tiers. Show 8-12 key differentiating features, not exhaustive lists. Highlight the recommended tier with visual emphasis and a "Most Popular" or "Best Value" label. Use checkmarks/X marks rather than text descriptions for binary features.
 - **Replication Status**: Observed across multiple A/B tests and industry case studies. The 3-tier convention is strongly established in SaaS, less tested in physical product e-commerce.
 - **Boundary Conditions**: Enterprise/B2B buyers may need more tiers and features for procurement justification. Highly technical products may require more feature rows. The 3-tier rule is strongest for consumer-facing pricing.
+- **Evidence Tier**: Bronze
 
 ### Finding 15: Social Proof Badges Lift Conversion 12-55%
 - **Source**: WiserNotify product badge analysis; Profitero analysis of Amazon badges; Plumrocket retailer case studies; various A/B tests.
@@ -135,6 +150,7 @@
 - **E-Commerce Application**: Add "Best Seller," "Most Popular," or "Staff Pick" badges to top-performing products. Place trust/social proof badges near the Add to Cart button. These labels serve as decision simplification heuristics -- they reduce the cognitive cost of comparison by providing an external recommendation signal.
 - **Replication Status**: Replicated across many A/B tests and platforms. Effect sizes vary but direction is consistently positive.
 - **Boundary Conditions**: Badge inflation (too many badges) dilutes effectiveness. Generic badges without credible backing ("Editor's Choice" with no editor) can reduce trust. The effect is strongest for mid-consideration purchases where users lack strong preferences.
+- **Evidence Tier**: Bronze
 
 ### Finding 16: Chunking Product Attributes Improves Processing
 - **Source**: Laws of UX (lawsofux.com) -- Chunking principle. NNGroup, "How Chunking Helps Content Processing." Rooted in Miller (1956).
@@ -143,6 +159,7 @@
 - **E-Commerce Application**: Group product specifications into labeled categories (Physical: dimensions/weight; Performance: speed/capacity; Compatibility: OS/devices). Use visual separation (cards, borders, whitespace) between groups. For comparison tables, group rows by category rather than presenting a flat alphabetical list.
 - **Replication Status**: Replicated. Chunking is a foundational cognitive principle.
 - **Boundary Conditions**: Information that needs to be searched/scanned quickly should NOT be chunked into collapsed sections. Over-chunking (too many small groups) fragments information. The groupings must be meaningful to users, not just to the product team.
+- **Evidence Tier**: Gold
 
 ### Finding 17: Cart Abandonment -- 70% Average, UX is Key Driver
 - **Source**: Baymard Institute (2024). "50 Cart Abandonment Rate Statistics." Meta-analysis of 50 different studies.
@@ -151,6 +168,7 @@
 - **E-Commerce Application**: Checkout simplification is the highest-ROI cognitive load intervention. Every unnecessary form field, confusing label, or surprise cost adds cognitive friction. Guest checkout, progress indicators, and inline validation are proven friction reducers.
 - **Replication Status**: Replicated (meta-analysis of 50 studies, consistent findings).
 - **Boundary Conditions**: Abandonment rates vary by industry (travel is higher, digital goods lower). Not all abandonment is friction-related -- price comparison shopping and "saving for later" behavior account for a portion.
+- **Evidence Tier**: Gold
 
 ### Finding 18: NNGroup Scanning Patterns -- Layer-Cake for Product Content
 - **Source**: Nielsen Norman Group (2019). "The Layer-Cake Pattern of Scanning Content on the Web." Eye-tracking research.
@@ -159,6 +177,7 @@
 - **E-Commerce Application**: Use clear, descriptive section headings on product pages ("What's in the Box," "Technical Specifications," "Shipping & Returns"). Bold, larger headings create the visual cues that shift users from inefficient F-scanning to efficient layer-cake scanning. This is directly actionable for product page information architecture.
 - **Replication Status**: Replicated across NNGroup eye-tracking studies.
 - **Boundary Conditions**: Requires well-designed visual hierarchy. Pages with weak or generic headings ("Details," "Info") do not trigger this pattern.
+- **Evidence Tier**: Gold
 
 ### Finding 19: Filter Promotion and Cognitive Cost
 - **Source**: Baymard Institute. "Consider Promoting Important Filters (61% Don't)." Qualitative usability testing.
@@ -167,6 +186,7 @@
 - **E-Commerce Application**: Identify the 3-5 most-used filters per category via analytics. Promote these visually (larger, higher placement, horizontal bar). Relegate less-used filters to an expandable "More Filters" section. This applies progressive disclosure to the filtering interface itself.
 - **Replication Status**: Replicated (longitudinal Baymard benchmarking).
 - **Boundary Conditions**: The optimal promoted filter set varies by category. Technical categories (electronics) need different promoted filters than fashion. User research per category is required.
+- **Evidence Tier**: Gold
 
 ### Finding 20: Step-by-Step vs. All-at-Once Forms
 - **Source**: Zuko analytics benchmarking data; Baymard checkout research; multiple CRO case studies.
@@ -175,6 +195,7 @@
 - **E-Commerce Application**: For short forms (8 or fewer fields), single-page is generally superior. For longer flows (account creation + shipping + payment + review), multi-step with a clear progress indicator reduces perceived complexity. Always implement inline validation. The cognitive goal is: never show the user more than they can process in one glance while never making them click more than necessary.
 - **Replication Status**: Replicated across multiple A/B testing datasets.
 - **Boundary Conditions**: Mobile vs. desktop matters significantly. Mobile screens show fewer fields at once, making multi-step more natural. Desktop can handle more fields per view. User context (returning vs. first-time) also matters -- returning users prefer speed (single page), new users prefer guidance (multi-step).
+- **Evidence Tier**: Bronze
 
 ---
 

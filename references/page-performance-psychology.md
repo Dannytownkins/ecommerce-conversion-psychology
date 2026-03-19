@@ -30,6 +30,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Even micro-optimizations (eliminating one render-blocking resource, optimizing a single image) can produce measurable revenue impact. Prioritize the fastest wins.
 - **Replication Status**: Strong -- based on real production data across multiple verticals and geographies. One of the most robust performance-to-revenue studies available.
 - **Boundary Conditions**: Study focused on mobile. Desktop users may be less sensitive. Diminishing returns likely exist below ~1s load times.
+- **Evidence Tier**: Silver
 
 ### Finding 2: Skeleton Screens -- Contradictory Evidence
 
@@ -39,6 +40,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Do not blindly adopt skeleton screens. Test them against your specific content type. Skeletons work best when they closely match the final layout (reducing layout shift). Poorly designed skeletons that don't match final content may increase perceived wait time by setting expectations that are then violated. **Note:** Finding 13 refines this finding — animation quality matters more than the skeleton-vs-spinner pattern choice. NNGroup (2023) recommends skeletons for full-page loads under 10 seconds and spinners for individual module loads under 10 seconds. The differentiator is use case (full-page vs module), not duration.
 - **Replication Status**: Contradictory. No large-scale definitive study exists. Both studies had small sample sizes.
 - **Boundary Conditions**: Skeleton fidelity matters enormously. A skeleton that closely mirrors final content likely outperforms a generic gray-box skeleton. Context (content-heavy pages vs. simple pages) likely moderates the effect.
+- **Evidence Tier**: Bronze
 
 ### Finding 3: Progress Indicators and Willingness to Wait
 
@@ -48,6 +50,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: For any operation over 1 second (checkout processing, search filtering, page transitions), show a determinate progress indicator. For operations under 1 second, no indicator needed. Between 0.1-1s, a subtle animation suffices.
 - **Replication Status**: Well-established. Rooted in decades of HCI research dating to Miller (1968) and Card, Moran & Newell (1983).
 - **Boundary Conditions**: Progress bars that stall or move non-linearly can increase frustration. The bar must honestly reflect progress or use carefully designed easing curves.
+- **Evidence Tier**: Gold
 
 ### Finding 4: The Three Response Time Thresholds
 
@@ -57,6 +60,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Target 0.1s for micro-interactions (add-to-cart, filter toggles, UI state changes). Target under 1s for page transitions and search results. Never exceed 10s for any operation without a progress indicator and the option to cancel.
 - **Replication Status**: Foundational HCI research, replicated extensively over 50+ years. Thresholds are rooted in human cognitive processing limits.
 - **Boundary Conditions**: These are perceptual thresholds, not conversion thresholds. A page can load in 0.9s and still lose conversions if the content order is wrong.
+- **Evidence Tier**: Gold
 
 ### Finding 5: Core Web Vitals and Conversion -- The Rakuten 24 Case
 
@@ -66,6 +70,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: CLS is the most underrated metric -- layout shifts during loading erode trust and cause misclicks. Prioritize: (1) fix CLS by reserving space for images/ads, (2) improve LCP by optimizing hero content, (3) reduce INP for interactive elements.
 - **Replication Status**: Corroborated by Vodafone (8% sales increase from LCP improvement), Pinterest (15% sign-up increase), Renault (13% conversion increase).
 - **Boundary Conditions**: Rakuten 24 is a Japanese market ecommerce site. Cultural differences in patience/expectations may apply. Results this dramatic suggest the baseline was quite poor.
+- **Evidence Tier**: Silver
 
 ### Finding 6: The "3-Second Rule" -- Origin and Current Validity
 
@@ -75,6 +80,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: The 3-second threshold remains a useful engineering target, but expectations are tightening. Aim for under 2 seconds on mobile. The trend shows users becoming less patient over time, not more.
 - **Replication Status**: Widely cited but the original Google/SOASTA data is from 2016. The directional finding is robust, but the exact 53% figure is dated.
 - **Boundary Conditions**: Varies by context. Users will wait longer for complex tasks (booking flights) than simple ones (browsing products). Wi-Fi vs. cellular also matters. Desktop thresholds are more forgiving.
+- **Evidence Tier**: Silver
 
 ### Finding 7: Speed as a Trust Signal
 
@@ -84,6 +90,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Speed is not just a UX metric -- it is a brand trust signal. Customers unconsciously associate website speed with business reliability. A slow checkout page specifically undermines trust at the critical conversion moment.
 - **Replication Status**: Consistent across multiple surveys and studies. The directional finding is robust.
 - **Boundary Conditions**: Brand strength can buffer speed penalties. Amazon or Apple can get away with slightly more than an unknown brand. But even strong brands see measurable conversion drops from speed regressions.
+- **Evidence Tier**: Bronze
 
 ### Finding 8: Optimistic UI and Perceived Instantaneity
 
@@ -93,6 +100,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Apply to: add-to-cart (show item in cart immediately), wishlist/favorites, quantity changes, filter selections. Do NOT apply to: payment processing, order placement, or any action where false success has real consequences.
 - **Replication Status**: Widely adopted by major platforms. No controlled A/B study with conversion data found, but the psychological mechanism (0.1s vs 1s threshold) is well-established.
 - **Boundary Conditions**: Failure rate must be very low (<1%) for optimistic UI to work. If the server rejects the action frequently, the rollback experience is worse than waiting. Also inappropriate for irreversible or high-stakes actions.
+- **Evidence Tier**: Bronze
 
 ### Finding 9: Above-the-Fold Content Loading Priority
 
@@ -102,6 +110,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Optimal loading order for a product page: (1) Product title + price text, (2) Primary product image (high priority, not lazy-loaded), (3) Add-to-cart CTA, (4) Product description, (5) Secondary images (lazy-loaded), (6) Reviews and recommendations. Never lazy-load hero or primary product images.
 - **Replication Status**: Consistent with Google's LCP guidance and multiple performance case studies.
 - **Boundary Conditions**: The "right" order depends on page type. Category/listing pages may prioritize grid images; checkout pages should prioritize form fields and trust badges.
+- **Evidence Tier**: Silver
 
 ### Finding 10: Animation Duration Sweet Spot
 
@@ -111,6 +120,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Use 150-200ms transitions for hover states, button feedback, and micro-interactions. Use 300-500ms for page transitions, modal openings, and accordion expansions. Remove or reduce animations on low-powered devices and when `prefers-reduced-motion` is set. Never animate anything that blocks the user from their goal.
 - **Replication Status**: Well-established in HCI literature.
 - **Boundary Conditions**: Animation that communicates spatial relationships (e.g., where a modal came from) can justify slightly longer durations. Decorative animation should always be faster or eliminated.
+- **Evidence Tier**: Gold
 
 ### Finding 11: Lazy Loading and Product Image Perception
 
@@ -120,6 +130,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Never lazy-load the primary product image or hero images. For product grids below the fold, use LQIP (Low Quality Image Placeholder) with blur-up technique -- the dominant color or a tiny blurred version loads instantly, then the full image fades in. This maintains perceived quality while improving initial load.
 - **Replication Status**: Consistent with Core Web Vitals guidance. The perceptual quality concern is logical but lacks controlled experimental data.
 - **Boundary Conditions**: On very fast connections, lazy loading provides minimal benefit and adds complexity. The technique is most impactful on mobile/slow connections where bandwidth is constrained.
+- **Evidence Tier**: Bronze
 
 ### Finding 12: Vodafone and the LCP-to-Sales Pipeline
 
@@ -129,6 +140,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: LCP improvements have a compounding effect -- they improve both direct conversion (users experience faster pages) and indirect acquisition (Google ranks faster pages higher, sending more traffic). Prioritize LCP as the single highest-ROI performance metric.
 - **Replication Status**: Corroborated by Rakuten (Finding 5), Pinterest, and Renault case studies on web.dev.
 - **Boundary Conditions**: Vodafone is a high-traffic brand; smaller sites may see proportionally different results. The SEO compounding effect depends on competitive landscape.
+- **Evidence Tier**: Silver
 
 ### Finding 13: Animation Type Matters More Than Skeleton vs Spinner
 
@@ -138,6 +150,8 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Use subtle motion and shimmer on loading placeholders. Use accelerating-feel or backward-decelerating progress bars for determinate waits (checkout processing, payment). Avoid static loading indicators entirely.
 - **Replication Status**: Wang 2025 is peer-reviewed with large total N=1,409. Harrison 2010 is peer-reviewed ACM CHI. Both are non-ecommerce contexts (general UI/loading tasks). No direct ecommerce conversion measurement.
 - **Boundary Conditions**: Studies measured perception (perceived wait time), not purchase conversion. Wang's sample was ages 20-29 only. Ecommerce-specific replication is needed but the underlying perceptual mechanism is well-established.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary source (Wang et al.) is peer-reviewed with N=1,409; secondary source (Harrison et al.) is ACM CHI peer-reviewed. MDPI not in Gold publisher list but methodology exceeds Bronze norm.
 
 ### Finding 14: Shimmer Direction and Multi-Stage Loading Patterns
 
@@ -147,6 +161,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Use slow left-to-right shimmer (the Facebook/Google pattern) for skeleton placeholders. For category/search pages with filter loading, consider multi-stage patterns (spinner for initial response, skeleton for content layout). Test multi-stage patterns rather than assuming they outperform single-stage.
 - **Replication Status**: Shimmer direction confirmed by two independent practitioner studies (~20 each). Multi-stage is a single peer-reviewed study with small N. All non-ecommerce.
 - **Boundary Conditions**: All sample sizes are very small (~20 for shimmer, N=90 for multi-stage). The shimmer finding is practitioner-level evidence, not peer-reviewed. Multi-stage results were context-specific — the "best" sequence varied by scenario.
+- **Evidence Tier**: Bronze
 
 ### Finding 15: Skeleton Fidelity — Match the Final Layout or Don't Use Them
 
@@ -156,6 +171,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: Skeleton shapes must match product card dimensions, image aspect ratios, and text line heights. On product listing pages, the skeleton grid must match the final grid exactly. If you cannot match the layout, use a spinner instead. Reserve space for all dynamic elements to prevent Cumulative Layout Shift (CLS).
 - **Replication Status**: Two independent expert sources (Kadlec and NNGroup) converge on the same conclusion. No peer-reviewed study on skeleton fidelity exists.
 - **Boundary Conditions**: Expert guidance, not empirical conversion data. The mechanism is logical (layout shift = violated expectations) and consistent with CLS research (Finding 5), but the specific conversion impact of skeleton fidelity is unmeasured.
+- **Evidence Tier**: Bronze
 
 ### Finding 16: Skeleton Screen Accessibility Requirements
 
@@ -165,6 +181,7 @@ Page performance psychology reveals that **perceived speed often matters more th
 - **E-Commerce Application**: When implementing skeleton screens on product grids, search results, or checkout loading states: (1) wrap the loading region in `aria-busy="true"`, (2) announce loading completion with `aria-live="polite"`, (3) hide decorative skeleton shapes from screen readers. This is implementation guidance, not a conversion optimization — but failing to do it creates legal exposure (see accessibility lawsuit trends).
 - **Replication Status**: Expert guidance consistent with WCAG best practices. No empirical study on the conversion impact of accessible vs inaccessible skeleton implementations.
 - **Boundary Conditions**: Screen reader support for `aria-busy` varies. Test with VoiceOver (iOS/macOS), NVDA (Windows), and TalkBack (Android) before shipping.
+- **Evidence Tier**: Bronze
 
 ---
 

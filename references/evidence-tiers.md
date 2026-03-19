@@ -26,9 +26,14 @@ Primary research institutions, peer-reviewed journals, and industry-standard mea
   - Springer
   - ScienceDirect (Elsevier)
   - ACM CHI (Conference on Human Factors in Computing Systems)
+  - ACM CCS (Conference on Computer and Communications Security)
+  - ACM conferences and journals (general — top-tier peer-reviewed CS venues)
+  - USENIX Security Symposium
   - Taylor & Francis (Psychology & Marketing, Journal of Consumer Behaviour)
   - Wiley (Journal of Consumer Psychology)
   - APA (American Psychological Association journals)
+  - INFORMS (Marketing Science, Management Science)
+  - MDPI peer-reviewed journals (when N>500 or with ACM CHI secondary citations)
 
 **Criteria:** Original research, documented methodology, sample sizes typically N>500, peer-reviewed or industry-standard measurement.
 

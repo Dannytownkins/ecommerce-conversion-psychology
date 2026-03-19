@@ -24,6 +24,7 @@
 - **E-Commerce Application**: Do not chase perfect ratings. A 4.2-4.5 average is ideal. Consider whether review solicitation strategies inadvertently push ratings too high (e.g., only asking happy customers). Display the authentic average prominently.
 - **Replication Status**: Broadly supported. A 2017 MarketingSherpa study of five product categories found click-through rates declined above mid-4.0 territory for four of five products. CXL has cited similar patterns.
 - **Boundary Conditions**: One product category in MarketingSherpa (natural hair care) showed that star ratings at ANY level lowered conversion, suggesting category-specific effects. The sweet spot may shift for luxury goods where exclusivity signals matter differently.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -34,6 +35,7 @@
 - **E-Commerce Application**: Prioritize collecting and displaying reviews on higher-priced items first. The ROI of review collection is highest for expensive products where purchase risk is greatest.
 - **Replication Status**: Consistent with broader consumer behavior research showing that information-seeking increases with purchase risk (financial, social, functional).
 - **Boundary Conditions**: The study did not define exact price thresholds. "Higher-priced" is relative to the product category.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -44,6 +46,7 @@
 - **E-Commerce Application**: Getting from 0 to 5 reviews is the single highest-leverage review activity. For new products, consider post-purchase email campaigns, sampling programs, or seed reviews from verified buyers to cross this threshold quickly.
 - **Replication Status**: Widely cited and consistent with PowerReviews data showing 85% of shoppers are less likely to buy a product with zero reviews.
 - **Boundary Conditions**: The 270% figure is an average across categories. The diminishing returns curve shape likely varies by product type and price point. The study does not separate the effect of "having reviews" from "having a certain star rating."
+- **Evidence Tier**: Gold
 
 ---
 
@@ -54,6 +57,7 @@
 - **E-Commerce Application**: Reviews are not optional -- they are expected infrastructure. A product page without reviews is functionally broken for 57% of shoppers.
 - **Replication Status**: Consistent across multiple surveys (BrightLocal, Bazaarvoice). The exact percentage varies (88-97% range) but the directional finding is robust.
 - **Boundary Conditions**: Survey methodology (self-reported behavior) likely overstates actual review-reading rates. "Read reviews" may mean "glanced at star rating" for many respondents. The 95% figure applies to online shopping; in-store behavior differs.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -64,6 +68,7 @@
 - **E-Commerce Application**: Integrate customer-submitted photos on product pages alongside professional photography. UGC provides authenticity and real-world context that studio shots cannot. The combination of both is likely optimal -- professional photos for product clarity, UGC for trust and real-world validation.
 - **Replication Status**: The directional finding (UGC boosts conversion) is well-replicated. The specific 5x multiplier comes from Bazaarvoice aggregate data and should be treated as an industry benchmark rather than a controlled experiment.
 - **Boundary Conditions**: UGC quality matters. Low-quality user photos may hurt conversion for luxury/premium products where aesthetic standards are high. Professional photography remains essential for product clarity and detail; UGC supplements rather than replaces it.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -74,6 +79,7 @@
 - **E-Commerce Application**: Actively solicit photo and video reviews. Make it easy to upload visual content in the review flow. Display visual reviews prominently, not buried in a tab.
 - **Replication Status**: Directionally consistent across multiple platforms. However, the 5.9% vs 2.8% comparison likely suffers from selection bias -- shoppers who engage with visual content are already more purchase-intent.
 - **Boundary Conditions**: Video review collection is significantly harder and more expensive than text. The 95% retention rate for video vs. 12% for text is a general cognitive statistic, not specific to product reviews. For simple/commodity products, text reviews may be sufficient.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -84,6 +90,8 @@
 - **E-Commerce Application**: Do not hide or delete negative reviews. Display them transparently. Respond to negative reviews publicly to demonstrate customer service commitment. The optimal ratio suggested in practitioner literature is roughly 5 positive reviews to 1 negative review.
 - **Replication Status**: The "4.0-4.7 sweet spot" is well-replicated (see Finding 1). The 4x time-on-site claim is less rigorously sourced.
 - **Boundary Conditions**: This applies to moderate negative reviews (e.g., "shipping was slow"). Reviews describing safety issues, defects, or fraud can severely damage conversion regardless of volume. The effect also varies by product risk -- negative reviews hurt more for high-stakes purchases (electronics, baby products).
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary claim attributed to Spiegel Research Center (Gold) but cited through RaveCapture (Bronze intermediary); core finding is Gold-quality
 
 ---
 
@@ -94,6 +102,7 @@
 - **E-Commerce Application**: When soliciting reviews, prompt for specific outcomes ("How much time/money did this save you?" "What specific problem did it solve?"). Feature testimonials with concrete numbers prominently. Avoid generic pull-quotes.
 - **Replication Status**: Directionally supported by persuasion research (specificity increases credibility). The 58% figure is from practitioner data, not peer-reviewed research.
 - **Boundary Conditions**: Over-specificity can feel scripted or fake. The optimal level of detail likely varies by product category. For commodity products, even vague positive sentiment may suffice.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -104,6 +113,8 @@
 - **E-Commerce Application**: Do not blindly add countdown timers. They require a believable reason (actual sale ending, limited inventory). Evergreen fake countdowns that reset will erode trust. Always A/B test in your specific context before rolling out.
 - **Replication Status**: The POSITIVE effects are NOT reliably replicated in controlled academic research for online retail. Practitioner case studies showing large lifts likely suffer from publication bias and confounding variables.
 - **Boundary Conditions**: May work better for actual limited-time offers (flash sales, event tickets) where the deadline is genuine. Fake urgency is increasingly recognized by consumers and regulators.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary sources are practitioner blogs (Bronze), but finding also cites Hmurovic et al. 2023 (Journal of Marketing Research, peer-reviewed Gold) which contradicts the practitioner positive claims
 
 ---
 
@@ -114,6 +125,7 @@
 - **E-Commerce Application**: Scarcity messages are not a universal conversion booster. They can signal that a product is unpopular or about to be discontinued. Use only when scarcity is genuine AND the product has established demand. Consider removing scarcity indicators for new or unknown products.
 - **Replication Status**: Peer-reviewed, using real sales data. Consistent with Hmurovic et al. findings on time scarcity failing online.
 - **Boundary Conditions**: May work for products with established high demand where scarcity is credibly demand-driven (e.g., popular sneaker drops, concert tickets). The negative effect is strongest when consumers cannot verify whether scarcity is genuine.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -124,6 +136,7 @@
 - **E-Commerce Application**: Match scarcity messaging to product type. For everyday functional products, emphasize demand ("popular item"). For premium/experiential products, emphasize limited supply. For high-ticket items, time-based offers work best. Do not use one-size-fits-all scarcity tactics.
 - **Replication Status**: Meta-analysis of 131 studies -- high confidence in the moderating effects.
 - **Boundary Conditions**: The meta-analysis includes both online and offline studies. As Findings 9-10 suggest, online contexts may weaken scarcity effects overall compared to offline. Cultural differences not fully explored.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -134,6 +147,7 @@
 - **E-Commerce Application**: The transition from availability to scarcity is more powerful than constant scarcity. This is the psychological basis for flash sales and "price just dropped" notifications. However, this was a 1975 lab study with cookies, not an online retail study.
 - **Replication Status**: Widely cited and foundational. The basic scarcity effect is replicated. However, direct translation to online e-commerce is challenged by Findings 9-10.
 - **Boundary Conditions**: Laboratory conditions with physical objects. Participants could see the jar. Online scarcity claims are unverifiable, which changes the dynamic entirely.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -144,6 +158,7 @@
 - **E-Commerce Application**: This is the clear regulatory line: scarcity and urgency claims must be truthful and verifiable. Fabricated "only X left" or fake countdown timers are not just ethically questionable -- they carry real legal risk, especially for companies selling in the EU/UK. Build scarcity messaging from real inventory data only.
 - **Replication Status**: N/A (regulatory/legal, not academic).
 - **Boundary Conditions**: Enforcement varies by jurisdiction. US regulation is currently less aggressive than EU/UK on dark patterns, but FTC interest is growing. Small retailers face less scrutiny than platforms but are not immune.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -154,6 +169,7 @@
 - **E-Commerce Application**: Scarcity cues have a hidden cost: even when they drive short-term conversion, they damage brand perception and customer experience. For brands focused on long-term customer relationships and lifetime value, aggressive scarcity tactics may be net negative.
 - **Replication Status**: Consistent with Hmurovic et al. (2023) findings. Consistent with growing consumer skepticism literature.
 - **Boundary Conditions**: May be less damaging when scarcity is clearly genuine (e.g., "3 left" on a known limited-edition product from a trusted brand).
+- **Evidence Tier**: Gold
 
 ---
 
@@ -164,6 +180,8 @@
 - **E-Commerce Application**: Real-time social proof can work, but the data quality is low. If implementing, use real data (not fabricated numbers). Test rigorously. The same Booking.com regulatory concerns apply to fabricated "X people viewing this" claims.
 - **Replication Status**: No peer-reviewed, independent replication of specific percentage lifts. The 10-15% range is the most conservative and plausible estimate.
 - **Boundary Conditions**: Likely more effective for high-traffic products where the numbers are genuinely impressive. Showing "2 people viewed this in the last month" would likely hurt conversion. Requires real data integration.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Vendor-reported metrics from companies selling social proof tools; significant conflict of interest
 
 ---
 
@@ -174,6 +192,7 @@
 - **E-Commerce Application**: For on-site social proof, peer reviews are most effective. For marketing/awareness, micro-influencers outperform celebrities on cost-effectiveness and engagement. Celebrity endorsements still work for mass-market products with high brand-endorser fit. Display peer reviews prominently on product pages; use influencer content in marketing channels.
 - **Replication Status**: Well-replicated across multiple studies. The trust advantage of peers and influencers over celebrities is robust.
 - **Boundary Conditions**: Category-dependent. Luxury and aspirational products may still benefit from celebrity association. The "influencer advantage" may be eroding as consumers become more aware of paid partnerships.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -184,6 +203,7 @@
 - **E-Commerce Application**: Place different types of social proof at different journey points. Homepage: aggregate trust signals (total reviews, customer count). Category pages: star ratings and review counts for comparison. Product pages: detailed reviews, photos, Q&A. Cart/checkout: trust badges, purchase guarantees, recent buyer activity.
 - **Replication Status**: The general principle is well-supported. The "47% more content" statistic is from B2B research and may not directly apply to B2C e-commerce.
 - **Boundary Conditions**: Low-consideration impulse purchases may not follow a traditional funnel. Social proof at checkout can also increase anxiety if it introduces new information (e.g., a negative review seen for the first time).
+- **Evidence Tier**: Silver
 
 ---
 
@@ -194,6 +214,7 @@
 - **E-Commerce Application**: Implement Q&A functionality on product pages. Even if most shoppers don't actively use it, its presence signals transparency and completeness. Seed Q&A with common pre-purchase questions. Respond to questions promptly.
 - **Replication Status**: Vendor-reported aggregate data. The earlier 447% figure was striking but reflected selection bias. The updated 98% engaged-shopper figure is more credible but still vendor-reported.
 - **Boundary Conditions**: The lift likely reflects correlation more than causation. Products that attract Q&A are likely already higher-traffic products. Still, the directional finding that Q&A helps conversion is well-supported.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -204,6 +225,7 @@
 - **E-Commerce Application**: Stale reviews hurt credibility. Implement ongoing review collection campaigns, not one-time pushes. Display review dates prominently. Consider "most recent" as a default sort order. For seasonal products, ensure fresh reviews each season.
 - **Replication Status**: Consistent with BrightLocal and other survey data showing recency matters.
 - **Boundary Conditions**: Recency expectations vary by category. A 2-year-old review for a durable good (furniture) is more acceptable than a 2-year-old review for a tech product. Self-reported "consideration" of recency likely overstates actual behavioral impact.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -214,6 +236,7 @@
 - **E-Commerce Application**: Segment your social proof strategy by product price/complexity. For high-ticket items: invest in detailed case studies, expert reviews, comparison content, and Q&A. For low-ticket items: ensure basic star ratings and review counts are visible; don't over-invest in elaborate social proof. For high-consideration products, ensure reviews are easy to filter by use case, expertise level, and specific concerns.
 - **Replication Status**: Well-supported by consumer behavior research on information search and perceived risk theory.
 - **Boundary Conditions**: The high/low consideration boundary is not fixed -- it varies by individual consumer's income, expertise, and risk tolerance. A $50 product is high-consideration for a student and low-consideration for a high-earner.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -225,6 +248,7 @@
 - **E-Commerce Application**: For products sold through social channels (TikTok Shop, Instagram Shopping): invest in creator partnerships and authentic social engagement before optimizing the checkout mechanics. Social proof on product pages should include creator endorsements and real social media engagement metrics, not just star ratings. For social-commerce-originated traffic landing on your .com: surface the creator/influencer connection prominently on the product page. **Cross-reference:** See social-commerce-psychology.md for full platform comparisons, impulse mechanics, and generational targeting data.
 - **Replication Status**: Wang 2022 is a peer-reviewed meta-analysis (strongest study design). Han 2023 is peer-reviewed in a top retailing journal. Both measure purchase intention, not actual purchase behavior — the intention-behavior gap applies.
 - **Boundary Conditions**: All 19 underlying studies in Wang's meta-analysis measure purchase intention, not actual purchases. Han's Instagram study may not generalize to TikTok or other platforms. Cultural moderators are significant — most social commerce trust research originates from Chinese/SE Asian contexts where social commerce is more mature.
+- **Evidence Tier**: Gold
 
 ---
 

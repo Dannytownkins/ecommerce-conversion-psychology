@@ -33,6 +33,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: Simply adding a "Buy" button or enabling in-app checkout is insufficient. Invest in: (1) creator/influencer partnerships with authentic engagement, (2) brand familiarity building through consistent social presence, (3) active community interaction (responding to comments, duets, stitches). Separate platform trust assurances (secure payment, buyer protection badges) from seller trust signals (reviews, creator endorsements, social proof).
 - **Replication Status**: Wang 2022 meta-analysis is the strongest study design (aggregating 19 prior studies). Han 2023 is peer-reviewed in a top retailing journal. Indonesian TikTok study provides cross-cultural replication. All three measure purchase intention, not actual purchase behavior.
 - **Boundary Conditions**: All 19 underlying studies in Wang's meta-analysis measure purchase INTENTION, not actual purchases. The intention-behavior gap is real and potentially large in social commerce where impulse purchases may not survive even minor friction. Han's Instagram findings may not generalize to TikTok or other platforms. Cultural moderators are significant — trust mechanisms differ across markets.
+- **Evidence Tier**: Gold
 
 ### Finding 2: Social Commerce is Discovery-Driven — 68% Open to Purchasing, Products Under $50
 
@@ -42,6 +43,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: Social commerce CRO is about emotion management, not traditional CRO (form fields, button color). Optimize for impulse: (1) short proof of value (creator demo, not spec sheet), (2) price under $50 visible immediately, (3) shipping timeline and return policy upfront (reduce risk), (4) social proof visible in the buying context (likes, comments, "X people bought this"). For hedonic products (fashion, beauty, home decor), social proof quantity matters more. For utilitarian products, social proof quality (detailed reviews) matters more.
 - **Replication Status**: Two independent peer-reviewed studies (Frontiers 2024, ScienceDirect 2024) support the impulse mechanism. Shopify/TikTok data is vendor-sourced. The peer-reviewed work uses S-O-R and flow theory frameworks, both well-established in consumer behavior.
 - **Boundary Conditions**: Frontiers study uses Vietnamese/SE Asian sample — collectivist culture may amplify social influence effects. Applicability to Western individualist markets is assumed, not verified. The 68% "open to purchasing" is vendor data with no disclosed methodology. Products over $50 likely show different dynamics (more deliberation, less impulse).
+- **Evidence Tier**: Silver
 
 ### Finding 3: TikTok vs Instagram — Different Audiences, Conflicting Conversion Data
 
@@ -51,6 +53,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: Do not rely on specific platform conversion rates for planning — they are unreliable and inconsistent. Instead, use directional guidance: TikTok for younger audiences, lower price points, impulse-driven products. Instagram for slightly older audiences, higher AOV, considered purchases. Test both with your specific product and audience. The CAC difference ($47 TikTok vs $31 Instagram in Synergist data) suggests Instagram may be more efficient despite lower conversion rates.
 - **Replication Status**: Two independent agency sources, both with undisclosed methodology. Synergist is a dev.to blog post (low authority). Pulse is an agency with incentive to show social commerce works. No peer-reviewed platform comparison exists.
 - **Boundary Conditions**: Both sources are agencies [VENDOR] with no disclosed methodology. The 2x discrepancy between sources (8-12% vs 4.7% for TikTok) makes any specific number unreliable. Platform conversion rates change rapidly as features evolve. The TikTok US ban uncertainty affects strategic planning.
+- **Evidence Tier**: Bronze
 
 ### Finding 4: Social Proof Drives Impulse Buying on Short-Form Video — Hedonic Products Benefit Most
 
@@ -60,6 +63,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: For social commerce listings: prominently display engagement metrics (views, likes, comments) for hedonic products. For utilitarian products, invest in detailed, high-quality reviews rather than raw engagement numbers. Encourage buyer comments with specific details ("fits perfectly," "color matches the listing") rather than generic praise. Video content showing real usage drives both proof quantity (views) and quality (authentic demonstration).
 - **Replication Status**: Peer-reviewed in a top retailing journal. The hedonic > utilitarian moderator is consistent with broader consumer behavior literature on impulse purchasing. Uses Douyin (Chinese TikTok) data.
 - **Boundary Conditions**: Chinese platform data — social proof norms and engagement patterns differ from Western platforms. Douyin's algorithm and interface differ from TikTok's Western version. The hedonic/utilitarian distinction may interact with price point (a $200 hedonic item behaves differently from a $15 one).
+- **Evidence Tier**: Gold
 
 ### Finding 5: Herd Effect in Live Commerce — Strongest in Collectivist Cultures
 
@@ -69,6 +73,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: For live shopping features: display real-time purchase activity, active viewer counts, and "selling fast" indicators based on actual data (not fabricated — see ethics gate). The herd effect is a legitimate psychological mechanism, but its strength in Western markets is uncertain. A/B test live purchase notifications before committing to prominent display. For brands serving collectivist-culture markets (East Asian, SE Asian), this is a higher-confidence tactic.
 - **Replication Status**: Peer-reviewed in a reputable commerce journal. Consistent with broader herd behavior literature in behavioral economics. No Western-market replication exists for live commerce specifically.
 - **Boundary Conditions**: Tested exclusively in collectivist culture contexts. The applicability to individualist Western markets is genuinely unknown (the consolidation originally said "may be weaker" — this understates the uncertainty). Live commerce adoption in the US is much lower than in China/SE Asia, so the overall opportunity is smaller. The ethics of displaying real-time purchase pressure must be evaluated against the ethics gate — fabricated "X just bought this" notifications are a dark pattern.
+- **Evidence Tier**: Gold
 
 ### Finding 6: 72% of Gen Z Discovers Products on TikTok — Cross-Generational Trust Varies by Platform
 
@@ -78,6 +83,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: For brands selling to mixed demographics: offer BOTH social storefront AND traditional .com checkout paths. Do not force all traffic through in-app checkout. For Gen Z-focused brands: TikTok-first strategy with in-app checkout. For mixed audiences: use social platforms for discovery but provide clear paths to your trusted .com domain for purchase. Social media ads should deep-link to the platform where the target demographic is most comfortable buying.
 - **Replication Status**: Envision Horizons and NuVoodoo are independent survey sources. The 72% Gen Z TikTok discovery figure is consistent with TikTok's own reported data. The cross-generational trust insight is supported by multiple practitioner observations.
 - **Boundary Conditions**: Survey-based — self-reported purchase intent often overstates actual behavior. US-centric data. The TikTok regulatory landscape (potential bans, ownership changes) creates strategic uncertainty. The "redirect to .com" recommendation is based on trust theory, not a controlled experiment comparing in-app vs redirect conversion by age group.
+- **Evidence Tier**: Bronze
 
 ### Finding 7: Ad-Driven Conversion (0.3-0.6%) vs Store-Level (2.7-3.4%) — Different Denominators, Not Contradictory
 
@@ -87,6 +93,7 @@ Social commerce is fundamentally different from traditional ecommerce — it is 
 - **E-Commerce Application**: Do not evaluate social commerce ROI using traditional ecommerce conversion benchmarks (2-3%). A 0.3-0.6% ad-driven conversion rate is expected for a discovery channel — cost-per-acquisition math must account for this. Low-price impulse buys (<$30) convert significantly higher within the ad-driven segment. Invest more in creator partnerships and organic content (which contributes to the higher 3.4% store-level rate) than in paid social ads (which contribute to the lower 0.3-0.6%).
 - **Replication Status**: Marketing LTB and Capital One Shopping are independent aggregator sources converging on consistent ranges. Neither discloses primary methodology. The directional finding (organic > paid for social commerce conversion) is widely observed by practitioners.
 - **Boundary Conditions**: Aggregated vendor data without disclosed methodology. The 2.7%→3.4% year-over-year increase suggests a maturing platform, but this could also reflect survivorship bias (low-performing stores leaving the platform). No source explicitly makes the "organic outperforms paid" claim — it is inferred from the denominator gap.
+- **Evidence Tier**: Bronze
 
 ---
 

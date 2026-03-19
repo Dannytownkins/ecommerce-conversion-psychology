@@ -41,6 +41,7 @@
 - **Replication Status**: Not replicated as a color study. The contrast principle it actually demonstrates HAS been replicated repeatedly.
 - **Boundary Conditions**: Does not apply when red is the dominant page color (see Verizon finding below). Does not generalize to "red is always better."
 - **Myth vs. Reality**: COMMONLY OVERSTATED. HubSpot themselves noted "we cannot generalize these results to all situations." The marketing world ignored this caveat entirely.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -54,6 +55,7 @@
 - **Replication Status**: Replicated across many sites and industries. This is the most robust finding in button-color research.
 - **Boundary Conditions**: Contrast alone is not sufficient -- copy, placement, size, and surrounding whitespace also matter significantly.
 - **Myth vs. Reality**: ROBUST. This is the real lesson behind every "color X beats color Y" case study.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -67,6 +69,7 @@
 - **Replication Status**: Single case study, but consistent with the contrast principle (Finding 2)
 - **Boundary Conditions**: Specific to red-branded sites; principle generalizes to any brand color
 - **Myth vs. Reality**: Solid supporting evidence for the contrast hypothesis. Not overstated.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -84,6 +87,7 @@
 - **Replication Status**: Well-cited (600+ citations). Core findings consistent with Bottomley & Doyle (2006) and subsequent research.
 - **Boundary Conditions**: Used fictional brands; real brands with established associations may override color effects. Cultural differences not tested (US samples only).
 - **Myth vs. Reality**: ROBUST. One of the most rigorous studies in the field. However, the finding is about brand personality congruence, NOT "red = more sales."
+- **Evidence Tier**: Gold
 
 ---
 
@@ -97,6 +101,7 @@
 - **Replication Status**: Consistent with Labrecque & Milne (2012). Core congruence principle replicated.
 - **Boundary Conditions**: When consumers already know a brand well, existing associations may override color effects.
 - **Myth vs. Reality**: ROBUST. Supports the "appropriateness over absolute color" principle.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -114,6 +119,7 @@
 - **Replication Status**: Widely accepted theoretical framework. Individual empirical findings within it vary in replication strength.
 - **Boundary Conditions**: The theory itself argues that ALL color effects have boundary conditions -- that is the point.
 - **Myth vs. Reality**: ROBUST as a framework. This paper explains WHY simplistic color claims are unreliable.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -132,6 +138,7 @@
 - **Replication Status**: Single survey, modest sample size. General finding that blue is universally preferred has been confirmed by other surveys. Gender-purple finding is consistent across multiple sources.
 - **Boundary Conditions**: Self-reported preference, not purchase behavior. Small sample. Western-skewed despite international respondents. Preference for a color does not mean that color converts better.
 - **Myth vs. Reality**: MODERATE. The preference data is real but limited. The leap from "people like blue" to "use blue to sell more" is not supported by this data.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -145,6 +152,7 @@
 - **Replication Status**: Consistent across three studies within the paper and with broader literature on blue-trust associations.
 - **Boundary Conditions**: Tested primarily in Western contexts. In cultures where red carries positive associations (e.g., China), this finding may not hold. Effect size is small relative to other trust factors.
 - **Myth vs. Reality**: MODERATE-ROBUST. The blue-trust association is real but often overstated in terms of its practical magnitude.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -158,6 +166,7 @@
 - **Replication Status**: Published in top-tier journal. Priming effects in consumer behavior are well-established, though the broader priming literature has faced replication challenges.
 - **Boundary Conditions**: Effect was stronger for novices than experts. Applies to backgrounds/atmosphere, not CTA buttons.
 - **Myth vs. Reality**: MODERATE. The priming mechanism is real, but translating lab findings to live e-commerce sites involves many confounds.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -175,6 +184,7 @@
 - **Replication Status**: Consistent across platforms and studies, though specific numbers vary. The principle is well-established.
 - **Boundary Conditions**: Luxury brands may benefit from dark/colored backgrounds that signal exclusivity. Lifestyle context images can outperform white backgrounds for inspiration-driven purchases.
 - **Myth vs. Reality**: ROBUST for general e-commerce. The 20% and 30% numbers should be treated as directional, not precise.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -188,6 +198,7 @@
 - **Replication Status**: Recent publication, but consistent with Labrecque & Milne (2012) saturation findings
 - **Boundary Conditions**: Reverses for gentleness-positioned products. May not apply to all product categories.
 - **Myth vs. Reality**: MODERATE-ROBUST. An important nuance beyond simple hue-based color psychology.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -201,6 +212,7 @@
 - **Replication Status**: Recent study; consistent with industry practice (luxury brands do use muted palettes)
 - **Boundary Conditions**: Applies specifically to luxury positioning. Mass-market and value-oriented brands may benefit from higher saturation.
 - **Myth vs. Reality**: MODERATE. Recent and not yet widely replicated, but theoretically coherent.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -214,6 +226,7 @@
 - **Replication Status**: Single study. Consistent with warm/cool color arousal literature.
 - **Boundary Conditions**: Interacts with price level. May not hold across all product categories.
 - **Myth vs. Reality**: MODERATE. Interesting finding but needs replication.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -227,6 +240,7 @@
 - **Replication Status**: The arousal/satisfaction distinction is well-replicated across multiple studies.
 - **Boundary Conditions**: The hedonic vs. utilitarian distinction is key. Using warm colors for a financial product or cool colors for a party product could backfire.
 - **Myth vs. Reality**: MODERATE-ROBUST. The principle is sound; specific implementations require testing.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -240,6 +254,7 @@
 - **Replication Status**: Cultural associations are well-documented across anthropology and marketing research.
 - **Boundary Conditions**: Urban, globalized consumers may be less affected by traditional associations due to exposure to Western branding. Younger demographics may differ from older.
 - **Myth vs. Reality**: ROBUST in principle, but the actual conversion impact of cultural color localization has very little experimental e-commerce data. Most evidence is survey/ethnographic, not A/B test data.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -258,6 +273,7 @@
 - **Replication Status**: WCAG standards are established. Traffic/revenue data comes from multiple sources with consistent directional findings.
 - **Boundary Conditions**: Some brand-specific color palettes may require adjustment to meet contrast ratios. AAA compliance (7:1) may conflict with some aesthetic choices.
 - **Myth vs. Reality**: ROBUST. Accessibility and conversion are allies, not enemies.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -271,6 +287,8 @@
 - **Replication Status**: The 62-90% claim traces to a non-peer-reviewed source (CCICOLOR - Institute for Color Research) and has never been experimentally validated in a controlled e-commerce setting. The range (62-90%) is so wide it is essentially meaningless.
 - **Boundary Conditions**: This is a literature review, not original research. The claim has been repeated so many times it has acquired false authority.
 - **Myth vs. Reality**: WEAK. This is the most over-cited, under-examined claim in color psychology marketing. Do not build strategy on this number.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Narrative literature review, not original experimental research; the 62-90% claim is unverified and traces to a non-peer-reviewed source
 
 ---
 
@@ -283,6 +301,7 @@
 - **Replication Status**: Single case, specific to Google's unique scale
 - **Boundary Conditions**: Only relevant at massive scale. For most sites, the effect of shade differences is below statistical significance thresholds.
 - **Myth vs. Reality**: THE FINDING IS REAL but chronically misapplied. Most sites do not have Google's traffic volume to detect or benefit from shade-level differences. **CAVEAT**: The $200M figure was never verified by Google. Against ~$22.9B in search ad revenue at the time, it represented less than 1%. The experiment has been criticized for a fundamental flaw: Google couldn't control monitor calibration, so users saw different actual colors on different displays. Best used as evidence that A/B testing matters at scale, not that specific color choices produce specific revenue outcomes.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -295,6 +314,7 @@
 - **Replication Status**: Not rigorously tested. Mostly industry practice without controlled experiments.
 - **Boundary Conditions**: Novelty effects may explain any short-term boosts. Seasonal changes are confounded with promotional offers, product mix changes, and consumer mood shifts.
 - **Myth vs. Reality**: WEAK as a standalone color finding. Seasonal themes are good UX practice but attributing conversion changes specifically to color vs. the entire seasonal campaign is unsupported.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -308,6 +328,7 @@
 - **Replication Status**: Adds to the growing body of evidence for context-dependent color effects
 - **Boundary Conditions**: Specific to the cultures and contexts tested
 - **Myth vs. Reality**: MODERATE. Supports the context-dependency principle while providing actionable cross-cultural data.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -319,6 +340,7 @@
 - **E-Commerce Application**: Provide SVG trust badges with transparent backgrounds and use CSS `prefers-color-scheme` to swap assets between themes. Test all CTA buttons in both light and dark mode — a green "Add to Cart" that pops on white may blend or appear muted on dark backgrounds. Desaturate accent colors for dark mode. Validate all text meets WCAG 4.5:1 contrast in both themes. Red (traditionally urgency/sale) becomes less prominent against dark backgrounds.
 - **Replication Status**: WCAG is standards reference. Material Design is guidelines. Gazit 2025 is peer-reviewed but small-N (N=31 lab). Email on Acid/Trusted Shops are practitioner evidence. No controlled A/B study measures the conversion impact of dark-mode-adapted vs non-adapted CTAs or trust badges.
 - **Boundary Conditions**: No ecommerce-specific conversion RCT for dark mode exists. All contrast findings are about perception and compliance, not measured checkout conversion. Cultural color associations (Finding 15) may also behave differently in dark mode — untested.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -330,6 +352,7 @@
 - **E-Commerce Application**: For browsing and discovery (homepages, category pages), dark mode is acceptable and may reduce perceived effort. For fine-detail reading (spec sheets, size charts, pricing tables, checkout forms), light mode may produce better comprehension and fewer errors. Implement both themes and respect user preference via `prefers-color-scheme`. Do not force either mode. Consider that urgency/scarcity cues may land differently on dark backgrounds due to sentiment effects.
 - **Replication Status**: Multiple independent peer-reviewed sources converge on the context-dependent conclusion. The field is actively contested — no consensus on a universal "better" mode.
 - **Boundary Conditions**: Most studies use young adult/student samples. No ecommerce-specific reading performance study exists. The sentiment effect on purchase behavior is theoretical, not measured. Cultural moderators are unstudied.
+- **Evidence Tier**: Gold
 
 ---
 

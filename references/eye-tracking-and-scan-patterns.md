@@ -24,6 +24,7 @@
 - **E-Commerce Application**: Product images must be large, high-quality, and prominently placed. They are the primary entry point for user engagement on product detail pages. Weak or small images lose the user before they even read the product name.
 - **Replication Status**: Replicated across multiple Baymard benchmark rounds and confirmed by cxpartners eye-tracking study.
 - **Boundary Conditions**: May be weaker for commoditized products where price is the dominant factor (e.g., office supplies, bulk goods). Strongest for apparel, electronics, and home goods.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -34,6 +35,7 @@
 - **E-Commerce Application**: For text-heavy product listings, search results, and category pages, the F-pattern means the first 2-3 items and the left column receive disproportionate attention. Key product info (name, price, rating) should be in the top-left of each listing card.
 - **Replication Status**: Replicated multiple times (NNGroup 2017, DFKI mobile study). One of the most robust findings in web usability.
 - **Boundary Conditions**: F-pattern is strongest for text-heavy, uniform layouts. Does NOT apply to visually diverse pages, hero-driven landing pages, or pages with strong visual hierarchy that breaks the pattern. Good design can prevent F-scanning.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -44,6 +46,7 @@
 - **E-Commerce Application**: Homepage hero sections and promotional landing pages should follow Z-pattern layout: logo/brand top-left, key value proposition top-right or center, hero image in the middle diagonal, CTA button at bottom-right terminal point.
 - **Replication Status**: Widely cited but lacks rigorous controlled experimental validation as a standalone pattern. More of an observed tendency than a tested law.
 - **Boundary Conditions**: Breaks down when pages have significant text content (F-pattern takes over), complex navigation, or multiple competing visual elements. Less applicable on mobile where single-column layout dominates.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -54,6 +57,7 @@
 - **E-Commerce Application**: Product image, price, key selling points, and primary CTA ("Add to Cart") must be above the fold. Supplementary content (reviews, related products, detailed specs) can live below. Landing pages with CTAs above the fold saw 30% higher conversion rates than those requiring scroll (analysis of 40,000+ landing pages).
 - **Replication Status**: Replicated (NNGroup 2010 vs 2018 data shows consistent pattern with expected shift).
 - **Boundary Conditions**: Mobile users scroll more readily and spend less time above the fold due to smaller viewports. Content-rich pages (blogs, editorial) see more scrolling than transactional pages.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -64,6 +68,7 @@
 - **E-Commerce Application**: Product images should be placed on the left side of product pages, with descriptions on the right. In product grids, items in the left columns receive more visual attention. The cxpartners study confirmed that the majority of participants preferred product pictures on the left and description on the right.
 - **Replication Status**: Replicated consistently across NNGroup studies and confirmed by cxpartners e-commerce-specific research.
 - **Boundary Conditions**: Reversed in right-to-left reading cultures (Arabic, Hebrew). Weaker on mobile single-column layouts where horizontal distribution is less relevant. Can be overridden by strong visual contrast on the right side.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -74,6 +79,7 @@
 - **E-Commerce Application**: Promotional banners on e-commerce sites (sale announcements, featured deals) are frequently ignored if they resemble advertising. Important product information or deals should NOT be formatted as banners. Internal promotions should be integrated into the content flow rather than placed in banner-style containers.
 - **Replication Status**: One of the most replicated findings in web usability. Confirmed across desktop and mobile.
 - **Boundary Conditions**: Slightly less severe when banners contain human faces with positive expressions. Left-side and top banners receive marginally more attention than right-side banners. Goal-directed users show stronger banner blindness than browsing users.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -84,6 +90,7 @@
 - **E-Commerce Application**: For product categories where price comparison and review scores are primary decision factors, list layout may outperform grid. Grid layout is better for visually-driven categories (fashion, home decor) where image scanning matters more. Consider offering both views with list as default for price-sensitive categories.
 - **Replication Status**: Consistent with earlier column-vs-grid eye-tracking studies (ResearchGate, 2018) showing column layouts produce larger fixation densities.
 - **Boundary Conditions**: Study focused on smartphones; desktop results may differ due to wider viewport. Grid may outperform for highly visual product categories where aesthetics drive purchase decisions.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -94,6 +101,7 @@
 - **E-Commerce Application**: Product videos should be prominently placed within the image gallery area. Even short (15-30 second) product demo videos can significantly increase conversion. Video thumbnails in search results also attract more attention than static results.
 - **Replication Status**: Widely reported across industry sources. Specific numbers vary but directional finding (video increases conversion) is robust.
 - **Boundary Conditions**: Video quality matters -- poor video can hurt conversion. Autoplay with sound is universally disliked. The 37% figure is an average; results vary dramatically by product category and video quality. Videos may not help for simple/commodity products.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -104,6 +112,7 @@
 - **E-Commerce Application**: Image galleries must support high-resolution zoom on both desktop and mobile. The minimum viable gallery should include 3-5 images with zoom capability. Mobile pinch-to-zoom is now an expected convention -- failing to support it directly hurts conversion confidence.
 - **Replication Status**: Based on ongoing benchmark data updated regularly. Consistent findings across benchmark rounds.
 - **Boundary Conditions**: Image quantity needs vary by product category. Simple products (cables, basic supplies) need fewer images. Complex/aesthetic products (furniture, fashion) need many more.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -114,6 +123,7 @@
 - **E-Commerce Application**: Every product gallery should include at least one in-scale image. This is especially critical for products where size is ambiguous from photos alone (jewelry, electronics accessories, furniture). Failure to provide scale reference increases return rates and decreases purchase confidence.
 - **Replication Status**: Consistent across Baymard benchmark rounds.
 - **Boundary Conditions**: Less critical for products with universally known sizes (e.g., smartphones, standard clothing items with size charts).
+- **Evidence Tier**: Gold
 
 ---
 
@@ -124,6 +134,7 @@
 - **E-Commerce Application**: On product pages, the "Add to Cart" button should be positioned at or near the bottom-right of the key content area (the terminal area). Brand/logo top-left, key value proposition top-center/right, CTA bottom-right. The weak fallow area (bottom-left) should contain non-critical elements like secondary links or legal text.
 - **Replication Status**: Theoretical model with partial empirical support. The general left-to-right, top-to-bottom reading gravity is well-established; the specific four-quadrant model has limited rigorous validation.
 - **Boundary Conditions**: Does not apply in right-to-left reading cultures. Breaks down on complex multi-column layouts, long-scroll pages, and mobile single-column designs. Strong visual hierarchy can override Gutenberg predictions.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -134,6 +145,7 @@
 - **E-Commerce Application**: Product images should be the largest element on product pages. Price should be large enough to be immediately scannable. CTA buttons need sufficient size AND color contrast to attract fixation. Whitespace around CTAs increases their visual prominence. Avoid making everything large -- hierarchy requires contrast between elements.
 - **Replication Status**: Size dominance is replicated across multiple eye-tracking studies. The relative ranking of other factors varies by context.
 - **Boundary Conditions**: Animation/motion overrides size (moving elements capture attention regardless of size). On mobile, size hierarchy is compressed due to limited viewport. Cultural factors influence which positions are perceived as primary.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -144,6 +156,8 @@
 - **E-Commerce Application**: Teams can use AI attention prediction tools (EyeQuant, Attention Insight) to rapidly test product page layouts, banner designs, and landing pages without the cost and time of lab-based eye-tracking. Useful for A/B testing design variations before deployment.
 - **Replication Status**: Validated by EyeQuant's own methodology. Independent validation by third parties is limited.
 - **Boundary Conditions**: AI predictions are based on general web viewing patterns and may not capture task-specific or domain-specific attention shifts. Cannot account for individual user intent, motivation, or familiarity with the site.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Vendor self-validation; independent third-party validation is limited
 
 ---
 
@@ -154,6 +168,7 @@
 - **E-Commerce Application**: Promotional elements on e-commerce sites have approximately 1-2 seconds to communicate their message. This means promotional messaging must be instantly scannable -- single number (e.g., "30% OFF"), single image, minimal text. Any promotion requiring reading will be missed by most users.
 - **Replication Status**: Based on large-scale real-world panel data, highly ecologically valid. PwC independently validated the model.
 - **Boundary Conditions**: Dwell time varies significantly by ad format, placement, and context. In-content native ads receive more attention than standard banner placements. These figures reflect passive browsing; task-directed users may show different patterns.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -164,6 +179,7 @@
 - **E-Commerce Application**: Use carousels sparingly and only for discovery/inspiration contexts (e.g., "You might also like"). For primary product browsing (category pages, search results), grid or list layouts are more efficient. Never auto-rotate carousels. If using carousels, ensure clear navigation indicators and make the first visible items the highest-value recommendations.
 - **Replication Status**: Relatively new finding (2025). Consistent with NNGroup's longstanding skepticism of carousel effectiveness.
 - **Boundary Conditions**: Carousels may work better for entertainment/content platforms where exploratory browsing is the goal. In transactional e-commerce (high purchase intent), grid/list is almost always superior.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -174,6 +190,7 @@
 - **E-Commerce Application**: Critical product information (reviews, key specs, shipping info) should NOT be hidden behind tabs. If tabs are used, essential information should be visible in the default/first tab. Consider vertical accordion layouts or simply displaying all content in a single scrollable view, since users are now comfortable scrolling.
 - **Replication Status**: Consistent across Baymard benchmark rounds.
 - **Boundary Conditions**: Tab blindness is worse on mobile where tabs may be less visually prominent. Users who are highly motivated (high purchase intent) are more likely to discover tabbed content.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -184,6 +201,7 @@
 - **E-Commerce Application**: Product pages should be designed for ALL scanning patterns simultaneously: clear headings (layer-cake), scannable key specs with bolded values (spotted), important info top-left (F-pattern), and detailed content for committed readers. Use formatting like bullet points, bold key figures, and clear section headers to support multi-pattern scanning.
 - **Replication Status**: Well-established NNGroup taxonomy based on extensive eye-tracking data.
 - **Boundary Conditions**: Pattern selection depends on user motivation, task type, and content structure. High-intent shoppers show more commitment pattern; browsing users show more F-pattern and spotted pattern.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -194,6 +212,7 @@
 - **E-Commerce Application**: Follow the natural left-to-right flow: Image (left) -> Title + Key Info (center-right) -> Price + CTA (right, vertically aligned and close together). The CTA must look like a button with high color contrast. Never separate price and CTA with large whitespace or unrelated content.
 - **Replication Status**: Replicated across multiple practitioner studies. The image-left convention is now an established e-commerce design pattern.
 - **Boundary Conditions**: On mobile, this becomes a vertical flow (image top, then title, then price + CTA). Cultural reading direction affects optimal image placement.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -204,6 +223,7 @@
 - **E-Commerce Application**: Promotional highlights on product listings (sale badges, recommended tags, featured labels) should use subtle visual differentiation rather than loud, banner-like styling. A light background color or thin border is more effective than a large bright badge. This finding directly connects to banner blindness -- the more something looks promotional, the more it gets ignored.
 - **Replication Status**: Consistent with decades of banner blindness research. Specific "less is more" finding needs further replication.
 - **Boundary Conditions**: Very subtle highlights may be missed entirely by low-attention users. The optimal intensity depends on the overall visual density of the page.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -214,6 +234,7 @@
 - **E-Commerce Application**: Mobile product pages need a different visual hierarchy than desktop. Key information (price, primary CTA) must be within thumb reach. Single-column layouts eliminate left-right bias considerations but require careful vertical prioritization. Sticky "Add to Cart" buttons on mobile prevent the CTA from scrolling out of view.
 - **Replication Status**: Mobile-specific attention patterns are well-documented across multiple research sources.
 - **Boundary Conditions**: Tablet behavior falls between mobile and desktop. Mobile attention patterns vary significantly by screen size and whether the user is using one hand or two.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -224,6 +245,7 @@
 - **E-Commerce Application**: Prioritize "in-use" demonstration videos over polished brand/beauty content. Show the product being used, unboxed, assembled, or worn — not just glamour shots. For products with low ratings, fix the ratings before investing in video content. Unboxing videos show strong directional results (+45% add-to-cart in vendor data, though unverified).
 - **Replication Status**: Peer-reviewed in Frontiers in Psychology. Measures purchase intention, not actual conversion. No direct replication in an ecommerce purchase context.
 - **Boundary Conditions**: Measures purchase intention, not actual purchase behavior. The intention-behavior gap is real and potentially large. Product category likely moderates — usage video is more impactful for complex/functional products than for simple/aesthetic ones.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -234,6 +256,7 @@
 - **E-Commerce Application**: Create mobile product videos in 9:16 vertical format. This is especially important for social-commerce-originated traffic (TikTok, Instagram Reels, YouTube Shorts) where users are already conditioned to vertical video. For desktop, provide both formats or use responsive video players.
 - **Replication Status**: Peer-reviewed in a top marketing journal — strongest video format evidence in this document. However, the study tested advertising, not product pages. The processing fluency mechanism is plausible for PDPs but unverified.
 - **Boundary Conditions**: Study context is social media advertising, not product detail pages. Gen X and Y showed negative effects from vertical format — generational targeting may be needed. Desktop users may prefer horizontal.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -244,6 +267,8 @@
 - **E-Commerce Application**: Even if video production resources are limited, having ANY video option (even a simple 30-second product overview) may lift conversion through signaling. Prioritize video thumbnails in the product gallery — even users who never click "play" may be influenced by the presence of the option. A clear play button and compelling thumbnail are as important as the video content itself.
 - **Replication Status**: VWO is a vendor (A/B testing platform) with publication bias for positive results. No methodology, sample size, or baseline conversion rate disclosed. The 27-46% range is suspiciously wide. Treat as directional evidence, not a reliable effect size.
 - **Boundary Conditions**: Vendor data with no disclosed methodology. The "mere presence" mechanism is plausible (signaling theory) but the specific conversion lift numbers should not be cited as reliable. The effect likely varies by product category and baseline page quality.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: No methodology, sample size, or baseline disclosed; 27-46% range is suspiciously wide; vendor-sourced with publication bias
 
 ---
 
@@ -254,6 +279,7 @@
 - **E-Commerce Application**: Place a 30-60 second feature summary video near the Add to Cart button. Use muted autoplay with visible sound-on/restart controls. Hook the viewer in the first 3 seconds — start with the product in use, not a logo or brand intro. For longer content (tutorials, reviews), use expandable sections below the fold.
 - **Replication Status**: Wistia is a large-scale video hosting platform — their engagement data is extensive but vendor-sourced. Videowise is a vendor selling shoppable video tools. The "67% swipe away in 3 seconds" figure has no primary source attribution.
 - **Boundary Conditions**: Engagement is declining across the board — video fatigue is real. The 30-60s recommendation is general, not product-category-specific. Autoplay behavior varies by browser and OS (Safari restricts autoplay more aggressively). The first-3-seconds claim is vendor data without methodology.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -264,6 +290,7 @@
 - **E-Commerce Application**: Place video in the main product image gallery, not in a separate tab. Use position 2 or 3 (after the hero image). Add a clear play icon overlay on the thumbnail. Do not rely on a separate "Watch Video" text link below the gallery. For mobile, ensure the video thumbnail is swipeable within the image carousel.
 - **Replication Status**: Baymard is the most credible independent source. Their usability testing methodology is well-established. Goodvidio is practitioner guidance consistent with Baymard's findings.
 - **Boundary Conditions**: Baymard's research is from 2019 — video placement conventions may have evolved. The "35% get it wrong" figure is about placement quality, not measured conversion impact of placement changes. No A/B test comparing gallery-embedded vs tab-hidden video with conversion as outcome has been published.
+- **Evidence Tier**: Gold
 
 ---
 

@@ -28,6 +28,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Post-purchase communication (confirmation pages, emails, tracking) is not a courtesy — it is anxiety medication. Every touchpoint between purchase and delivery is an opportunity to reduce cancellations and build loyalty. Proactive shipping updates, delivery guarantees, and easy order-status access directly address the anxiety that drives support costs.
 - **Replication Status**: Consistent with earlier Narvar reports and broader consumer behavior literature on uncertainty aversion in online transactions.
 - **Boundary Conditions**: Anxiety is likely higher for high-value purchases, first-time buyers, and unfamiliar brands. Repeat purchases from trusted brands may show lower anxiety levels.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -38,6 +39,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Confirmation and transactional emails are the single highest-engagement email type. They should contain more than just order details — include brand reinforcement, product care tips, cross-sell suggestions, and referral prompts. These emails are opened repeatedly (tracking checks), making them ideal for embedded upsell content.
 - **Replication Status**: Widely replicated across email marketing platforms (Klaviyo, Mailchimp report similar patterns).
 - **Boundary Conditions**: Open rate metrics are inflated by Apple Mail Privacy Protection (auto-opens). Click-through and conversion rates are more reliable indicators. Aggressive promotional content in transactional emails can trigger spam filters or violate CAN-SPAM guidelines.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -48,6 +50,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Present a single, complementary upsell on the thank-you/confirmation page immediately after checkout. The offer should be contextually relevant to the purchased item (e.g., accessories, protection plans, consumables). Keep the friction to one click. Follow up with email-based cross-sells 7-14 days later.
 - **Replication Status**: Consistent across multiple Shopify app providers (AfterSell, Zipify OCU, CartHook) reporting similar ranges.
 - **Boundary Conditions**: Works best for low-to-medium price add-ons. High-ticket upsells immediately post-purchase may trigger buyer's remorse rather than reduce it. Avoid presenting upsells that make the customer question their original purchase choice.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -58,6 +61,8 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Extend return windows (e.g., 60 or 90 days vs. 30 days). Frame the policy prominently on product pages and checkout. The longer window paradoxically reduces returns through procrastination and endowment. Also: 84% of customers are deterred by restocking fees, 74% by return shipping fees — removing these frictions increases conversion. 51% of U.S. digital buyers avoid retailers without free returns.
 - **Replication Status**: Replicated conceptually in multiple studies. ScienceDirect 2025 study on return policy leniency confirms that medium-leniency balances return proclivity and satisfaction.
 - **Boundary Conditions**: Does not apply equally to "bracketing" purchases (intentionally buying multiple sizes to return extras — 58% of consumers per Narvar 2021). Fashion/apparel categories see higher return rates regardless of policy. Overly lenient policies can attract fraudulent returns (37% admitted to return fraud per Narvar 2025).
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Published in B.E. Journal of Economic Analysis & Policy (peer-reviewed); methodology exceeds Bronze norm but publisher not in Gold list.
 
 ---
 
@@ -68,6 +73,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Invest in proactive shipping communication — branded tracking pages, SMS/email updates at each stage, and delivery-day notifications. For younger demographics, delivery reliability is a loyalty-defining factor. Branded tracking pages also reduce WISMO ("Where Is My Order?") support tickets — Farfetch reduced WISMO inquiries by 25% and increased repeat purchases by 12% using parcelLab.
 - **Replication Status**: Age-based sensitivity to delivery issues is consistent across multiple consumer surveys. The asymmetry (positive delivery helps; negative delivery devastates) is well-documented.
 - **Boundary Conditions**: Impact varies by product category. Urgency-driven purchases (gifts, event-related) are more sensitive to delivery timing. Subscription/replenishment purchases may be more forgiving.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -78,6 +84,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Embed referral CTAs in order confirmation pages, confirmation emails, and shipping notification emails. Use one-click sharing. The emotional peak of purchase excitement is a wasting asset — capture it within 72 hours. Don't wait until post-delivery satisfaction surveys to ask for referrals.
 - **Replication Status**: Practitioner data from a single platform; directionally consistent with word-of-mouth research showing recency effects on sharing behavior.
 - **Boundary Conditions**: Referral willingness depends on satisfaction confidence. For products requiring extended evaluation (electronics, furniture), the 72-hour window may be premature for referrals — but still valid for social sharing of the purchase itself.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -88,6 +95,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Automate review request emails based on estimated delivery date + category-specific delay (not purchase date). Send on Wednesday or Saturday, 10am-2pm in the customer's timezone. Include the product image and a direct link to the review form — minimize friction. For products requiring setup or extended use, delay further (14-21 days).
 - **Replication Status**: Broadly consistent across review platforms (Yotpo, Bazaarvoice, Stamped report similar patterns).
 - **Boundary Conditions**: Timing assumes product has been delivered and used. For pre-order or backordered items, timing must anchor to delivery confirmation, not purchase date. Incentivized review requests (discounts for reviews) can skew timing dynamics.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -98,6 +106,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: The thank-you page should contain (in priority order): (1) order confirmation and reassurance, (2) a single relevant upsell/cross-sell, (3) referral prompt with one-click sharing, (4) social media follow CTA, (5) account creation prompt (for guest checkouts). Do not clutter — each element competes for attention. Test sequentially which element drives the most value for your specific customer base.
 - **Replication Status**: The 7.64% figure is from a single app ecosystem. Amazon's 35% cross-sell revenue figure is widely cited but difficult to independently verify.
 - **Boundary Conditions**: Thank-you page dwell time is brief — customers often navigate away quickly. Mobile users have even less patience. Aggressive upselling on the thank-you page can undermine the reassurance function, potentially increasing anxiety rather than reducing it.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -108,6 +117,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: On order confirmation pages, include: visible customer support contact (phone number), trust badges, clear next-steps timeline, and a link to order status tracking. These elements cost nothing to implement but directly reduce the anxiety that drives cancellations and support tickets. The confirmation page is the first post-purchase touchpoint — it sets the emotional tone for the entire fulfillment period.
 - **Replication Status**: Individual case study; the directional finding (anxiety reduction improves conversion) is well-supported in CRO literature.
 - **Boundary Conditions**: The 108% lift is a single case study and should not be taken as a universal benchmark. Results vary significantly by industry, price point, and baseline anxiety level.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -118,6 +128,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Bracketing is a structural behavior, not a policy failure. Mitigate through better product information (sizing tools, AR try-on, detailed photos/video), which reduces the need to bracket. Convert returns into exchanges or store credit — optimized returns processes can convert up to 60% of returns into exchanges or credit, retaining revenue. Frame returns as a service touchpoint, not a cost center.
 - **Replication Status**: Consistent with broader retail industry data on return volumes and bracketing behavior.
 - **Boundary Conditions**: Bracketing is concentrated in fashion, footwear, and accessories. Electronics, home goods, and consumables see far lower bracketing rates. Free return shipping policies exacerbate bracketing.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -128,6 +139,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Build a 5-stage automated post-purchase email flow. The immediate confirmation email is transactional; the 10-15 minute follow-up is the first "marketing" touch. Keep the time-sensitive window short (under 4 hours) to leverage purchase momentum without appearing pushy. Measure success by 90-day repeat purchase rate, not just open/click rates.
 - **Replication Status**: Timing recommendations are practitioner-derived rather than experimentally validated. The 90-day repeat purchase KPI is widely accepted.
 - **Boundary Conditions**: Aggressive follow-up timing (10-15 minutes) may feel intrusive for high-ticket purchases where buyer's remorse risk is elevated. Adjust timing based on product category and customer segment.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -138,6 +150,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: If your conversion strategy relies on urgency/scarcity (FOMO), you must invest proportionally more in post-purchase reassurance. Confirmation emails should reinforce the value of the purchase decision: include social proof (how many others bought this), product benefits, and usage tips. Help the customer rationalize their decision before remorse sets in. This is especially critical for impulse-driven categories (fashion, beauty, gadgets).
 - **Replication Status**: FOMO and impulse purchasing are well-documented in consumer psychology. The 60% figure is from a single source and should be treated as directional.
 - **Boundary Conditions**: Post-purchase rationalization is less effective when the product objectively fails to meet expectations (wrong size, defective, etc.). Rationalization works for "was this worth it?" doubts, not for "this is the wrong product" situations.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -148,6 +161,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Triggered automation is essential — campaign blasts waste opt-in capital. Push should be the FIRST touchpoint after cart abandonment (5-15 minutes, while intent is fresh), followed by email (3-6 hours), then SMS for high-value carts (24 hours). See Finding 15 for the full cascade.
 - **Replication Status**: Omnisend data is large-scale vendor platform analytics. MobiLoud is a smaller vendor source. Both have financial incentive to make push look effective. No independent peer-reviewed study compares push vs email vs SMS for cart recovery under controlled conditions.
 - **Boundary Conditions**: Web push opt-in is ~6% of visitors (Airship 2025); native app push is 61-68%. Web push has very limited reach. The 22.88% click-to-conversion figure applies only to users who already clicked — not the total addressable audience.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -158,6 +172,8 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Cap notification frequency. Maximum 3 notifications per abandoned cart event across all channels. Add a notification preference center. Personalize every notification — include the specific product name, image, and price. Never send generic "come back!" blasts. The Wohllebe study specifically shows that personalization is the moderator — non-personalized frequency destroys the channel.
 - **Replication Status**: Wohllebe is the strongest source — peer-reviewed, N=17,500, retail context, directly measures uninstall behavior. Reuters is independent and large-scale but news-specific. Directionally corroborated by multiple vendor sources.
 - **Boundary Conditions**: Wohllebe studied a retail app (not web push). Reuters data is news, not ecommerce. The specific frequency thresholds at which fatigue kicks in may vary by industry, product type, and user demographics.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary source (Wohllebe et al.) is peer-reviewed with N=17,500 in retail context; methodology far exceeds Bronze norm but publisher not in Gold list.
 
 ---
 
@@ -168,6 +184,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Implement staged cascade: push first (cheapest, fastest), email second (highest reach), SMS third (highest per-message conversion, highest cost). For app users, push fires first; for web-only users, email is the first touchpoint. Suppress subsequent channels if the user converts from an earlier touchpoint. Include product image, name, and price in every message.
 - **Replication Status**: Timing sequence is practitioner consensus, not experimentally validated. Klaviyo $3.65 RPR is based on 143,000+ flows (large sample, single platform). CartBoss SMS data is vendor-sourced.
 - **Boundary Conditions**: Timing optimization (5-15min/3-6h/24h) has never been A/B tested against alternative sequences in a published study. Klaviyo's merchant base skews Shopify DTC (fashion, beauty, lifestyle) — not representative of all ecommerce. SMS regulations vary by country (TCPA in US, GDPR in EU).
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -178,6 +195,7 @@ The post-purchase phase is dramatically underinvested relative to its impact. Tw
 - **E-Commerce Application**: Always include the abandoned product image, name, and price in cart recovery notifications. Keep copy under 10 words. Segment by cart value (high-value carts get more aggressive follow-up) and user recency (recent browsers vs lapsed users). Use rich push format where supported. Avoid generic "You left something behind!" — always personalize.
 - **Replication Status**: Airship +22% for rich push is the most specific figure with clear methodology. Other claims use wide ranges indicating cherry-picked best cases. All sources are vendors selling push notification infrastructure.
 - **Boundary Conditions**: All data is vendor-sourced with financial incentive. Wide ranges (4-72%) indicate high variance across implementations. Rich push support varies by platform and device.
+- **Evidence Tier**: Bronze
 
 ---
 

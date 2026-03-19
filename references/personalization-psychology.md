@@ -15,6 +15,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Always make data collection visible. Use preference centers, explicit "because you told us you like X" framing, and trust signals alongside personalized content. Avoid surfacing recommendations that reveal tracking the user didn't explicitly agree to.
 - **Replication Status**: Canonical study with 570+ citations. Core finding (overt > covert) replicated across multiple contexts.
 - **Boundary Conditions**: Trust-building interventions can neutralize vulnerability. Effect strongest for consumers with high privacy sensitivity.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -26,6 +27,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Build brand trust before ramping up personalization intensity. Show a single relevant item rather than exposing the full browsing history. New or low-trust brands should use lighter personalization (category-level, not item-level).
 - **Replication Status**: Replicated in companion study (Bleier & Eisenbeiss, 2015, Marketing Science). Consistent with Aguirre et al. trust-building findings.
 - **Boundary Conditions**: Effect diminishes for low-trust retailers. Showing too many tracked items triggers reactance even for trusted brands.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -37,6 +39,8 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Use exact-product retargeting within 24-48 hours of a visit. After that window, shift to category-level or style-level recommendations. Avoid showing "you viewed this exact item" ads a week later — that triggers creepiness rather than relevance.
 - **Replication Status**: Well-cited (200+ citations). Timing effect is robust across product categories.
 - **Boundary Conditions**: Decay rate likely varies by purchase cycle length (faster for impulse goods, slower for considered purchases).
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Published in Marketing Science (INFORMS), a top-tier peer-reviewed journal not in Gold publisher list; methodology and citation count (200+) exceed Bronze norm.
 
 ---
 
@@ -48,6 +52,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Avoid location-triggered push notifications unless the consumer explicitly opted in. Cross-site retargeting (showing ads for browsed items on social media) is at the creepiness boundary for 1 in 3 consumers. The safest personalization uses data the consumer knowingly provided.
 - **Replication Status**: Annual survey; creepiness thresholds consistent across multiple years of Accenture research.
 - **Boundary Conditions**: Younger demographics (Gen Z) show slightly higher tolerance. Creepiness perception lower when value exchange is clear (e.g., discount offered alongside the personalized notification).
+- **Evidence Tier**: Silver
 
 ---
 
@@ -59,6 +64,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Prevention is the only viable strategy. Once a consumer perceives personalization as creepy, no amount of explanation or incentive recovers the relationship. Design personalization to stay well below the creepiness threshold rather than trying to optimize at the boundary.
 - **Replication Status**: Recent publication building on established creepiness literature. Consistent with Aguirre et al. vulnerability findings.
 - **Boundary Conditions**: Skepticism and technological paranoia are amplifiers — high-trust consumers are more resilient. The "irreversibility" finding needs further replication across contexts.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -70,6 +76,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Personalization is no longer optional — it's baseline expectation. The revenue case is strong (10-15% lift), but the risk of getting it wrong (frustration, abandonment) is equally significant. Invest in execution quality, not just personalization technology.
 - **Replication Status**: Consistent with Salesforce, Accenture, and Epsilon research. Revenue lift figures validated across multiple McKinsey analyses.
 - **Boundary Conditions**: Revenue lift varies significantly by sector (5-25% range). B2B personalization expectations are catching up to B2C but still lag.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -81,6 +88,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Avoid personalized pricing or keep it invisible. If dynamic pricing is used, frame it as universal mechanisms (sales, promotions, loyalty rewards) rather than individual price discrimination. Loyalty-based tiered pricing is more acceptable than algorithmic individual pricing. Never let consumers discover that another customer paid a different price for the same item.
 - **Replication Status**: Consistent across multiple studies (Ohlwein & Bruno 2025, Richards et al. 2016, Weisstein et al. 2013). Robust finding.
 - **Boundary Conditions**: Loyalty-tier pricing and volume discounts are perceived as fairer than algorithmic personalized pricing. Transparency about pricing criteria can partially mitigate unfairness perceptions but does not eliminate them.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -92,6 +100,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Build personalization on first-party and zero-party data (preferences, on-site behavior, explicit surveys). Avoid basing visible recommendations on third-party data sources. If using third-party data, don't surface it in ways that reveal cross-site tracking. Preference centers and quizzes are high-trust data collection methods.
 - **Replication Status**: Consistent across Accenture, Salesforce, and GDPR-era consumer research. The first-party vs. third-party distinction is well-established.
 - **Boundary Conditions**: Younger demographics are slightly more tolerant of cross-platform data use. Category matters — health and financial data have much lower tolerance than shopping preferences.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -103,6 +112,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Design a two-tier personalization strategy: (1) segment-level personalization for anonymous visitors based on session behavior, referral source, and device context; (2) individual-level personalization for logged-in users. Don't waste sophisticated 1:1 personalization on anonymous traffic — it can't work and may trigger creepiness. Use contextual signals (time of day, category browsing, geographic region) for anonymous personalization.
 - **Replication Status**: Traffic anonymity rates are consistent across industry analyses. The 90%+ figure is well-established.
 - **Boundary Conditions**: Subscription-based and B2B e-commerce have much higher login rates, making individual personalization more viable. Mobile app users are more likely to be logged in than mobile web users.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -114,6 +124,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Frame recommendations using social proof language ("Popular with customers who viewed this," "Trending in this category") rather than algorithmic language ("Our algorithm thinks you'll like this"). Social proof framing converts better because it provides both relevance and social validation without triggering surveillance concerns. Use real-time purchase/view counts where possible.
 - **Replication Status**: Social proof effects are among the most replicated findings in consumer psychology. Specific conversion numbers vary by implementation.
 - **Boundary Conditions**: Social proof is less effective for unique/luxury items where exclusivity matters. "Customers also bought" can backfire if the associations seem random or irrelevant.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -125,6 +136,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: Cross-channel consistency is now a baseline expectation. A customer who interacts via chat, email, and on-site expects continuity. The 61% who feel treated "as a number" represents an opportunity — basic recognition (name, past purchases, preferences) significantly differentiates. B2B e-commerce must catch up to B2C personalization standards.
 - **Replication Status**: Annual survey, 6th edition. Trends are directionally consistent year over year with increasing expectations.
 - **Boundary Conditions**: B2B expectations lag B2C but are converging. Expectations highest among high-spending, digitally native segments.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -136,6 +148,7 @@ Personalization drives 10-15% revenue lift on average (McKinsey), but carries si
 - **E-Commerce Application**: If explaining recommendations, use simple benefit-focused language: "Based on your recent searches" or "Popular in your area." Avoid technical framing like "personalized by our AI" or "algorithmically selected." Test whether explanation labels increase or decrease click-through for your specific audience — the effect is not universally positive.
 - **Replication Status**: Mixed results across studies reflect genuine context-dependence rather than methodological issues.
 - **Boundary Conditions**: Digitally sophisticated users respond better to transparency. Privacy-sensitive users may react negatively to any acknowledgment of data use. Benefit-focused framing is safer than mechanism-focused framing.
+- **Evidence Tier**: Bronze
 
 ---
 

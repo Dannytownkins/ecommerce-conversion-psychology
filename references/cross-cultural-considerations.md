@@ -22,6 +22,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: CTA button color, product imagery, and seasonal promotional palettes should be culturally adapted. Red CTAs may outperform in Chinese markets not just due to contrast but cultural resonance. Avoid white-dominant funeral/mourning associations in East Asian product packaging and checkout flows.
 - **Replication Status**: The red-positive association in China is well-replicated across multiple studies. The PMC 2023 study adds implicit (non-self-report) evidence.
 - **Boundary Conditions**: Urbanized, globally-connected younger demographics show convergence toward Western color associations. Within-country variation (e.g., mainland China vs. Hong Kong) can be as significant as between-country variation.
+- **Evidence Tier**: Bronze
 
 ### Finding 2: Hofstede's Uncertainty Avoidance and Long-Term Orientation Are the Strongest Predictors of E-Commerce Trust and Adoption
 
@@ -31,6 +32,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: For high-uncertainty-avoidance markets (Japan, UAI 92; Germany, UAI 65; South Korea, UAI 85): provide extensive product specifications, clear return policies, prominent security certifications, and FAQ sections. For low-UAI markets (UK, UAI 35; US, UAI 46): streamlined checkout with fewer friction points is acceptable.
 - **Replication Status**: Hofstede's framework is the most-cited in cross-cultural UX research. Meta-analysis (Springer, 2022) confirms individualism, long-term orientation, and uncertainty avoidance have the strongest moderating effects on technology acceptance.
 - **Boundary Conditions**: Hofstede scores are national averages — they obscure significant within-country variation (urban vs. rural, age cohorts, immigrant communities). The original data is from IBM employees in the 1970s; updated scores exist but the framework remains debated.
+- **Evidence Tier**: Gold
 
 ### Finding 3: Marcus & Gould's Framework Links Each Hofstede Dimension to Specific UI Design Patterns
 
@@ -40,6 +42,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: This remains the foundational reference for culturally-adapted web design. Use as a starting framework: collectivist markets get community/group features; individualist markets get personalization; high-UAI markets get detailed specs and guarantees.
 - **Replication Status**: Foundational and widely cited (1000+ citations). However, it is theoretical — the mappings were proposed, not empirically validated with conversion data.
 - **Boundary Conditions**: Published in 2000 — pre-smartphone, pre-social commerce, pre-super-apps. The web has changed fundamentally. The directional logic holds, but specific design recommendations need updating. Japanese apps, for instance, are now trending toward Western minimalism, complicating the original predictions.
+- **Evidence Tier**: Bronze
 
 ### Finding 4: East Asian Information-Dense Design Reflects Holistic Cognition, Language Efficiency, and Urban Density
 
@@ -49,6 +52,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: For East Asian markets, don't force Western minimalism. Provide dense product grids, multiple navigation paths, and extensive on-page information. However, note the convergence trend: UX Magazine reports Chinese users increasingly want the same streamlined experiences as Western counterparts, and Japanese apps are shifting toward minimalism.
 - **Replication Status**: The cognitive psychology basis (Nisbett's holistic vs. analytic thinking) is well-replicated. The design observations are consistent across multiple analyses.
 - **Boundary Conditions**: This is rapidly evolving. Mobile-first design constraints push toward simpler layouts globally. Younger East Asian users exposed to global apps show preference convergence. The "dense = better for Asia" rule is becoming less absolute.
+- **Evidence Tier**: Bronze
 
 ### Finding 5: 56% of International Shoppers Abandon Carts When Prices Aren't in Local Currency
 
@@ -58,6 +62,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: At minimum, display prices in local currency. Full localization stack — local currency, local payment methods, local language, tax-inclusive pricing where expected — is the highest-ROI investment for international e-commerce.
 - **Replication Status**: Multiple independent sources converge on similar figures. Baymard's meta-analysis is the gold standard for abandonment data.
 - **Boundary Conditions**: The 56% figure may vary by market maturity — shoppers in markets accustomed to cross-border shopping (e.g., Singapore, Hong Kong) may be more tolerant of foreign currency display.
+- **Evidence Tier**: Bronze
 
 ### Finding 6: Local Payment Methods Are Critical Trust Signals — Alipay Offering Increased China Conversion by Up to 91%
 
@@ -67,6 +72,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: Payment method localization is non-negotiable for international expansion. Key methods by market: Netherlands → iDEAL; Germany → SOFORT/Giropay; Brazil → Boleto/PIX; China → Alipay/WeChat Pay; India → UPI; Japan → Konbini payments; South Korea → KakaoPay. Missing the dominant local method is effectively blocking a large percentage of potential customers.
 - **Replication Status**: Consistent across multiple payment processors' data. The 91% Alipay figure is from a specific merchant context and should be treated as a ceiling rather than average.
 - **Boundary Conditions**: Payment preferences shift rapidly — PIX has overtaken Boleto in Brazil; UPI has exploded in India. These findings require annual updating.
+- **Evidence Tier**: Silver
 
 ### Finding 7: German E-Commerce Trust Requires Technical Certification Seals, Not Just Reviews
 
@@ -76,6 +82,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: For the German market, prominently display Trusted Shops or TUV seals, provide a complete Impressum, state DSGVO compliance explicitly, and use a .de domain. User reviews supplement but do not replace these institutional trust signals.
 - **Replication Status**: Well-established in German market research. The legal requirement for Impressum is a matter of law, not preference.
 - **Boundary Conditions**: Younger German consumers may be more influenced by social proof and influencer endorsements than older demographics, but the baseline expectation for technical seals remains strong.
+- **Evidence Tier**: Bronze
 
 ### Finding 8: Collectivist Cultures Respond More Strongly to Social Proof and Word-of-Mouth
 
@@ -85,6 +92,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: For collectivist markets (China, Japan, South Korea, most of Southeast Asia, Latin America): emphasize reviews volume, "X people bought this," community recommendations, group buying features, and KOL/influencer endorsements. For individualist markets (US, UK, Australia, Netherlands): emphasize personalization, individual savings, and unique value propositions.
 - **Replication Status**: The individualism-collectivism effect on social proof is one of the most replicated findings in cross-cultural consumer psychology.
 - **Boundary Conditions**: The Psychology Today source is from 2013 — social commerce has since exploded globally, and even individualist markets now respond strongly to social proof (e.g., Amazon reviews). The gap may be narrowing.
+- **Evidence Tier**: Bronze
 
 ### Finding 9: RTL Markets Require Full Layout Mirroring, Not Just Text Direction Changes
 
@@ -94,6 +102,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: Full RTL implementation checklist: mirror entire layout including navigation, sidebars, and progress indicators; increase text containers by 25%; support bidirectional input in search and forms; do NOT mirror logos, universal icons (play buttons), or phone numbers. Test with native speakers — automated mirroring misses contextual issues.
 - **Replication Status**: These are established UX best practices, not contested research findings.
 - **Boundary Conditions**: Many MENA users are bilingual and regularly use English-language apps. Some users may actually prefer LTR interfaces for certain categories (tech, gaming). Always test rather than assume.
+- **Evidence Tier**: Bronze
 
 ### Finding 10: Price Display Conventions Vary Dramatically and Incorrect Formatting Erodes Trust
 
@@ -103,6 +112,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: Use locale-aware formatting libraries (Intl.NumberFormat in JavaScript). Never hardcode currency formatting. Display prices tax-inclusive in markets where that is the norm (EU, Australia, Japan) — showing a lower pre-tax price in these markets feels deceptive, not like a deal.
 - **Replication Status**: These are formatting standards, not research findings — they are definitive.
 - **Boundary Conditions**: B2B e-commerce often displays prices tax-exclusive even in tax-inclusive markets. Some markets are in transition (India's GST implementation changed display norms).
+- **Evidence Tier**: Bronze
 
 ### Finding 11: Full Localization (Beyond Translation) Delivers 70%+ Conversion Lifts
 
@@ -112,6 +122,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: Localization ROI hierarchy (highest to lowest impact): (1) Local payment methods, (2) Local currency display, (3) Language translation, (4) Product adaptation (sizing, specifications), (5) Cultural content adaptation (imagery, messaging), (6) Legal/regulatory compliance display.
 - **Replication Status**: Multiple independent data points converge. Specific percentage figures come from different contexts and should be treated as indicative rather than universal.
 - **Boundary Conditions**: Diminishing returns apply — the first localization steps (currency, payment) deliver outsized impact. Deep cultural adaptation has higher cost and harder-to-measure ROI. Small merchants may benefit more from marketplace presence (e.g., selling on Tmall in China) than building fully localized standalone sites.
+- **Evidence Tier**: Bronze
 
 ### Finding 12: Regional Pricing Strategy Doubles Growth Rates Compared to Uniform Global Pricing
 
@@ -121,6 +132,7 @@ Cross-cultural UX is not cosmetic — it directly impacts conversion rates, cart
 - **E-Commerce Application**: Implement purchasing-power-parity (PPP) adjusted pricing, not just currency conversion. Use geo-IP detection to display regionally appropriate prices. Consider different product tiers or bundles for different markets rather than one-size-fits-all pricing.
 - **Replication Status**: The 2x growth rate finding is from industry analysis, not controlled experiments. The directional finding is supported by multiple SaaS and digital goods companies' public data.
 - **Boundary Conditions**: Physical goods have floor costs that limit PPP pricing flexibility. Price arbitrage (VPN users exploiting lower regional prices) is a real risk for digital goods. Luxury/prestige brands may intentionally maintain uniform high pricing as a brand signal.
+- **Evidence Tier**: Bronze
 
 ---
 

@@ -30,6 +30,7 @@
 - **E-Commerce Application**: Invest in professional visual design before adding trust badges. A poorly designed site with many trust badges will still fail credibility checks. Typography, whitespace, and color consistency are foundational trust signals.
 - **Replication Status**: Widely replicated across subsequent credibility research; considered foundational.
 - **Boundary Conditions**: Expert users and repeat visitors rely less on visual design cues and more on content accuracy.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -41,6 +42,7 @@
 - **Replication Status**: CXL Institute's independent study found similar brand-familiarity effects but ranked PayPal highest in their methodology.
 - **Boundary Conditions**: Results are US-centric. International markets may trust different seals. Results shift over time as brand awareness changes.
 - **DATED (2013-2016 data)**. Norton brand has been restructured (Symantec → Broadcom → NortonLifeLock → Gen Digital). As of 2025-2026, the most commonly recognized ecommerce trust signals are SSL indicators, payment provider logos (Visa, Mastercard, PayPal), and money-back guarantee badges rather than third-party security seals.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -51,6 +53,7 @@
 - **E-Commerce Application**: Prioritize getting at least 5 reviews per product. The first 5 reviews deliver the vast majority of the conversion lift. Post-purchase email flows requesting reviews should target products with fewer than 5 reviews first.
 - **Replication Status**: Replicated across multiple retail contexts in the same study.
 - **Boundary Conditions**: Effect varies by price point (see Finding 4).
+- **Evidence Tier**: Gold
 
 ---
 
@@ -61,6 +64,7 @@
 - **E-Commerce Application**: For high-AOV stores, reviews are disproportionately valuable. Invest more aggressively in review collection for expensive products. Consider incentivized review programs for high-ticket items.
 - **Replication Status**: Replicated within the same study across product categories.
 - **Boundary Conditions**: "Higher-priced" and "lower-priced" thresholds were not precisely defined in the public summary.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -71,6 +75,7 @@
 - **E-Commerce Application**: Do not filter or suppress negative reviews to achieve a perfect score. A few critical reviews actually increase credibility. Display the actual rating prominently; a 4.2-4.5 rating is the sweet spot.
 - **Replication Status**: Consistent with broader consumer psychology research on "too good to be true" effects.
 - **Boundary Conditions**: May not apply to categories where near-perfection is expected (e.g., safety equipment).
+- **Evidence Tier**: Gold
 
 ---
 
@@ -81,6 +86,7 @@
 - **E-Commerce Application**: Payment trust is not a nice-to-have; it is a revenue-critical issue. Visual design of the payment form directly impacts whether users complete purchase. Every checkout should be audited for perceived security.
 - **Replication Status**: Replicated across Baymard's multiple rounds of research.
 - **Boundary Conditions**: Applies most strongly to unknown/smaller brands; established retailers see lower abandonment from trust issues.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -91,6 +97,7 @@
 - **E-Commerce Application**: Add a subtle background color, border, or container around credit card input fields. Place trust badges immediately adjacent to (not distant from) the payment form. This is a CSS-only change with measurable trust impact.
 - **Replication Status**: Replicated across Baymard's testing rounds.
 - **Boundary Conditions**: Users technically savvy enough to understand HTTPS encryption are unaffected, but they represent a small minority.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -101,6 +108,7 @@
 - **E-Commerce Application**: Move trust badges from footer/header to immediately below or beside the payment form and "Place Order" button. The 3 most important positions: (1) next to credit card fields, (2) near the "Place Order" CTA, (3) in the cart summary on checkout.
 - **Replication Status**: Replicated across multiple practitioner tests.
 - **Boundary Conditions**: Diminishing returns if too many badges crowd the payment area (see Finding 9).
+- **Evidence Tier**: Gold
 
 ---
 
@@ -111,6 +119,7 @@
 - **E-Commerce Application**: Audit your trust badges ruthlessly. Remove unrecognized or redundant badges. Each badge should answer one specific anxiety. Three is the practical maximum per page section.
 - **Replication Status**: Practitioner consensus; no controlled academic study found on the specific threshold.
 - **Boundary Conditions**: Unknown brands may benefit from slightly more signals than established brands, but the "3 max per section" rule is a reasonable default.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -121,6 +130,7 @@
 - **E-Commerce Application**: If you accept PayPal, display the PayPal badge near checkout. PayPal functions as both a payment method and a trust signal simultaneously. Familiar consumer-facing brands outperform B2B security brands as trust signals.
 - **Replication Status**: Partially replicated by Baymard's independent survey (different ranking order but same brand-familiarity principle).
 - **Boundary Conditions**: Results are US-focused. PayPal recognition may be lower in markets where other payment providers dominate.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -131,6 +141,7 @@
 - **E-Commerce Application**: Match trust badges to your audience demographic. Stores targeting younger shoppers should emphasize Google and tech-brand seals. Stores targeting older demographics should display BBB, PayPal, and Norton badges.
 - **Replication Status**: Single study; directional but not independently replicated.
 - **Boundary Conditions**: These preferences shift over time as brand awareness evolves. Data is from mid-2010s; Gen Z preferences are not captured. **Based on mid-2010s survey data. Consumer trust signal preferences have shifted significantly.**
+- **Evidence Tier**: Silver
 
 ---
 
@@ -141,6 +152,7 @@
 - **E-Commerce Application**: Implement verified buyer badges on reviews. Post-purchase email flows should be the primary review collection mechanism (ensuring verified status). Display "Verified Purchase" labels prominently on reviews.
 - **Replication Status**: Consistent with broader research on source credibility.
 - **Boundary Conditions**: The 15% lift is an average; may be larger for high-risk purchases and smaller for commodity items.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -151,6 +163,7 @@
 - **E-Commerce Application**: Encourage reviewers to include specific details (use prompts like "What did you like about the fit?" rather than "Leave a review"). Display reviewer profiles and purchase history. Avoid editing or overly moderating review language -- natural imperfection signals authenticity.
 - **Replication Status**: Meta-analysis of multiple studies; high confidence in the cue categories.
 - **Boundary Conditions**: Consumers are poor at actually detecting sophisticated fake reviews despite having these heuristics.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -161,6 +174,7 @@
 - **E-Commerce Application**: Display accepted payment methods (especially digital wallets) at the top of checkout, not buried at the end. Express checkout buttons (Apple Pay, Google Pay, Shop Pay) should be the first thing users see on the checkout page. Payment method icons in the cart and on product pages serve as both convenience and trust signals.
 - **Replication Status**: Large-scale data from Stripe's merchant network; high confidence.
 - **Boundary Conditions**: Impact depends on the payment method's market penetration in the target geography.
+- **Evidence Tier**: Silver
 
 ---
 
@@ -171,6 +185,7 @@
 - **E-Commerce Application**: Frame guarantees as confident promises, not escape clauses. Consider longer guarantee periods -- they signal confidence and paradoxically reduce returns (people forget, or the longer period reduces urgency to return). Place guarantee badges near the Add to Cart button and again at checkout.
 - **Replication Status**: The positive-framing principle is well-replicated. Specific conversion numbers vary by context.
 - **Boundary Conditions**: Guarantees on very low-cost items may not move the needle. Extremely long guarantees may create operational/accounting complexity.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -181,6 +196,7 @@
 - **E-Commerce Application**: Trust optimization should be part of a holistic checkout optimization strategy. Even perfect trust signals cannot compensate for surprise shipping costs or forced account creation. Address the top abandonment factors in priority order.
 - **Replication Status**: Meta-analysis of 50 studies; highly robust.
 - **Boundary Conditions**: Abandonment rates vary by device (mobile higher), industry, and price point.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -191,6 +207,7 @@
 - **E-Commerce Application**: HTTPS is table stakes -- its absence is catastrophic, but its presence provides minimal active trust lift. Do not rely on the padlock as a trust signal in marketing or on-page messaging. Instead, use recognized third-party trust badges that users actually understand and respond to.
 - **Replication Status**: The asymmetric effect (absence hurts, presence doesn't help) is well-documented.
 - **Boundary Conditions**: Technical audiences may still consciously check for HTTPS, but they represent a small segment.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -201,6 +218,7 @@
 - **E-Commerce Application**: New/small brands should invest more heavily in third-party trust signals, customer reviews, and transparent policies. As brand equity grows, trust badges can be reduced. Unknown brands should also prominently display: physical address, phone number, team photos, press mentions, and social proof.
 - **Replication Status**: Replicated across the ScienceDirect empirical study.
 - **Boundary Conditions**: Even unknown brands can over-do trust signals (see Finding 9).
+- **Evidence Tier**: Gold
 
 ---
 
@@ -211,6 +229,7 @@
 - **E-Commerce Application**: Only display trust badges from brands your audience recognizes. If using a lesser-known seal (e.g., a niche certification), position it adjacent to well-known seals to borrow credibility. Self-asserted claims ("We guarantee security") without third-party validation are less effective than recognized third-party seals.
 - **Replication Status**: Individual case studies; directional but context-dependent.
 - **Boundary Conditions**: The 42% VeriSign lift may reflect the era (pre-2015 when SSL was less ubiquitous). Modern lifts are likely smaller.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -221,6 +240,7 @@
 - **E-Commerce Application**: Display return policy summary on product pages (not just in a footer link). Include "Free Returns" or "Easy 30-Day Returns" as a badge near the Add to Cart button. Reiterate return policy in the cart and at checkout. Post-purchase: make the return process seamless to drive repeat purchases.
 - **Replication Status**: Consistent with US-focused research from Baymard and NNGroup.
 - **Boundary Conditions**: Free returns create operational costs; the policy must be economically sustainable. Apparel/fashion has higher return sensitivity than electronics or consumables.
+- **Evidence Tier**: Bronze
 
 ---
 
@@ -231,6 +251,7 @@
 - **E-Commerce Application**: Trust is holistic -- it cannot be solved with badges alone. Product descriptions must be accurate (misleading specs destroy trust). Contact information and company background must be easily findable. Consistency across the site (design, tone, accuracy) builds cumulative trust.
 - **Replication Status**: Based on extensive multi-round, multi-country research; highly robust.
 - **Boundary Conditions**: Full report is behind a paywall; specific quantitative conversion data is not available in the public summary.
+- **Evidence Tier**: Gold
 
 ---
 
@@ -241,6 +262,7 @@
 - **E-Commerce Application**: Reduce form fields to the minimum necessary. Every additional field is both a usability burden and a trust signal that the site is asking for too much information. Combine trust optimization with form simplification for compounding effects. A clean, short checkout feels more secure than a cluttered one with many badges.
 - **Replication Status**: Replicated across Baymard's multi-year research program.
 - **Boundary Conditions**: B2B checkouts legitimately require more fields; the 12-element target applies to B2C.
+- **Evidence Tier**: Gold
 
 ---
 

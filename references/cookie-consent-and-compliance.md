@@ -33,6 +33,8 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: The options you present and how you present them determine consent rates more than any other factor. For compliant banners: present Accept and Reject as equal options (required by law in EU/UK), but use clear visual design to make the choice easy and fast. Minimize the cognitive burden of the decision.
 - **Replication Status**: Three independent peer-reviewed studies converge (2019 ACM CCS, 2020 ACM CHI, 2021 CHB). Utz 2019 is the strongest — conducted on a real ecommerce site with 82,000+ users. This is one of the most well-replicated findings in the entire CRO domain.
 - **Boundary Conditions**: All studies are EU/GDPR context. US markets have different (weaker) consent requirements — the magnitude of design effects may differ where "accept or leave" is the only option. Utz's ecommerce site was German — cultural attitudes toward privacy may moderate effects.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary source (ACM CCS) is a top-tier peer-reviewed computer science venue; evidence quality substantially exceeds Bronze norm
 
 ### Finding 2: Banner Placement — Bottom Bars Are the Only Viable Mobile Format
 
@@ -42,6 +44,8 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Bottom bars are the only viable format for mobile cookie consent. Corner popups are functionally invisible on mobile. Full-screen overlays force engagement but may increase bounce. Do not use small corner buttons for cookie preferences — they will be ignored entirely.
 - **Replication Status**: Utz and Habib are peer-reviewed at top venues (ACM CCS, ACM CHI). Cookie-Script is vendor data. The directional finding (bottom > corner) is robust across all sources.
 - **Boundary Conditions**: Cookie-Script acceptance rates reflect their specific client base. Full-screen overlays force a decision (lower bounce, higher rejection rates) — the optimal format depends on whether you prioritize consent rate or user experience.
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary source (ACM CCS, N=14,135) is top-tier peer-reviewed; evidence quality substantially exceeds Bronze norm
 
 ### Finding 3: Regulatory Landscape — Reject Must Equal Accept (EU/UK Only)
 
@@ -51,6 +55,7 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: For sites serving EU/UK users: Accept and Reject buttons must be the same size, same visual weight, same number of clicks to reach. Do not hide Reject behind "Manage preferences." Do not use color to make Accept more prominent than Reject. The regulatory risk is real and actively enforced. For US-only sites: these requirements do not apply, but providing clear consent options builds trust regardless of jurisdiction.
 - **Replication Status**: Regulatory/legal documents — factual, not experimental. EU/UK-specific jurisdiction. Enforcement is documented and ongoing.
 - **Boundary Conditions**: This is EU/UK law, not universal. US markets (except California CCPA/CPRA) have minimal cookie consent requirements. The legal landscape is evolving — regulations may tighten in additional jurisdictions.
+- **Evidence Tier**: Bronze
 
 ### Finding 4: Expect ~25% Full Consent — Design Consent as a Micro-Conversion
 
@@ -60,6 +65,7 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Design consent as a micro-conversion funnel. You cannot ethically manipulate consent, but you can reduce friction: (1) use clear, simple language, (2) minimize the number of categories/choices, (3) load the banner after a brief delay (not blocking first paint), (4) ensure the banner doesn't obscure product content on mobile. Accept that ~60-75% of analytics data will be incomplete in GDPR markets. Plan measurement strategy accordingly.
 - **Replication Status**: Multiple vendor platforms converge on similar ranges. All are vendor-sourced (Advance Metrics, etracker, Ignite/Consentmo). The directional finding (~25% full consent, ~60% data loss) is consistent. Specific percentages vary by market and banner design.
 - **Boundary Conditions**: All data is from EU/GDPR markets. US consent rates are higher because fewer sites offer equal reject options. The "switchable 1/3" insight suggests UX optimization has real but bounded impact — you cannot move the 37% who always accept or the 26% who always reject.
+- **Evidence Tier**: Bronze
 
 ### Finding 5: Only 12-15% of Cookie Banners Meet Minimum GDPR Compliance
 
@@ -69,6 +75,7 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Most competitors are non-compliant — this is simultaneously a risk (regulators are enforcing) and an opportunity (compliant consent UX builds trust). Use this as a competitive differentiator: a well-designed, compliant consent banner signals professionalism. Audit your own banner against EDPB requirements: equal Accept/Reject, no pre-checked categories, no cookies before consent, clear withdrawal mechanism.
 - **Replication Status**: Two independent large-scale audits (Nouwens 2020 N=680, CHI 2025 N=254,148) converge on the same finding. CHI 2025 is peer-reviewed at the top HCI venue with a massive dataset. This is among the strongest evidence in the entire CRO expansion.
 - **Boundary Conditions**: Both studies are EU/GDPR-focused. Compliance rates in non-GDPR markets may differ. Automated compliance checking detects structural issues but may miss contextual violations.
+- **Evidence Tier**: Gold
 
 ### Finding 6: "Bright Patterns" — Highlighting the Decline Option Improves Decision Quality
 
@@ -78,6 +85,8 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Consider bright pattern design as a trust-building strategy. Making the reject option genuinely easy to find and use — rather than legally compliant but practically hidden — signals transparency. For repeat-purchase businesses, the trust benefit of transparent consent may outweigh the analytics data lost from slightly lower consent rates. Satisfaction with the consent experience influences overall site perception.
 - **Replication Status**: Single study at a top-tier venue (USENIX Security) with large N=3,947. No direct replication yet. French-only sample limits geographic generalizability.
 - **Boundary Conditions**: French-only sample — consent attitudes vary by country. The study measures decision quality and satisfaction, not downstream purchase conversion. The trust benefit is theoretical (plausible but unmeasured in ecommerce context).
+- **Evidence Tier**: Bronze
+- **Quality Flag**: Primary source (USENIX Security, N=3,947) is a top-tier peer-reviewed security venue; evidence quality substantially exceeds Bronze norm
 
 ### Finding 7: Initial Options Matter More Than Placement on Mobile
 
@@ -87,6 +96,7 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Focus consent UX optimization on what options you present, not just where you put the banner. Show clear, simple categories (e.g., "Essential," "Analytics," "Marketing") rather than technical jargon. Do not pre-check non-essential categories. The fewer categories requiring decisions, the faster users move through consent and into shopping.
 - **Replication Status**: Peer-reviewed at ACM CHI (top HCI venue). N=1,359 across US and UK — good geographic breadth. Single study, no direct replication.
 - **Boundary Conditions**: US-UK sample may not generalize to markets with different privacy attitudes (e.g., Germany, where privacy sensitivity is higher). The study tested interface variants, not the downstream effect on shopping behavior.
+- **Evidence Tier**: Gold
 
 ### Finding 8: Consent Fatigue is Increasing — Mobile Acceptance 3-10% Lower Than Desktop
 
@@ -96,6 +106,7 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Mobile banner design needs MORE optimization than desktop, not less — yet it typically gets less attention. The 3-10% acceptance gap means more lost tracking data on the channel with the most traffic. Optimize the mobile consent experience specifically: ensure the banner doesn't cover product content, use large touch targets for Accept/Reject, minimize the number of taps required. As consent fatigue increases, banner design quality becomes more important each year.
 - **Replication Status**: Secure Privacy is a vendor (sells CMP tools). Ignite/Consentmo is also vendor-adjacent. The 46% fatigue figure could not be independently verified. The mobile-desktop gap is directionally supported by multiple platform observations.
 - **Boundary Conditions**: Both sources are vendor-sourced. The specific "3-10%" range is wide enough to be credible but narrow enough to be useful. The 46% fatigue claim needs independent verification. Consent behavior is highly market-dependent — EU vs US vs other jurisdictions show very different patterns.
+- **Evidence Tier**: Bronze
 
 ### Finding 9: Cookie Consent as Cognitive Load — A Decision Before Shopping Begins
 
@@ -105,6 +116,7 @@ Cookie consent is the strongest evidence base in the mobile CRO expansion — mu
 - **E-Commerce Application**: Minimize consent cognitive load: (1) use a maximum of 3 clear categories (Essential, Analytics, Marketing), (2) use plain language (not legal jargon), (3) delay the banner by 1-2 seconds so the page renders first (user sees products before the banner), (4) on mobile, ensure the banner consumes no more than 30-40% of viewport, (5) provide a one-tap Accept All and one-tap Reject All as the primary options, with "Customize" as a secondary action for engaged users.
 - **Replication Status**: This is a framework application, not a primary finding. The underlying cognitive load principles are well-established (Hick's Law, choice overload). The specific application to consent UX is logical but not experimentally validated.
 - **Boundary Conditions**: The "delay the banner" recommendation may conflict with strict GDPR interpretation (some regulators argue consent must be obtained before any processing, including page analytics). Test compliance with your legal team. The cognitive load framework assumes users process consent rationally — many users click Accept reflexively without reading.
+- **Evidence Tier**: Bronze
 
 ---
 

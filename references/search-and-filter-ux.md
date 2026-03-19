@@ -40,6 +40,7 @@
 - **E-Commerce Application**: Audit your filtering UX against Baymard's guidelines before optimizing anything else. If your site falls in the 84% without good filtering, fixing this is likely higher-ROI than tweaking CTAs or trust badges on product pages users never reach.
 - **Replication Status**: Baymard has re-benchmarked multiple times (2014, 2017, 2020+) with consistent findings. Not independently replicated by academic researchers, but methodology is transparent and sample is large.
 - **Boundary Conditions**: Tested primarily on large US e-commerce sites with broad catalogs. Small catalogs (<100 products) may not need sophisticated filtering. Highly specialized B2B sites have different requirements.
+- **Evidence Tier**: Gold
 
 ### Finding 2: Mediocre Filtering Causes 67-90% Abandonment; Slight Optimization Drops It to 17-33%
 - **Source**: Baymard Institute, same study as Finding 1.
@@ -48,6 +49,7 @@
 - **E-Commerce Application**: Filter UX does not require perfection to produce large gains. Moving from "mediocre" to "slightly optimized" (fixing the worst offenders — broken filters, missing category-specific options, dead-end zero-result states) captures the majority of the improvement.
 - **Replication Status**: Consistent across Baymard's multi-year testing rounds. Specific abandonment percentages are from usability sessions (qualitative), not large-scale quantitative A/B tests.
 - **Boundary Conditions**: Abandonment rates are task-specific (i.e., "find a product matching X criteria"). Actual site-level conversion impact depends on what percentage of visitors use filters.
+- **Evidence Tier**: Gold
 
 ### Finding 3: 40% of Users Cannot Locate Filtering Options
 - **Source**: Baymard Institute, same study as Finding 1.
@@ -56,6 +58,7 @@
 - **E-Commerce Application**: Ensure filters are visually prominent and positioned where users expect them (left sidebar on desktop, clearly labeled button on mobile). Avoid hiding filters behind non-obvious UI elements. If 40% of users can't find your filters, your filtering investment is wasted on nearly half your audience.
 - **Replication Status**: Consistent across Baymard testing rounds.
 - **Boundary Conditions**: Desktop vs. mobile filter visibility differs significantly. Mobile requires explicit filter entry points (button/drawer) since sidebar patterns don't translate.
+- **Evidence Tier**: Gold
 
 ### Finding 4: Thematic Filters Engage >50% of Users When Available
 - **Source**: Baymard Institute, via Smashing Magazine (April 2015), "The Current State of E-Commerce Filtering."
@@ -64,6 +67,7 @@
 - **E-Commerce Application**: Add thematic/contextual filters alongside technical specs. For apparel: "occasion," "season," "style." For home goods: "room," "aesthetic." For gifts: "recipient," "price range," "occasion." These serve early-funnel exploratory shoppers who don't yet know specific product attributes.
 - **Replication Status**: Consistent across Baymard's testing. No independent replication, but the behavioral pattern (exploratory vs. decisive shoppers) is well-supported by information-seeking research.
 - **Boundary Conditions**: Thematic filters require editorial curation — they can't be auto-generated from product specs alone. Categories with purely technical products (e.g., industrial components) may not benefit from thematic filters.
+- **Evidence Tier**: Gold
 
 ### Finding 5: Compatibility Filters — Only 35% Task Success
 - **Source**: Baymard Institute, same study as Finding 1.
@@ -72,6 +76,7 @@
 - **E-Commerce Application**: If you sell products that depend on compatibility (phone cases, printer ink, car parts, appliance accessories), compatibility filtering is not optional — it's the primary conversion lever. Implement "What device/model do you have?" filters and guarantee the results are compatible.
 - **Replication Status**: Consistent across Baymard's testing of compatibility-dependent categories.
 - **Boundary Conditions**: Only applies to categories with compatibility requirements. Stores selling standalone products don't need this.
+- **Evidence Tier**: Gold
 
 ### Finding 6: 82% Have Autocomplete, but 36% of Implementations Do More Harm Than Good
 - **Source**: Baymard Institute, via Smashing Magazine (August 2014), "The Current State of E-Commerce Search."
@@ -80,6 +85,7 @@
 - **E-Commerce Application**: Having autocomplete is not enough — bad autocomplete is worse than none. Audit your autocomplete for: (a) relevance of suggestions, (b) tolerance for misspellings, (c) support for synonyms and abbreviations, (d) visual clarity of the dropdown. Test with real user queries from your search logs.
 - **Replication Status**: Baymard has benchmarked search UX multiple times. The specific percentages are from 2014 benchmarking — current implementations may have improved, but Baymard noted in 2017 that 51% still didn't offer faceted search suggestions. **DATED (2014). Baymard has continued publishing updated search UX research. Principles remain valid but specific percentages should be verified against current Baymard benchmark data.**
 - **Boundary Conditions**: Autocomplete value increases with catalog size. Small catalogs (<50 products) may not benefit. The quality threshold matters more than presence.
+- **Evidence Tier**: Gold
 
 ### Finding 7: 68% of "No Results" Pages Are Dead Ends
 - **Source**: Baymard Institute.
@@ -88,6 +94,7 @@
 - **E-Commerce Application**: A "no results" page must provide recovery paths: (1) spelling corrections applied automatically, (2) related/alternative products, (3) popular products or categories, (4) the search query preserved in the search box for easy editing, (5) customer service contact. Every zero-result page without recovery is a lost customer.
 - **Replication Status**: Consistent across Baymard's benchmarking.
 - **Boundary Conditions**: Zero-result rates vary by catalog coverage and search algorithm quality. Sites with comprehensive catalogs and good NLP have lower zero-result rates to begin with.
+- **Evidence Tier**: Gold
 
 ### Finding 8: 76% of US Consumers Say Failed Search = Lost Sale
 - **Source**: Google Cloud / Harris Poll (2021). Online survey, 9,096 adults across 9 countries, conducted June 24-30, 2021 by Harris Poll on behalf of Google Cloud. Filtered to 8,099 respondents who used retail site search in prior 6 months.
@@ -96,6 +103,7 @@
 - **E-Commerce Application**: Search failure doesn't just lose the searched product — it can lose the entire basket. Invest in search quality as a retention tool, not just a discovery tool. Monitor your zero-result rate and top failing queries weekly.
 - **Replication Status**: Single study, but large sample and reputable methodology. The directional findings are consistent with Baymard's usability data.
 - **Boundary Conditions**: FLAG: VENDOR BIAS — Google Cloud commissioned this study to sell Google Retail Search. The $300B annual revenue loss figure cited in the same study is an extrapolation with unpublished methodology. The survey data on consumer behavior is more trustworthy than the revenue impact extrapolation. Self-reported behavior may overstate actual switching rates.
+- **Evidence Tier**: Silver
 
 ### Finding 9: Choice Overload Has Near-Zero Average Effect (Meta-Analysis)
 - **Source**: Scheibehenne, B., Greifeneder, R. & Todd, P.M. (2010). "Can There Ever Be Too Many Options? A Meta-Analytic Review of Choice Overload." *Journal of Consumer Research*, 37(3), 409-425.
@@ -104,6 +112,7 @@
 - **E-Commerce Application**: Do not blindly reduce filter options based on "7 +/- 2" rules. The "optimal number of filters" depends on: (a) how similar the options are, (b) how much the user knows what they want, (c) task complexity, and (d) time pressure. Progressive disclosure (show common filters, hide advanced ones behind "More filters") is a safer approach than arbitrary reduction.
 - **Replication Status**: Peer-reviewed meta-analysis — high confidence. This is the definitive work on choice overload magnitude.
 - **Boundary Conditions**: The meta-analysis includes lab studies across domains, not exclusively e-commerce. The high variance means choice overload absolutely does occur in specific contexts — the finding is that it doesn't occur universally.
+- **Evidence Tier**: Gold
 
 ### Finding 10: Four Preconditions for Choice Overload
 - **Source**: Chernev, A., Bockenholdt, U. & Goodman, J. (2015). "Choice Overload: A Conceptual Review and Meta-Analysis." *Journal of Consumer Psychology*, 25(2).
@@ -112,6 +121,7 @@
 - **E-Commerce Application**: Use these four preconditions to diagnose whether your category pages risk overload. New/unfamiliar categories (high preference uncertainty) need guided filtering and recommendations. Familiar categories (clear preferences) can safely show more options. This is why "sort by bestselling" works as a default — it reduces decision difficulty for uncertain users.
 - **Replication Status**: Peer-reviewed, builds on the Scheibehenne meta-analysis. Well-supported.
 - **Boundary Conditions**: The preconditions are theoretical constructs that must be inferred from user context — they're not directly measurable in analytics.
+- **Evidence Tier**: Gold
 
 ### Finding 11: The Jam Study — Foundational but Context-Dependent
 - **Source**: Iyengar, S. & Lepper, M. (2000). "When Choice is Demotivating: Can One Desire Too Much of a Good Thing?" *Journal of Personality and Social Psychology*, 79(6), 995-1006.
@@ -120,6 +130,7 @@
 - **E-Commerce Application**: The jam study is about product options, not filter options. Filters are tools to reduce a large set, not additional choices themselves. The relevant takeaway: if your category pages show too many products with insufficient filtering, you're creating the 24-jam problem. Good filters are the solution, not the problem.
 - **Replication Status**: The specific jam study has had mixed replication results. Scheibehenne et al. (2010) meta-analysis found the average choice overload effect is near zero. The jam study likely captured a real but context-specific effect.
 - **Boundary Conditions**: Upscale grocery store, single product category, in-person. Direct translation to online e-commerce filtering is questionable. The study is about product display, not navigation tools.
+- **Evidence Tier**: Gold
 
 ### Finding 12: Site Search Users Convert Higher — Direction Confirmed, Magnitude Unverified
 - **Source**: Multiple vendor sources (Algolia, AddSearch, Econsultancy). The specific "2-3x" claim traces to Econsultancy reports (circa 2014-2015) based on surveys of 800+ digital marketers. No peer-reviewed primary source found.
@@ -128,6 +139,7 @@
 - **E-Commerce Application**: Invest in search quality, but do not use "2-3x conversion" as a business case without acknowledging the selection bias. A better framing: search is a high-intent signal. Users who search are telling you what they want — failing them (bad results, zero results, poor relevance) is a direct conversion leak.
 - **Replication Status**: The directional finding is consistent across all sources. The specific magnitude is unverified and likely inflated by selection bias.
 - **Boundary Conditions**: The conversion gap varies by catalog size (larger catalogs = more search dependency), product type, and traffic source. Stores with small, curated catalogs may see minimal search usage.
+- **Evidence Tier**: Bronze
 
 ### Finding 13: Search Users May Generate Disproportionate Revenue
 - **Source**: Vendor-reported data (AddSearch, multiple CRO blogs). Commonly cited as "15% of visitors use search but account for 45% of revenue."
@@ -136,6 +148,7 @@
 - **E-Commerce Application**: Check your own analytics. Google Analytics (and most analytics platforms) can segment conversion rate and revenue by "used site search" vs. "did not use site search." Your own data is more trustworthy than unverified industry averages.
 - **Replication Status**: Not verified. Treat as directional only.
 - **Boundary Conditions**: Revenue concentration in search users would vary dramatically by site type. A search-heavy site like Amazon would show different patterns than a curated boutique.
+- **Evidence Tier**: Bronze
 
 ### Finding 14: Mobile Filter Patterns — No Rigorous Comparative Data
 - **Source**: Pencil & Paper (design agency), "Mobile Filter UX Design Patterns & Best Practices." Practitioner analysis, not peer-reviewed.
@@ -144,6 +157,7 @@
 - **E-Commerce Application**: Choose pattern based on filter complexity. Simple filters (2-3 facets): top or bottom drawer. Complex filters (5+ facets): full-screen modal. Always include an explicit "Apply" button on mobile rather than live-filtering, which risks closing drawers unexpectedly and confusing users.
 - **Replication Status**: No peer-reviewed comparative study found on mobile filter patterns. This is a significant research gap.
 - **Boundary Conditions**: Pattern effectiveness likely depends on catalog complexity, user familiarity, and how many filters are typically applied. Baymard has mobile commerce usability research but specific filter pattern data is behind their paywall.
+- **Evidence Tier**: Bronze
 
 ### Finding 15: Live-Filtering vs. Batch-Apply on Mobile
 - **Source**: Pencil & Paper (same as Finding 14), Baymard Institute mobile commerce guidelines.
@@ -152,6 +166,7 @@
 - **E-Commerce Application**: Default to batch-apply with an "Apply Filters" button unless your architecture supports instant, jank-free grid updates. If live-filtering, ensure: (a) the filter drawer stays open during updates, (b) no layout shifts in the product grid, (c) result count updates in real-time within the drawer. Show selected filter count and result count preview ("Show 47 results") regardless of pattern. Allow easy filter removal via chips/tags above the product grid.
 - **Replication Status**: Practitioner consensus, consistent with Baymard's mobile UX testing.
 - **Boundary Conditions**: For very simple filter sets (single facet, e.g., just "Sort by"), live-filtering is fine. The batch pattern is specifically for multi-facet filtering.
+- **Evidence Tier**: Bronze
 
 ### Finding 16: Autocomplete Conversion Claims Are Vendor-Reported and Unverified
 - **Source**: Algolia blog: "Autocomplete can boost sales by up to 24%." Econsultancy: "Sites with predictive search have 9.01% conversion rate vs. 2.77% without."
@@ -160,6 +175,7 @@
 - **E-Commerce Application**: Implement autocomplete because it's a well-established UX best practice, not because of specific vendor-claimed conversion numbers. Focus on quality: relevant suggestions, misspelling tolerance, visual clarity. Bad autocomplete (36% of implementations per Baymard) is worse than none.
 - **Replication Status**: No peer-reviewed conversion impact study found for autocomplete in e-commerce specifically. NNGroup recommends it as a best practice without publishing specific conversion numbers.
 - **Boundary Conditions**: FLAG: VENDOR BIAS on all specific numbers. Algolia and Econsultancy sell search products/consulting.
+- **Evidence Tier**: Bronze
 
 ### Finding 17: Search Box Should Accommodate 27+ Characters
 - **Source**: Nielsen Norman Group. "Search: Visible and Simple."
@@ -168,6 +184,7 @@
 - **E-Commerce Application**: Check your search box width against your actual query lengths (from search logs). If >5% of queries are truncated, widen the box. On mobile, a sticky search bar keeps search accessible during scrolling. Never hide search behind an icon-only toggle on sites with >50 products.
 - **Replication Status**: Consistent NNGroup recommendation across multiple publications. The 27-character guideline is based on query length distribution analysis.
 - **Boundary Conditions**: Mobile search boxes are constrained by screen width; the 27-character guideline applies primarily to desktop. On mobile, full-width search with expandable input is the standard pattern.
+- **Evidence Tier**: Gold
 
 ### Finding 18: Faceted Search Preferred Over Keyword-Only for Exploration (Academic)
 - **Source**: Hearst, M. et al. (2002). "Finding the Flow in Web Site Search." *Communications of the ACM*, 45(9). Also: Hearst, M. (2009). *Search User Interfaces*. Cambridge University Press. Kules, B. & Capra, R. (2009). "What Do Exploratory Searchers Look at in a Faceted Search Interface?" *Proceedings of JCDL 2009*.
@@ -176,6 +193,7 @@
 - **E-Commerce Application**: For stores with broad catalogs, faceted search (filters + keyword) outperforms keyword-only search for exploratory shopping. Keyword search alone is acceptable for known-item searches ("Nike Air Max 90 size 11") but fails for exploratory queries ("comfortable running shoes for flat feet"). Yet in 2017, 51% of e-commerce sites still didn't offer faceted search suggestions (Baymard).
 - **Replication Status**: Hearst's work is foundational and widely cited in information retrieval research. Kules & Capra's eye-tracking study is consistent. Neither was conducted on e-commerce product catalogs specifically.
 - **Boundary Conditions**: Academic studies used art image collections and library catalogs, not product catalogs. The preference for faceted interfaces likely transfers to e-commerce (Baymard's usability data supports this), but direct replication in e-commerce settings is lacking. Small catalogs may not need faceted search.
+- **Evidence Tier**: Gold
 
 ### Finding 19: Search Users Convert Higher — But It's Correlation, Not Causation
 - **Source**: (a) Algolia, 2026, vendor benchmark; (b) Opensend/Algolia, vendor analytics; (c) Salesforce Commerce Cloud, vendor telemetry
@@ -184,6 +202,7 @@
 - **E-Commerce Application**: Treat search as a high-value surface that deserves investment. Optimize search results as a primary conversion surface. But do not assume forcing more users into search will lift conversion — the intent drives the behavior, not the tool. Measure search quality (zero-results rate, refinement rate, exit rate) rather than just search usage.
 - **Replication Status**: The directional finding (search users convert higher) is consistent across all vendor sources. The causal interpretation has never been tested via randomized experiment. All quantitative sources are vendors who sell search tools.
 - **Boundary Conditions**: The 6x figure is Amazon-specific and reflects Amazon's unusually high search usage. Smaller retailers typically see 1.5-3x. The correlation is likely stronger for retailers with large catalogs and weaker for curated/small-catalog stores.
+- **Evidence Tier**: Bronze
 
 ### Finding 20: Zero-Results Pages Are Conversion Killers
 - **Source**: (a) Google Cloud / Harris Poll, 2024, commissioned study (N=13,500, 14 countries); (b) Algolia, 2026, vendor benchmark
@@ -192,6 +211,7 @@
 - **E-Commerce Application**: Zero-results pages must never be dead ends. Implement: (1) typo tolerance and fuzzy matching, (2) synonym recognition, (3) "did you mean?" suggestions, (4) popular products or categories as fallbacks, (5) contact/chat option for complex queries. Every zero-results page should be treated as a conversion emergency.
 - **Replication Status**: Google Cloud study is the strongest source (N=13,500, Harris Poll executed, independent polling firm). Algolia converges independently. Google commissioned the study and sells Cloud search products — the research questions may be framed to emphasize search importance.
 - **Boundary Conditions**: Harris Poll is survey-based (stated behavior, not observed). The 80% figure measures stated intent to leave, not actual measured abandonment. Google funded the study. The directional finding is very likely robust but the specific percentage should be treated as approximate.
+- **Evidence Tier**: Silver
 
 ### Finding 21: Mobile Search Bar and Filter Placement
 - **Source**: Baymard Institute, 2023-2024, ongoing usability research program (4,400+ usability testing sessions)
@@ -200,6 +220,7 @@
 - **E-Commerce Application**: Use sticky filter/sort bar at bottom on mobile (within thumb zone). Limit horizontal filter chips to 5-6 visible options with "More filters" expansion. Promote the filters most relevant to the current category — don't show the same generic filters everywhere. Ensure the search box accommodates 27+ characters (NNGroup recommendation).
 - **Replication Status**: Baymard is the most credible independent source in ecommerce UX research. 4,400+ sessions across multiple years and sites. Their methodology (moderated usability testing) is the gold standard for UX research.
 - **Boundary Conditions**: Baymard's research is usability-focused, not conversion-focused. They identify friction points, not causal conversion lifts. The 61% and 41% figures describe prevalence of problems, not measured conversion impact of fixing them.
+- **Evidence Tier**: Gold
 
 ### Finding 22: Visual Search is Growing, Voice Search is Not Converting
 - **Source**: (a) Google, 2024-2025, platform data; (b) Envive, 2025, vendor analytics; (c) Synup, voice search statistics
@@ -208,6 +229,7 @@
 - **E-Commerce Application**: For visual-heavy categories (fashion, home decor, furniture): add camera icon to search bar, optimize product images for visual search matching. For voice: optimize for discovery queries ("what's a good gift for...") but do not invest in voice checkout — voice is a discovery channel, not a transaction channel.
 - **Replication Status**: Google Lens data is first-party platform data (credible for usage volume). Envive visual search stats are vendor-sourced (sells visual search analytics). Voice data is survey-based.
 - **Boundary Conditions**: Envive's 30%/22% figures almost certainly reflect self-selection, not causal feature impact. Voice commerce forecasts have consistently overestimated adoption. Visual search is strongest for visually-distinctive products and weakest for commodities.
+- **Evidence Tier**: Silver
 
 ---
 
