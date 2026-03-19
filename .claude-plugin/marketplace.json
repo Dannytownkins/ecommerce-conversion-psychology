@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "ecommerce-conversion-psychology",
+  "description": "CRO toolkit for ecommerce pages using research-backed psychology",
+  "owner": {
+    "name": "Daniel Kinsner"
+  },
+  "plugins": [
+    {
+      "name": "cro",
+      "description": "Conversion rate optimization toolkit with audit, build, compare, and quick-scan commands",
+      "category": "productivity",
+      "source": {
+        "source": "local",
+        "path": "plugins/cro"
+      }
+    }
+  ]
+}
