@@ -26,11 +26,14 @@
 }
 
 <!--
+  platform values: "shopify", "nextjs", "opencart", "generic"
+
   source_mode values:
-    "url"         — Page scanned via URL with agent-browser
+    "url-dual"    — Page scanned via URL with agent-browser (dual capture: DOM + screenshots)
     "file-path"   — Local file path provided
     "pasted-code" — Code pasted directly
     "screenshot"  — User-provided screenshot image (no URL, no DOM)
+    "description" — Text description only (from-scratch mode)
 
   screenshot_input (only when source_mode is "screenshot"):
     {

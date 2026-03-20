@@ -1,6 +1,6 @@
 # E-Commerce Conversion Psychology
 
-![v4.0.0](https://img.shields.io/badge/version-4.0.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_any-green)
+![v4.1.0](https://img.shields.io/badge/version-4.1.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 18 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -27,7 +27,7 @@ Not a checklist. Not a linter. A full workflow that catches what you miss, chall
 | `--device` | audit, quick-scan, compare | Target viewport: `desktop` (1440x900), `mobile` (390x844), `both` |
 | `--auto` | audit, build | Skip checkpoints, run all phases automatically |
 | `--min-priority` | audit, build, quick-scan | Filter by severity: `critical`, `high`, `medium`, `low` |
-| `--platform` | audit, build, quick-scan | Skip detection: `shopify`, `nextjs` |
+| `--platform` | audit, build, quick-scan | Skip detection: `shopify`, `nextjs`, `opencart` |
 | `--visual` | audit, quick-scan, compare | Generate annotated screenshot report |
 | `--no-visual` | audit, quick-scan, compare | Skip visual report prompt |
 | `--ab-scaffold` | audit, build | Generate A/B test scaffold after planning |
@@ -57,12 +57,16 @@ Each run creates a directory under `docs/cro/` — one file per phase:
 ```
 docs/cro/2026-03-11-a3f2b1c9/
   meta.json           Engagement state + metadata (includes devices_scanned)
+  baton.json          Structured acquisition output (screenshots, sections, styles, dimensions)
   context.md          Write-once intake context
+  dom.html            Preprocessed DOM
+  *.jpg / *.b64       Screenshots + base64-encoded copies for self-contained reports
   audit.md            Desktop findings (or single-device findings)
   audit-mobile.md     Mobile findings (only when --device both)
   plan.md             Prioritized action plan
   review.md           Review notes + verdict
   build-log.md        Implementation status
+  visual-report.html  Annotated screenshot report (optional, self-contained)
   report.html         HTML report (optional)
   ab-scaffold.md      A/B test scaffold (optional)
 ```
@@ -78,8 +82,10 @@ docs/cro/2026-03-11-a3f2b1c9/
 - **Progress memory** — re-audit a page and see what changed since last time
 - **Interactive review** — the reviewer challenges vague or contradictory recommendations before any code gets written
 - **A/B test scaffolding** — hypotheses, variant code, and measurement plans, platform-aware
-- **Annotated screenshot reports** — dark-mode HTML with bidirectional scroll-sync between screenshots and findings, self-contained, WCAG AA, print-friendly, no external dependencies
+- **Structured baton handoff** — acquisition writes `baton.json` with machine-readable metadata (screenshot dimensions, section boundaries, cluster mappings, extracted styles). Downstream phases consume the same JSON — no informal text parsing, deterministic pipeline.
+- **Self-contained visual reports** — screenshots base64-embedded as data URIs, correct SVG viewBox from actual image dimensions (DPR-aware), dark-mode HTML with bidirectional scroll-sync, WCAG AA, print-friendly, no external dependencies
 - **Component library** — shared building blocks enforcing structural consistency across all visual report output
+- **Overlay dismissal** — acquisition agent explicitly handles cookie banners, newsletter popups, chat widgets, and consent modals before capturing screenshots
 
 ### Domain Clusters
 
@@ -96,6 +102,7 @@ docs/cro/2026-03-11-a3f2b1c9/
 |----------|--------|-------------|
 | Shopify | First-class | Liquid patterns, OS 2.0 sections, Shop Pay, Checkout Extensions |
 | Next.js | First-class | App Router, RSC boundaries, Server Actions, middleware A/B testing |
+| OpenCart | Detected | Auto-detected via `catalog/view/`, URL patterns, meta generator. Uses generic CRO principles. |
 | Generic | Default | Universal CRO principles — works with anything |
 
 ---
@@ -103,17 +110,16 @@ docs/cro/2026-03-11-a3f2b1c9/
 ## Installation
 
 ```bash
-git clone https://github.com/Dannytownkins/ecommerce-conversion-psychology \
-  ~/.claude/plugins/cro
+claude plugin marketplace add Dannytownkins/ecommerce-conversion-psychology
+claude plugin install cro@ecommerce-conversion-psychology
 ```
 
-Then add to `~/.claude/settings.json` under `"enabledPlugins"`:
+Restart Claude Code. The `/cro` commands will be available immediately.
 
-```json
-"cro": true
+To update later:
+```bash
+claude plugin update cro@ecommerce-conversion-psychology
 ```
-
-Restart Claude Code or run `/reload-plugins`. The `/cro` commands will be available immediately.
 
 ---
 
@@ -121,7 +127,7 @@ Restart Claude Code or run `/reload-plugins`. The `/cro` commands will be availa
 
 ```
 ecommerce-conversion-psychology/
-  .claude-plugin/plugin.json          Plugin metadata (v4.0.0)
+  .claude-plugin/plugin.json          Plugin metadata (v4.1.0)
   skills/
     cro/SKILL.md                      /cro router
     audit/SKILL.md                    /cro:audit

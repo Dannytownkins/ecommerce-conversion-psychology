@@ -1,5 +1,51 @@
 # Changelog
 
+## 4.1.0 — 2026-03-20
+
+### Deviation Audit Remediation — Reproducibility & Self-Contained Reports
+
+Addresses all findings from the 2026-03-19 deviation audit. Focuses on three areas: making reports self-contained, introducing structured handoff between pipeline phases, and reducing model-dependent behavior.
+
+#### Structured Baton File (1 change)
+- New `baton.json` output from acquisition phase. Machine-readable JSON with device, viewport, screenshot metadata (paths, base64_paths, naturalWidth, naturalHeight), section boundaries with cluster mapping, DOM mode, extracted styles, and status. Downstream phases read `baton.json` as the authoritative acquisition output instead of parsing informal text. Coordinators and visual report generators validate `status: "COMPLETE"` before proceeding.
+
+#### Self-Contained Reports (2 changes)
+- Screenshots embedded as base64 data URIs (`data:image/jpeg;base64,...`) in visual reports. Acquisition writes `.b64` files alongside each screenshot. Visual report assembly reads `.b64` files and embeds inline. Reports are fully portable — no broken images when moved or shared.
+- SVG `viewBox` now uses `naturalWidth` × `naturalHeight` from `baton.json` instead of CSS viewport dimensions. Fixes mispositioned markers on mobile (3x DPR: 1170×2532 actual vs 390×844 CSS).
+
+#### Obstacle Handling (1 change)
+- New Step 1b in `acquire.md`: explicit overlay dismissal sequence. Checks for `[role="dialog"]`, `.modal`, `.cookie-banner`, `[class*="consent"]`, newsletter popups, and OneTrust SDK. Tries close button → Escape → click outside → mark occluded. Handles chained overlays (cookie → newsletter). Eliminates model-dependent improvisation for popup handling.
+
+#### Screenshot Format Enforcement (1 change)
+- PNG validation added to acquisition. If agent-browser produces PNG, re-captures as JPEG. Falls back to ImageMagick conversion. Notes `format_override` in baton if conversion unavailable.
+
+#### DOM Tiered Extraction (2 changes)
+- DOM size threshold raised from 300KB to 500KB for skeleton mode. New intermediate tier (300–500KB): aggressive duplicate reduction (keep 2 siblings) + strip inline styles except on CTAs/prices/trust badges. Set `dom_mode: "reduced"`.
+- Duplicate sibling keep count raised from 3 to 5. Ensures auditors see card-to-card variation (badges, reviews, sale prices).
+
+#### Platform Detection (2 changes)
+- OpenCart added to platform detection heuristics: `catalog/view/` directory, `route=product/product` URL patterns, `opencart` meta generator. DOM-level detection added for all platforms (Shopify `cdn.shopify.com`, Next.js `__NEXT_DATA__`, OpenCart `catalog/view/`).
+- Quick-scan now runs platform detection before engagement setup. Previously defaulted to `"generic"` without checking.
+
+#### meta.json Validation (1 change)
+- Pattern-level validation for all required fields: id must match `YYYY-MM-DD-{8hex}` regex, type/phase/platform must be valid enum values, `clusters_used` entries must be valid cluster slugs. Logs corrected fields. Applied to both `/cro:audit` and `/cro:quick-scan`.
+
+#### Screenshot Minimum (1 change)
+- Minimum screenshots reduced from 3 to 1. Short pages (landing pages, above-fold-only scans) no longer require artificial padding.
+
+#### Files Modified
+- `workflows/acquire.md` — baton.json output, overlay dismissal, JPEG validation, tiered DOM extraction, duplicate sibling count
+- `workflows/visual-report.md` — base64 embedding, baton.json consumption, SVG viewBox from baton
+- `workflows/audit.md` — (no changes, already compliant)
+- `workflows/quick-scan.md` — (no changes, already compliant)
+- `skills/quick-scan/SKILL.md` — platform detection, baton.json verification, meta.json pattern validation
+- `skills/audit/SKILL.md` — baton.json verification, meta.json pattern validation
+- `references/platform-detection.md` — OpenCart heuristics, DOM-level detection
+- `templates/meta.json.template` — opencart platform, url-dual source_mode, description source_mode
+- `.claude-plugin/plugin.json` — version bump to 4.1.0
+
+---
+
 ## 4.0.0 — 2026-03-19
 
 ### Evidence Tiers, Annotated Screenshots & Component Library — Major Release

@@ -65,16 +65,16 @@ If user proceeds despite mismatch, note it in the comparison output.
 Same as /cro:audit but with type: "compare", schema_version: 2 in meta.json.
 Store compare_target URL/path in meta.json.
 
-After writing meta.json, re-read it and verify all required fields are present:
-- `id`: string, format YYYY-MM-DD-{8hex}
-- `created`: ISO 8601 string
-- `type`: one of [audit, build, quick-scan, compare]
-- `phase`: one of [pending, audit, plan, review, build, complete]
-- `platform`: one of [shopify, nextjs, generic]
-- `page.type`: must match the page type table
-- `clusters_used`: array of cluster slug strings
-Optional: `blocked`, `quick_scan`, `compare_target`, `page.url`, `page.file_path`, `min_priority`, `source_mode`, `devices_requested`, `devices_scanned`, `plans_queue`, `reconciled`
-If any required field is missing or invalid, fix it before proceeding.
+After writing meta.json, re-read it and verify all required fields against these patterns:
+- `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
+- `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
+- `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
+- `phase`: string, MUST be one of: `pending`, `audit`, `plan`, `review`, `build`, `complete`
+- `platform`: string, MUST be one of: `shopify`, `nextjs`, `opencart`, `generic`
+- `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
+- `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
+Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
+If ANY required field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
 Always update the `updated` field to current ISO timestamp on phase transitions.
 
 Check if docs/cro/ is in .gitignore. If not, suggest adding it.

@@ -81,6 +81,21 @@ Wait for the page to be ready before proceeding:
 
 The original 2-second settle was insufficient for heavy JS sites (React SPAs, Next.js hydration) and contributed to false positives from incomplete rendering.
 
+### Step 1b: Dismiss Overlays
+
+After settle time, check for overlays that obstruct the page:
+
+1. Look for elements matching: `[role="dialog"]`, `.modal`, `.popup`, `.cookie-banner`, `[class*="consent"]`, `[class*="overlay"]`, `[class*="newsletter"]`, `[class*="subscribe"]`, `#onetrust-consent-sdk`, `.cc-window`
+2. For each overlay found:
+   a. Try clicking the dismiss/close/accept button (look for: `[aria-label*="close"]`, `[aria-label*="dismiss"]`, `.close`, `.dismiss`, `button:has-text("Accept")`, `button:has-text("Got it")`, `button:has-text("×")`)
+   b. If no dismiss button found: try pressing Escape
+   c. If still present: try clicking outside the overlay (click at coordinates 10,10)
+   d. If still present after all attempts: note `"overlay_dismissed": false` in the section metadata for affected sections and proceed — the visual report will flag occluded sections
+3. Wait 1 second after each successful dismissal before proceeding
+4. Re-check: if dismissing one overlay revealed another (common with cookie → newsletter chains), repeat steps 2a-2c for the new overlay
+
+This step is critical for screenshot quality. Undismissed overlays produce occluded screenshots that downstream auditors cannot evaluate.
+
 **Post-navigation URL validation:** After the page loads, verify that `window.location.href` still resolves to the same domain as the original validated URL. If the page redirected to a different domain, a private IP range, or a non-HTTP scheme, abort immediately:
 
 ```
@@ -139,9 +154,21 @@ Capture settings:
 - Format: JPEG, quality 80
 - Viewport: as specified in input (no default — coordinator must specify)
 
+**Screenshot format validation:** After each capture, verify the screenshot file is JPEG (`.jpg` or `.jpeg`). If agent-browser produces a PNG (`.png`), re-capture with explicit JPEG format. If re-capture still produces PNG, convert inline:
+```
+base64 -d screenshot.b64 | convert png:- -quality 80 jpg:- | base64 > screenshot-jpeg.b64
+```
+If conversion tools are unavailable, proceed with PNG but note `"format_override": "png"` in the baton output for that screenshot.
+
+**Base64 file output:** After each screenshot capture, write the base64-encoded image data to a `.b64` file alongside the image:
+```
+base64 < screenshot.jpg > screenshot.b64
+```
+This enables the visual report generator to embed screenshots as `data:image/jpeg;base64,...` URIs, making reports fully self-contained. Record both the image path and the `.b64` path in the baton output.
+
 **Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, iPhone 14 at 390px CSS width with 3x DPR produces 1170px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
 
-Cap at 6 screenshots total. Minimum 3.
+Cap at 6 screenshots total. Minimum 1.
 
 ### Step 4: Extract and Preprocess DOM
 
@@ -156,14 +183,19 @@ Extract `document.documentElement.outerHTML` from the fully rendered page.
 3. Strip all `data-*` attributes
 4. Strip all SVG `<path>`, `<polygon>`, `<circle>`, `<rect>` elements — replace each `<svg>` with `<svg aria-label="[preserved aria-label or alt text]"/>`
 5. Strip all JSON-LD `<script type="application/ld+json">` blocks — extract and return structured data metadata separately if present
-6. Strip duplicate/template elements: if the DOM contains 10+ sibling elements with identical tag+class structure (e.g., product cards, review entries), keep the first 3 and replace the rest with `<!-- [N] more items omitted -->`
+6. Strip duplicate/template elements: if the DOM contains 10+ sibling elements with identical tag+class structure (e.g., product cards, review entries), keep the first 5 and replace the rest with `<!-- [N] more items omitted -->`. Keeping 5 (up from 3) ensures auditors can assess card-to-card variation (badges, reviews, sale prices, variant selectors).
 7. Strip `value` attributes from: `<input type="password">`, `<input type="hidden">`, and any input with `autocomplete` containing `cc-number`, `cc-exp`, `cc-csc`, or `new-password`
 8. Strip HTML comments (except the omission markers from step 6)
 
-**Size cap:** If the preprocessed DOM exceeds 300KB, switch to **skeleton extraction mode**:
-- Extract only: headings (`h1`–`h6`), buttons, links (`<a>` with text content), form elements, images (tag + `alt` + `width`/`height`), elements with ARIA roles, price elements (elements containing `$` or currency patterns), star rating elements, and review count elements
-- Wrap extracted elements in a minimal structural hierarchy preserving their nesting relationships
-- Prepend: `<!-- SKELETON MODE: DOM exceeded 300KB, extracted structural elements only -->`
+**Size cap — tiered extraction:**
+
+- **Under 300KB:** Full preprocessed DOM. No further reduction.
+- **300–500KB:** Aggressive duplicate reduction — keep first 2 siblings instead of 3. Strip all inline `style` attributes except on buttons, CTAs, price elements, and trust badges. Set `dom_mode: "reduced"`.
+- **Over 500KB:** Skeleton extraction mode:
+  - Extract only: headings (`h1`–`h6`), buttons, links (`<a>` with text content), form elements, images (tag + `alt` + `width`/`height`), elements with ARIA roles, price elements (elements containing `$` or currency patterns), star rating elements, and review count elements
+  - Wrap extracted elements in a minimal structural hierarchy preserving their nesting relationships
+  - Prepend: `<!-- SKELETON MODE: DOM exceeded 500KB, extracted structural elements only -->`
+  - Set `dom_mode: "skeleton"`
 
 ### Step 5: Extract Style Metadata
 
@@ -191,30 +223,62 @@ If pre-hydration detected:
 
 ## Output Format
 
-Return a structured report with these sections:
+Write a structured baton file to `docs/cro/{engagement-id}/baton.json`:
+
+```json
+{
+  "device": "desktop",
+  "viewport": { "width": 1440, "height": 900, "dpr": 1 },
+  "screenshots": [
+    {
+      "index": 1,
+      "label": "Hero and navigation",
+      "scrollY": 0,
+      "path": "desktop-section1-hero.jpg",
+      "base64_path": "desktop-section1-hero.b64",
+      "naturalWidth": 1440,
+      "naturalHeight": 900,
+      "format_override": null
+    }
+  ],
+  "sections": [
+    {
+      "label": "Hero carousel",
+      "scrollY": 0,
+      "height": 500,
+      "clusters": ["visual-cta"],
+      "occluded": false,
+      "overlay_dismissed": true,
+      "screenshot_index": 1
+    }
+  ],
+  "dom_file": "dom.html",
+  "dom_mode": "full",
+  "dom_size_bytes": 72000,
+  "styles": {
+    "bg": "#ffffff",
+    "container_bg": "#ffffff",
+    "text": "#666666",
+    "cta_bg": "#e63946",
+    "link": "#868686"
+  },
+  "pre_hydration_warning": false,
+  "structured_data": null,
+  "status": "COMPLETE"
+}
+```
+
+All paths in the baton are relative to the engagement directory (`docs/cro/{engagement-id}/`).
+
+**Also return a text summary** for the coordinator's context (keep it brief — the baton file is the authoritative output):
 
 ```
 DEVICE: [desktop | mobile]
 VIEWPORT: [width]x[height] @ [dpr]x
-
-SCREENSHOTS: [number captured]
-[For each: { "index": N, "label": "[section name]", "scrollY": N, "path": "[screenshot file path]" }]
-
-SECTIONS: [number of boundaries detected]
-[Array of section boundary metadata objects, each with: label, scrollY, height, clusters, occluded, captured_sections (array of SECTION slugs mapped to this screenshot)]
-
-DOM_SIZE: [size in bytes after preprocessing, or "reused" if dom_file was provided]
-DOM_MODE: [full | skeleton | reused]
-
-STYLES:
-{ "bg": "...", "container_bg": "...", "text": "...", "cta_bg": "...", "link": "..." }
-
-PRE_HYDRATION_WARNING: [true | false]
-
-STRUCTURED_DATA: [extracted JSON-LD metadata, if any]
-
-DOM_FILE: [path where preprocessed DOM was written, or the dom_file path that was provided]
-
+SCREENSHOTS: [count] captured
+SECTIONS: [count] boundaries detected
+DOM_SIZE: [bytes] ([mode])
+BATON: docs/cro/{engagement-id}/baton.json
 STATUS: COMPLETE
 ```
 

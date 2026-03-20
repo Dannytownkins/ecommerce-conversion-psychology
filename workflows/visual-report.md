@@ -31,8 +31,8 @@ Load the following from the engagement directory (`docs/cro/{engagement-id}/`):
 
 - `meta.json` — parse all fields
 - `audit.md` (or `audit-mobile.md`) — parse all findings
-- Screenshot image files — note paths for embedding
-- Acquisition metadata — section boundaries, element pixel coordinates, screenshot naturalWidth/naturalHeight
+- `baton.json` — parse acquisition metadata: screenshots (paths, base64_paths, naturalWidth, naturalHeight), sections (boundaries, clusters, occlusion), styles, dom_mode. **If baton.json does not exist or `status` != `"COMPLETE"`, warn:** "Acquisition baton missing or incomplete — screenshot positions and SVG viewBox may be inaccurate."
+- Screenshot `.b64` files — read base64 data for embedding
 
 ## Step 4: Assemble Header
 
@@ -83,14 +83,16 @@ For each finding in the audit, assemble a finding-card component from `component
 
 Assemble the screenshot-panel component with SVG overlay markers:
 
-- Set SVG `viewBox` to match the screenshot's `naturalWidth` x `naturalHeight` from acquisition metadata.
-- Position overlay markers using pixel coordinates from acquisition metadata.
-- Use wireframe rendering ONLY for occluded sections (sections not visible in screenshots). Do not wireframe sections that have screenshot coverage.
+- **Embed screenshots as base64 data URIs.** For each screenshot in `baton.json`, read the corresponding `.b64` file from the engagement directory and embed as: `src="data:image/jpeg;base64,{contents of .b64 file}"`. **VERIFY:** every `<img>` src in the screenshot panel starts with `data:image/` — never a relative file path. If a `.b64` file is missing, fall back to the image file path but add a comment: `<!-- WARNING: base64 file missing, report is not self-contained -->`.
+- Set SVG `viewBox` to match the screenshot's `naturalWidth` x `naturalHeight` from `baton.json`. Do NOT use CSS viewport dimensions (e.g., 390x844) — use the actual pixel dimensions of the image (e.g., 1170x2532 for 3x DPR mobile).
+- Position overlay markers using pixel coordinates from `baton.json` section metadata.
+- Use wireframe rendering ONLY for occluded sections (sections where `occluded: true` in the baton). Do not wireframe sections that have screenshot coverage.
 
 ### 7b. Screenshot-only mode (source_mode is file/screenshot)
 
 Assemble the screenshot-panel component with markers positioned from Claude's estimated pixel coordinates:
 
+- **Embed screenshots as base64 data URIs** using the same method as URL mode (read `.b64` file, embed as `data:image/jpeg;base64,...`). If the input was a user-provided image file, base64-encode it first.
 - Claude estimates element positions based on visual inspection of the screenshot.
 - No wireframe fallback. All sections are represented by the screenshot itself.
 
@@ -148,6 +150,8 @@ Before writing the file, verify:
 - [ ] Evidence tier badge is visible (not collapsed) in every finding card citation footer
 - [ ] Citation URLs are clickable with `rel="noopener noreferrer" target="_blank"`
 - [ ] "Why this matters" is rendered as a collapsible section
+- [ ] **All screenshot `<img>` src attributes start with `data:image/`** — no relative file paths
+- [ ] **SVG viewBox uses naturalWidth × naturalHeight from baton.json** — not CSS viewport dimensions
 - [ ] Screenshots have SVG overlays (URL mode) or estimated markers (screenshot mode)
 - [ ] Mobile screenshots are wrapped in device-frame component
 - [ ] Limitations banner is present when source_mode is screenshot
@@ -155,5 +159,5 @@ Before writing the file, verify:
 - [ ] Scroll-sync JS is injected from components.html
 - [ ] Font CSS is injected verbatim from templates/font-embed.css
 - [ ] All text content is HTML-escaped
-- [ ] CSP meta tag is present
+- [ ] CSP meta tag is present — `<meta http-equiv="Content-Security-Policy">` in `<head>`
 - [ ] No custom CSS or modified component HTML was added — only content placeholders were populated

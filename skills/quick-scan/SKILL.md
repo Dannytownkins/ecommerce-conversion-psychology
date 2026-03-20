@@ -54,7 +54,8 @@ Determine input type from $ARGUMENTS:
      - Both: dispatch twice serially:
        1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
        2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
-   - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, styles
+   - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, styles, baton.json
+   - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present reason, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data
    - Set `source_mode: "url-dual"` in meta.json
@@ -80,19 +81,29 @@ Log selected device: "Scanning **[device]** at [width]×[height]."
 Set `devices_requested` in meta.json to the user's choice: `["desktop"]`, `["mobile"]`, or `["desktop", "mobile"]`.
 </device_selection>
 
+<platform_detection>
+Detect the ecommerce platform before engagement setup. Load and follow ${CLAUDE_PLUGIN_ROOT}/references/platform-detection.md for heuristics. Accept `--platform` flag to skip detection.
+
+- **URL mode:** Check URL patterns first (`.myshopify.com` → Shopify, `.vercel.app` → likely Next.js). If no URL pattern match, check the preprocessed DOM after acquisition for platform indicators (Shopify liquid comments, OpenCart `catalog/view`, Next.js `__NEXT_DATA__`).
+- **File path mode:** Check file extensions and directory structure per platform-detection.md.
+- **Description mode:** Ask the user if not specified.
+
+Set `platform` in meta.json to the detected value. Do NOT default to `"generic"` without checking — many ecommerce sites have detectable platforms.
+</platform_detection>
+
 <engagement_setup>
 Always create meta.json silently (needed for aggregation). Create engagement directory and meta.json with type: "quick-scan", quick_scan: true, schema_version: 2.
 
-After writing meta.json, re-read it and verify all required fields are present:
-- `id`: string, format YYYY-MM-DD-{8hex}
-- `created`: ISO 8601 string
-- `type`: one of [audit, build, quick-scan, compare]
-- `phase`: one of [pending, audit, plan, review, build, complete]
-- `platform`: one of [shopify, nextjs, generic]
-- `page.type`: must match the page type table
-- `clusters_used`: array of cluster slug strings
-Optional: `blocked`, `quick_scan`, `compare_target`, `page.url`, `page.file_path`, `min_priority`, `source_mode`, `devices_requested`, `devices_scanned`, `plans_queue`, `reconciled`
-If any required field is missing or invalid, fix it before proceeding.
+After writing meta.json, re-read it and verify all required fields against these patterns:
+- `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
+- `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
+- `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
+- `phase`: string, MUST be one of: `pending`, `audit`, `plan`, `review`, `build`, `complete`
+- `platform`: string, MUST be one of: `shopify`, `nextjs`, `opencart`, `generic`
+- `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
+- `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
+Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
+If ANY required field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
 Always update the `updated` field to current ISO timestamp on phase transitions.
 
 Check if docs/cro/ is in .gitignore. If not, suggest adding it.

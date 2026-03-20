@@ -41,7 +41,8 @@ How to acquire page data:
      - Both: dispatch twice serially:
        1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
        2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
-   - Collect output: sectioned screenshots (3-6), preprocessed DOM, section metadata, style metadata
+   - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
+   - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
    - Set `source_mode: "url-dual"` in meta.json
@@ -84,16 +85,16 @@ Before dispatching auditors:
 5. Write context.md (write-once, locked after this step)
 6. Write meta.json with schema_version: 2, phase: "pending", source_mode from mode_detection
 
-After writing meta.json, re-read it and verify all required fields are present:
-- `id`: string, format YYYY-MM-DD-{8hex}
-- `created`: ISO 8601 string
-- `type`: one of [audit, build, quick-scan, compare]
-- `phase`: one of [pending, audit, plan, review, build, complete]
-- `platform`: one of [shopify, nextjs, generic]
-- `page.type`: must match the page type table
-- `clusters_used`: array of cluster slug strings
-Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`, `source_mode`, `devices_requested`, `devices_scanned`, `plans_queue`, `reconciled`
-If any required field is missing or invalid, fix it before proceeding.
+After writing meta.json, re-read it and verify all required fields against these patterns:
+- `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
+- `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
+- `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
+- `phase`: string, MUST be one of: `pending`, `audit`, `plan`, `review`, `build`, `complete`
+- `platform`: string, MUST be one of: `shopify`, `nextjs`, `opencart`, `generic`
+- `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
+- `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
+Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
+If ANY required field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
 Always update the `updated` field to the current ISO timestamp on every phase transition.
 </engagement_setup>
 
