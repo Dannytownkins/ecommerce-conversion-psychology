@@ -104,13 +104,13 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ```bash
 git clone https://github.com/Dannytownkins/ecommerce-conversion-psychology \
-  ~/.claude/plugins/marketplaces/ecommerce-conversion-psychology
+  ~/.claude/plugins/cro
 ```
 
 Then add to `~/.claude/settings.json` under `"enabledPlugins"`:
 
 ```json
-"cro@ecommerce-conversion-psychology": true
+"cro": true
 ```
 
 Restart Claude Code or run `/reload-plugins`. The `/cro` commands will be available immediately.
@@ -121,21 +121,19 @@ Restart Claude Code or run `/reload-plugins`. The `/cro` commands will be availa
 
 ```
 ecommerce-conversion-psychology/
-  .claude-plugin/marketplace.json     Marketplace metadata
-  plugins/cro/                        Plugin root
-    .claude-plugin/plugin.json        Plugin metadata (v4.0.0)
-    skills/
-      cro/SKILL.md                    /cro router
-      audit/SKILL.md                  /cro:audit
-      build/SKILL.md                  /cro:build
-      compare/SKILL.md                /cro:compare
-      quick-scan/SKILL.md             /cro:quick-scan
-      resume/SKILL.md                 /cro:resume
-    references/                       18 domain + 9 operational files
-    citations/                        Source URLs for human verification
-    platforms/                        shopify.md, nextjs.md
-    templates/                        Baton + report templates + component library
-    workflows/                        Phase workflows (context: fork)
+  .claude-plugin/plugin.json          Plugin metadata (v4.0.0)
+  skills/
+    cro/SKILL.md                      /cro router
+    audit/SKILL.md                    /cro:audit
+    build/SKILL.md                    /cro:build
+    compare/SKILL.md                  /cro:compare
+    quick-scan/SKILL.md               /cro:quick-scan
+    resume/SKILL.md                   /cro:resume
+  references/                         18 domain + 9 operational files
+  citations/                          Source URLs for human verification
+  platforms/                          shopify.md, nextjs.md
+  templates/                          Baton + report templates + component library
+  workflows/                          Phase workflows (context: fork)
   README.md
   CHANGELOG.md
   LICENSE
