@@ -13,7 +13,7 @@ The coordinator provides:
 1. **Reference file paths** — read these for domain-specific principles
 2. **Page code** — source code of the page being audited (file path mode) OR preprocessed DOM (URL mode)
 3. **Ethics gate content** — non-negotiable rules to check first
-4. **Screenshots** — 3-6 sectioned viewport captures of the page (URL mode only). Each screenshot covers one visual section of the page. Examine each screenshot individually against your cluster's principles before moving to the next.
+4. **Screenshots** — 1-6 sectioned viewport captures of the page (URL mode only). Each screenshot covers one visual section of the page. Examine each screenshot individually against your cluster's principles before moving to the next.
 5. **Preprocessed DOM** — cleaned, post-JS-execution HTML with scripts/styles/SVGs stripped (URL mode only). Use this to verify what you see in screenshots — check for hidden elements, ARIA attributes, form structures, meta tags, and implementation details not visible in screenshots.
 6. **Min-priority filter** — if specified, include only findings at or above this level
 7. **Device context** — `"desktop"` or `"mobile"`. Determines which principles to emphasize and how to interpret the page layout. See Device-Aware Evaluation below.

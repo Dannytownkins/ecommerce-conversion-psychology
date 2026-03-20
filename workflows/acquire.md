@@ -120,9 +120,9 @@ Identify the page's major visual sections. Use semantic landmarks, headings, and
 
 Good boundary indicators: `<header>`, `<footer>`, `<nav>`, `<main>`, `<section>`, `<article>`, `h1`–`h3` elements, elements with `role="banner"`, `role="main"`, `role="contentinfo"`, and significant whitespace gaps between content blocks.
 
-Target 3–6 sections that together cover the full page.
+Target 1–6 sections that together cover the full page.
 
-- If fewer than 3 natural boundaries exist, use scroll positions at 33% and 66% of page height as fallback boundaries.
+- If fewer than 2 natural boundaries exist (e.g., a short landing page), a single above-fold screenshot is sufficient.
 - If more than 6 boundaries exist, merge adjacent small sections until you have at most 6.
 
 Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px], "clusters": ["relevant-cluster-slugs"], "occluded": false }`.
