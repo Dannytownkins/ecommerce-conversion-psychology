@@ -19,11 +19,22 @@ Fixes SVG marker positioning, broken split-layout rendering, missing citation UR
 #### Panel Proportions (1 change)
 - Screenshot panel width changed from 42% to 50% in `components.html`. Gives screenshots equal visual weight against finding cards in the split-layout.
 
+#### Per-Section Element Extraction (1 change)
+- Element coordinate extraction (Step 3b) now runs during the screenshot pass at each scroll position, not as a single bulk query after DOM extraction. Lazy-loaded elements (images, reviews, carousels below the fold) are now captured because the browser has scrolled to them. Results are deduplicated by `(selector, x, y)` across sections. Capped at 100 total elements.
+
+#### Overlapping Acquisition in "Both" Mode (1 change)
+- Mobile acquisition no longer waits for desktop to fully complete. Mobile pass starts as soon as `dom.html` is written (it only needs the DOM, not desktop screenshots). Reduces total wall-clock time for dual-device scans.
+
+#### Eliminated Duplicate .b64 Files (2 changes)
+- Acquisition agent no longer creates `.b64` files alongside screenshots. Visual report generator base64-encodes JPEG files on the fly at render time. Halves disk usage per engagement (~4-8MB saved for a typical 5-screenshot scan).
+- Baton schema: removed `base64_path` field from screenshot entries. Only `path` (the JPEG file) is recorded.
+
 #### Files Modified
-- `workflows/acquire.md` — Step 4b element coordinate extraction, `elements` array in baton schema
+- `workflows/acquire.md` — Step 3b per-section element extraction (moved from Step 4b), removed .b64 file creation, removed `base64_path` from baton schema
 - `workflows/audit.md` — Added ELEMENT field, removed URL requirement from auditors, citation URL resolution moved to report generator
-- `workflows/visual-report.md` — Element-based marker positioning, citation URL resolution from `citations/sources.md`, HTML comment stripping instruction
+- `workflows/visual-report.md` — Element-based marker positioning, citation URL resolution from `citations/sources.md`, render-time base64 encoding, HTML comment stripping instruction
 - `templates/components.html` — SVG safety comment fix (removed literal `<style>`), screenshot panel width 42% → 50%
+- `skills/audit/SKILL.md` — Overlapping acquisition dispatch in "both" mode
 
 ---
 

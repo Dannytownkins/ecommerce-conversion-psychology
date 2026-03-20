@@ -160,11 +160,7 @@ base64 -d screenshot.b64 | convert png:- -quality 80 jpg:- | base64 > screenshot
 ```
 If conversion tools are unavailable, proceed with PNG but note `"format_override": "png"` in the baton output for that screenshot.
 
-**Base64 file output:** After each screenshot capture, write the base64-encoded image data to a `.b64` file alongside the image:
-```
-base64 < screenshot.jpg > screenshot.b64
-```
-This enables the visual report generator to embed screenshots as `data:image/jpeg;base64,...` URIs, making reports fully self-contained. Record both the image path and the `.b64` path in the baton output.
+**No separate base64 files.** Do NOT create `.b64` files alongside screenshots. The visual report generator base64-encodes the JPEG files on the fly at render time. This halves disk usage per engagement. Record only the image path (not a `base64_path`) in the baton output.
 
 **Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, iPhone 14 at 390px CSS width with 3x DPR produces 1170px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
 
@@ -197,11 +193,11 @@ Extract `document.documentElement.outerHTML` from the fully rendered page.
   - Prepend: `<!-- SKELETON MODE: DOM exceeded 500KB, extracted structural elements only -->`
   - Set `dom_mode: "skeleton"`
 
-### Step 4b: Extract Element Coordinate Map
+### Step 3b: Extract Element Coordinates Per Section
 
-After DOM extraction, extract bounding-box coordinates for key interactive and visual elements. This data is used by the visual report generator to position SVG annotation markers accurately on screenshots.
+**Run this during the screenshot pass, not after.** After scrolling to each section boundary and capturing the screenshot, extract element bounding boxes for that section's visible viewport. This ensures lazy-loaded elements (images, reviews, carousels) that only render when scrolled into view are captured.
 
-Run JavaScript via agent-browser to collect coordinates for CRO-relevant elements:
+At each scroll position, after the screenshot is taken, run:
 
 ```js
 JSON.stringify(
@@ -221,6 +217,8 @@ JSON.stringify(
       return Array.from(document.querySelectorAll(sel)).slice(0, 5).map(el => {
         const r = el.getBoundingClientRect();
         const scrollY = window.scrollY || document.documentElement.scrollTop;
+        if (r.width === 0 || r.height === 0) return null;
+        if (r.bottom < 0 || r.top > window.innerHeight) return null;
         return {
           selector: sel,
           tag: el.tagName.toLowerCase(),
@@ -229,20 +227,26 @@ JSON.stringify(
           x: Math.round(r.left),
           y: Math.round(r.top + scrollY),
           width: Math.round(r.width),
-          height: Math.round(r.height),
-          visible: r.width > 0 && r.height > 0
+          height: Math.round(r.height)
         };
-      }).filter(e => e.visible);
+      }).filter(Boolean);
     } catch(e) { return []; }
   })
 )
 ```
 
-**Cap:** Keep only the first 5 matches per selector to limit output size. Filter out zero-dimension elements (`visible: false`).
+**Key differences from a single bulk extraction:**
+- Runs at each scroll position, so lazy-loaded content is in the DOM
+- Filters to elements currently in the viewport (`r.bottom >= 0 && r.top <= innerHeight`), avoiding duplicate captures across sections
+- Coordinates include `scrollY` offset, giving absolute page position
 
-**DPR adjustment:** The coordinates from `getBoundingClientRect()` are in CSS pixels. For mobile screenshots at DPR > 1, multiply `x`, `y`, `width`, and `height` by the DPR to get screenshot-pixel coordinates. For desktop at 1x DPR, no adjustment needed.
+**Deduplication:** After collecting elements from all sections, deduplicate by `(selector, x, y)` — the same element scrolled through twice should only appear once. Keep the entry with the largest `width × height` (most accurate bounding box).
 
-Write the result into the baton as an `elements` array.
+**DPR adjustment:** Coordinates from `getBoundingClientRect()` are in CSS pixels. For mobile at DPR > 1, multiply `x`, `y`, `width`, `height` by the DPR to match screenshot pixel dimensions. For desktop at 1x DPR, no adjustment needed.
+
+**Cap:** Keep a maximum of 100 total elements across all sections to limit baton size.
+
+Write the deduplicated result into the baton as an `elements` array.
 
 ### Step 5: Extract Style Metadata
 
@@ -282,7 +286,6 @@ Write a structured baton file to `docs/cro/{engagement-id}/baton.json`:
       "label": "Hero and navigation",
       "scrollY": 0,
       "path": "desktop-section1-hero.jpg",
-      "base64_path": "desktop-section1-hero.b64",
       "naturalWidth": 1440,
       "naturalHeight": 900,
       "format_override": null

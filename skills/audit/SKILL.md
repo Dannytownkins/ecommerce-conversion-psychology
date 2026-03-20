@@ -38,9 +38,10 @@ How to acquire page data:
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
      - Desktop: viewport 1440×900, device "desktop"
      - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"
-     - Both: dispatch twice serially:
-       1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
-       2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
+     - Both: dispatch with overlapping phases:
+       1. Desktop pass: full acquisition (DOM + screenshots + element coordinates) — viewport 1440×900, device "desktop"
+       2. Mobile pass: starts after desktop DOM is written (does not wait for desktop screenshots to finish). Pass `dom_file` from desktop acquisition, device "mobile" — screenshots + element coordinates only
+       The mobile pass only needs the DOM file, not the desktop screenshots. If using sequential dispatch (single-agent environments), dispatch mobile immediately after verifying `dom.html` exists — do not wait for the full desktop baton.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
    - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code

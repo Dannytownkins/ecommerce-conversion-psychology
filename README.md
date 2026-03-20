@@ -60,7 +60,7 @@ docs/cro/2026-03-11-a3f2b1c9/
   baton.json          Structured acquisition output (screenshots, sections, styles, dimensions)
   context.md          Write-once intake context
   dom.html            Preprocessed DOM
-  *.jpg / *.b64       Screenshots + base64-encoded copies for self-contained reports
+  *.jpg               Screenshots (base64-encoded at report render time)
   audit.md            Desktop findings (or single-device findings)
   audit-mobile.md     Mobile findings (only when --device both)
   plan.md             Prioritized action plan

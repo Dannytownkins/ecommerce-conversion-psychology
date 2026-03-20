@@ -32,7 +32,7 @@ Load the following from the engagement directory (`docs/cro/{engagement-id}/`):
 - `meta.json` — parse all fields
 - `audit.md` (or `audit-mobile.md`) — parse all findings
 - `baton.json` — parse acquisition metadata: screenshots (paths, base64_paths, naturalWidth, naturalHeight), sections (boundaries, clusters, occlusion), styles, dom_mode. **If baton.json does not exist or `status` != `"COMPLETE"`, warn:** "Acquisition baton missing or incomplete — screenshot positions and SVG viewBox may be inaccurate."
-- Screenshot `.b64` files — read base64 data for embedding
+- Screenshot `.jpg` files — base64-encoded at render time for embedding
 
 ## Step 4: Assemble Header
 
@@ -86,7 +86,7 @@ For each finding in the audit, assemble a finding-card component from `component
 
 Assemble the screenshot-panel component with SVG overlay markers:
 
-- **Embed screenshots as base64 data URIs.** For each screenshot in `baton.json`, read the corresponding `.b64` file from the engagement directory and embed as: `src="data:image/jpeg;base64,{contents of .b64 file}"`. **VERIFY:** every `<img>` src in the screenshot panel starts with `data:image/` — never a relative file path. If a `.b64` file is missing, fall back to the image file path but add a comment: `<!-- WARNING: base64 file missing, report is not self-contained -->`.
+- **Embed screenshots as base64 data URIs.** For each screenshot in `baton.json`, base64-encode the JPEG file at render time: `base64 < {path}.jpg` (or equivalent in the rendering environment). Embed as: `src="data:image/jpeg;base64,{encoded data}"`. **VERIFY:** every `<img>` src in the screenshot panel starts with `data:image/` — never a relative file path. If the JPEG file is missing, skip that screenshot and add a comment: `<!-- WARNING: screenshot file missing -->`.
 - Set SVG `viewBox` to match the screenshot's `naturalWidth` x `naturalHeight` from `baton.json`. Do NOT use CSS viewport dimensions (e.g., 390x844) — use the actual pixel dimensions of the image (e.g., 1170x2532 for 3x DPR mobile).
 - **Position overlay markers using element coordinates from `baton.json`.** For each finding, match the finding's `ELEMENT` field (CSS selector or description) to entries in the baton's `elements` array. Place the marker at the center of the matched element's bounding box (`x + width/2`, `y + height/2`), adjusted for the screenshot's `scrollY` offset (subtract the screenshot's `scrollY` from the element's `y` to get the position within that screenshot). If no element match is found, fall back to positioning the marker at the center of the section boundary (`scrollY + height/2`) from the baton's `sections` array. **DPR adjustment:** For mobile screenshots at DPR > 1, element coordinates in the baton are already in screenshot pixels (CSS px × DPR). If they are still in CSS pixels, multiply by the DPR before positioning.
 - **Strip HTML comments from `components.html` before extracting `<style>` blocks via regex.** The SVG safety comment historically contained literal tag names that caused false regex matches, injecting HTML template markup into the CSS and breaking the split-layout. Always strip `<!--...-->` comments first.
@@ -96,7 +96,7 @@ Assemble the screenshot-panel component with SVG overlay markers:
 
 Assemble the screenshot-panel component with markers positioned from Claude's estimated pixel coordinates:
 
-- **Embed screenshots as base64 data URIs** using the same method as URL mode (read `.b64` file, embed as `data:image/jpeg;base64,...`). If the input was a user-provided image file, base64-encode it first.
+- **Embed screenshots as base64 data URIs** using the same method as URL mode (base64-encode the JPEG at render time). If the input was a user-provided image file, base64-encode it directly.
 - Claude estimates element positions based on visual inspection of the screenshot.
 - No wireframe fallback. All sections are represented by the screenshot itself.
 
