@@ -75,7 +75,10 @@ For each finding in the audit, assemble a finding-card component from `component
 
 6. **Render evidence tier badge in citation footer.** The evidence tier badge MUST be always visible (not inside a collapsible). Place it in the citation footer area of the finding card.
 
-7. **Include clickable citation URL.** Render the citation as a link with `rel="noopener noreferrer" target="_blank"`. Place it in the citation footer alongside the evidence tier badge.
+7. **Resolve and render clickable citation URLs (MANDATORY).** Auditors do NOT include URLs — the report generator resolves them. For each finding's `↳` citation line, extract the reference filename and finding number (e.g., `cta-design-and-placement.md, Finding 14`). Then look up the URL:
+   1. Read `citations/sources.md` from the plugin directory. Find the section matching the reference filename. Find the row matching the finding number. Use the URL from that row.
+   2. If `citations/sources.md` is not available or has no match, render the citation as plain text with "(source URL unavailable)".
+   Render the resolved URL as an `<a>` tag with `rel="noopener noreferrer" target="_blank"` using the `finding__citation-url` class from `components.html`. **A finding card without a clickable citation link is incomplete.**
 
 ## Step 7: Assemble Screenshot Panel
 
@@ -85,7 +88,8 @@ Assemble the screenshot-panel component with SVG overlay markers:
 
 - **Embed screenshots as base64 data URIs.** For each screenshot in `baton.json`, read the corresponding `.b64` file from the engagement directory and embed as: `src="data:image/jpeg;base64,{contents of .b64 file}"`. **VERIFY:** every `<img>` src in the screenshot panel starts with `data:image/` — never a relative file path. If a `.b64` file is missing, fall back to the image file path but add a comment: `<!-- WARNING: base64 file missing, report is not self-contained -->`.
 - Set SVG `viewBox` to match the screenshot's `naturalWidth` x `naturalHeight` from `baton.json`. Do NOT use CSS viewport dimensions (e.g., 390x844) — use the actual pixel dimensions of the image (e.g., 1170x2532 for 3x DPR mobile).
-- Position overlay markers using pixel coordinates from `baton.json` section metadata.
+- **Position overlay markers using element coordinates from `baton.json`.** For each finding, match the finding's `ELEMENT` field (CSS selector or description) to entries in the baton's `elements` array. Place the marker at the center of the matched element's bounding box (`x + width/2`, `y + height/2`), adjusted for the screenshot's `scrollY` offset (subtract the screenshot's `scrollY` from the element's `y` to get the position within that screenshot). If no element match is found, fall back to positioning the marker at the center of the section boundary (`scrollY + height/2`) from the baton's `sections` array. **DPR adjustment:** For mobile screenshots at DPR > 1, element coordinates in the baton are already in screenshot pixels (CSS px × DPR). If they are still in CSS pixels, multiply by the DPR before positioning.
+- **Strip HTML comments from `components.html` before extracting `<style>` blocks via regex.** The SVG safety comment historically contained literal tag names that caused false regex matches, injecting HTML template markup into the CSS and breaking the split-layout. Always strip `<!--...-->` comments first.
 - Use wireframe rendering ONLY for occluded sections (sections where `occluded: true` in the baton). Do not wireframe sections that have screenshot coverage.
 
 ### 7b. Screenshot-only mode (source_mode is file/screenshot)

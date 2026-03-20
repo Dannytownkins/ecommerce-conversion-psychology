@@ -1,6 +1,6 @@
 # E-Commerce Conversion Psychology
 
-![v4.1.0](https://img.shields.io/badge/version-4.1.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
+![v4.2.0](https://img.shields.io/badge/version-4.2.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 18 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -76,14 +76,15 @@ docs/cro/2026-03-11-a3f2b1c9/
 ## What's Under the Hood
 
 - **18 domain reference files** — pricing, checkout, trust, social proof, CTAs, color, eye tracking, cognitive load, mobile UX, performance, personalization, cross-cultural, post-purchase, search/filter, cookie consent, biometric/express checkout, social commerce
-- **Evidence tier system** — 300 classified findings tagged Gold (peer-reviewed RCT/meta-analysis), Silver (large-N observational or vendor A/B test), Bronze (expert consensus, small-N, or directional). Clickable citation URLs with evidence tier badges in all report output.
+- **Evidence tier system** — 300 classified findings tagged Gold (peer-reviewed RCT/meta-analysis), Silver (large-N observational or vendor A/B test), Bronze (expert consensus, small-N, or directional). Clickable citation URLs resolved at render time from `citations/sources.md` — auditors stay lean, links are always accurate.
 - **4 auditor clusters** that get assigned by page type (or `--cluster` override)
 - **Ethics gate** checked at every phase — fake urgency, hidden pricing, review manipulation, dark patterns -> always `CRITICAL`
 - **Progress memory** — re-audit a page and see what changed since last time
 - **Interactive review** — the reviewer challenges vague or contradictory recommendations before any code gets written
 - **A/B test scaffolding** — hypotheses, variant code, and measurement plans, platform-aware
 - **Structured baton handoff** — acquisition writes `baton.json` with machine-readable metadata (screenshot dimensions, section boundaries, cluster mappings, extracted styles). Downstream phases consume the same JSON — no informal text parsing, deterministic pipeline.
-- **Self-contained visual reports** — screenshots base64-embedded as data URIs, correct SVG viewBox from actual image dimensions (DPR-aware), dark-mode HTML with bidirectional scroll-sync, WCAG AA, print-friendly, no external dependencies
+- **Self-contained visual reports** — screenshots base64-embedded as data URIs, correct SVG viewBox from actual image dimensions (DPR-aware), element-level marker positioning from acquisition bounding boxes, dark-mode HTML with bidirectional scroll-sync, WCAG AA, print-friendly, no external dependencies
+- **Element coordinate extraction** — acquisition agent collects bounding boxes for CTAs, headings, prices, reviews, trust badges, and payment icons via `getBoundingClientRect()`. Auditors tag each finding with an `ELEMENT` field. Visual report markers are placed at the actual UI element, not estimated positions.
 - **Component library** — shared building blocks enforcing structural consistency across all visual report output
 - **Overlay dismissal** — acquisition agent explicitly handles cookie banners, newsletter popups, chat widgets, and consent modals before capturing screenshots
 
@@ -127,7 +128,7 @@ claude plugin update cro@ecommerce-conversion-psychology
 
 ```
 ecommerce-conversion-psychology/
-  .claude-plugin/plugin.json          Plugin metadata (v4.1.0)
+  .claude-plugin/plugin.json          Plugin metadata (v4.2.0)
   skills/
     cro/SKILL.md                      /cro router
     audit/SKILL.md                    /cro:audit

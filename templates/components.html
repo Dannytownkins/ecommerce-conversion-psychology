@@ -524,9 +524,9 @@ code, .stat-value, .metric {
            role="group"
            aria-label="{{MARKER_COUNT}} issues annotated on this screenshot">
         <title>Annotations for {{SCREENSHOT_ALT}}</title>
-        <!-- SVG SAFETY: Only <svg>, <circle>, <text>, <g>, <defs>, <style>, <line> elements.
-             NO <script>, <foreignObject>, <use>, <image>, <a>. No on* attributes.
-             All <text> content must be numeric only. All data-finding values must match ^[a-z0-9-]+$ -->
+        <!-- SVG SAFETY: Only svg, circle, text, g, defs, style, line elements.
+             NO script, foreignObject, use, image, a elements. No on* attributes.
+             All text content must be numeric only. All data-finding values must match ^[a-z0-9-]+$ -->
         <!-- Repeat for each marker: -->
         <g class="marker" tabindex="0" role="button"
            aria-label="Issue {{N}}: {{ISSUE_SUMMARY}}, severity {{SEVERITY}}"
@@ -557,7 +557,7 @@ code, .stat-value, .metric {
 .screenshot-panel {
   position: sticky;
   top: 0;
-  width: 42%;
+  width: 50%;
   height: 100vh;
   height: 100dvh; /* modern: accounts for mobile dynamic address bar */
   overflow-y: auto;

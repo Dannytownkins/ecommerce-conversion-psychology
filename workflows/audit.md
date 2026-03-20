@@ -121,17 +121,21 @@ Use this exact format for every finding:
 ```
 FINDING: [PASS|FAIL|PARTIAL]
 SECTION: [canonical-slug]
+ELEMENT: [CSS selector or short description of the target element, e.g., "button.btn-cart", "div.hero-slider", "footer .payment-icons"]
 SOURCE: [VISUAL|CODE|BOTH]
 OBSERVATION: [what was observed on the page, max 2 sentences]
 RECOMMENDATION: [specific, implementable action — not vague advice]
-REFERENCE: [filename:principle-name or principle number]
+REFERENCE: [filename:finding-number, e.g., cta-design-and-placement.md:Finding 14]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 **Why this matters:** [2-3 sentence concise rationale explaining the psychology/research behind this finding]
 ↳ [reference-file.md], Finding [N] ([Study Name or Author], [Year]) [Gold|Silver|Bronze]
-  URL: [source URL from the reference file's **Source** field]
 ```
 
-**Evidence tier lookup:** For each citation, read the cited finding's `**Evidence Tier**` field from the reference file. Append the tier tag `[Gold|Silver|Bronze]` to the citation line. On the next line, include `URL:` followed by the source URL from the finding's `**Source**` field. If the reference file finding has a `**Citation Status**` annotation (dead URL), include the URL anyway but note "(dead link)" after it. If the finding has no Evidence Tier field yet, default to `[Bronze]`.
+**ELEMENT field:** Identifies the specific UI element this finding targets. Used by the visual report generator to position SVG annotation markers on screenshots. Use a CSS selector when possible (e.g., `button.btn-cart`, `h1`, `.hero-slider`, `[class*="review"]`). If no single element applies (e.g., a page-level layout issue), use a short description (e.g., "above-fold area", "product card button group", "footer payment section").
+
+**Evidence tier lookup:** For each citation, read the cited finding's `**Evidence Tier**` field from the reference file. Append the tier tag `[Gold|Silver|Bronze]` to the citation line.
+
+**Citation URLs are resolved at report render time, NOT by the auditor.** Do NOT include a `URL:` line. The visual report generator resolves citation URLs by reading `citations/sources.md` and matching the reference filename + finding number from the `↳` citation line. This keeps auditor context lean and ensures URLs are always resolved from a single source of truth.
 
 The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
 

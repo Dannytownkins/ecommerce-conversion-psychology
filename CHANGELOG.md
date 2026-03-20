@@ -1,5 +1,32 @@
 # Changelog
 
+## 4.2.0 — 2026-03-20
+
+### Visual Report Accuracy & Citation Links
+
+Fixes SVG marker positioning, broken split-layout rendering, missing citation URLs, and panel proportions in visual reports.
+
+#### SVG Marker Positioning (2 changes)
+- Acquisition agent now extracts element bounding-box coordinates via `getBoundingClientRect()` (new Step 4b in `acquire.md`). Writes an `elements` array to `baton.json` with `{ selector, tag, text, class, x, y, width, height }` per element. Covers buttons, headings, images, ratings, prices, trust badges, payment icons, forms, and navigation.
+- Auditors now output an `ELEMENT` field per finding (CSS selector or description) identifying the target UI element. Visual report generator matches `ELEMENT` to the baton's `elements` array for accurate marker placement. Falls back to section-level centering when no match found.
+
+#### Citation URL Resolution (1 change)
+- Citation URLs are now resolved at report render time by the visual report generator, not by auditors. The generator reads `citations/sources.md`, matches reference filename + finding number, and renders clickable `<a>` tags. Auditors no longer need to look up or output URLs — keeps auditor context lean and ensures a single source of truth for all citation links.
+
+#### Split-Layout Fix (1 change)
+- Fixed HTML comment in `components.html` SVG safety note that contained literal `<style>` text. Style-extraction regex matched this as a CSS block start, capturing HTML template markup into the stylesheet. This created phantom layout divs that broke the split-panel, causing finding text to render behind the screenshot panel. Comment now uses plain text element names without angle brackets.
+
+#### Panel Proportions (1 change)
+- Screenshot panel width changed from 42% to 50% in `components.html`. Gives screenshots equal visual weight against finding cards in the split-layout.
+
+#### Files Modified
+- `workflows/acquire.md` — Step 4b element coordinate extraction, `elements` array in baton schema
+- `workflows/audit.md` — Added ELEMENT field, removed URL requirement from auditors, citation URL resolution moved to report generator
+- `workflows/visual-report.md` — Element-based marker positioning, citation URL resolution from `citations/sources.md`, HTML comment stripping instruction
+- `templates/components.html` — SVG safety comment fix (removed literal `<style>`), screenshot panel width 42% → 50%
+
+---
+
 ## 4.1.0 — 2026-03-20
 
 ### Deviation Audit Remediation — Reproducibility & Self-Contained Reports

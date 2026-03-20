@@ -197,6 +197,53 @@ Extract `document.documentElement.outerHTML` from the fully rendered page.
   - Prepend: `<!-- SKELETON MODE: DOM exceeded 500KB, extracted structural elements only -->`
   - Set `dom_mode: "skeleton"`
 
+### Step 4b: Extract Element Coordinate Map
+
+After DOM extraction, extract bounding-box coordinates for key interactive and visual elements. This data is used by the visual report generator to position SVG annotation markers accurately on screenshots.
+
+Run JavaScript via agent-browser to collect coordinates for CRO-relevant elements:
+
+```js
+JSON.stringify(
+  ['button', '[role="button"]', '.btn', 'a.btn',
+   'h1', 'h2', 'h3',
+   'img[alt]:not([alt=""])',
+   '[class*="rating"]', '[class*="star"]', '[class*="review"]',
+   '[class*="price"]', '[class*="trust"]', '[class*="badge"]',
+   '[class*="cart"]', '[class*="checkout"]',
+   'input[type="search"]', '[class*="search"]',
+   '[class*="shipping"]', '[class*="guarantee"]',
+   'form', 'nav', 'header', 'footer',
+   '[class*="newsletter"]', '[class*="subscribe"]',
+   '[class*="payment"]', '[class*="pay"]'
+  ].flatMap(sel => {
+    try {
+      return Array.from(document.querySelectorAll(sel)).slice(0, 5).map(el => {
+        const r = el.getBoundingClientRect();
+        const scrollY = window.scrollY || document.documentElement.scrollTop;
+        return {
+          selector: sel,
+          tag: el.tagName.toLowerCase(),
+          text: (el.textContent || '').trim().slice(0, 60),
+          class: (el.className || '').toString().slice(0, 80),
+          x: Math.round(r.left),
+          y: Math.round(r.top + scrollY),
+          width: Math.round(r.width),
+          height: Math.round(r.height),
+          visible: r.width > 0 && r.height > 0
+        };
+      }).filter(e => e.visible);
+    } catch(e) { return []; }
+  })
+)
+```
+
+**Cap:** Keep only the first 5 matches per selector to limit output size. Filter out zero-dimension elements (`visible: false`).
+
+**DPR adjustment:** The coordinates from `getBoundingClientRect()` are in CSS pixels. For mobile screenshots at DPR > 1, multiply `x`, `y`, `width`, and `height` by the DPR to get screenshot-pixel coordinates. For desktop at 1x DPR, no adjustment needed.
+
+Write the result into the baton as an `elements` array.
+
 ### Step 5: Extract Style Metadata
 
 Extract computed styles from the rendered page for downstream use by the visual report generator:
@@ -262,6 +309,19 @@ Write a structured baton file to `docs/cro/{engagement-id}/baton.json`:
     "cta_bg": "#e63946",
     "link": "#868686"
   },
+  "elements": [
+    {
+      "selector": "button",
+      "tag": "button",
+      "text": "MORE INFO",
+      "class": "btn btn-default",
+      "x": 120,
+      "y": 1450,
+      "width": 180,
+      "height": 40,
+      "visible": true
+    }
+  ],
   "pre_hydration_warning": false,
   "structured_data": null,
   "status": "COMPLETE"
