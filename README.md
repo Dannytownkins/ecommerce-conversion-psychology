@@ -102,15 +102,12 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ## Installation
 
-In Claude Code, run:
-
+```bash
+claude plugin marketplace add Dannytownkins/ecommerce-conversion-psychology
+claude plugin install cro
 ```
-/plugin
-```
 
-When prompted, enter: `Dannytownkins/ecommerce-conversion-psychology`
-
-Then run `/reload-plugins`. The `/cro` commands will be available immediately.
+Then restart Claude Code or run `/reload-plugins`. The `/cro` commands will be available immediately.
 
 ---
 
