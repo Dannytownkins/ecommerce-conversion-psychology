@@ -1,8 +1,8 @@
 <!--
   ============================================================
-  CRO Report Component Library v4.1.0
+  CRO Visual Report Component Library v4.3.0
   ============================================================
-  Single source of truth for all report rendering.
+  Single source of truth for visual report rendering.
   Claude reads this file once per report generation and
   assembles by selecting and populating components.
 
@@ -15,18 +15,17 @@
   TABLE OF CONTENTS:
   1.  Design Tokens (CSS custom properties)
   2.  Font Embed Reference (instruction only — data in font-embed.css)
-  3.  Report Header
-  4.  Score Summary Strip
-  5.  Finding Card
-  6.  Evidence Tier Badge
-  7.  Screenshot Panel (split-panel left, sticky)
-  8.  Device Frame (mobile bezel)
-  9.  Limitations Banner
-  10. Export Footer
-  11. Scroll-Sync Controller (JavaScript)
-  12. Print Linearization (@media print)
-  13. Ethics Compliance Section
-  14. Escape Hatches (custom-note block)
+  3.  Report Header (eyebrow + hero title)
+  4.  Metadata Grid (3-column key-value pairs)
+  5.  Evidence Canvas (screenshot carousel with markers + thumbnails)
+  6.  Finding Card (numbered, severity-accented, with recommendation box)
+  7.  Evidence Tier Badge (Gold/Silver/Bronze pill in finding footer)
+  8.  Metrics Bar (intent reliability + projected lift)
+  9.  Summary Section (evidence confidence, severity dist, ethics)
+  10. Limitations Banner (screenshot-only or wireframe fallback)
+  11. Carousel Controller + Scroll-Sync (JavaScript)
+  12. Ethics Compliance (in summary card — MANDATORY)
+  13. Escape Hatches (custom-note block)
   ============================================================
 -->
 
@@ -36,110 +35,101 @@
      ============================================================ -->
 <style>
 :root {
-  /* Surfaces (ascending elevation) */
-  --bg-body: #0e0e10;
-  --bg-surface: #141418;
-  --bg-elevated: #1a1a1f;
-  --bg-hover: #2e2e36;
-  --bg-active: #3f3f46;
+  /* Surfaces */
+  --bg: #000000;
+  --panel: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.05);
+  --border-light: rgba(255,255,255,0.1);
 
-  /* Borders — semi-transparent white adapts to any surface */
-  --border-default: rgba(255,255,255,0.08);
-  --border-strong: rgba(255,255,255,0.12);
-  --border-emphasis: rgba(255,255,255,0.16);
+  /* Text */
+  --text: rgba(255,255,255,0.9);
+  --text-muted: rgba(255,255,255,0.5);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-faint: rgba(255,255,255,0.2);
 
-  /* Text — all pass WCAG AA on --bg-body */
-  --text-primary: #e4e4e7;
-  --text-secondary: #a1a1aa;
-  --text-tertiary: #71717a;
-  --text-muted: #52525b;
+  /* Accent — amber system */
+  --amber: #ff9f00;
+  --amber-light: #ffc687;
+  --amber-glow: #ffb347;
 
-  /* Severity colors — 400-weight variants for softer feel on near-black */
-  --severity-critical: #f87171;
-  --severity-critical-bg: #2c1113;
-  --severity-high: #fbbf24;
-  --severity-high-bg: #2c1d0e;
-  --severity-medium: #60a5fa;
-  --severity-medium-bg: #0f1a2e;
-  --severity-low: #a1a1aa;
-  --severity-low-bg: #1a1a1f;
-
-  /* Severity card borders */
-  --border-critical: rgba(248,113,113,0.25);
-  --border-high: rgba(251,191,36,0.20);
-  --border-medium: rgba(96,165,250,0.20);
-  --border-low: rgba(161,161,170,0.12);
+  /* Severity colors */
+  --critical: #93000a;
+  --critical-text: #ffb4ab;
+  --critical-bg: rgba(147,0,10,0.2);
+  --critical-border: rgba(147,0,10,0.3);
+  --high: #ff9f00;
+  --high-bg: rgba(255,159,0,0.2);
+  --high-border: rgba(255,159,0,0.3);
+  --medium: #10b981;
+  --medium-text: #34d399;
+  --medium-bg: rgba(16,185,129,0.1);
+  --medium-border: rgba(16,185,129,0.2);
+  --low: #6b7280;
+  --low-text: #9ca3af;
+  --low-bg: rgba(107,114,128,0.1);
+  --low-border: rgba(107,114,128,0.2);
 
   /* Evidence tier colors */
   --tier-gold: #fbbf24;
-  --tier-gold-bg: #2c1d0e;
-  --tier-silver: #a1a1aa;
-  --tier-silver-bg: #1a1a1f;
+  --tier-gold-bg: rgba(251,191,36,0.1);
+  --tier-gold-border: rgba(251,191,36,0.25);
+  --tier-silver: #9ca3af;
+  --tier-silver-bg: rgba(156,163,175,0.1);
+  --tier-silver-border: rgba(156,163,175,0.2);
   --tier-bronze: #cd7f32;
-  --tier-bronze-bg: #2c1a0e;
+  --tier-bronze-bg: rgba(205,127,50,0.1);
+  --tier-bronze-border: rgba(205,127,50,0.25);
 
   /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
-  --text-xs: 0.75rem;
-  --text-sm: 0.8125rem;
-  --text-base: 0.875rem;
-  --text-lg: 1rem;
-  --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 2rem;
-
-  /* Spacing */
-  --space-1: 0.25rem;
-  --space-2: 0.5rem;
-  --space-3: 0.75rem;
-  --space-4: 1rem;
-  --space-5: 1.25rem;
-  --space-6: 1.5rem;
-  --space-8: 2rem;
-  --space-10: 2.5rem;
-  --space-12: 3rem;
-  --space-16: 4rem;
-
-  /* Radii */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
 }
 
-/* Base styles */
+/* Reset & Base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: var(--font-sans);
-  font-size: var(--text-base);
+  background: var(--bg);
+  color: var(--text);
   line-height: 1.6;
-  color: var(--text-primary);
-  background-color: var(--bg-body);
+  min-height: 100vh;
+  position: relative;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-feature-settings: 'cv01', 'cv02', 'cv03', 'cv04';
 }
 
-/* Ambient glow — locked-down, must NOT compete with severity colors */
-.report-body {
-  background-color: var(--bg-body);
+/* Subtle grid background texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
   background-image:
-    radial-gradient(ellipse 80% 50% at 10% 0%, rgba(99,102,241,0.04), transparent 70%),
-    radial-gradient(ellipse 60% 80% at 85% 100%, rgba(124,58,237,0.03), transparent 60%),
-    radial-gradient(ellipse 120% 80% at 50% 30%, rgba(59,130,246,0.02), transparent 50%);
-  min-height: 100vh;
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
 }
 
-a { color: var(--severity-medium); text-decoration: none; }
+a { color: var(--medium-text); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-code, .stat-value, .metric {
+.container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  letter-spacing: -0.03em;
-  font-feature-settings: 'zero', 'ss01';
 }
 </style>
 
@@ -155,555 +145,758 @@ code, .stat-value, .metric {
 
 
 <!-- ============================================================
-     3. REPORT HEADER
+     3. REPORT HEADER (eyebrow + hero title)
      ============================================================ -->
-<header class="report-header">
-  <div class="report-header__inner">
-    <h1 class="report-header__title">{{REPORT_TITLE}}</h1>
-    <div class="report-header__meta">
-      <span class="report-header__url">{{PAGE_URL}}</span>
-      <span class="report-header__date">{{SCAN_DATE}}</span>
-      <span class="report-header__badge report-header__badge--device">{{DEVICE}}</span>
-      <span class="report-header__badge report-header__badge--type">{{ENGAGEMENT_TYPE}}</span>
+<header>
+  <div class="header-content">
+    <div class="header-main">
+      <div class="eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">{{EYEBROW_TEXT}}</span>
+      </div>
+      <h1>
+        <!-- Title words — accent key terms with .amber / .amber-light spans -->
+        {{TITLE_HTML}}
+      </h1>
+      <p class="subtitle">{{SUBTITLE}}</p>
+    </div>
+
+    <!-- [COMPONENT: metadata-grid] -->
+    <div class="metadata">
+      {{METADATA_ITEMS}}
     </div>
   </div>
 </header>
 
 <style>
-.report-header {
-  padding: var(--space-8) var(--space-8) var(--space-6);
-  border-bottom: 1px solid var(--border-default);
-}
-.report-header__inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-.report-header__title {
-  font-size: var(--text-3xl);
-  font-weight: 700;
-  line-height: 1.2;
-  letter-spacing: -0.02em;
-  color: var(--text-primary);
-  margin-bottom: var(--space-3);
-}
-.report-header__meta {
+header { margin-bottom: 4rem; }
+
+.header-content {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  align-items: center;
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2.5rem;
 }
-.report-header__url {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--text-tertiary);
-}
-.report-header__badge {
-  display: inline-flex;
+
+.header-main { max-width: 56rem; }
+
+.eyebrow {
+  display: flex;
   align-items: center;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  margin-bottom: 1rem;
+}
+.eyebrow-line {
+  width: 4rem;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+  margin-right: 1rem;
+}
+.eyebrow-text {
+  color: var(--text-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
-  border: 1px solid var(--border-strong);
-  background: var(--bg-elevated);
-  color: var(--text-secondary);
+}
+
+h1 {
+  font-size: 5.5rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+h1 .amber { color: var(--amber); }
+h1 .amber-light { color: var(--amber-light); }
+
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  max-width: 48rem;
 }
 </style>
 
 
 <!-- ============================================================
-     4. SCORE SUMMARY STRIP
+     4. METADATA GRID (3-column key-value pairs)
      ============================================================ -->
-<div class="score-strip">
-  <div class="score-strip__inner">
-    <div class="score-strip__item score-strip__item--critical">
-      <span class="score-strip__count">{{CRITICAL_COUNT}}</span>
-      <span class="score-strip__label">Critical</span>
-    </div>
-    <div class="score-strip__item score-strip__item--high">
-      <span class="score-strip__count">{{HIGH_COUNT}}</span>
-      <span class="score-strip__label">High</span>
-    </div>
-    <div class="score-strip__item score-strip__item--medium">
-      <span class="score-strip__count">{{MEDIUM_COUNT}}</span>
-      <span class="score-strip__label">Medium</span>
-    </div>
-    <div class="score-strip__item score-strip__item--low">
-      <span class="score-strip__count">{{LOW_COUNT}}</span>
-      <span class="score-strip__label">Low</span>
-    </div>
-  </div>
+<!-- Repeat for each metadata item: -->
+<div class="meta-item">
+  <label>{{META_LABEL}}</label>
+  <span>{{META_VALUE}}</span>
+  <!-- Optional: <span class="highlight">{{META_VALUE}}</span> for accent -->
 </div>
 
 <style>
-.score-strip {
-  padding: var(--space-4) var(--space-8);
-  border-bottom: 1px solid var(--border-default);
-}
-.score-strip__inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  gap: var(--space-4);
-}
-.score-strip__item {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-default);
-}
-.score-strip__item--critical { background: var(--severity-critical-bg); border-color: var(--border-critical); }
-.score-strip__item--high { background: var(--severity-high-bg); border-color: var(--border-high); }
-.score-strip__item--medium { background: var(--severity-medium-bg); border-color: var(--border-medium); }
-.score-strip__item--low { background: var(--severity-low-bg); border-color: var(--border-low); }
-.score-strip__count {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xl);
-  font-weight: 700;
-  line-height: 1;
-}
-.score-strip__item--critical .score-strip__count { color: var(--severity-critical); }
-.score-strip__item--high .score-strip__count { color: var(--severity-high); }
-.score-strip__item--medium .score-strip__count { color: var(--severity-medium); }
-.score-strip__item--low .score-strip__count { color: var(--severity-low); }
-.score-strip__label {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-}
-</style>
-
-
-<!-- ============================================================
-     5. FINDING CARD
-     ============================================================
-     Parameterized by severity: finding--critical, finding--high,
-     finding--medium, finding--low
-     ============================================================ -->
-<div class="finding finding--{{SEVERITY}}" id="finding-{{FINDING_NUMBER}}" data-finding="finding-{{FINDING_NUMBER}}">
-  <div class="finding__header">
-    <span class="finding__number">{{FINDING_NUMBER}}</span>
-    <span class="finding__severity-badge">{{SEVERITY_LABEL}}</span>
-    <h3 class="finding__title">{{OBSERVATION_SUMMARY}}</h3>
-  </div>
-
-  <div class="finding__body">
-    <div class="finding__section">
-      <h4 class="finding__section-label">Observation</h4>
-      <p class="finding__text">{{OBSERVATION}}</p>
-    </div>
-
-    <div class="finding__section">
-      <h4 class="finding__section-label">Recommendation</h4>
-      <p class="finding__text">{{RECOMMENDATION}}</p>
-    </div>
-
-    <div class="finding__citation">
-      <span class="finding__ref">{{REFERENCE_FILE}}, Finding {{FINDING_REF_NUMBER}}</span>
-      <span class="finding__source">{{STUDY_AUTHOR}}, {{YEAR}}</span>
-      <!-- [COMPONENT: evidence-tier-badge] -->
-      <a href="{{CITATION_URL}}" rel="noopener noreferrer" target="_blank" class="finding__citation-url">{{CITATION_URL_DISPLAY}}</a>
-    </div>
-
-    <details class="finding__details finding__details--rationale">
-      <summary class="finding__details-summary">Why this matters</summary>
-      <div class="finding__details-content">
-        <p>{{RATIONALE}}</p>
-        <div class="finding__citation finding__citation--expanded">
-          <span class="finding__ref">{{REFERENCE_FILE}}, Finding {{FINDING_REF_NUMBER}}</span>
-          <span class="finding__source">{{STUDY_AUTHOR}}, {{YEAR}}</span>
-          <!-- [COMPONENT: evidence-tier-badge] -->
-          <a href="{{CITATION_URL}}" rel="noopener noreferrer" target="_blank" class="finding__citation-url">{{CITATION_URL_DISPLAY}}</a>
-        </div>
-      </div>
-    </details>
-
-    <details class="finding__details finding__details--technical">
-      <summary class="finding__details-summary">Technical details</summary>
-      <div class="finding__details-content">
-        <div class="finding__tech-row"><span class="finding__tech-label">Source:</span> <span class="finding__tech-value">{{SOURCE_TYPE}}</span></div>
-        <div class="finding__tech-row"><span class="finding__tech-label">Section:</span> <span class="finding__tech-value"><code>{{SECTION_SLUG}}</code></span></div>
-        <div class="finding__tech-row"><span class="finding__tech-label">Reference:</span> <span class="finding__tech-value">{{REFERENCE_PATH}}</span></div>
-      </div>
-    </details>
-  </div>
-</div>
-
-<style>
-.finding {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
-  margin-bottom: var(--space-4);
-  overflow: hidden;
-}
-.finding--critical { border-color: var(--border-critical); }
-.finding--high { border-color: var(--border-high); }
-.finding--medium { border-color: var(--border-medium); }
-.finding--low { border-color: var(--border-low); }
-
-.finding__header {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4) var(--space-5);
-  border-bottom: 1px solid var(--border-default);
-}
-.finding__number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: #fff;
+.metadata {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem 2rem;
+  border-left: 1px solid var(--border-light);
+  padding-left: 2rem;
   flex-shrink: 0;
 }
-.finding--critical .finding__number { background: var(--severity-critical); }
-.finding--high .finding__number { background: var(--severity-high); color: #111; }
-.finding--medium .finding__number { background: var(--severity-medium); }
-.finding--low .finding__number { background: var(--bg-active); }
-
-.finding__severity-badge {
-  display: inline-flex;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
+.meta-item label {
+  display: block;
+  font-size: 0.625rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  color: var(--text-dim);
   text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.25rem;
 }
-.finding--critical .finding__severity-badge { background: var(--severity-critical-bg); color: var(--severity-critical); }
-.finding--high .finding__severity-badge { background: var(--severity-high-bg); color: var(--severity-high); }
-.finding--medium .finding__severity-badge { background: var(--severity-medium-bg); color: var(--severity-medium); }
-.finding--low .finding__severity-badge { background: var(--severity-low-bg); color: var(--severity-low); }
-
-.finding__title {
-  font-size: var(--text-lg);
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--text-primary);
+.meta-item span {
+  font-size: 1rem;
+  font-weight: 500;
 }
-.finding__body { padding: var(--space-5); }
-.finding__section { margin-bottom: var(--space-4); }
-.finding__section-label {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: var(--space-1);
-}
-.finding__text {
-  font-size: var(--text-base);
-  line-height: 1.6;
-  color: var(--text-secondary);
-}
-
-/* Citation footer — always visible */
-.finding__citation {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) 0;
-  border-top: 1px solid var(--border-default);
-  font-size: var(--text-xs);
-  color: var(--text-tertiary);
-}
-.finding__ref { font-weight: 600; }
-.finding__citation-url {
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--severity-medium);
-  word-break: break-all;
-}
-.finding__citation-url:hover { text-decoration: underline; }
-
-/* Collapsible sections */
-.finding__details {
-  border-top: 1px solid var(--border-default);
-}
-.finding__details-summary {
-  padding: var(--space-3) 0;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--text-secondary);
-  cursor: pointer;
-  list-style: none;
-}
-.finding__details-summary::before {
-  content: '\25B6\00A0';
-  font-size: 0.7em;
-  transition: transform 0.15s ease;
-  display: inline-block;
-}
-.finding__details[open] .finding__details-summary::before {
-  transform: rotate(90deg);
-}
-.finding__details-content {
-  padding-bottom: var(--space-4);
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
-  line-height: 1.6;
-}
-.finding__tech-row {
-  display: flex;
-  gap: var(--space-2);
-  padding: var(--space-1) 0;
-}
-.finding__tech-label {
-  font-weight: 600;
-  color: var(--text-tertiary);
-  min-width: 5rem;
-}
-.finding__tech-value {
-  color: var(--text-secondary);
-}
+.meta-item .highlight { color: var(--amber); }
 </style>
 
 
 <!-- ============================================================
-     6. EVIDENCE TIER BADGE
+     5. EVIDENCE CANVAS (screenshot carousel with markers)
+     ============================================================
+     Sticky left panel. Screenshot carousel with thumbnails,
+     prev/next navigation, and severity-colored callout markers.
+     ============================================================ -->
+<section class="evidence-canvas">
+  <div class="section-label">
+    <span>Primary Interface Evidence</span>
+    <div class="nav-buttons">
+      <button class="nav-btn" onclick="prevSlide()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <button class="nav-btn" onclick="nextSlide()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="screenshot-container">
+    <img id="mainImage" src="data:image/jpeg;base64,{{SCREENSHOT_0_BASE64}}" alt="{{SCREENSHOT_0_ALT}}" />
+    <div class="screenshot-overlay"></div>
+
+    <!-- Callout Markers — one per finding, positioned by element coordinates -->
+    <!-- Repeat for each finding: -->
+    <a href="#finding-{{N}}" class="marker marker-{{N}}" data-finding="finding-{{N}}" data-severity="{{SEVERITY}}" style="top:{{Y_PCT}}%;left:{{X_PCT}}%;">{{N}}</a>
+  </div>
+
+  <!-- Thumbnails — one per screenshot -->
+  <div class="thumbnails">
+    <!-- Repeat for each screenshot: -->
+    <div class="thumb {{ACTIVE_CLASS}}" onclick="setSlide({{INDEX}})">
+      <img src="data:image/jpeg;base64,{{THUMB_BASE64}}" alt="{{THUMB_ALT}}" />
+    </div>
+  </div>
+
+  <!-- [COMPONENT: metrics-bar] -->
+  {{METRICS_BAR}}
+</section>
+
+<style>
+/* Main Grid */
+.main-grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+/* Evidence Canvas */
+.evidence-canvas {
+  position: sticky;
+  top: 2rem;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--text-dim);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-buttons { display: flex; gap: 0.75rem; }
+.nav-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.05); }
+
+.screenshot-container {
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid var(--border-light);
+  margin-bottom: 1rem;
+}
+.screenshot-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}
+.screenshot-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  pointer-events: none;
+}
+
+/* Callout Markers */
+.marker {
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px);
+  text-decoration: none;
+  transition: transform 0.2s;
+  z-index: 10;
+}
+.marker:hover { transform: scale(1.1); text-decoration: none; }
+
+/* Severity-specific marker backgrounds */
+.marker[data-severity="critical"] {
+  background: rgba(147,0,10,0.8);
+  width: 3.5rem;
+  height: 3.5rem;
+  font-size: 1.125rem;
+}
+.marker[data-severity="high"] { background: rgba(255,159,0,0.8); }
+.marker[data-severity="medium"] { background: rgba(16,185,129,0.8); }
+.marker[data-severity="low"] { background: rgba(107,114,128,0.8); }
+
+/* Thumbnails */
+.thumbnails {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.thumb {
+  aspect-ratio: 16/10;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.thumb:hover { opacity: 1; border-color: rgba(255,255,255,0.3); }
+.thumb.active {
+  opacity: 1;
+  outline: 2px solid rgba(255,255,255,0.5);
+  outline-offset: 2px;
+}
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+</style>
+
+
+<!-- ============================================================
+     6. FINDING CARD
+     ============================================================
+     Parameterized by severity: critical, high, medium, low.
+     Each card has: accent stripe, number, severity badge, title,
+     observation, recommendation box, "why this matters", and
+     citation footer with evidence tier badge.
+     ============================================================ -->
+<article id="finding-{{N}}" class="finding-card" data-finding="finding-{{N}}">
+  <div class="finding-accent {{SEVERITY}}"></div>
+  <div class="finding-header">
+    <div class="finding-header-left">
+      <span class="finding-number">{{N}}</span>
+      <span class="severity-badge {{SEVERITY}}">{{SEVERITY_LABEL}}</span>
+    </div>
+    <span class="finding-source">{{SOURCE_TYPE}}</span>
+  </div>
+  <h3 class="finding-title">{{FINDING_TITLE}}</h3>
+  <p class="finding-observation">{{OBSERVATION}}</p>
+  <div class="recommendation-box">
+    <div class="recommendation-header {{SEVERITY}}">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      <span class="recommendation-label">Recommendation</span>
+    </div>
+    <p class="recommendation-text">{{RECOMMENDATION}}</p>
+  </div>
+  <div class="why-matters">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+    <span>{{WHY_THIS_MATTERS}}</span>
+  </div>
+  <div class="finding-footer">
+    <div class="finding-footer-left">
+      <span class="ref-id">{{REFERENCE_FILE}}, Finding {{FINDING_REF_NUMBER}}</span>
+      <!-- [COMPONENT: evidence-tier-badge] -->
+      <span class="tier-badge tier-badge--{{TIER}}">{{TIER_LABEL}}</span>
+    </div>
+    <a href="{{CITATION_URL}}" rel="noopener noreferrer" target="_blank" class="view-source">View Source</a>
+  </div>
+</article>
+
+<style>
+.findings { display: flex; flex-direction: column; gap: 1.5rem; }
+
+.finding-card {
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}
+.finding-card:hover { background: rgba(255,255,255,0.06); }
+
+/* Highlight state — when marker clicked or scroll-synced */
+.finding-card.highlight {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 1px var(--amber);
+}
+
+.finding-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  opacity: 0.5;
+}
+.finding-accent.critical { background: linear-gradient(to right, var(--critical), transparent); }
+.finding-accent.high { background: linear-gradient(to right, var(--high), transparent); }
+.finding-accent.medium { background: linear-gradient(to right, var(--medium), transparent); }
+.finding-accent.low { background: linear-gradient(to right, var(--low), transparent); }
+
+.finding-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+.finding-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.finding-number {
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.severity-badge {
+  padding: 0.375rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+.severity-badge.critical {
+  background: var(--critical-bg);
+  color: var(--critical-text);
+  border: 1px solid var(--critical-border);
+}
+.severity-badge.high {
+  background: var(--high-bg);
+  color: var(--amber-glow);
+  border: 1px solid var(--high-border);
+}
+.severity-badge.medium {
+  background: var(--medium-bg);
+  color: var(--medium-text);
+  border: 1px solid var(--medium-border);
+}
+.severity-badge.low {
+  background: var(--low-bg);
+  color: var(--low-text);
+  border: 1px solid var(--low-border);
+}
+
+.finding-source {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+}
+
+.finding-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text);
+}
+
+.finding-observation {
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}
+
+.recommendation-box {
+  background: rgba(255,255,255,0.05);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 1.5rem;
+}
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.recommendation-header svg { width: 1.25rem; height: 1.25rem; }
+.recommendation-header.critical svg { color: var(--critical-text); }
+.recommendation-header.high svg { color: var(--amber); }
+.recommendation-header.medium svg { color: var(--medium); }
+.recommendation-header.low svg { color: var(--low-text); }
+.recommendation-label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.8);
+}
+.recommendation-text {
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
+}
+
+.why-matters {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+.why-matters svg {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.finding-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.finding-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.ref-id {
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.view-source {
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.view-source:hover { color: var(--text); text-decoration: underline; }
+</style>
+
+
+<!-- ============================================================
+     7. EVIDENCE TIER BADGE
      ============================================================
      Variants: tier-badge--gold, tier-badge--silver, tier-badge--bronze
+     Placed inline in finding-footer next to ref-id.
      ============================================================ -->
 <span class="tier-badge tier-badge--{{TIER}}">{{TIER_LABEL}}</span>
-<!-- If quality flag exists: -->
-<span class="tier-badge__flag">{{QUALITY_FLAG}}</span>
 
 <style>
 .tier-badge {
   display: inline-flex;
   align-items: center;
   padding: 0.125rem 0.5rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.6875rem;
+  border-radius: 9999px;
+  font-size: 0.5625rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   line-height: 1.4;
 }
-.tier-badge--gold { background: var(--tier-gold-bg); color: var(--tier-gold); border: 1px solid rgba(251,191,36,0.20); }
-.tier-badge--silver { background: var(--tier-silver-bg); color: var(--tier-silver); border: 1px solid rgba(161,161,170,0.15); }
-.tier-badge--bronze { background: var(--tier-bronze-bg); color: var(--tier-bronze); border: 1px solid rgba(205,127,50,0.20); }
-.tier-badge__flag {
-  font-size: var(--text-xs);
-  color: var(--text-tertiary);
-  font-style: italic;
-  margin-left: var(--space-1);
+.tier-badge--gold {
+  background: var(--tier-gold-bg);
+  color: var(--tier-gold);
+  border: 1px solid var(--tier-gold-border);
+}
+.tier-badge--silver {
+  background: var(--tier-silver-bg);
+  color: var(--tier-silver);
+  border: 1px solid var(--tier-silver-border);
+}
+.tier-badge--bronze {
+  background: var(--tier-bronze-bg);
+  color: var(--tier-bronze);
+  border: 1px solid var(--tier-bronze-border);
 }
 </style>
 
 
 <!-- ============================================================
-     7. SCREENSHOT PANEL (split-panel left, sticky)
-     ============================================================
-     The parent .split-layout uses display:flex with NO overflow.
-     This panel is sticky and scrolls internally.
+     8. METRICS BAR
      ============================================================ -->
-<div class="split-layout">
-  <div class="screenshot-panel">
-    <!-- Repeat for each screenshot section: -->
-    <div class="screenshot-container">
-      <img class="screenshot-container__img" src="data:image/jpeg;base64,{{SCREENSHOT_BASE64}}" alt="{{SCREENSHOT_ALT}}" />
-      <svg class="screenshot-container__overlay"
-           viewBox="0 0 {{IMG_WIDTH}} {{IMG_HEIGHT}}"
-           preserveAspectRatio="xMinYMin meet"
-           role="group"
-           aria-label="{{MARKER_COUNT}} issues annotated on this screenshot">
-        <title>Annotations for {{SCREENSHOT_ALT}}</title>
-        <!-- SVG SAFETY: Only svg, circle, text, g, defs, style, line elements.
-             NO script, foreignObject, use, image, a elements. No on* attributes.
-             All text content must be numeric only. All data-finding values must match ^[a-z0-9-]+$ -->
-        <!-- Repeat for each marker: -->
-        <g class="marker" tabindex="0" role="button"
-           aria-label="Issue {{N}}: {{ISSUE_SUMMARY}}, severity {{SEVERITY}}"
-           data-finding="finding-{{N}}" data-ideal-x="{{X}}" data-ideal-y="{{Y}}"
-           transform="translate({{X}}, {{Y}})">
-          <circle r="16" class="marker__bg" />
-          <text text-anchor="middle" dy="0.35em" aria-hidden="true" class="marker__label">{{N}}</text>
-        </g>
-      </svg>
+<div class="metrics-bar">
+  <div class="metric-card">
+    <div class="metric-icon amber">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+    </div>
+    <div>
+      <div class="metric-label">{{METRIC_1_LABEL}}</div>
+      <div class="metric-value">{{METRIC_1_VALUE}}</div>
+    </div>
+  </div>
+  <div class="metric-card">
+    <div class="metric-icon green">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>
+    </div>
+    <div>
+      <div class="metric-label">{{METRIC_2_LABEL}}</div>
+      <div class="metric-value green">{{METRIC_2_VALUE}}</div>
+    </div>
+  </div>
+</div>
+
+<style>
+.metrics-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+.metric-card {
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.metric-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.metric-icon svg { width: 1.5rem; height: 1.5rem; }
+.metric-icon.amber svg { color: var(--amber); }
+.metric-icon.green svg { color: var(--medium); }
+.metric-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  margin-bottom: 0.25rem;
+}
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.metric-value.green { color: var(--medium); }
+</style>
+
+
+<!-- ============================================================
+     9. SUMMARY SECTION (evidence confidence, severity dist, ethics)
+     ============================================================ -->
+<section class="summary-section">
+  <!-- Card 1: Evidence Confidence -->
+  <div class="summary-card">
+    <div>
+      <div class="summary-label">Evidence Confidence</div>
+      <div class="summary-value amber">{{CONFIDENCE_LEVEL}}</div>
+      <div class="summary-note">{{CONFIDENCE_NOTE}}</div>
+    </div>
+    <div class="summary-icon amber">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
     </div>
   </div>
 
-  <div class="findings-panel">
-    <!-- [COMPONENT: limitations-banner] if applicable -->
-    <!-- [COMPONENT: finding-card] x N -->
+  <!-- Card 2: Severity Distribution -->
+  <div class="summary-card" style="flex-direction: column; align-items: stretch;">
+    <div class="summary-label" style="margin-bottom: 1.25rem;">Severity Distribution</div>
+    <div class="severity-dist">
+      <!-- Repeat for each severity level with findings > 0: -->
+      <div class="severity-bar">
+        <div class="severity-bar-header">
+          <span class="severity-bar-label">{{SEVERITY_NAME}}</span>
+          <span class="severity-bar-count {{SEVERITY}}">{{COUNT}}</span>
+        </div>
+        <div class="severity-bar-track">
+          <div class="severity-bar-fill {{SEVERITY}}" style="width:{{FILL_PCT}}%"></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+
+  <!-- Card 3: Ethics Check — MANDATORY -->
+  <!-- [COMPONENT: ethics-compliance] -->
+  {{ETHICS_CARD}}
+</section>
 
 <style>
-.split-layout {
+.summary-section {
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
   display: flex;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
-  gap: var(--space-6);
-  /* NO overflow set — critical for sticky to work */
+  justify-content: space-between;
+  align-items: center;
 }
-.screenshot-panel {
-  position: sticky;
-  top: 0;
-  width: 50%;
-  height: 100vh;
-  height: 100dvh; /* modern: accounts for mobile dynamic address bar */
-  overflow-y: auto;
+
+.summary-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.summary-value.amber { color: var(--amber); }
+.summary-value.green { color: var(--medium); }
+.summary-value.critical { color: var(--critical-text); }
+.summary-note {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.summary-icon {
+  width: 3rem;
+  height: 3rem;
   flex-shrink: 0;
-  align-self: flex-start; /* CRITICAL: required for sticky in flex containers */
-  padding-right: var(--space-4);
 }
-.findings-panel {
-  flex: 1;
-  min-width: 0;
-}
+.summary-icon svg { width: 100%; height: 100%; }
+.summary-icon.amber svg { color: rgba(255,159,0,0.3); }
 
-/* Screenshot container with SVG overlay */
-.screenshot-container {
-  position: relative;
-  display: block;
+.summary-icon-circle {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.summary-icon-circle svg { width: 1.75rem; height: 1.75rem; }
+
+/* PASS state */
+.summary-icon-circle.pass {
+  background: rgba(16,185,129,0.1);
+}
+.summary-icon-circle.pass svg { color: var(--medium); }
+
+/* FAIL state */
+.summary-icon-circle.fail {
+  background: rgba(147,0,10,0.1);
+}
+.summary-icon-circle.fail svg { color: var(--critical-text); }
+
+/* Severity Distribution */
+.severity-dist {
+  display: flex;
+  gap: 1rem;
   width: 100%;
-  margin-bottom: var(--space-4);
-  line-height: 0; /* eliminates inline gap below img */
-  border-radius: var(--radius-lg);
+}
+.severity-bar { flex: 1; }
+.severity-bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+.severity-bar-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.8);
+}
+.severity-bar-count {
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+.severity-bar-count.critical { color: var(--critical-text); }
+.severity-bar-count.high { color: var(--high); }
+.severity-bar-count.medium { color: var(--medium); }
+.severity-bar-count.low { color: var(--low-text); }
+.severity-bar-track {
+  height: 0.25rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
   overflow: hidden;
-  border: 1px solid var(--border-strong);
 }
-.screenshot-container__img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.screenshot-container__overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; /* clicks pass through non-marker areas */
-  overflow: visible;
-}
-
-/* SVG Markers */
-.marker { pointer-events: all; cursor: pointer; }
-.marker__bg {
-  fill: var(--severity-critical);
-  stroke: #fff;
-  stroke-width: 2;
-  transition: fill 0.15s ease;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4));
-}
-.marker__label {
-  fill: #fff;
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 700;
-  pointer-events: none;
-  user-select: none;
-}
-.marker:hover .marker__bg,
-.marker:focus-visible .marker__bg {
-  fill: #ef4444;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
-}
-.marker:focus-visible .marker__bg {
-  stroke: var(--severity-medium);
-  stroke-width: 3;
-}
-.marker.active .marker__bg {
-  fill: var(--severity-medium);
-  stroke: #fff;
-  stroke-width: 3;
-}
-
-/* Severity-specific marker colors */
-.marker[data-severity="critical"] .marker__bg { fill: var(--severity-critical); }
-.marker[data-severity="high"] .marker__bg { fill: var(--severity-high); }
-.marker[data-severity="high"] .marker__label { fill: #111; }
-.marker[data-severity="medium"] .marker__bg { fill: var(--severity-medium); }
-.marker[data-severity="low"] .marker__bg { fill: var(--bg-active); }
-
-/* Leader lines for nudged markers */
-.leader-line {
-  stroke: rgba(255,255,255,0.3);
-  stroke-width: 1.5;
-  stroke-dasharray: 4 3;
-}
-
-/* Cluster badge for 5+ markers in same section */
-.cluster-badge {
-  fill: var(--bg-active);
-  stroke: #fff;
-  stroke-width: 1.5;
-}
-.cluster-count {
-  fill: #fff;
-  font-size: 10px;
-  font-weight: 700;
-}
+.severity-bar-fill { height: 100%; border-radius: 9999px; }
+.severity-bar-fill.critical { background: var(--critical); }
+.severity-bar-fill.high { background: var(--high); }
+.severity-bar-fill.medium { background: var(--medium); }
+.severity-bar-fill.low { background: var(--low); }
 </style>
 
 
 <!-- ============================================================
-     8. DEVICE FRAME (mobile bezel mockup)
-     ============================================================
-     CSS-only phone frame. Wraps screenshot-container for mobile.
-     Only used in mobile reports; desktop screenshots render without.
-     ============================================================ -->
-<div class="device-frame">
-  <div class="device-frame__notch"></div>
-  <div class="device-frame__screen">
-    <!-- [COMPONENT: screenshot-container goes here] -->
-  </div>
-</div>
-
-<style>
-.device-frame {
-  background: #1a1a1f;
-  border: 3px solid #2e2e36;
-  border-radius: 2rem;
-  padding: var(--space-3);
-  padding-top: var(--space-8);
-  position: relative;
-  max-width: 420px;
-  margin: 0 auto var(--space-4);
-}
-.device-frame__notch {
-  position: absolute;
-  top: 0.75rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 5rem;
-  height: 0.375rem;
-  background: #2e2e36;
-  border-radius: 1rem;
-}
-.device-frame__screen {
-  border-radius: 1rem;
-  overflow: hidden;
-}
-.device-frame .screenshot-container {
-  border: none;
-  border-radius: 0;
-  margin-bottom: 0;
-}
-</style>
-
-
-<!-- ============================================================
-     9. LIMITATIONS BANNER
+     10. LIMITATIONS BANNER
      ============================================================ -->
 <!-- Screenshot-only mode: -->
 <div class="limitations-banner limitations-banner--screenshot">
@@ -711,442 +904,189 @@ code, .stat-value, .metric {
   <span class="limitations-banner__text">Based on screenshot only — DOM and interaction patterns not assessed.</span>
 </div>
 
-<!-- Wireframe fallback for a section: -->
-<div class="limitations-banner limitations-banner--wireframe">
-  <span class="limitations-banner__icon">&#9888;</span>
-  <span class="limitations-banner__text">Wireframe fallback — screenshot was obscured by overlays for this section.</span>
-</div>
-
 <style>
 .limitations-banner {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  font-size: var(--text-sm);
-  margin-bottom: var(--space-4);
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  margin-bottom: 1.5rem;
   border: 1px solid;
 }
 .limitations-banner--screenshot {
-  background: var(--severity-high-bg);
-  border-color: var(--border-high);
-  color: var(--severity-high);
+  background: var(--high-bg);
+  border-color: var(--high-border);
+  color: var(--amber-glow);
 }
-.limitations-banner--wireframe {
-  background: var(--severity-medium-bg);
-  border-color: var(--border-medium);
-  color: var(--severity-medium);
-}
-.limitations-banner__icon { font-size: var(--text-lg); }
+.limitations-banner__icon { font-size: 1.125rem; }
 </style>
 
 
 <!-- ============================================================
-     10. EXPORT FOOTER
-     ============================================================ -->
-<footer class="export-footer">
-  <div class="export-footer__inner">
-    <span class="export-footer__item">Generated: {{GENERATION_DATE}}</span>
-    <span class="export-footer__sep">|</span>
-    <span class="export-footer__item">Plugin: ecommerce-conversion-psychology v{{PLUGIN_VERSION}}</span>
-    <span class="export-footer__sep">|</span>
-    <span class="export-footer__item">Engagement: <code>{{ENGAGEMENT_ID}}</code></span>
-    <span class="export-footer__sep">|</span>
-    <span class="export-footer__item">Device: {{DEVICE_MODE}}</span>
-  </div>
-</footer>
-
-<style>
-.export-footer {
-  padding: var(--space-6) var(--space-8);
-  border-top: 1px solid var(--border-default);
-  margin-top: var(--space-8);
-}
-.export-footer__inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  font-size: var(--text-xs);
-  color: var(--text-muted);
-}
-.export-footer__sep { color: var(--border-strong); }
-.export-footer code {
-  font-family: var(--font-mono);
-  color: var(--text-tertiary);
-}
-</style>
-
-
-<!-- ============================================================
-     11. SCROLL-SYNC CONTROLLER (JavaScript)
+     11. CAROUSEL CONTROLLER + SCROLL-SYNC (JavaScript)
      ============================================================
-     4-state state machine for bidirectional scroll-sync.
-     States: IDLE, USER_SCROLLING_FINDINGS, USER_SCROLLING_SCREENSHOTS, PROGRAMMATIC_SCROLL
+     Screenshot carousel with slide switching.
+     Scroll-sync between finding cards and screenshot markers.
      ============================================================ -->
 <script>
 (function() {
   'use strict';
 
-  // --- State Machine ---
-  var STATE_IDLE = 0;
-  var STATE_USER_FINDINGS = 1;
-  var STATE_USER_SCREENSHOTS = 2;
-  var STATE_PROGRAMMATIC = 3;
-  var state = STATE_IDLE;
-  var programmaticTimer = null;
+  // --- Carousel ---
+  var slideSources = {{SLIDE_SOURCES_JSON}};
+  var currentSlide = 0;
+  var mainImage = document.getElementById('mainImage');
+  var thumbs = document.querySelectorAll('.thumb');
+  var markers = document.querySelectorAll('.screenshot-container .marker');
 
-  var findingsPanel = document.querySelector('.findings-panel');
-  var screenshotPanel = document.querySelector('.screenshot-panel');
-  if (!findingsPanel || !screenshotPanel) return;
-
-  // --- Image Decode Gating ---
-  var images = screenshotPanel.querySelectorAll('img');
-  var decodePromises = Array.prototype.map.call(images, function(img) {
-    if (img.complete && img.naturalHeight > 0) return Promise.resolve();
-    return img.decode ? img.decode().catch(function(){}) : Promise.resolve();
-  });
-  Promise.all(decodePromises).then(initSync);
-
-  function initSync() {
-    // --- Anti-collision: nudge overlapping markers ---
-    document.querySelectorAll('.screenshot-container__overlay').forEach(function(svg) {
-      var markers = Array.prototype.slice.call(svg.querySelectorAll('.marker'));
-      var positions = markers.map(function(m) {
-        return { el: m, x: +m.dataset.idealX, y: +m.dataset.idealY };
-      });
-      var minDist = 40;
-      for (var iter = 0; iter < 50; iter++) {
-        var moved = false;
-        for (var i = 0; i < positions.length; i++) {
-          for (var j = i + 1; j < positions.length; j++) {
-            var dx = positions[j].x - positions[i].x;
-            var dy = positions[j].y - positions[i].y;
-            var d = Math.sqrt(dx*dx + dy*dy);
-            if (d < minDist && d > 0) {
-              var push = (minDist - d) / 2;
-              var angle = Math.atan2(dy, dx);
-              positions[j].x += Math.cos(angle) * push;
-              positions[j].y += Math.sin(angle) * push;
-              positions[i].x -= Math.cos(angle) * push;
-              positions[i].y -= Math.sin(angle) * push;
-              moved = true;
-            }
-          }
-        }
-        if (!moved) break;
-      }
-      positions.forEach(function(p) {
-        p.el.setAttribute('transform', 'translate(' + p.x + ',' + p.y + ')');
-        var ox = +p.el.dataset.idealX, oy = +p.el.dataset.idealY;
-        if (Math.sqrt(Math.pow(p.x-ox,2) + Math.pow(p.y-oy,2)) > 3) {
-          var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-          line.setAttribute('x1', ox); line.setAttribute('y1', oy);
-          line.setAttribute('x2', p.x); line.setAttribute('y2', p.y);
-          line.classList.add('leader-line');
-          svg.insertBefore(line, p.el);
-        }
-      });
-    });
-
-    // --- IntersectionObserver for findings panel ---
-    var findingCards = findingsPanel.querySelectorAll('.finding');
-    var rafId = null;
-    var pendingActiveId = null;
-
-    var findingObserver = new IntersectionObserver(function(entries) {
-      if (state === STATE_PROGRAMMATIC) return;
-
-      // Find most-centered visible finding
-      var panelRect = findingsPanel.getBoundingClientRect();
-      var panelCenter = panelRect.top + panelRect.height / 2;
-      var closest = null;
-      var closestDist = Infinity;
-
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        var rect = entry.target.getBoundingClientRect();
-        var center = rect.top + rect.height / 2;
-        var dist = Math.abs(center - panelCenter);
-        if (dist < closestDist) {
-          closest = entry.target;
-          closestDist = dist;
-        }
-      });
-
-      if (closest) {
-        pendingActiveId = closest.id;
-        if (!rafId) {
-          rafId = requestAnimationFrame(function() {
-            rafId = null;
-            if (pendingActiveId) {
-              highlightMarker(pendingActiveId);
-              if (state === STATE_USER_FINDINGS) {
-                scrollScreenshotToMarker(pendingActiveId);
-              }
-            }
-          });
-        }
-      }
-    }, {
-      root: findingsPanel,
-      rootMargin: '-10% 0px -60% 0px',
-      threshold: [0, 0.25, 0.5, 0.75, 1.0]
-    });
-
-    findingCards.forEach(function(card) { findingObserver.observe(card); });
-
-    // --- Scroll source detection ---
-    findingsPanel.addEventListener('scroll', function() {
-      if (state === STATE_IDLE) state = STATE_USER_FINDINGS;
-    }, { passive: true });
-
-    screenshotPanel.addEventListener('scroll', function() {
-      if (state === STATE_IDLE) state = STATE_USER_SCREENSHOTS;
-    }, { passive: true });
-
-    // Reset state after scroll ends
-    var resetTimer = null;
-    function scheduleReset() {
-      clearTimeout(resetTimer);
-      resetTimer = setTimeout(function() {
-        if (state !== STATE_PROGRAMMATIC) state = STATE_IDLE;
-      }, 150);
+  window.setSlide = function(index) {
+    currentSlide = index;
+    if (mainImage && slideSources[index]) {
+      mainImage.src = slideSources[index];
     }
-    findingsPanel.addEventListener('scroll', scheduleReset, { passive: true });
-    screenshotPanel.addEventListener('scroll', scheduleReset, { passive: true });
-
-    // --- Marker click handlers ---
-    document.querySelectorAll('.marker').forEach(function(marker) {
-      function activate() {
-        var findingId = marker.dataset.finding;
-        if (!findingId) return;
-
-        state = STATE_PROGRAMMATIC;
-        clearTimeout(programmaticTimer);
-
-        highlightMarker(findingId);
-        var target = document.getElementById(findingId);
-        if (target) {
-          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-
-        // scrollend + fallback
-        var onScrollEnd = function() {
-          findingsPanel.removeEventListener('scrollend', onScrollEnd);
-          clearTimeout(programmaticTimer);
-          state = STATE_IDLE;
-        };
-        findingsPanel.addEventListener('scrollend', onScrollEnd);
-        programmaticTimer = setTimeout(function() {
-          findingsPanel.removeEventListener('scrollend', onScrollEnd);
-          state = STATE_IDLE;
-        }, 800);
-      }
-
-      marker.addEventListener('click', activate);
-      marker.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
-      });
+    thumbs.forEach(function(thumb, i) {
+      thumb.classList.toggle('active', i === index);
     });
+    // Show markers only on the slide they belong to
+    markers.forEach(function(marker) {
+      var markerSlide = parseInt(marker.dataset.slide || '0', 10);
+      marker.style.display = markerSlide === index ? 'flex' : 'none';
+    });
+  };
 
-    // --- Finding card click → scroll to marker ---
-    findingCards.forEach(function(card) {
-      var num = card.querySelector('.finding__number');
-      if (num) {
-        num.style.cursor = 'pointer';
-        num.addEventListener('click', function() {
-          var findingId = card.id;
-          state = STATE_PROGRAMMATIC;
-          clearTimeout(programmaticTimer);
+  window.prevSlide = function() {
+    window.setSlide(currentSlide === 0 ? slideSources.length - 1 : currentSlide - 1);
+  };
+
+  window.nextSlide = function() {
+    window.setSlide(currentSlide === slideSources.length - 1 ? 0 : currentSlide + 1);
+  };
+
+  // --- Scroll-sync: finding cards <-> markers ---
+  var findingCards = document.querySelectorAll('.finding-card');
+
+  // Marker click → scroll to finding
+  markers.forEach(function(marker) {
+    marker.addEventListener('click', function(e) {
+      e.preventDefault();
+      var findingId = this.getAttribute('data-finding');
+      var target = document.getElementById(findingId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        highlightCard(findingId);
+      }
+    });
+  });
+
+  // Finding number click → switch to correct slide and highlight marker
+  findingCards.forEach(function(card) {
+    var num = card.querySelector('.finding-number');
+    if (num) {
+      num.style.cursor = 'pointer';
+      num.addEventListener('click', function() {
+        var findingId = card.id;
+        var marker = document.querySelector('.marker[data-finding="' + findingId + '"]');
+        if (marker) {
+          var slide = parseInt(marker.dataset.slide || '0', 10);
+          window.setSlide(slide);
           highlightMarker(findingId);
-          scrollScreenshotToMarker(findingId);
-          programmaticTimer = setTimeout(function() { state = STATE_IDLE; }, 800);
-        });
-      }
-    });
+        }
+      });
+    }
+  });
 
-    // --- Print safety ---
-    window.addEventListener('beforeprint', function() {
-      state = STATE_IDLE;
-      clearTimeout(programmaticTimer);
-      findingObserver.disconnect();
-    });
-    window.addEventListener('afterprint', function() {
-      findingCards.forEach(function(card) { findingObserver.observe(card); });
-    });
-  }
-
-  // --- Helper: highlight marker by finding ID ---
-  function highlightMarker(findingId) {
-    document.querySelectorAll('.marker.active').forEach(function(m) {
-      m.classList.remove('active');
-    });
-    var target = document.querySelector('.marker[data-finding="' + findingId + '"]');
-    if (target) target.classList.add('active');
-
-    // Also highlight finding card
-    document.querySelectorAll('.finding.highlight').forEach(function(f) {
-      f.classList.remove('highlight');
-    });
+  function highlightCard(findingId) {
+    findingCards.forEach(function(c) { c.classList.remove('highlight'); });
     var card = document.getElementById(findingId);
-    if (card) card.classList.add('highlight');
+    if (card) {
+      card.classList.add('highlight');
+      setTimeout(function() { card.classList.remove('highlight'); }, 2000);
+    }
   }
 
-  // --- Helper: scroll screenshot panel to show marker ---
-  function scrollScreenshotToMarker(findingId) {
+  function highlightMarker(findingId) {
+    markers.forEach(function(m) { m.style.transform = ''; });
     var marker = document.querySelector('.marker[data-finding="' + findingId + '"]');
-    if (!marker) return;
-    var container = marker.closest('.screenshot-container');
-    if (!container) return;
-
-    var panel = document.querySelector('.screenshot-panel');
-    var containerTop = container.offsetTop;
-    panel.scrollTo({ top: containerTop, behavior: 'smooth' });
+    if (marker) {
+      marker.style.transform = 'scale(1.2)';
+      setTimeout(function() { marker.style.transform = ''; }, 1500);
+    }
   }
 })();
 </script>
 
-<style>
-/* Finding highlight when marker clicked */
-.finding.highlight {
-  box-shadow: 0 0 0 2px var(--severity-medium);
-  transition: box-shadow 0.3s ease;
-}
-</style>
-
 
 <!-- ============================================================
-     12. PRINT LINEARIZATION (@media print)
+     12. ETHICS COMPLIANCE (in summary card — MANDATORY)
      ============================================================
-     Token reassignment (not filter:invert) to preserve severity
-     color semantics. Split-panel collapses to single column.
-     ============================================================ -->
-<style>
-@media print {
-  :root {
-    --bg-body: #ffffff;
-    --bg-surface: #f8f8f8;
-    --bg-elevated: #f0f0f2;
-    --text-primary: #111111;
-    --text-secondary: #444444;
-    --text-tertiary: #666666;
-    --text-muted: #999999;
-    --border-default: #e0e0e0;
-    --border-strong: #cccccc;
-    --border-emphasis: #999999;
-    --severity-critical: #dc2626;
-    --severity-critical-bg: #fef2f2;
-    --severity-high: #d97706;
-    --severity-high-bg: #fffbeb;
-    --severity-medium: #2563eb;
-    --severity-medium-bg: #eff6ff;
-    --severity-low: #6b7280;
-    --severity-low-bg: #f3f4f6;
-    --border-critical: #fca5a5;
-    --border-high: #fcd34d;
-    --border-medium: #93c5fd;
-    --border-low: #d1d5db;
-  }
-  .report-body { background-image: none !important; }
-  .split-layout { display: block; height: auto; }
-  .screenshot-panel {
-    position: static;
-    width: 100%;
-    height: auto;
-    overflow: visible;
-  }
-  .findings-panel { width: 100%; }
-  * { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-  img { max-width: 100% !important; max-height: 90vh; }
-  .finding { break-inside: avoid; page-break-inside: avoid; margin-bottom: 1rem; }
-  .finding__details[open] { display: block; }
-  .finding__details--rationale,
-  .finding__details--technical { display: block; } /* expand all for print */
-  .finding__details-summary { display: none; } /* hide toggle in print */
-  .finding__details-content { padding-bottom: 0.5rem; }
-  @page { margin: 1.5cm 2cm; size: A4; }
-  .marker { display: none; } /* markers are not interactive in print */
-  .leader-line { display: none; }
-  .device-frame { border: 1px solid #ccc; }
-}
-</style>
-
-
-<!-- ============================================================
-     13. ETHICS COMPLIANCE SECTION
-     ============================================================
-     MANDATORY in every report — cannot be omitted or collapsed.
+     MANDATORY in every report — cannot be omitted.
+     Rendered as the third summary card.
      ============================================================ -->
 
-<!-- If ethics violations found, render each as a finding card with ethics badge: -->
-<div class="ethics-section">
-  <h2 class="ethics-section__title">Ethics Compliance</h2>
+<!-- PASS state (no violations): -->
+<div class="summary-card">
+  <div>
+    <div class="summary-label">Ethics Check</div>
+    <div class="summary-value green">PASS</div>
+    <div class="summary-note">No dark patterns detected</div>
+  </div>
+  <div class="summary-icon-circle pass">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+  </div>
+</div>
 
-  <!-- For each violation: use finding card component with finding--critical class -->
-  <!-- Add ethics badge instead of standard severity badge: -->
-  <span class="ethics-badge">ETHICS</span>
-
-  <!-- If NO violations found: -->
-  <div class="ethics-section__clear">
-    <span class="ethics-section__check">&#10003;</span>
-    Ethics check: No dark patterns detected. Checked: urgency/scarcity signals, pricing transparency, review authenticity, choice architecture, subscription patterns.
+<!-- FAIL state (violations found): -->
+<div class="summary-card" style="flex-direction: column; align-items: stretch;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+    <div>
+      <div class="summary-label">Ethics Check</div>
+      <div class="summary-value critical">FAIL</div>
+    </div>
+    <div class="summary-icon-circle fail">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>
+    </div>
+  </div>
+  <div class="ethics-violations">
+    <!-- Repeat for each violation: -->
+    <div class="ethics-violation-item">
+      <span class="ethics-violation-icon">&#10007;</span>
+      <span>{{VIOLATION_DESCRIPTION}}</span>
+    </div>
   </div>
 </div>
 
 <style>
-.ethics-section {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--space-6) var(--space-8);
-  border-top: 1px solid var(--border-default);
-}
-.ethics-section__title {
-  font-size: var(--text-xl);
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: var(--space-4);
-}
-.ethics-badge {
-  display: inline-flex;
-  padding: var(--space-1) var(--space-2);
-  border-radius: var(--radius-sm);
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  background: var(--severity-critical-bg);
-  color: var(--severity-critical);
-  border: 1px solid var(--border-critical);
-}
-.ethics-section__clear {
+.ethics-violations {
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: rgba(34,197,94,0.08);
-  border: 1px solid rgba(34,197,94,0.15);
-  color: #4ade80;
-  font-size: var(--text-sm);
+  flex-direction: column;
+  gap: 0.5rem;
 }
-.ethics-section__check {
-  font-size: var(--text-lg);
+.ethics-violation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--critical-text);
+  padding: 0.5rem 0.75rem;
+  background: var(--critical-bg);
+  border-radius: 0.5rem;
+  border: 1px solid var(--critical-border);
+}
+.ethics-violation-icon {
   font-weight: 700;
+  flex-shrink: 0;
 }
 </style>
 
 
 <!-- ============================================================
-     14. ESCAPE HATCHES
+     13. ESCAPE HATCHES
      ============================================================
-     For edge cases where content doesn't fit the standard finding
-     card structure. Use sparingly.
+     For edge cases where content doesn't fit standard components.
+     Use sparingly.
      ============================================================ -->
-
-<!-- Custom note block — for supplementary notes, caveats, or context -->
 <div class="custom-note">
   <h4 class="custom-note__title">{{NOTE_TITLE}}</h4>
   <p class="custom-note__text">{{NOTE_CONTENT}}</p>
@@ -1154,22 +1094,22 @@ code, .stat-value, .metric {
 
 <style>
 .custom-note {
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-default);
-  border-left: 3px solid var(--severity-medium);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin-bottom: var(--space-4);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--amber);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
 }
 .custom-note__title {
-  font-size: var(--text-sm);
+  font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-2);
+  color: var(--text);
+  margin-bottom: 0.5rem;
 }
 .custom-note__text {
-  font-size: var(--text-sm);
-  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+  color: var(--text-muted);
   line-height: 1.6;
 }
 </style>

@@ -17,49 +17,61 @@
   </style>
 
   <!-- ============================================================
-       2. Copy the design tokens + base styles + all component CSS
-          from templates/components.html (Section 1 through Section 14):
+       2. Copy the design tokens + all component CSS from
+          templates/components.html:
        ============================================================ -->
   <style>
     {{COMPONENT_STYLES}}
   </style>
 </head>
-<body class="report-body">
+<body>
+  <div class="container">
 
-  <!-- [COMPONENT: report-header] -->
-  {{REPORT_HEADER}}
+    <!-- [COMPONENT: report-header] -->
+    <header>
+      <div class="header-content">
+        <div class="header-main">
+          {{REPORT_HEADER}}
+        </div>
+        <div class="metadata">
+          {{METADATA_GRID}}
+        </div>
+      </div>
+    </header>
 
-  <!-- [COMPONENT: score-summary-strip] -->
-  {{SCORE_STRIP}}
+    <!-- [COMPONENT: main-grid with evidence-canvas + findings] -->
+    <div class="main-grid">
 
-  <!-- [COMPONENT: split-layout with screenshot-panel + findings-panel] -->
-  <div class="split-layout">
+      <!-- LEFT: Sticky evidence canvas with screenshot carousel + markers -->
+      <section class="evidence-canvas">
+        {{EVIDENCE_CANVAS}}
+      </section>
 
-    <!-- LEFT: Sticky screenshot panel with SVG overlay markers -->
-    <div class="screenshot-panel">
-      {{SCREENSHOT_PANELS}}
+      <!-- RIGHT: Scrollable finding cards -->
+      <section class="findings">
+        <div class="section-label">Diagnostic Insights</div>
+
+        <!-- [COMPONENT: limitations-banner] (if screenshot-only mode) -->
+        {{LIMITATIONS_BANNER}}
+
+        <!-- [COMPONENT: finding-card] x N -->
+        {{FINDING_CARDS}}
+
+      </section>
     </div>
 
-    <!-- RIGHT: Scrollable findings -->
-    <div class="findings-panel">
+    <!-- [COMPONENT: summary-section] -->
+    <section class="summary-section">
+      {{SUMMARY_CARDS}}
+    </section>
 
-      <!-- [COMPONENT: limitations-banner] (if screenshot-only or wireframe fallback) -->
-      {{LIMITATIONS_BANNER}}
+    <!-- [COMPONENT: ethics-compliance in summary card — MANDATORY] -->
+    <!-- Ethics state is rendered inside the summary cards above -->
 
-      <!-- [COMPONENT: finding-card] x N -->
-      {{FINDING_CARDS}}
-
-    </div>
   </div>
 
-  <!-- [COMPONENT: ethics-compliance] (MANDATORY — never omit) -->
-  {{ETHICS_SECTION}}
-
-  <!-- [COMPONENT: export-footer] -->
-  {{EXPORT_FOOTER}}
-
-  <!-- [COMPONENT: scroll-sync-controller] (JavaScript — from components.html Section 11) -->
-  {{SCROLL_SYNC_JS}}
+  <!-- [COMPONENT: carousel-controller + scroll-sync] (JavaScript) -->
+  {{REPORT_JS}}
 
 </body>
 </html>
@@ -79,23 +91,24 @@
   Required components from components.html:
   - Design tokens (Section 1)
   - Font embed reference (Section 2 — data from font-embed.css)
-  - Report header (Section 3)
-  - Score summary strip (Section 4)
-  - Finding card (Section 5) — one per finding, parameterized by severity
-  - Evidence tier badge (Section 6) — inline in each finding's citation
-  - Screenshot panel (Section 7) — with SVG overlay markers
-  - Device frame (Section 8) — wraps mobile screenshots only
-  - Limitations banner (Section 9) — for screenshot-only or wireframe fallback
-  - Export footer (Section 10)
-  - Scroll-sync controller (Section 11) — 4-state state machine JS
-  - Print linearization (Section 12) — @media print token reassignment
-  - Ethics compliance (Section 13) — MANDATORY in every report
-  - Escape hatches (Section 14) — for edge cases only
+  - Report header with eyebrow + title (Section 3)
+  - Metadata grid (Section 4)
+  - Evidence canvas with screenshot carousel (Section 5)
+  - Finding card (Section 6) — one per finding, parameterized by severity
+  - Evidence tier badge (Section 7) — inline in each finding's footer
+  - Metrics bar (Section 8)
+  - Summary section (Section 9) — evidence confidence, severity dist, ethics
+  - Limitations banner (Section 10) — for screenshot-only mode
+  - Carousel controller + scroll-sync (Section 11) — JavaScript
+  - Ethics compliance (Section 12) — MANDATORY, rendered in summary card
+  - Escape hatches (Section 13) — for edge cases only
 
-  v3 REGRESSION SAFEGUARDS (check every report):
-  - Ethics section present (Section 13)
+  REGRESSION SAFEGUARDS (check every report):
+  - Ethics state present in summary card (Section 12)
   - Citation URLs clickable (rel="noopener noreferrer" target="_blank")
-  - Screenshot panel sticky (position: sticky, align-self: flex-start)
+  - Evidence tier badge visible in every finding card footer
+  - Evidence canvas sticky (position: sticky)
+  - Screenshot images embedded as base64 data URIs
   - No analysis logic changes (output formatting only)
   ============================================================
 -->

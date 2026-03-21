@@ -1,5 +1,49 @@
 # Changelog
 
+## 4.3.0 — 2026-03-20
+
+### Visual Report Redesign
+
+Complete visual report overhaul — new design language, layout, and component library. The text-only `report.html.template` is unchanged.
+
+#### New Design Language (1 change)
+- Visual reports now use a pure-black background with subtle grid texture, amber accent system, and editorial-grade typography. Replaces the previous dark chrome design system (`#0e0e10` surfaces, split-panel layout). Design tokens fully rewritten in `components.html` — all CSS custom properties renamed to match the new system (e.g., `--bg-body` → `--bg`, `--severity-critical` → `--critical`).
+
+#### Layout Overhaul (1 change)
+- Split-panel layout replaced with a 7fr/5fr grid: sticky evidence canvas (left) with screenshot carousel, scrollable finding cards (right). Header uses large hero typography with eyebrow text and a 3-column metadata grid. Summary section at the bottom replaces the old score strip with three cards: evidence confidence, severity distribution bars, and ethics check.
+
+#### Screenshot Carousel (1 change)
+- Screenshots now display in a carousel with thumbnail strip and prev/next navigation, replacing the single stacked screenshot panel. Markers are per-slide — each marker has a `data-slide` attribute and only appears when its slide is active. Carousel controller JS replaces the old scroll-sync state machine.
+
+#### Finding Card Redesign (1 change)
+- Finding cards redesigned with: severity-colored accent stripe at top, large numbered header, pill-shaped severity badge, recommendation box with lightbulb icon, inline "Why this matters" section (always visible, not collapsible), and citation footer with evidence tier badge + clickable "View Source" link. Collapsible technical details section removed — source type shows in the card header instead.
+
+#### Evidence Tier Badges in Footer (1 change)
+- Evidence tier badges (Gold/Silver/Bronze) now render as small pill badges in each finding card's footer, next to the reference ID. Uses muted pill style consistent with severity badges. Citation URLs resolved from `citations/sources.md` and rendered as the "View Source" link.
+
+#### Ethics Violation State (1 change)
+- Ethics summary card now supports both PASS and FAIL states. PASS renders green checkmark with "No dark patterns detected". FAIL renders critical-red X icon with a vertical list of violations as red-backgrounded line items. Covers: urgency/scarcity signals, pricing transparency, review authenticity, choice architecture, subscription patterns.
+
+#### Metrics Bar (1 change)
+- New metrics bar below the screenshot carousel showing Intent Reliability (% of findings backed by Gold/Silver evidence) and Projected Lift (estimated conversion improvement from severity-weighted findings, capped at 35%).
+
+#### Files Modified
+- `templates/components.html` — Complete rewrite: new design tokens, all 13 component sections rebuilt for new design language
+- `templates/visual-report.html.template` — New skeleton matching redesigned component structure
+- `workflows/visual-report.md` — Rewritten assembly instructions for new layout (carousel, metadata grid, summary section, ethics states)
+- `skills/audit/SKILL.md` — Updated visual report assembly steps to reference new components
+- `skills/quick-scan/SKILL.md` — Updated visual report assembly steps to reference new components
+- `skills/compare/SKILL.md` — Updated visual report assembly steps to reference new components
+- `.claude-plugin/plugin.json` — Version bump to 4.3.0
+
+#### Not Changed
+- `templates/report.html.template` — Text-only report unchanged (separate design, separate purpose)
+- `workflows/report.md` — Text report workflow unchanged
+- `references/` — No reference file changes
+- `citations/` — No citation changes
+
+---
+
 ## 4.2.0 — 2026-03-20
 
 ### Visual Report Accuracy & Citation Links

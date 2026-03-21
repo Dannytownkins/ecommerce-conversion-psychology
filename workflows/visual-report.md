@@ -31,30 +31,59 @@ Load the following from the engagement directory (`docs/cro/{engagement-id}/`):
 
 - `meta.json` — parse all fields
 - `audit.md` (or `audit-mobile.md`) — parse all findings
-- `baton.json` — parse acquisition metadata: screenshots (paths, base64_paths, naturalWidth, naturalHeight), sections (boundaries, clusters, occlusion), styles, dom_mode. **If baton.json does not exist or `status` != `"COMPLETE"`, warn:** "Acquisition baton missing or incomplete — screenshot positions and SVG viewBox may be inaccurate."
+- `baton.json` — parse acquisition metadata: screenshots (paths, base64_paths, naturalWidth, naturalHeight), sections (boundaries, clusters, occlusion), styles, dom_mode. **If baton.json does not exist or `status` != `"COMPLETE"`, warn:** "Acquisition baton missing or incomplete — screenshot positions may be inaccurate."
 - Screenshot `.jpg` files — base64-encoded at render time for embedding
 
 ## Step 4: Assemble Header
 
 Populate the header component from `components.html` using `meta.json` fields:
 
-- Engagement ID
-- Audit date
-- Page URL (HTML-escaped)
-- Page type
-- Platform
-- Cluster name(s)
-- Device (Desktop or Mobile)
-- Viewport dimensions
-- Source mode
+1. **Eyebrow text:** `"Strategic Intelligence Report"`
+2. **Title:** Generate a concise audit title. Wrap key CRO-relevant terms in `<span class="amber">` or `<span class="amber-light">` for visual accent. Example: `<span>CRO</span> <span class="amber">CTA</span> <span class="amber-light">Audit</span>`
+3. **Subtitle:** 1-2 sentence summary of what the audit covers and the target page.
 
-## Step 5: Assemble Score Strip
+## Step 5: Assemble Metadata Grid
 
-Count findings by PRIORITY from the audit file. Populate the score-strip component with counts for **CRITICAL, HIGH, MEDIUM, and LOW only**.
+Populate the metadata grid with 6 items using `meta.json` fields:
 
-Do NOT include counts for STATUS values (PASS, FAIL, PARTIAL, SKIP). The score strip shows severity distribution, not pass/fail tallies.
+| Label | Value |
+|-------|-------|
+| Page Type | `{{page_type}}` |
+| Platform | `{{platform}}` |
+| Device | `{{device}}` (`{{viewport}}`) |
+| Source Mode | `{{source_mode}}` |
+| Audit Date | `{{date}}` formatted as `Mon DD, YYYY` |
+| Engagement ID | `{{engagement_id}}` — wrap in `<span class="highlight">` |
 
-## Step 6: Assemble Finding Cards
+## Step 6: Assemble Evidence Canvas
+
+### 6a. Screenshot carousel
+
+Build a screenshot carousel from the engagement's JPEG files:
+
+- **Base64-encode each screenshot** at render time: `base64 < {path}.jpg`. Embed as data URIs: `src="data:image/jpeg;base64,{encoded}"`. **VERIFY:** every `<img>` src starts with `data:image/` — never a relative file path. If a JPEG file is missing, skip that screenshot.
+- **First screenshot** is the main image (`#mainImage`). All screenshots populate the thumbnail strip.
+- **Build the `slideSources` JSON array** for the carousel controller — one base64 data URI per slide.
+- **Thumbnail grid:** `repeat(N, 1fr)` where N = number of screenshots (max 4 columns). First thumbnail gets `class="thumb active"`.
+
+### 6b. Callout markers
+
+Position numbered markers on the screenshot for each finding:
+
+- **URL mode (source_mode is url-based):** Use element coordinates from `baton.json`. Match the finding's `ELEMENT` field to entries in the baton's `elements` array. Calculate position as percentage of screenshot dimensions: `left = (x + width/2) / naturalWidth * 100`, `top = (y + height/2) / naturalHeight * 100`. If no element match, fall back to section-level centering. Subtract screenshot `scrollY` from element `y` for the correct position within that screenshot.
+- **Screenshot-only mode:** Claude estimates element positions based on visual inspection.
+- **Assign `data-slide`** attribute to each marker indicating which screenshot it appears on (0-indexed). Markers are only visible when their slide is active.
+- **Assign `data-severity`** attribute for severity-specific marker styling: `critical` markers are larger (3.5rem) than others (3rem).
+- **DPR adjustment:** For mobile screenshots at DPR > 1, element coordinates in the baton are already in screenshot pixels. If they are still in CSS pixels, multiply by the DPR before positioning.
+
+### 6c. Metrics bar
+
+Populate the two metric cards below the thumbnail strip:
+
+- **Metric 1 — Intent Reliability:** Percentage based on ratio of findings with strong evidence tiers (Gold/Silver) to total findings. Round to 1 decimal.
+- **Metric 2 — Projected Lift:** Estimated conversion improvement if all recommendations are implemented. Derive from severity weights: CRITICAL=5%, HIGH=3%, MEDIUM=1.5%, LOW=0.5% per finding (cap at 35%). Format as `+XX.X%` with `class="green"`.
+
+## Step 7: Assemble Finding Cards
 
 For each finding in the audit, assemble a finding-card component from `components.html`:
 
@@ -62,74 +91,48 @@ For each finding in the audit, assemble a finding-card component from `component
 
 2. **Hide STATUS from rendered output.** The finding's STATUS (PASS, FAIL, PARTIAL, SKIP) is used only for internal filtering. It MUST NOT appear anywhere in the rendered HTML.
 
-3. **Populate the card body:**
-   - Sequential finding number
-   - Title derived from SECTION slug (e.g., `primary-cta` becomes "Primary CTA")
-   - Severity badge with the appropriate CSS class
+3. **Populate the card:**
+   - Sequential finding number (01, 02, 03...)
+   - Finding title derived from SECTION slug (e.g., `primary-cta` becomes "Primary CTA")
+   - Severity badge with the appropriate CSS class and label (e.g., "Critical Impact", "High Priority", "Medium Priority", "Low Priority")
+   - Source type label in the top-right corner (e.g., "Internal Behavioral Analysis", "Heuristic Review", "Interaction Flow Audit")
    - OBSERVATION text
-   - RECOMMENDATION text
+   - RECOMMENDATION text inside the recommendation box, with severity-colored lightbulb icon
+   - WHY_THIS_MATTERS text prefixed with "Why this matters: " in the why-matters section
 
-4. **Move SOURCE to "Technical details" collapsible section.** Render SOURCE inside a `<details><summary>Technical details</summary>...</details>` block within the finding card, using the collapsible component structure from `components.html`.
-
-5. **Render "Why this matters" as a collapsible section.** Place WHY_THIS_MATTERS content inside a `<details><summary>Why this matters</summary>...</details>` block within the finding card.
-
-6. **Render evidence tier badge in citation footer.** The evidence tier badge MUST be always visible (not inside a collapsible). Place it in the citation footer area of the finding card.
-
-7. **Resolve and render clickable citation URLs (MANDATORY).** Auditors do NOT include URLs — the report generator resolves them. For each finding's `↳` citation line, extract the reference filename and finding number (e.g., `cta-design-and-placement.md, Finding 14`). Then look up the URL:
-   1. Read `citations/sources.md` from the plugin directory. Find the section matching the reference filename. Find the row matching the finding number. Use the URL from that row.
-   2. If `citations/sources.md` is not available or has no match, render the citation as plain text with "(source URL unavailable)".
-   Render the resolved URL as an `<a>` tag with `rel="noopener noreferrer" target="_blank"` using the `finding__citation-url` class from `components.html`. **A finding card without a clickable citation link is incomplete.**
-
-## Step 7: Assemble Screenshot Panel
-
-### 7a. URL mode (source_mode is url-based)
-
-Assemble the screenshot-panel component with SVG overlay markers:
-
-- **Embed screenshots as base64 data URIs.** For each screenshot in `baton.json`, base64-encode the JPEG file at render time: `base64 < {path}.jpg` (or equivalent in the rendering environment). Embed as: `src="data:image/jpeg;base64,{encoded data}"`. **VERIFY:** every `<img>` src in the screenshot panel starts with `data:image/` — never a relative file path. If the JPEG file is missing, skip that screenshot and add a comment: `<!-- WARNING: screenshot file missing -->`.
-- Set SVG `viewBox` to match the screenshot's `naturalWidth` x `naturalHeight` from `baton.json`. Do NOT use CSS viewport dimensions (e.g., 390x844) — use the actual pixel dimensions of the image (e.g., 1170x2532 for 3x DPR mobile).
-- **Position overlay markers using element coordinates from `baton.json`.** For each finding, match the finding's `ELEMENT` field (CSS selector or description) to entries in the baton's `elements` array. Place the marker at the center of the matched element's bounding box (`x + width/2`, `y + height/2`), adjusted for the screenshot's `scrollY` offset (subtract the screenshot's `scrollY` from the element's `y` to get the position within that screenshot). If no element match is found, fall back to positioning the marker at the center of the section boundary (`scrollY + height/2`) from the baton's `sections` array. **DPR adjustment:** For mobile screenshots at DPR > 1, element coordinates in the baton are already in screenshot pixels (CSS px × DPR). If they are still in CSS pixels, multiply by the DPR before positioning.
-- **Strip HTML comments from `components.html` before extracting `<style>` blocks via regex.** The SVG safety comment historically contained literal tag names that caused false regex matches, injecting HTML template markup into the CSS and breaking the split-layout. Always strip `<!--...-->` comments first.
-- Use wireframe rendering ONLY for occluded sections (sections where `occluded: true` in the baton). Do not wireframe sections that have screenshot coverage.
-
-### 7b. Screenshot-only mode (source_mode is file/screenshot)
-
-Assemble the screenshot-panel component with markers positioned from Claude's estimated pixel coordinates:
-
-- **Embed screenshots as base64 data URIs** using the same method as URL mode (base64-encode the JPEG at render time). If the input was a user-provided image file, base64-encode it directly.
-- Claude estimates element positions based on visual inspection of the screenshot.
-- No wireframe fallback. All sections are represented by the screenshot itself.
-
-### 7c. Mobile reports
-
-Wrap all screenshots in the device-frame component from `components.html`. Apply the device-frame component around each screenshot image before placing it in the screenshot panel.
+4. **Render citation footer with evidence tier badge (MANDATORY).** For each finding:
+   - Render the reference file and finding number as the `ref-id` text (e.g., `cta-design-and-placement.md, Finding 14`)
+   - Render the evidence tier badge inline next to the ref — use `tier-badge--gold`, `tier-badge--silver`, or `tier-badge--bronze` class
+   - **Resolve and render clickable citation URL as the "View Source" link.** Extract the reference filename and finding number from the auditor's citation line. Look up the URL in `citations/sources.md` from the plugin directory. Render as an `<a>` tag with `rel="noopener noreferrer" target="_blank"`. If no URL match found, render as plain text "(source unavailable)".
+   - **A finding card without a citation footer is incomplete.**
 
 ## Step 8: Limitations Banner
 
-If `source_mode` is `screenshot` (file-based input without live URL access), assemble the limitations-banner component from `components.html` and insert it after the header. This alerts readers that the audit was performed on static screenshots rather than a live page.
+If `source_mode` is `screenshot` (file-based input without live URL access), assemble the limitations-banner component and insert it before the first finding card.
 
-## Step 9: Ethics Compliance Section (MANDATORY — never omit)
+## Step 9: Summary Section
 
-This section MUST appear in every report, regardless of findings.
+Assemble the three summary cards:
 
-- **If ethics violations were found:** Render each violation as a CRITICAL finding card using the finding-card component. Add an "Ethics / Legal" badge to distinguish these from standard conversion findings.
+### Card 1: Evidence Confidence
+Based on source mode:
+- `URL + DOM`: "HIGH" (amber)
+- `Screenshot + DOM`: "MODERATE-HIGH" (amber)
+- `Screenshot only`: "MODERATE" (amber)
+- Note: brief description of source mode
 
-- **If no ethics violations were found:** Render the ethics-clear line: "Ethics check: No dark patterns detected." Use the ethics-section component from `components.html`.
+### Card 2: Severity Distribution
+Horizontal bar chart with one bar per severity level that has findings > 0. Fill width proportional to count relative to highest count (highest = 100%). Use severity-specific colors.
 
-## Step 10: Inject Scroll-Sync JS
+### Card 3: Ethics Check (MANDATORY — never omit)
+- **If no ethics violations:** Render the PASS state card — green "PASS" value, "No dark patterns detected" note, green checkmark icon circle.
+- **If ethics violations found:** Render the FAIL state card — critical-red "FAIL" value, X icon circle, and a list of violations using `ethics-violation-item` components. Each violation renders as a red-backgrounded line item with a ✗ prefix. This card expands vertically to accommodate all violations. Checked categories: urgency/scarcity signals, pricing transparency, review authenticity, choice architecture, subscription patterns.
 
-Copy the scroll-sync JavaScript block from `components.html` and inject it at the bottom of the report `<body>`. Use it exactly as defined — do not modify the script.
+## Step 10: Inject JavaScript
 
-## Step 11: Assemble Export Footer
+Copy the carousel controller + scroll-sync JavaScript block from `components.html` and inject it at the bottom of the report `<body>`. Replace `{{SLIDE_SOURCES_JSON}}` with the actual JSON array of base64 data URIs.
 
-Populate the export-footer component from `components.html` with generation metadata:
-
-- Generation date/time
-- Plugin version (from `meta.json`)
-- Engagement ID
-- Source mode
-
-## Step 12: Output
+## Step 11: Output
 
 Write the fully assembled, self-contained HTML file:
 
@@ -149,18 +152,16 @@ Before writing the file, verify:
 
 - [ ] Every finding has a corresponding finding card with correct severity class
 - [ ] No STATUS values (PASS/FAIL/PARTIAL/SKIP) appear in rendered output
-- [ ] Score strip shows only CRITICAL/HIGH/MEDIUM/LOW counts
-- [ ] SOURCE is inside "Technical details" collapsible in every finding card
-- [ ] Evidence tier badge is visible (not collapsed) in every finding card citation footer
-- [ ] Citation URLs are clickable with `rel="noopener noreferrer" target="_blank"`
-- [ ] "Why this matters" is rendered as a collapsible section
-- [ ] **All screenshot `<img>` src attributes start with `data:image/`** — no relative file paths
-- [ ] **SVG viewBox uses naturalWidth × naturalHeight from baton.json** — not CSS viewport dimensions
-- [ ] Screenshots have SVG overlays (URL mode) or estimated markers (screenshot mode)
-- [ ] Mobile screenshots are wrapped in device-frame component
+- [ ] Evidence tier badge is visible in every finding card footer
+- [ ] Citation URLs are clickable with `rel="noopener noreferrer" target="_blank"` (or "(source unavailable)" if unresolved)
+- [ ] Reference ID text is present in every finding footer
+- [ ] **All screenshot `<img>` src attributes start with `data:image/`** — no relative file paths or external URLs
+- [ ] Screenshot carousel has correct number of thumbnails
+- [ ] Markers have `data-slide` and `data-severity` attributes
+- [ ] Summary section has exactly 3 cards: Evidence Confidence, Severity Distribution, Ethics Check
+- [ ] Ethics card renders correct state (PASS or FAIL with violation list)
 - [ ] Limitations banner is present when source_mode is screenshot
-- [ ] Ethics compliance section is present (violations as CRITICAL cards, or clear-line)
-- [ ] Scroll-sync JS is injected from components.html
+- [ ] Carousel controller JS is injected with populated `slideSources` array
 - [ ] Font CSS is injected verbatim from templates/font-embed.css
 - [ ] All text content is HTML-escaped
 - [ ] CSP meta tag is present — `<meta http-equiv="Content-Security-Policy">` in `<head>`

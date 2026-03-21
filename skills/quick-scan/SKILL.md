@@ -205,13 +205,12 @@ In --auto mode: skip aggregate prompt. Aggregate only via explicit `--aggregate`
 When generating a visual report (user says yes or --visual flag):
 
 Generate the report inline — do NOT dispatch a subagent.
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for component definitions (~38KB — this is what you assemble from)
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for component definitions — this is what you assemble from
 2. Copy `${CLAUDE_PLUGIN_ROOT}/templates/font-embed.css` into `<head>` verbatim (do NOT read/interpret — just copy)
 3. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML skeleton
 4. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for assembly instructions
-5. Assemble components: header, score strip, screenshot panel with SVG markers, finding cards, ethics section, export footer
-6. Inject scroll-sync JS from components.html
-7. Write completed self-contained HTML
+5. Assemble components: header with eyebrow + title, metadata grid, evidence canvas (screenshot carousel with markers + thumbnails), finding cards with recommendation boxes + evidence tier badges + citation URLs, summary section (evidence confidence + severity distribution + ethics), carousel + scroll-sync JS
+6. Write completed self-contained HTML
 
 **You MUST use the HTML/CSS/JS from components.html exactly as written. Do not modify component structure. Do not add custom CSS. Only populate content placeholders.**
 

@@ -165,10 +165,12 @@ Then prompt for visual report (unless flagged):
 "Want the visual comparison report? (1) Yes — annotated wireframe with findings (2) No, markdown is enough"
 
 **Visual report generation (inline — no subagent dispatch):**
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template`
-2. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for generation instructions
-3. Generate one visual report per page (your page + competitor), each with wireframe + findings
-4. For "both" mode: generate per-device reports as well
+1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for component definitions — this is what you assemble from
+2. Copy `${CLAUDE_PLUGIN_ROOT}/templates/font-embed.css` into `<head>` verbatim (do NOT read/interpret — just copy)
+3. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML skeleton
+4. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for assembly instructions
+5. Generate one visual report per page (your page + competitor), each with screenshot carousel + findings
+6. For "both" mode: generate per-device reports as well
 Output: `docs/cro/{engagement-id}/visual-report.html` (your page) and `visual-report-competitor.html`
 </checkpoint>
 
