@@ -563,14 +563,21 @@ To check a citation, ask Claude Code:
 
 | Finding | Description | Source | URL |
 |---------|-------------|--------|-----|
-| 1 | Process comparison as persuasion element | CXL Institute | https://cxl.com/blog/comparison-tables/ |
-| 2 | Comparison table usability | Baymard Institute | https://baymard.com/blog/comparison-table-design |
-| 2 | Comparison table usability | NNGroup | https://www.nngroup.com/articles/comparison-tables/ |
-| 3 | Specificity effect in value claims | CXL Institute | https://cxl.com/blog/value-proposition-examples/ |
-| 4 | Before and after framing (prospect theory) | Kahneman & Tversky, 1979 | https://www.science.org/doi/10.1126/science.185.4157.1124 |
-| 5 | Anchoring via competitor framing | Tversky & Kahneman, 1974 | https://www.science.org/doi/10.1126/science.185.4157.1124 |
-| 5 | Anchoring in pricing (Ariely) | Dan Ariely, Predictably Irrational | https://danariely.com/books/predictably-irrational/ |
-| 6 | Social proof in competitive context | Cialdini, Influence (2006) | https://www.influenceatwork.com/principles-of-persuasion/ |
-| 6 | Consumer review survey | BrightLocal | https://www.brightlocal.com/research/local-consumer-review-survey/ |
-| 7 | Unique value proposition clarity | CXL Institute | https://cxl.com/blog/value-proposition-examples/ |
-| 8 | Feature vs outcome framing | CXL Institute | https://cxl.com/blog/value-proposition-examples/ |
+| 1 | Comparison table usability — 67% usage, 17% missing | Baymard Institute | https://baymard.com/blog/provide-comparison-features |
+| 1 | Comparison tables — 5 item limit, content over design | NNGroup (Moran & Dykes, 2024) | https://www.nngroup.com/articles/comparison-tables/ |
+| 2 | Concrete language → 8.9% satisfaction, 13% spending lift | Packard & Berger, JCR 2021 | https://academic.oup.com/jcr/article/47/5/787/5873524 |
+| 3 | Precise numbers reduce mental adjustment | Janiszewski & Uy, Psychological Science 2008 | https://journals.sagepub.com/doi/10.1111/j.1467-9280.2008.02057.x |
+| 3 | Three claims optimal, four triggers skepticism | Shu & Carlson, Journal of Marketing 2014 | https://journals.sagepub.com/doi/abs/10.1509/jm.11.0504 |
+| 3 | Numerical precision as competence signal | Xie & Kronrod, Journal of Advertising 2012 | https://sites.google.com/site/kronrodann/papers |
+| 4 | Anchoring heuristic (original) | Tversky & Kahneman, Science 1974 | https://www.science.org/doi/10.1126/science.185.4157.1124 |
+| 4 | Anchoring + framing in online shopping | Wu & Cheng, Electronic Commerce Research 2011 | https://www.sciencedirect.com/science/article/abs/pii/S1567422311000032 |
+| 4 | Coherent arbitrariness — SSN anchoring 216-346% | Ariely, Loewenstein & Prelec, QJE 2003 | https://danariely.com/books/predictably-irrational/ |
+| 5 | Prospect theory — losses weighted 2.25x gains | Kahneman & Tversky, Econometrica 1979 | https://web.mit.edu/curhan/www/docs/Articles/15341_Readings/Behavioral_Decision_Theory/Kahneman_Tversky_1979_Prospect_theory.pdf |
+| 5 | Cumulative prospect theory — lambda = 2.25 | Tversky & Kahneman, J Risk & Uncertainty 1992 | https://link.springer.com/article/10.1007/BF00122574 |
+| 6 | 10-second value proposition window (N=205,873 pages) | Liu, White & Dumais, ACM SIGIR 2010 | https://dl.acm.org/doi/10.1145/1835449.1835513 |
+| 6 | How long do users stay on web pages | NNGroup (Nielsen, 2011) | https://www.nngroup.com/articles/how-long-do-users-stay-on-web-pages/ |
+| 7 | Elaboration Likelihood Model (ELM) | Petty & Cacioppo, 1986 | (book — no URL) |
+| 7 | Sims 3 outcome framing — 128% registration lift | WiderFunnel/Conversion.com | https://conversion.com/case-studies/ |
+| 8 | Social proof principle | Cialdini, Influence (2006) | https://www.influenceatwork.com/principles-of-persuasion/ |
+| 8 | Five reviews = 270% conversion lift | Spiegel Research Center, Northwestern 2017 | https://spiegel.medill.northwestern.edu/online-reviews/ |
+| 8 | Consumer review survey | BrightLocal, 2023 | https://www.brightlocal.com/research/local-consumer-review-survey/ |

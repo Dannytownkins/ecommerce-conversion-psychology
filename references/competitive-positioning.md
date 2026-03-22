@@ -1,105 +1,121 @@
 <!-- RESEARCH_DATE: 2026-03-21 -->
 <!-- last-validated: 2026-03-21 -->
-<!-- scope: Value proposition framing, competitive comparison UX, process differentiation -->
+<!-- scope: Value proposition framing, competitive comparison UX, process differentiation, specificity in claims -->
 # Competitive Positioning & Value Proposition Framing in E-Commerce
 
-## Research Summary
-
+**Research Date**: March 21, 2026
 **Total Findings**: 8
-**Domain**: How pages frame their value proposition relative to competitors, process comparison sections, differentiation UX, and competitive anchoring psychology.
+**Domain**: How pages frame their value proposition relative to competitors — comparison tables, specificity in claims, anchoring, before/after framing, outcome vs. feature copy.
+**Methodology**: Web-based literature review of academic papers, institutional research (Baymard, NNGroup), and practitioner case studies. Where no direct study exists for a specific tactic, the underlying cognitive science is cited with an honest note about the application gap.
 
-**Top 3 Most Impactful Findings**
+### Coverage by Research Question
 
-1. **Finding 1 (Process Comparison)**: Side-by-side "our way vs. their way" comparisons are among the strongest persuasion elements on product pages, yet they fall between existing CRO clusters (not CTA design, not trust signals, not pricing psychology).
-2. **Finding 3 (Specificity Effect)**: Specific, quantified claims ("3 steps vs. 8 steps", "saves 2 hours per week") convert 1.5-2.3x better than vague claims ("easier", "faster", "better").
-3. **Finding 5 (Anchoring via Competitor Framing)**: Pages that establish a "before" (competitor/old way) anchor before presenting their solution see higher perceived value — a direct application of Tversky & Kahneman's anchoring heuristic.
+| Question | Findings |
+|----------|----------|
+| Comparison Table UX | 1 |
+| Specificity / Concreteness | 2, 3 |
+| Anchoring in Competitive Context | 4 |
+| Before/After (Loss) Framing | 5 |
+| Value Proposition Clarity | 6 |
+| Feature vs. Outcome Framing | 7 |
+| Social Proof in Switching Context | 8 |
+
+---
+
+## Top 3 Most Impactful Findings
+
+1. **Finding 2 (Packard & Berger, 2021)**: Increasing linguistic concreteness by one standard deviation improved customer satisfaction by 8.9% and actual spending by 13%+ over 90 days. Concrete, specific language is not just a copywriting preference — it is a measured revenue driver.
+2. **Finding 3 (Janiszewski & Uy, 2008)**: Precise numbers produce less mental adjustment than rounded numbers. A listing at $494,500 gets closer to asking price than $500,000. Directly applicable to comparison sections that use specific step counts or cost differences.
+3. **Finding 6 (Liu, White & Dumais, 2010)**: Analysis of 205,873 web pages shows the probability of leaving is highest in the first 10 seconds. Pages must communicate their value proposition within this window or lose the visitor entirely.
 
 ---
 
 ## Findings
 
-### Finding 1: Process Comparison as Persuasion
-- **Source**: Practitioner evidence from SaaS and DTC landing page optimization; CXL Institute case studies on comparison tables.
-- **Methodology**: A/B testing across multiple landing pages; qualitative user testing showing fixation on comparison sections.
-- **Key Finding**: Pages featuring "our process vs. typical process" or "3 steps vs. 8 steps" style comparisons consistently outperform pages without them. These sections combine multiple psychological levers: simplicity framing (Hick's Law), loss aversion (showing the pain of the alternative), and anchoring (establishing the competitor as the reference point). They fall between traditional CRO clusters — they are not CTA design, not trust signals, and not pricing psychology — which means they are often missed in cluster-based audits.
-- **E-Commerce Application**: Evaluate process comparison sections as a distinct conversion element. Check for: clarity of comparison, specificity of claims, visual hierarchy between "old way" and "new way", and whether the comparison is placed above the fold or near the primary CTA.
-- **Replication Status**: Widely observed in practitioner testing. No single RCT isolates process comparison as a variable.
-- **Boundary Conditions**: Comparison sections can backfire if the competitor's process is actually simpler or if claims are unverifiable. Works best for products/services with genuinely simpler workflows.
-- **Evidence Tier**: Bronze
-
----
-
-### Finding 2: Comparison Table Usability
-- **Source**: Baymard Institute, 2020-2024; NNGroup comparison table guidelines.
-- **Methodology**: Usability testing of comparison tables across e-commerce and SaaS.
-- **Key Finding**: Comparison tables are among the most-viewed elements on product pages, but poorly designed ones increase cognitive load rather than reducing it. Effective comparison tables: (1) highlight differences, not similarities, (2) use visual cues (checkmarks, color) rather than text-heavy cells, (3) fix the "your product" column so it remains visible during horizontal scroll, (4) limit to 5-7 comparison dimensions.
-- **E-Commerce Application**: If a page has a comparison table, evaluate: number of rows (>7 = cognitive overload), visual differentiation between columns, whether the user's product column is visually emphasized, and mobile responsiveness (horizontal scrolling comparison tables are unusable on mobile).
-- **Replication Status**: Replicated across Baymard and NNGroup studies.
-- **Boundary Conditions**: Feature comparison tables for technical products may need more rows; use progressive disclosure (show top 5, expand for full list).
+### Finding 1: Comparison Table Usability — What Works and What Fails
+- **Source**: Baymard Institute, "Product Comparison UX" research program (2020-2024), based on 110,000+ hours of e-commerce UX research. NNGroup, Kate Moran & Taylor Dykes, "Comparison Tables for Products, Services, and Features," February 2024 (updated April 2025), informed by 186-page e-commerce report covering 350+ sites across five rounds of studies.
+- **Methodology**: Baymard: Large-scale usability testing across multiple rounds. Their 2024 Product Finding study alone dedicated 5,550+ research hours with 219+ qualitative usability test sessions. NNGroup: Editorial synthesis of multi-round testing. Neither publishes standalone "N=X, conversion increased Y%" for comparison tables specifically.
+- **Key Finding**: 67% of test participants actively used comparison features on spec-driven sites, yet 17% of benchmarked sites with spec-driven products fail to offer comparison tools at all (Baymard). NNGroup finds compensatory decision-making breaks down above 5 items — tables with more than 5 comparison columns become counterproductive. The biggest problem is content, not design: missing, incomplete, or inconsistent attribute information makes tables useless regardless of visual polish.
+- **E-Commerce Application**: If a page has a comparison table, evaluate: (1) number of columns (>5 = cognitive overload), (2) whether differences are highlighted rather than similarities, (3) whether the user's product column is visually emphasized, (4) content completeness — are all cells filled?, (5) mobile responsiveness — horizontal scrolling comparison tables are unusable on mobile.
+- **Replication Status**: Consistent across Baymard's multi-year benchmarking and NNGroup's testing rounds. No standalone RCT isolates comparison tables as a single variable.
+- **Boundary Conditions**: Comparison features are most impactful for spec-driven industries (electronics, appliances, B2B software). For fashion, food, or emotional purchases, comparison tables add friction without benefit.
 - **Evidence Tier**: Silver
 
 ---
 
-### Finding 3: Specificity Effect in Value Claims
-- **Source**: CXL Institute, 2019; multiple A/B test compilations; Cialdini's influence research on concrete vs. abstract claims.
-- **Methodology**: A/B testing of specific vs. vague value propositions across landing pages.
-- **Key Finding**: Specific, quantified claims convert significantly better than vague ones. "Saves 2 hours per week" outperforms "Saves time." "3 steps instead of 8" outperforms "Simpler process." "Used by 14,000 photographers" outperforms "Trusted by thousands." The specificity effect works because concrete numbers activate System 2 processing and feel more credible — vague claims trigger skepticism.
-- **E-Commerce Application**: Audit value proposition copy for specificity. Flag vague claims ("fast", "easy", "best") and recommend quantified alternatives. Check if process comparison sections use specific step counts, time savings, or cost differences rather than subjective language.
-- **Replication Status**: Well-established in persuasion research. The directional finding is universal, though exact conversion lifts vary.
-- **Boundary Conditions**: Over-specific claims (e.g., "saves 2.347 hours") can feel fabricated. Round numbers work for large quantities; precise numbers for small ones.
-- **Evidence Tier**: Bronze
+### Finding 2: Concrete Language Drives Satisfaction and Spending
+- **Source**: Grant Packard and Jonah Berger, "How Concrete Language Shapes Customer Satisfaction," *Journal of Consumer Research*, 47(5), 787-806, February 2021.
+- **Methodology**: Five studies including text analysis of 1,000+ real consumer-employee interactions across two field contexts. Study 1: 200 customer service calls to an online apparel retailer. Study 2: 941 customer email interactions with a consumer durables company. Studies 3-5: controlled experiments.
+- **Key Finding**: Increasing linguistic concreteness by one standard deviation improved customer satisfaction by **8.9%** and actual spending by at least **13%** over the following 90 days. The mechanism: concrete language signals attentiveness and competence. "Your blue shirt will arrive Thursday" outperforms "Your item will arrive soon" — the specificity itself communicates care.
+- **E-Commerce Application**: Audit value proposition copy and comparison sections for concreteness. Flag vague claims ("fast", "easy", "better") and recommend specific alternatives ("3 steps instead of 8", "saves 2 hours per week", "used by 14,000 photographers"). The specificity effect applies to headlines, CTAs, comparison tables, and trust copy equally.
+- **Replication Status**: Replicated across five studies within the paper using both field data and controlled experiments. Consistent with Janiszewski & Uy (2008) on numerical precision.
+- **Boundary Conditions**: Over-precise claims (e.g., "saves 2.347 hours") can feel fabricated. The effect is strongest when the specificity is verifiable or plausible. Unverifiable precision triggers skepticism.
+- **Evidence Tier**: Gold
 
 ---
 
-### Finding 4: "Before and After" Framing
-- **Source**: Conversion optimization practitioners; CXL Institute; derived from prospect theory (Kahneman & Tversky, 1979).
-- **Methodology**: A/B testing of pages with and without before/after framing; eye-tracking studies.
-- **Key Finding**: Pages that show a "before" state (the problem, the competitor experience, the old workflow) before presenting the "after" state (the solution) generate stronger perceived value than pages that only present features. This leverages loss aversion — users feel the pain of the "before" state, making the "after" feel more valuable. The contrast effect amplifies perceived improvement.
-- **E-Commerce Application**: Check whether the page establishes context before presenting the solution. A product page that jumps straight to features without framing the problem loses the anchoring benefit. Evaluate: does the comparison section show what the user is currently suffering (high cost, complex process, poor results) before presenting the alternative?
-- **Replication Status**: Prospect theory is Gold-tier; the specific application to landing page framing is practitioner evidence.
-- **Boundary Conditions**: Negative framing ("your current process is terrible") can alienate users who chose that process. Frame the "before" as a situation, not a personal criticism.
-- **Evidence Tier**: Bronze
+### Finding 3: Numerical Precision Reduces Mental Adjustment
+- **Source**: Chris Janiszewski and Dan Uy, "Precision of the Anchor Influences the Amount of Adjustment," *Psychological Science*, 19(2), 121-127, 2008.
+- **Methodology**: Five experiments comparing adjustment from precise vs. rounded numerical anchors. Includes real estate pricing analysis.
+- **Key Finding**: Precise numbers (e.g., $4,998) produce less mental adjustment than rounded numbers ($5,000). People create mental scales with finer granularity around precise anchors, so they adjust in smaller increments. In real estate, sellers who listed at $494,500 consistently got closer to their asking price than those who listed at $500,000.
+- **E-Commerce Application**: In comparison sections, use precise numbers rather than rounded ones for your product's metrics. "3 steps" is more persuasive than "a few steps." "$47/month" anchors more tightly than "under $50/month." When comparing against competitors, specific step counts or time savings ("saves 12 minutes per upload") anchor more effectively than vague claims ("much faster").
+- **Replication Status**: Widely cited (700+ citations). Replicated in real estate, pricing, and negotiation contexts.
+- **Boundary Conditions**: Precision has a ceiling — extremely precise numbers ("saves 11.7 minutes") trigger suspicion in consumer contexts. Works best for B2B or considered purchases where precision signals rigor.
+- **NOTE**: Also supported by Xie & Kronrod (2012, *Journal of Advertising*, 41(4), 103-117) who found numerical precision functions as a competence signal, and by Shu & Carlson (2014, *Journal of Marketing*, 78(1), 127-139) who found impressions peak at **three claims** — at four claims, skepticism activates and all claims are viewed more negatively. Comparison sections should present 3 key differentiators, not 7.
+- **Evidence Tier**: Gold
 
 ---
 
-### Finding 5: Anchoring via Competitor Framing
-- **Source**: Tversky & Kahneman, 1974 (anchoring heuristic); applied to pricing and feature comparison by Ariely, 2008 (Predictably Irrational); practitioner evidence.
-- **Methodology**: Foundational anchoring research (RCTs) + applied A/B testing on product pages.
-- **Key Finding**: The first number or comparison point a user encounters becomes the anchor for all subsequent evaluations. Pages that show a competitor's price, step count, or complexity first — then present their own — benefit from the contrast. A "3 steps vs. 8 steps" comparison anchors on 8, making 3 feel dramatically simpler. A "$99/month vs. our $49/month" anchors on 99, making 49 feel like a deal. The anchor must be presented before the target value to be effective.
-- **E-Commerce Application**: Verify that comparison sections present the competitor/alternative first (left side or top) and the user's product second (right side or bottom). If the page leads with its own value and shows the competitor after, the anchoring effect is weaker. Also check whether pricing sections anchor with a higher-tier plan before showing the recommended mid-tier plan.
-- **Replication Status**: Anchoring is one of the most replicated findings in cognitive psychology (Gold tier for the core effect).
-- **Boundary Conditions**: Anchoring works best when the user has no prior reference point. Returning customers or price-aware shoppers are less susceptible.
-- **Evidence Tier**: Silver (core anchoring is Gold; landing page application is Silver)
+### Finding 4: Anchoring Applied to Competitive Framing
+- **Source**: Tversky, A. & Kahneman, D., "Judgment Under Uncertainty: Heuristics and Biases," *Science*, 185(4157), 1124-1131, 1974. Applied to e-commerce by Wu, C.S. & Cheng, F.F., "The joint effect of framing and anchoring on internet buyers' decision-making," *Electronic Commerce Research and Applications*, 10(3), 358-368, 2011. Also: Ariely, D., Loewenstein, G., & Prelec, D. (2003), "Coherent Arbitrariness," *Quarterly Journal of Economics*, 118(1), 73-106.
+- **Methodology**: Tversky & Kahneman: controlled experiments with random anchors. Ariely et al.: MIT MBA students used last two digits of SSN as anchor before bidding on consumer goods — high-SSN participants bid **216-346% more** for identical products. Wu & Cheng: 3x2 experimental design with online shoppers testing framing × anchoring interaction effects.
+- **Key Finding**: The first number or comparison point encountered becomes the anchor for all subsequent evaluations. Wu & Cheng found that positive attribute framing combined with a high anchor produced the highest willingness to pay in online shopping contexts. Low-knowledge consumers were most susceptible to both effects (significant interaction). A "3 steps vs. 8 steps" comparison anchors on 8, making 3 feel dramatically simpler.
+- **E-Commerce Application**: Verify that comparison sections present the competitor/alternative first (left side or top) and the user's product second. The anchor must be presented *before* the target value to be effective. If the page leads with its own value, the anchoring benefit is lost. Also applies to pricing tiers: show the most expensive plan first.
+- **Replication Status**: Anchoring is one of the most replicated findings in cognitive psychology — confirmed across hundreds of studies and meta-analyses (Furnham & Boo, 2011). Wu & Cheng's e-commerce application is a single peer-reviewed study.
+- **Boundary Conditions**: Anchoring works best when the user has no prior reference point. Returning customers or price-aware shoppers are less susceptible. Extreme anchors trigger suspicion.
+- **Evidence Tier**: Gold (core anchoring); Silver (e-commerce application via Wu & Cheng)
 
 ---
 
-### Finding 6: Social Proof in Competitive Context
-- **Source**: Cialdini, 2006 (Influence); BrightLocal Local Consumer Review Survey, 2023; Spiegel Research Center, 2017.
-- **Methodology**: Experimental and survey research on social proof effects.
-- **Key Finding**: Social proof is most effective when it explicitly references the competitive alternative. "14,000 photographers switched from [competitor]" is more persuasive than "14,000 photographers use us" because it validates the decision to switch, not just the decision to use. Migration stories and "switched from" testimonials reduce switching anxiety.
-- **E-Commerce Application**: If the page targets users switching from a competitor, check for migration-specific social proof: "switched from" language, competitor-specific testimonials, migration count badges. Generic social proof ("trusted by thousands") misses the competitive positioning opportunity.
-- **Replication Status**: Social proof effect is well-established; competitive-context application is practitioner evidence.
-- **Boundary Conditions**: Naming competitors can backfire for smaller brands (introduces awareness of alternatives). Most effective when the brand is an established challenger, not a newcomer.
-- **Evidence Tier**: Bronze
+### Finding 5: Loss Framing and Before/After Comparison
+- **Source**: Daniel Kahneman and Amos Tversky, "Prospect Theory: An Analysis of Decision under Risk," *Econometrica*, 47(2), 263-292, 1979. Tversky & Kahneman, "Advances in Prospect Theory," *Journal of Risk and Uncertainty*, 5(4), 297-323, 1992 (established loss aversion coefficient lambda = 2.25).
+- **Methodology**: Controlled experiments across multiple studies. Kahneman's 1979 paper has 60,000+ citations.
+- **Key Finding**: Losses are weighted approximately **2.25x** gains. Pages that show a "before" state (the problem, the competitor's complexity, the cost of the status quo) before presenting the "after" state (the solution) leverage loss aversion — users feel the pain of the "before" state, making the "after" feel more valuable. The contrast effect amplifies perceived improvement.
+- **E-Commerce Application**: Check whether the page establishes context before presenting the solution. A product page that jumps straight to features without framing the problem loses the anchoring and loss-aversion benefit. Effective before/after sections show: what the user currently suffers (high cost, many steps, poor results) → what they get instead (lower cost, fewer steps, better results).
+- **Replication Status**: Prospect theory is the most replicated finding in behavioral economics.
+- **Boundary Conditions**: Negative framing ("your current process is terrible") can alienate users who chose that process. Frame the "before" as a situation, not a personal criticism. **NOTE**: The application of prospect theory to "before/after" landing page sections is practitioner inference — no peer-reviewed study directly tests "landing page with problem framing vs. without" as an isolated variable. The theory is Gold; the specific landing page application is untested.
+- **Evidence Tier**: Bronze (application layer — Gold theory, no direct landing page RCT)
 
 ---
 
-### Finding 7: Unique Value Proposition Clarity
-- **Source**: MarketingSherpa, 2019; Wynter messaging testing data; CXL Institute headline testing.
-- **Methodology**: A/B testing, comprehension testing, and 5-second tests on landing pages.
-- **Key Finding**: Users who can articulate the page's unique value proposition (UVP) within 5 seconds of landing convert at 2-3x the rate of those who cannot. The most common UVP failure is not absence but ambiguity — the page lists features but never states why those features matter relative to alternatives. A clear UVP answers: "Why should I buy this instead of the alternative?"
-- **E-Commerce Application**: Apply the 5-second test: can you identify what makes this product/service different from alternatives within the hero section? If the hero is generic ("The best solution for X"), flag it. Check whether the UVP references the competitive landscape ("the only tool that...") or is purely self-referential.
-- **Replication Status**: 5-second test methodology is widely used; specific conversion lifts vary.
-- **Boundary Conditions**: Commodity products with no real differentiator may struggle to articulate a genuine UVP. In those cases, focus on execution quality (speed, support, price) rather than feature differentiation.
-- **Evidence Tier**: Bronze
+### Finding 6: The 10-Second Value Proposition Window
+- **Source**: Chao Liu, Ryen W. White, and Susan Dumais, "Understanding Web Browsing Behaviors through Weibull Analysis of Dwell Time," *Proceedings of the 33rd International ACM SIGIR Conference*, Geneva, 2010. Popularized by Jakob Nielsen, "How Long Do Users Stay on Web Pages?" NNGroup, September 2011.
+- **Methodology**: Analysis of dwell time data for **205,873 pages**, each with a minimum of 10,000 dwell time observations. Microsoft Research data.
+- **Key Finding**: Web browsing exhibits a "negative aging" phenomenon — the probability of leaving is highest in the first few seconds and decreases over time. Pages must pass an initial screening in the first ~10 seconds before users engage in detail. After ~30 seconds the leave-rate curve flattens. Nielsen's interpretation: "To gain several minutes of user attention, you must clearly communicate your value proposition within 10 seconds."
+- **E-Commerce Application**: Apply the 10-second test to the hero section: can a visitor identify what makes this product/service different from alternatives within the first viewport? If the hero is generic ("The best solution for X"), flag it. The UVP must answer "why should I buy this instead of the alternative?" above the fold. Check whether competitive positioning copy (comparison sections, process differentiation) appears within the first scroll or is buried below.
+- **Replication Status**: Liu et al. (2010) is widely cited in UX literature. The 10-second finding is the empirical basis for NNGroup's guidelines.
+- **Boundary Conditions**: The 10-second window applies to first-time visitors. Returning visitors and users arriving via specific search queries (high intent) engage faster. Mobile users have even shorter attention windows.
+- **NOTE**: The "5-second test" (UsabilityHub/Lyssna) is a practitioner methodology without its own academic validation. The underlying 10-second finding from Liu et al. is Gold; the 5-second test as a methodology is Bronze.
+- **Evidence Tier**: Gold
 
 ---
 
-### Finding 8: Feature vs. Outcome Framing
-- **Source**: Theodore Levitt ("people don't want quarter-inch drills, they want quarter-inch holes"); CXL Institute A/B tests on feature-led vs. outcome-led copy.
-- **Methodology**: A/B testing of feature-led vs. outcome-led headlines and value propositions.
-- **Key Finding**: Outcome-framed copy ("Get professional photos in 3 clicks") outperforms feature-framed copy ("AI-powered photo editor with 50+ filters") by 20-40% on conversion metrics. Users evaluate products based on the outcome they achieve, not the features that enable it. Process comparison sections that show outcomes ("your photos, done") outperform those that show features ("our AI engine").
-- **E-Commerce Application**: Audit whether comparison sections and value propositions are framed as outcomes or features. If a comparison table lists features (✓ AI editing, ✓ Batch processing, ✓ Cloud storage), recommend reframing as outcomes (✓ Professional results in minutes, ✓ Edit 100 photos at once, ✓ Access from anywhere).
-- **Replication Status**: Directional finding replicated across many domains. Exact lifts vary.
-- **Boundary Conditions**: Technical buyers (developers, engineers) may prefer feature-led copy that lets them evaluate capabilities directly. B2C and non-technical B2B benefit most from outcome framing.
-- **Evidence Tier**: Bronze
+### Finding 7: Feature vs. Outcome Framing in Product Copy
+- **Source**: Petty, R.E. & Cacioppo, J.T., *Communication and Persuasion: Central and Peripheral Routes to Attitude Change*, Springer-Verlag, 1986 (Elaboration Likelihood Model). Practitioner case study: WiderFunnel (now Conversion.com) A/B test for Electronic Arts' Sims 3 registration page.
+- **Methodology**: ELM: Foundational theory with extensive experimental support. WiderFunnel/EA Sims 3: A/B test on registration page — treatment emphasized emotional experiences over game features. No published sample size, duration, or statistical details.
+- **Key Finding**: The Elaboration Likelihood Model predicts that benefit/outcome framing works via the peripheral route (emotional resonance), while feature framing works via the central route (systematic evaluation). Under low elaboration (casual browsing, impulse purchases), outcomes win. Under high elaboration (technical buyers, considered purchases), features may be more persuasive. WiderFunnel's Sims 3 test: the outcome-framed treatment ("Create your world") achieved a **128% increase** in game registrations over the feature-framed control. NNGroup reports that incomplete or unclear product information accounts for **20% of failed purchases** online.
+- **E-Commerce Application**: Audit whether comparison sections and value propositions are framed as outcomes or features. A comparison table listing features (checkmark AI editing, checkmark Batch processing, checkmark Cloud storage) should be reframed as outcomes (checkmark Professional results in minutes, checkmark Edit 100 photos at once, checkmark Access from anywhere) — unless the target audience is technical buyers who evaluate capabilities directly.
+- **Replication Status**: ELM is one of the most cited theories in persuasion research. The Sims 3 case study is a single A/B test from a CRO agency with no published methodology.
+- **Boundary Conditions**: Technical buyers (developers, engineers, B2B procurement) may prefer feature-led copy that lets them evaluate capabilities directly. B2C and non-technical B2B benefit most from outcome framing. Mixed approaches (outcome headline + feature details below) often outperform pure feature or pure outcome framing.
+- **Evidence Tier**: Bronze (Gold theory via ELM; landing page application is a single practitioner case study)
+
+---
+
+### Finding 8: Social Proof in Competitive Switching Context
+- **Source**: Robert Cialdini, *Influence: The Psychology of Persuasion*, 2006 (social proof principle). Spiegel Research Center, Northwestern University, 2017 (review effects). BrightLocal Local Consumer Review Survey, 2023.
+- **Methodology**: Cialdini: Foundational social psychology research. Spiegel: Analysis of 57,000 anonymous reviews and 65,000 verified buyer reviews across ~13,500 products. BrightLocal: Annual consumer survey.
+- **Key Finding**: Social proof is most effective when it references the user's specific decision context. "14,000 photographers switched from [competitor]" is theoretically more persuasive than "14,000 photographers use us" because it validates the decision to *switch*, not just the decision to *use*. Migration stories and "switched from" testimonials should reduce switching anxiety. **However, no peer-reviewed study directly tests "switched from" testimonials against generic testimonials in a controlled experiment.** This is practitioner convention supported by the underlying social proof mechanism (Cialdini, Gold tier) but the competitive-switching variant is empirically untested.
+- **E-Commerce Application**: If the page targets users switching from a competitor, check for migration-specific social proof: "switched from" language, competitor-specific testimonials, migration count badges. Generic social proof ("trusted by thousands") misses the competitive positioning opportunity. But acknowledge this is a best-practice recommendation without direct empirical validation.
+- **Replication Status**: Social proof as a general principle is extensively replicated (Cialdini, Spiegel). The competitive-switching application has no controlled study.
+- **Boundary Conditions**: Naming competitors can backfire for smaller brands (introduces awareness of alternatives). Most effective when the brand is an established challenger, not a newcomer. Requires genuine switching data — fabricated migration numbers would fail the ethics gate.
+- **Evidence Tier**: Bronze (Gold underlying mechanism; no direct study on competitive switching testimonials)
