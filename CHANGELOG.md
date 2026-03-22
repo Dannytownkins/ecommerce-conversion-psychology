@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.4.1 — 2026-03-22
+
+### Ethics Detection & Quick-Scan UX
+
+Two targeted fixes from a live quick-scan that missed a countdown timer ethics violation.
+
+#### Ethics Detection (1 change)
+- **Urgency/timer element extraction** — acquire.md element selector now includes `[class*="countdown"]`, `[class*="timer"]`, `[class*="urgency"]`, `[class*="limited"]`, `[class*="expire"]`, `[class*="hurry"]`. Countdown timers are now explicitly surfaced in the baton's `elements` array so auditors see them during the ethics check rather than relying on finding them in the full DOM.
+
+#### Quick-Scan UX (1 change)
+- **Blocking cluster selection prompt** — quick-scan/SKILL.md cluster selection is now a blocking prompt. Coordinator must WAIT for user confirmation before dispatching acquisition or auditors. Previously the instruction said "offer the user a choice" which allowed the coordinator to proceed without waiting.
+
+#### Files Modified
+- `workflows/acquire.md` — Added 6 urgency/timer CSS selectors to element extraction
+- `skills/quick-scan/SKILL.md` — Cluster selection changed from advisory to blocking prompt
+
+---
+
 ## 4.4.0 — 2026-03-21
 
 ### Reliability, Accuracy & Performance Improvements

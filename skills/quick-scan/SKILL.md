@@ -123,9 +123,9 @@ Auto-select first cluster from page-type table:
 | Pricing/Plans | trust-conversion |
 | Post-purchase | audience-journey |
 
-Override with --cluster flag. If no flag, offer the user a choice with context:
+Override with --cluster flag. If no flag, **WAIT for user confirmation** before proceeding. Present the choice and do NOT dispatch acquisition or auditors until the user responds:
 
-"I'll scan **[cluster name]** ([brief description]). Other options:
+"I'll scan **[cluster name]** ([brief description]). Want to proceed, or switch clusters?
 - `--cluster visual-cta` — CTA design, color psychology, eye tracking, product video
 - `--cluster trust-conversion` — Trust signals, social proof, checkout, pricing, biometric auth, cookie consent
 - `--cluster context-platform` — Mobile UX, cognitive load, performance, search & filter, cookie consent
@@ -133,7 +133,7 @@ Override with --cluster flag. If no flag, offer the user a choice with context:
 
 Or run `/cro:audit [same-input]` for full multi-cluster coverage."
 
-In automated mode (no human interaction), use default without asking.
+**This is a blocking prompt.** Do not proceed until the user confirms or selects a cluster. In automated mode (no human interaction), use default without asking.
 </cluster_selection>
 
 <dispatch>

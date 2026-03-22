@@ -218,7 +218,9 @@ JSON.stringify(
    '[class*="shipping"]', '[class*="guarantee"]',
    'form', 'nav', 'header', 'footer',
    '[class*="newsletter"]', '[class*="subscribe"]',
-   '[class*="payment"]', '[class*="pay"]'
+   '[class*="payment"]', '[class*="pay"]',
+   '[class*="countdown"]', '[class*="timer"]', '[class*="urgency"]',
+   '[class*="limited"]', '[class*="expire"]', '[class*="hurry"]'
   ].flatMap(sel => {
     try {
       return Array.from(document.querySelectorAll(sel)).slice(0, 5).map(el => {
