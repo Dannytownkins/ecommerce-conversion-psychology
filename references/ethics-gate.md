@@ -23,6 +23,12 @@ These rules are non-negotiable. They override every other recommendation in this
 - Negative reviews MUST NOT be suppressed or de-ranked — else BLOCK
 - Penalty: up to $53,088 (2025 adjusted amount, effective January 17, 2025; FTC Federal Register) per violation (FTC)
 
+### Phantom Social Proof
+
+- Displaying review badges, star ratings, 'Rated and Reviewed' claims, or review-count indicators when zero verified reviews exist constitutes phantom social proof — BLOCK
+- 'Trusted by thousands' or similar vague volume claims without verifiable evidence (specific count, named customers, or linked reviews) — flag as CRITICAL under `social-proof-placement`
+- This applies to the page being audited, not to site-wide claims on shared elements (e.g., a footer badge referencing overall store reviews is acceptable if the store has reviews)
+
 ## Choice Architecture
 
 - Accept/decline options MUST be visually symmetrical — else BLOCK (EU DSA Art 25)

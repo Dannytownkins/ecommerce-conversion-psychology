@@ -4,7 +4,14 @@ name: visual-report-generation
 
 # Visual Report Generation — Component Assembly
 
-The coordinator produces an annotated visual report by assembling pre-defined HTML components. This is NOT a subagent workflow — the coordinator reads these instructions and generates the report inline.
+**Preferred method:** Use the Python script at `scripts/generate-report.py` instead of LLM-based assembly. The script handles font injection, marker burning (Pillow), base64 encoding, template population, and device frame compositing deterministically in 2-5 seconds. The coordinator provides a marker mapping JSON and the script does everything else. See script docstring for usage.
+
+**Fallback (if Python/Pillow unavailable):** The coordinator produces an annotated visual report by assembling pre-defined HTML components. This workflow may be executed either inline by the coordinator (single-device mode) or as a subagent prompt (multi-device parallel dispatch). When dispatched as a subagent:
+- All file paths must be absolute, not relative to coordinator context
+- The subagent must read all baton files itself — they are not 'already available'
+- The subagent must be told which audit file to read (e.g., audit.md vs audit-mobile.md)
+- The subagent must be told which baton to read (e.g., baton.json vs baton-mobile.json)
+- The subagent must be told which screenshots to encode (by device prefix)
 
 **CONSTRAINT: You MUST use the HTML/CSS/JS from templates/components.html exactly as written. Do not modify component structure. Do not add, remove, or rearrange HTML elements. Do not add custom CSS. Only populate content placeholders within the defined component structure.**
 
@@ -25,7 +32,19 @@ Read `templates/components.html` for all HTML components used in the report. All
 
 ## Step 2: Inject Font Stylesheet
 
-Copy the contents of `templates/font-embed.css` into the `<head>` of the report **verbatim**. Do not read, interpret, parse, or modify the CSS. Paste it exactly as-is inside a `<style>` tag.
+Do NOT read font-embed.css into your context. Instead, inject it via file concatenation:
+1. Write the HTML content before the font style tag to a temp file
+2. Write the HTML content after the font style tag to a temp file
+3. Concatenate using bash:
+```bash
+cat report-pre.html > {output_file}
+echo '<style>' >> {output_file}
+cat {plugin_root}/templates/font-embed.css >> {output_file}
+echo '</style>' >> {output_file}
+cat report-post.html >> {output_file}
+rm report-pre.html report-post.html
+```
+This keeps ~162K tokens of font binary data out of the agent's context entirely while producing an identical output file.
 
 ## Step 3: Read Baton Files
 
@@ -63,7 +82,15 @@ Populate the metadata grid with 6 items using `meta.json` fields:
 
 Build a screenshot carousel from the engagement's JPEG files:
 
-- **Base64-encode each screenshot** at render time: `base64 < {path}.jpg`. Embed as data URIs: `src="data:image/jpeg;base64,{encoded}"`. **VERIFY:** every `<img>` src starts with `data:image/` — never a relative file path. If a JPEG file is missing, skip that screenshot.
+- **Base64-encode each screenshot** at render time. Embed as data URIs: `src="data:image/jpeg;base64,{encoded}"`. **VERIFY:** every `<img>` src starts with `data:image/` — never a relative file path. If a JPEG file is missing, skip that screenshot.
+
+**Base64 encoding (cross-platform):**
+When base64 encoding screenshots, try in order:
+1. `base64 -w 0 < {file}` (Linux/macOS/Git Bash)
+2. `python3 -c "import base64,sys;sys.stdout.write(base64.b64encode(open(sys.argv[1],'rb').read()).decode())" {file}` (Python fallback)
+3. `certutil -encode {file} {file}.b64 && grep -v CERTIFICATE {file}.b64 | tr -d '\r\n'` (Windows native fallback)
+
+Use whichever succeeds first.
 - **First screenshot** is the main image (`#mainImage`). All screenshots populate the thumbnail strip.
 - **Build the `slideSources` JSON array** for the carousel controller — one base64 data URI per slide.
 - **Thumbnail grid:** `repeat(N, 1fr)` where N = number of screenshots (max 4 columns). First thumbnail gets `class="thumb active"`.
@@ -74,6 +101,8 @@ Position numbered markers on the screenshot for each finding:
 
 - **URL mode (source_mode is url-based):** Use element coordinates from `baton.json`. Match the finding's `ELEMENT` field to entries in the baton's `elements` array. Calculate position as percentage of screenshot dimensions: `left = (x + width/2) / naturalWidth * 100`, `top = (y + height/2) / naturalHeight * 100`. If no element match, fall back to section-level centering. Subtract screenshot `scrollY` from element `y` for the correct position within that screenshot.
 - **Screenshot-only mode:** Claude estimates element positions based on visual inspection.
+**CODE-only page-level findings:** For findings with `SOURCE: CODE` that have no matching element in the baton AND no section association, omit the marker from the screenshot carousel. Display these findings in the finding cards section normally but without a corresponding screenshot marker. Forcing a marker position for a page-level CODE finding (e.g., 'no lazy loading detected', 'missing JSON-LD') would be misleading.
+
 - **Assign `data-slide`** attribute to each marker indicating which screenshot it appears on (0-indexed). Markers are only visible when their slide is active.
 - **Assign `data-severity`** attribute for severity-specific marker styling: `critical` markers are larger (3.5rem) than others (3rem).
 - **DPR adjustment:** For mobile screenshots at DPR > 1, element coordinates in the baton are already in screenshot pixels. If they are still in CSS pixels, multiply by the DPR before positioning.

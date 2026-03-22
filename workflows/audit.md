@@ -34,13 +34,24 @@ cognitive-load, choice-overload, information-density, form-complexity,
 personalization, cross-cultural, post-purchase-flow,
 search-ux, filter-ux, sort-ux, category-navigation,
 cookie-consent, express-checkout, social-commerce,
-value-proposition, competitive-comparison, process-differentiation
+value-proposition, competitive-comparison, process-differentiation,
+product-configuration, variant-selection, conditional-cta, compatibility-check
 
 If a finding doesn't match any slug, use the closest match.
 
 ## Severity Filtering
 
 If min-priority is specified by the coordinator, include only findings at or above that priority level in your output. Priority scale: CRITICAL > HIGH > MEDIUM > LOW. Always include CRITICAL findings regardless of filter setting.
+
+### Configurator Page Context
+
+If the coordinator indicates `page_pattern: 'configurator'` in the dispatch, adjust your evaluation:
+
+This is a CONFIGURATOR product page. The CTA and/or price are intentionally gated behind required selections (e.g., vehicle compatibility, size, material). When evaluating CTA and price visibility:
+- Assess whether the configurator UX is well-designed for its purpose — not whether the CTA should be ungated
+- Key questions: Is the price shown before/during configuration? Is a disabled-state CTA visible to communicate the purchase path? Is there a progress indicator? Would a sticky summary bar improve the experience?
+- Do NOT flag 'CTA not visible' or 'price below fold' as CRITICAL if the page is a configurator — instead evaluate the quality of the configuration flow itself
+- Canonical slugs for configurator findings: `product-configuration`, `variant-selection`, `conditional-cta`, `compatibility-check`
 
 ## Process
 
@@ -104,6 +115,8 @@ Do NOT apply desktop-specific principles to mobile screenshots or vice versa. Th
 **If screenshots are provided (URL mode):** Examine each screenshot one at a time. For each screenshot, identify which principles from your reference files apply to the content visible in that section. Cross-reference your visual observations with the preprocessed DOM to verify implementation details.
 
 **If only page code is provided (file path mode):** Read the source code and evaluate against reference principles.
+
+**CTA detection guidance:** When checking for CTA presence, search by element type and role — not by text content. Look for: `button[type='submit']` inside `form[action*='cart']`, elements with `[class*='add-to-cart']`, `[class*='atc']`, `[id*='AddToCart']`, `[id*='ProductSubmit']`. CTA button text is often dynamic and may not contain 'Add to Cart' in its default state (e.g., it may show 'Select Options' or a variant label when configuration is incomplete).
 
 **Audit sequence per principle:**
 1. Check if the principle applies to this page type

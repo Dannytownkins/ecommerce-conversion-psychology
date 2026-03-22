@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1020" fill="none">
+  <!-- Minimal flat laptop frame for laptop screenshots (1440x900) -->
+  <!-- Screenshot area: x=30, y=30, width=1500, height=938 -->
+  <rect x="0" y="0" width="1560" height="980" rx="12" fill="#1a1a1a"/>
+  <rect x="4" y="4" width="1552" height="972" rx="10" fill="#111111" stroke="#333333" stroke-width="2"/>
+  <!-- Camera dot -->
+  <circle cx="780" cy="16" r="4" fill="#333333"/>
+  <!-- Screen cutout (transparent for screenshot) -->
+  <rect x="30" y="30" width="1500" height="938" rx="4" fill="black"/>
+  <!-- Laptop base/keyboard area -->
+  <path d="M0 980 L60 1020 L1500 1020 L1560 980 Z" fill="#1a1a1a" stroke="#333333" stroke-width="1"/>
+  <rect x="620" y="990" width="320" height="8" rx="4" fill="#222222"/>
+</svg>

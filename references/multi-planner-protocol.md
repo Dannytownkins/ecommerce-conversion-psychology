@@ -15,7 +15,7 @@ This is guidance, not a rigid rule. If findings are numerous but all concentrate
 ## Dispatch
 
 1. Group audit findings by the source cluster that produced them
-2. Dispatch one planner per cluster IN PARALLEL using `model: "sonnet"`:
+2. Dispatch one planner per cluster IN PARALLEL using `model: "opus"`:
    - Each planner receives: its cluster's findings only + ethics gate + conflict resolution rules + context.md
    - Each planner is instructed to "produce a focused plan for this area only"
 3. Collect all planner outputs

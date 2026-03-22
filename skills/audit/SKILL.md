@@ -5,7 +5,7 @@ description: >-
   (audit, plan, review, build). Covers product pages, checkout flows, carts,
   pricing, landing pages, and category pages using research-backed psychology.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--device desktop|mobile|both] [--visual] [--no-visual] [--ab-scaffold] [--engagement-id id]"
+argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--device mobile|laptop|desktop] [--clusters cluster1,cluster2] [--visual] [--no-visual] [--ab-scaffold] [--engagement-id id]"
 ---
 
 <objective>
@@ -20,11 +20,13 @@ Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce
 --export-report: Generate HTML report after final phase (or current phase if stopping early).
 --ab-scaffold: Generate A/B test scaffold after plan phase. Pair with --ab-tool [tool] to specify existing tool.
 --engagement-id [id]: Resume or target a specific past engagement instead of creating new.
---device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
-  - desktop: 1440×900, 1x DPR
-  - mobile: 390×844, 2x DPR (via --force-device-scale-factor=2)
-  - both: Runs two separate acquisition/audit passes, produces audit.md (desktop) + audit-mobile.md (mobile)
-  In --auto mode: defaults to "desktop" (no prompt).
+--device [device(s)]: Target device viewport(s). Default: prompt user (URL mode only).
+  - mobile: 390×844, 2x DPR
+  - laptop: 1440×900, 1x DPR
+  - desktop: 1920×1080, 1x DPR
+  Accepts comma-separated pairs (e.g., --device mobile,desktop). Max 2 per run.
+  In --auto mode: defaults to "mobile,laptop" (no prompt).
+--clusters [cluster1,cluster2,...]: Explicit cluster selection, overrides page type defaults. Values: visual-cta, trust-conversion, context-platform, audience-journey.
 </flags>
 
 <mode_detection>
@@ -32,15 +34,18 @@ $ARGUMENTS must contain a URL or file path. If ambiguous, ask: "Are we auditing 
 
 How to acquire page data:
 1. **File path provided** → read directly. Set `source_mode: "file"` in meta.json. No acquisition agent needed.
-2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md, then dispatch the acquisition agent:
+2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md.
+2b. **User confirmation (URL mode only, non-auto):** Before dispatching the acquisition agent, ask: 'About to fetch **{domain}** — proceed?' Wait for user confirmation. In `--auto` mode, skip this step.
+   Then dispatch the acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
    - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
-     - Desktop: viewport 1440×900, device "desktop"
      - Mobile: viewport 390×844, 2x DPR (use `--force-device-scale-factor=2`), device "mobile"
-     - Both: dispatch sequentially (desktop first, then mobile). The browser session is shared — you cannot run two viewports simultaneously.
-       1. Desktop pass: full acquisition (DOM + screenshots + element coordinates) — viewport 1440×900, device "desktop". Wait for full completion.
-       2. Mobile pass: after desktop completes, dispatch mobile acquisition. Pass `dom_file` from desktop acquisition, device "mobile", 2x DPR — screenshots + element coordinates only.
+     - Laptop: viewport 1440×900, device "laptop"
+     - Desktop: viewport 1920×1080, device "desktop"
+     - Two devices: dispatch sequentially (first device, then second). The browser session is shared — you cannot run two viewports simultaneously.
+       1. First device pass: full acquisition (DOM + screenshots + element coordinates). Wait for full completion.
+       2. Second device pass: after first completes, dispatch second acquisition. Pass `dom_file` from first acquisition — screenshots + element coordinates only.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
    - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
@@ -77,18 +82,20 @@ If agent-browser is not installed and the input is a URL:
 <device_selection>
 **URL mode only.** After mode detection, before engagement setup, prompt for device:
 
-"Which device should I scan?
-1. **Desktop** (1440×900) — default
-2. **Mobile** (390×844, 2x DPR)
-3. **Both** — produces two separate reports"
+"Which devices should I scan?
+1. **Mobile** (390×844, 2x DPR)
+2. **Laptop** (1440×900)
+3. **Desktop** (1920×1080)
 
-- If `--device` flag is set: use specified device, skip prompt.
-- In `--auto` mode: default to `desktop`, skip prompt.
+Select up to two (e.g., 1,2). Scanning two devices runs both viewports in parallel."
+
+- If `--device` flag is set: use specified device(s), skip prompt. Accepts: `mobile`, `laptop`, `desktop`, or comma-separated pairs (e.g., `--device mobile,desktop`).
+- In `--auto` mode: default to `mobile,laptop`, skip prompt.
 - For file path mode: skip device selection entirely (no viewport rendering).
 
-Log selected device: "Scanning **[device]** at [width]×[height]."
+Log selected device(s): "Scanning **[device]** at [width]×[height]."
 
-Set `devices_requested` in meta.json to the user's choice: `["desktop"]`, `["mobile"]`, or `["desktop", "mobile"]`.
+Set `devices_requested` in meta.json to the user's choice (e.g., `["mobile", "laptop"]`).
 </device_selection>
 
 <progress_memory>
@@ -129,6 +136,35 @@ Load and follow ${CLAUDE_PLUGIN_ROOT}/references/platform-detection.md for heuri
 Accept --platform flag to skip detection.
 </platform_detection>
 
+<page_type_detection>
+Detect page type from URL patterns and DOM signals:
+- `/products/` or `/product/` → product
+- `/cart` → cart
+- `/checkout` → checkout
+- `/collections/` or `/category/` → category
+- Root path `/` with no product/collection path → homepage
+- `/pages/` with pricing keywords → landing or pricing
+- Ambiguous → check DOM: `form[action*='cart']` → product, `[class*='checkout']` → checkout
+- Still ambiguous → ask the user.
+
+Set `page.type` in meta.json. This determines cluster routing via the domain_cluster_routing table.
+</page_type_detection>
+
+<page_pattern_detection>
+After acquisition completes and baton is validated, check for configurator patterns in the DOM:
+
+1. Look for: multiple required `<select>` elements with empty/placeholder defaults, a disabled CTA button (`disabled` attribute, class containing `disabled`), dynamic price elements, validation messages requiring selections before purchase
+2. Also check for: `[class*='fitment']`, `[class*='compatibility']`, `[class*='configurator']`, `[class*='vehicle']`, `[class*='year-make-model']`
+3. If ≥2 required selects exist above the primary CTA AND the CTA is disabled in default state, classify as `page_pattern: 'configurator'`
+
+If detected:
+- Set `page_pattern: "configurator"` in meta.json
+- Include `page_pattern: "configurator"` in every auditor dispatch (the auditor workflow has instructions for how to adjust evaluation — see workflows/audit.md "Configurator Page Context")
+- This changes how auditors evaluate CTA visibility and price placement — they assess configurator UX quality rather than flagging gated CTAs as missing
+
+If not detected, omit `page_pattern` from meta.json. Auditors will evaluate normally.
+</page_pattern_detection>
+
 <domain_cluster_routing>
 Select 1-3 clusters based on page type:
 
@@ -155,6 +191,73 @@ Override rules:
 - Mobile-first → ensure context-platform
 </domain_cluster_routing>
 
+<cluster_selection>
+**After page type detection determines default clusters, present to the user:**
+
+"Detected page type: {page_type}
+
+Clusters selected for this audit:
+{numbered list of selected clusters with descriptions}
+
+Not selected:
+{numbered list of unselected clusters with descriptions}
+
+Proceed, or add/remove clusters? (e.g., 'remove 1' or 'add 4')"
+
+Cluster descriptions:
+- visual-cta: layout, visual hierarchy, scan patterns, CTA design and placement
+- trust-conversion: reviews, pricing, social proof, trust signals, checkout
+- context-platform: cognitive load, search/filter UX, page performance
+- audience-journey: personalization, cross-cultural, post-purchase psychology
+
+- In `--auto` mode: skip prompt, use default routing from page type table.
+- `--clusters` flag: explicit cluster selection (e.g., `--clusters trust-conversion,context-platform`). Overrides page type defaults.
+- Update `clusters_used` in meta.json to reflect the user's final selection.
+- Removing a cluster reduces auditor count (and cost/time). Adding one increases it.
+</cluster_selection>
+
+<auditor_dispatch_template>
+When dispatching an auditor, assemble the prompt as follows:
+
+---
+You are a CRO domain auditor for the **{{cluster_name}}** cluster,
+auditing a **{{device}}** viewport at **{{width}}×{{height}}**.
+
+## Your Reference Files (READ ALL BEFORE AUDITING)
+Read these reference files at ${CLAUDE_PLUGIN_ROOT}/references/:
+{{reference_file_list}}
+
+## Page Data
+- **Screenshots** (PRIMARY visual evidence): {{screenshot_paths_with_descriptions}}
+- **DOM file**: {{dom_path}}
+{{dom_caveat_if_mobile}}
+- **Device**: {{device}} at {{width}}×{{height}}, {{dpr}}x DPR
+- **Page type**: {{page_type}} ({{platform}})
+- **Element coordinates**: {{filtered_elements_json}}
+- **Styles**: {{styles_json}}
+
+## Ethics Gate
+{{full_ethics_gate_content}}
+
+## Audit Instructions
+[Read and include content from ${CLAUDE_PLUGIN_ROOT}/workflows/audit.md]
+---
+
+Template notes:
+- {{dom_caveat_if_mobile}}: Include only for mobile auditors: "DOM was captured at a non-mobile viewport. For layout/visibility judgments, rely on screenshots as truth. Use DOM for content/attributes only."
+- {{filtered_elements_json}}: Filter baton elements to only those within this auditor's screenshot sections (by scrollY range).
+- {{full_ethics_gate_content}}: The COMPLETE text of ethics-gate.md — do not summarize, paraphrase, or excerpt. The file is ~77 lines; include in full.
+</auditor_dispatch_template>
+
+<finding_deduplication>
+Before writing audit.md, deduplicate findings across clusters:
+- Two findings are duplicates if they share the same SECTION slug AND target the same ELEMENT (or substantially overlapping elements)
+- When duplicates are found, keep the finding with the higher PRIORITY. If equal, keep the one with the stronger evidence tier (Gold > Silver > Bronze)
+- Append to the kept finding's observation: 'Also identified by {other_cluster} cluster.'
+- Do NOT deduplicate findings that share a SECTION slug but target different elements (e.g., two different CTAs both flagged under primary-cta)
+- Expected reduction: 20-30 raw findings typically deduplicate to 12-18 unique findings
+</finding_deduplication>
+
 <phase_audit>
 Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message. Use `model: "opus"` for all auditor dispatches — Opus provides better reasoning for cross-referencing screenshots against DOM and applying device-appropriate principles.
 
@@ -165,7 +268,7 @@ Each Agent call contains:
 - Reference file paths for that cluster ONLY (at ${CLAUDE_PLUGIN_ROOT}/references/)
 - Ethics gate content (read from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md)
 - Min-priority filter if specified
-- **Device context:** pass `"desktop"` or `"mobile"` to each auditor
+- **Device context:** pass `"mobile"`, `"laptop"`, or `"desktop"` to each auditor
 
 **Input varies by source mode:**
 
@@ -173,44 +276,108 @@ Each Agent call contains:
 - **File path mode (source_mode: file):** Pass the page source code directly. No screenshots.
 - **Description mode (source_mode: description):** Pass the text description.
 
+**Baton validation:** After acquisition completes, read baton.json. Verify `status: 'COMPLETE'`, `screenshots` array has ≥1 entry with all required fields (index, label, scrollY, path, naturalWidth, naturalHeight). If validation fails, re-dispatch acquisition once. If second attempt fails, fall back to manual acquisition.
+
+**Screenshot-to-auditor routing:**
+For each auditor cluster, build its screenshot list:
+1. Iterate `baton.sections[]`
+2. Collect entries where `clusters` array includes this auditor's cluster slug
+3. Map each matching section to its `screenshot_index`
+4. Collect the corresponding screenshot paths from `baton.screenshots[]`
+5. Pass only those screenshots to this auditor
+
+**Fallback (malformed baton):** If sections lack `clusters` arrays, infer from `label` keywords:
+- CTA, hero, image, carousel, gallery → visual-cta
+- price, review, trust, payment, badge, shipping, checkout → trust-conversion
+- nav, search, filter, form, specs, footer, performance → context-platform
+- personalization, recommendation, post-purchase → audience-journey
+
+If still ambiguous, pass all screenshots to all auditors and note: 'Screenshot routing was unfiltered due to missing cluster metadata.'
+
 Collect all outputs. Verify each output ends with `STATUS: COMPLETE` or `STATUS: PARTIAL`.
 
-**Single device (desktop or mobile):**
+**Single device (mobile, laptop, or desktop):**
 Write combined findings to docs/cro/{engagement-id}/audit.md.
 Update meta.json: phase → "audit", `devices_scanned` → matches selected device, updated → current ISO timestamp.
 
-**"Both" mode:**
-Run auditor batches sequentially to cap concurrency at 3 simultaneous Opus subagents:
-1. Dispatch desktop auditors (1 per cluster, up to 3 clusters in parallel) with `device: "desktop"` — pass **desktop screenshots** and DOM. Collect findings.
-2. Wait for all desktop auditors to complete.
-3. Dispatch **separate** mobile auditors (1 per cluster, up to 3 clusters in parallel) with `device: "mobile"` — pass **mobile screenshots** and DOM. Collect findings.
-Do NOT dispatch all 6 auditors at once — Opus rate limits make this unreliable.
+**Two-device mode:**
+Dispatch all auditors in parallel across both devices. If rate limits are encountered (429 responses or agent failures), fall back to batching by device (complete first device's auditors, then second device's):
+1. Dispatch first device auditors (1 per cluster, up to 3 clusters in parallel) with `device: "{first_device}"` — pass **first device screenshots** and DOM. Collect findings.
+2. Dispatch second device auditors (1 per cluster, up to 3 clusters in parallel) with `device: "{second_device}"` — pass **second device screenshots** and DOM. Collect findings.
 
-**CRITICAL: Mobile auditors MUST receive mobile screenshots and device: "mobile".** Do NOT reuse desktop audit findings for the mobile report. A proper mobile audit evaluates:
+**CRITICAL: Each device's auditors MUST receive that device's screenshots and correct device label.** Do NOT reuse one device's audit findings for another device's report. A proper mobile audit evaluates:
 - Whether CTA button heights meet the 48px minimum at mobile viewport
 - Whether pricing cards have adequate touch target spacing
 - Whether sticky bottom CTAs are implemented
 - Thumb zone positioning at 390px width
 - Font readability at mobile sizes
 
-Reusing desktop findings overlaid on mobile screenshots is not a true mobile audit — it misses device-specific issues entirely.
+Reusing first device findings overlaid on second device screenshots is not a true audit — it misses device-specific issues entirely.
 
-4. Write `audit.md` (desktop findings) to disk
-5. Write `audit-mobile.md` (mobile findings) to disk
-6. **Then** update meta.json: phase → "audit", `devices_scanned: ["desktop", "mobile"]`, updated → current ISO timestamp
+4. Write `audit.md` (first device findings) to disk
+5. Write `audit-{second_device}.md` (second device findings) to disk
+6. **Then** update meta.json: phase → "audit", `devices_scanned` → both devices, updated → current ISO timestamp
 (Write files first, meta.json last — preserves atomicity invariant.)
 
-**Partial failure in "both" mode:**
+**Partial failure in two-device mode:**
 If one device's acquisition or audit fails, deliver the successful device's report + warning:
-"⚠️ [Mobile/Desktop] scan failed: [reason]. Run with `--device [failed-device]` to retry."
-Set `devices_scanned` to reflect only what completed. `devices_requested` preserves the original "both" intent.
+"⚠️ [{device}] scan failed: [reason]. Run with `--device [failed-device]` to retry."
+Set `devices_scanned` to reflect only what completed. `devices_requested` preserves the original intent.
 
-**Plan phase with "both" mode:** The planner receives both `audit.md` and `audit-mobile.md` as input. Findings from both devices inform the action plan.
+**Plan phase with two-device mode:** The planner receives both audit files as input. Findings from both devices inform the action plan.
 
 **Auditor retry:** If an auditor returns `STATUS: PARTIAL`, SKIP, or fails entirely: retry once automatically with the same inputs. If the retry also fails: write SKIP finding for that cluster, offer "Re-run [cluster]" at checkpoint.
 
 If --min-priority set and zero findings remain after filter: "No findings at [PRIORITY] or above. Options: (1) Lower the filter, (2) View all findings, (3) Stop here."
 </phase_audit>
+
+<audit_assembly>
+After collecting all auditor outputs and deduplicating findings (see below), assemble audit.md with this structure:
+
+```
+# CRO Audit: {page_title} ({device_label})
+
+**URL:** {url}
+**Viewport:** {device} {width}×{height} @ {dpr}x DPR
+**Platform:** {platform}
+**Date:** {date}
+**Engagement:** {engagement_id}
+
+---
+
+## Ethics Gate: {CLEAR | VIOLATIONS FOUND}
+{summary line or violation list}
+
+---
+
+## Findings
+
+### {cluster_name} cluster
+{findings ordered by priority: CRITICAL → HIGH → MEDIUM → LOW}
+
+### {next_cluster_name} cluster
+{findings}
+
+---
+
+## What's Working Well
+{deduplicated PASS findings from all auditors, as bullet list}
+
+---
+
+## Summary
+| Priority | Count |
+|----------|-------|
+| CRITICAL | {n} |
+| HIGH | {n} |
+| MEDIUM | {n} |
+| LOW | {n} |
+| **Total** | **{n}** |
+
+**Top 5 actions by expected impact:**
+1. {action}
+```
+</audit_assembly>
 
 <progress_comparison>
 After writing audit.md but before presenting the checkpoint:
@@ -288,6 +455,7 @@ Present natural language summary (not raw tables):
    2. Annotated visual report (dark-mode HTML with scroll-sync)
    3. Both markdown + visual report
    4. Skip additional exports
+   After export, confirm with filenames: 'Visual report saved to `docs/cro/{engagement-id}/visual-report.html`' or for multi-device: list each file.
 4. Stop here
 
 If --auto: skip this checkpoint, proceed to plan.
@@ -477,19 +645,43 @@ When user chooses to go back:
 <report_export>
 Available at any checkpoint when user requests a visual report.
 
-**Visual report (annotated screenshots + findings):** Generate inline — do NOT dispatch a subagent.
-1. Read `${CLAUDE_PLUGIN_ROOT}/templates/components.html` for component definitions — this is what you assemble from
-2. Copy `${CLAUDE_PLUGIN_ROOT}/templates/font-embed.css` into `<head>` verbatim (do NOT read/interpret — just copy)
-3. Read `${CLAUDE_PLUGIN_ROOT}/templates/visual-report.html.template` for the HTML skeleton
-4. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for assembly instructions
-5. Assemble components: header with eyebrow + title, metadata grid, evidence canvas (screenshot carousel with markers + thumbnails), finding cards with recommendation boxes + evidence tier badges + citation URLs, summary section (evidence confidence + severity distribution + ethics), carousel + scroll-sync JS
-6. Write completed self-contained HTML
+**Visual report (annotated screenshots + findings):**
 
-**You MUST use the HTML/CSS/JS from components.html exactly as written. Do not modify component structure. Do not add custom CSS. Only populate content placeholders.**
+**Preferred: Python script.** Before attempting LLM-based assembly, try the Python report generator:
 
-Output: `docs/cro/{engagement-id}/visual-report.html`
+1. Create a marker mapping JSON by matching each finding's ELEMENT field to a baton element entry. Write this as a JSON file (e.g., `markers.json`) in the engagement directory:
+   ```json
+   [
+     {"finding_index": 1, "baton_element_index": 3, "slide": 0, "severity": "critical"},
+     {"finding_index": 2, "baton_element_index": null, "slide": 1, "severity": "high"}
+   ]
+   ```
+   Null `baton_element_index` means no element match — the script centers the marker on the section area.
 
-**"Both" mode — dispatch in parallel:** For dual-device reports, generate `visual-report-desktop.html` and `visual-report-mobile.html` as two **parallel** Agent dispatches. Desktop and mobile reports are completely independent — they use different screenshots, different audit findings, and different baton data. Generating them sequentially wastes ~30 minutes. Dispatch both at once using multiple Agent tool calls in a single message.
+2. Run the script:
+   ```bash
+   python3 ${CLAUDE_PLUGIN_ROOT}/scripts/generate-report.py \
+     --engagement docs/cro/{engagement-id} \
+     --device {device} \
+     --audit {audit-filename} \
+     --baton {baton-filename} \
+     --plugin-root ${CLAUDE_PLUGIN_ROOT} \
+     --markers docs/cro/{engagement-id}/markers.json
+   ```
+
+3. The script handles: font injection (no context window consumption), marker burning via Pillow (pixel-perfect), base64 encoding, template population, click target generation, and writes a self-contained HTML file.
+
+**Fallback: LLM assembly.** If Python or Pillow is unavailable:
+1. Read `${CLAUDE_PLUGIN_ROOT}/workflows/visual-report.md` for assembly instructions
+2. Follow the font concatenation approach (do NOT read font-embed.css into context)
+3. Use CSS-positioned markers (less accurate but functional)
+
+**Output naming:**
+- Mobile: `visual-report-mobile.html`
+- Laptop: `visual-report.html`
+- Desktop: `visual-report-desktop.html`
+
+**Two-device mode:** Generate both reports. If using the Python script, run it twice sequentially (2-5 seconds each). If using LLM assembly, dispatch as two **parallel** Agent calls — the two device reports are completely independent.
 
 **Text report:** Read ${CLAUDE_PLUGIN_ROOT}/workflows/report.md for text report generator instructions.
 Dispatch report subagent with all baton files from the engagement directory.
@@ -505,8 +697,7 @@ Output: docs/cro/{engagement-id}/ab-scaffold.md
 </ab_scaffold>
 
 <ethics>
-Read ethics gate from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md.
-Pass full content to EVERY subagent dispatch. Ethics violations are always PRIORITY: CRITICAL.
+Read ethics-gate.md into a variable. Include the COMPLETE text in every subagent prompt under a `## Ethics Gate` heading. Do not summarize, paraphrase, or excerpt — paste the full file contents. The ethics gate is ~77 lines; this is small enough to include in full. Ethics violations are always PRIORITY: CRITICAL.
 </ethics>
 
 <reference_freshness>

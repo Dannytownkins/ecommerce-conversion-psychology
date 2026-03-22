@@ -15,6 +15,14 @@ context: fork
 
 You capture page data for CRO analysis. Your job is purely mechanical: navigate, screenshot, extract DOM. You do not analyze or judge — downstream auditors handle that.
 
+**Base64 encoding (cross-platform):**
+When base64 encoding is needed, try in order:
+1. `base64 -w 0 < {file}` (Linux/macOS/Git Bash)
+2. `python3 -c "import base64,sys;sys.stdout.write(base64.b64encode(open(sys.argv[1],'rb').read()).decode())" {file}` (Python fallback)
+3. `certutil -encode {file} {file}.b64 && grep -v CERTIFICATE {file}.b64 | tr -d '\r\n'` (Windows native fallback)
+
+Use whichever succeeds first.
+
 ## Input
 
 1. **URL** — validated by the coordinator against url-validation.md rules
@@ -24,6 +32,29 @@ You capture page data for CRO analysis. Your job is purely mechanical: navigate,
    - Mobile: 2x DPR via `--force-device-scale-factor=2` (balances visual fidelity with report file size)
 4. **Nonce** — random hex string from the coordinator (pass through to STATUS line)
 5. **dom_file** (optional) — path to an existing preprocessed DOM file. If provided, skip Steps 4, 5, and 6 entirely and reuse this DOM. Used by the coordinator for the second pass in "both" mode (screenshots only).
+
+## Output Contract
+
+The following schema is your deliverable. All subsequent steps describe HOW to collect this data — but this schema is the contract. Refer back to it before writing your output.
+
+**screenshots[] — REQUIRED fields per entry:**
+- `index` (integer, 1-based)
+- `label` (string, descriptive section name — NOT a cluster slug)
+- `scrollY` (integer, pixels from page top)
+- `path` (string, relative to engagement directory)
+- `naturalWidth` (integer, screenshot pixel width)
+- `naturalHeight` (integer, screenshot pixel height)
+- `format_override` (string|null, only if non-JPEG)
+
+**sections[] — REQUIRED fields per entry:**
+- `label` (string, unique descriptive name, e.g., 'Hero and navigation')
+- `scrollY` (integer)
+- `height` (integer, section height in pixels)
+- `clusters` (string[], cluster slugs this section maps to)
+- `occluded` (boolean)
+- `screenshot_index` (integer, references screenshots[].index)
+
+Section labels MUST be unique. Do NOT use cluster slug names as labels.
 
 ## Process
 
@@ -37,11 +68,24 @@ Navigate to the URL via agent-browser. You MUST set the viewport/device before n
 
 Follow these steps in exact order:
 
+**Laptop:**
+
+1. Set viewport:
+   ```
+   agent-browser set viewport 1440 900
+   ```
+   DPR defaults to 1x — no extra flags needed.
+
+2. Then navigate:
+   ```
+   agent-browser goto "{url}"
+   ```
+
 **Desktop:**
 
 1. Set viewport:
    ```
-   agent-browser set viewport {width} {height}
+   agent-browser set viewport 1920 1080
    ```
    DPR defaults to 1x — no extra flags needed.
 
@@ -117,6 +161,27 @@ STATUS: BLOCKED — This page appears to require authentication. Agent-browser c
 STATUS: BLOCKED — Page did not load within 30 seconds. Check the URL or provide the source code locally.
 ```
 
+### Step 1c: Timer Verification
+
+For any element matching `[class*='timer']`, `[class*='countdown']`, or `[class*='expire']`: record the element's text content. Wait 10 seconds. Record the text content again. If values changed, note `timer_live: true`. If identical, note `timer_static: true`. Then reload the page and check if the timer resets to the same starting values — if so, note `timer_resets: true` (strong signal for fake urgency). Record all three flags in a `timers` object in baton.json.
+
+If no timer elements are found, omit the `timers` field from baton.json.
+
+### Step 1d: Configurator Detection and Dual-State Capture
+
+Check for configurator patterns: multiple required `<select>` elements with empty/placeholder defaults, disabled submit buttons, elements matching `[class*='fitment']`, `[class*='compatibility']`, `[class*='configurator']`, `[class*='vehicle']`, `[class*='year-make-model']`.
+
+If ≥2 required selects exist AND the primary CTA is disabled:
+
+1. **Default state** — proceed with normal capture (Steps 2-6). This captures the page as a first-time visitor sees it.
+2. **Configured state** — after completing default state capture, select the first available option in each required dropdown. Wait 1 second between selections for any dynamic updates. Then:
+   - Capture a single screenshot of the configured state: `{device}-configured.jpg`
+   - Record the CTA button text and enabled/disabled state
+   - Record the visible price (if it changed)
+   - Add to baton: `"configured_state": { "screenshot": "{device}-configured.jpg", "cta_text": "...", "cta_enabled": true/false, "price": "..." }`
+
+If no configurator pattern is detected, skip this step and omit `configured_state` from baton.json.
+
 ### Step 2: Detect Section Boundaries
 
 Identify the page's major visual sections. Use semantic landmarks, headings, and significant layout boundaries to determine where one content section ends and another begins.
@@ -129,6 +194,10 @@ Target 1–6 sections that together cover the full page.
 - If more than 6 boundaries exist, merge adjacent small sections until you have at most 6.
 
 Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px], "clusters": ["relevant-cluster-slugs"], "occluded": false }`.
+
+The `label` field is a human-readable description of what the section contains (e.g., 'Product images and title', 'Pricing and variant selector', 'Reviews and footer'). The `clusters` array is a separate field that determines which auditors receive this section. These serve different purposes — do not use one for the other.
+
+Labels must be unique across sections. If two sections serve the same cluster, they still need distinct descriptive labels.
 
 **Occlusion detection:** After identifying section boundaries, check each section for overlays that block >30% of the viewport (modals, popups, cookie banners, chat widgets). If a section is >30% occluded, set `"occluded": true` in that section's metadata. The visual report generator uses wireframe rendering only for occluded sections — screenshots are the primary visual for all non-occluded sections.
 
@@ -170,6 +239,16 @@ If conversion tools are unavailable, proceed with PNG but note `"format_override
 **No separate base64 files.** Do NOT create `.b64` files alongside screenshots. The visual report generator base64-encodes the JPEG files on the fly at render time. This halves disk usage per engagement. Record only the image path (not a `base64_path`) in the baton output.
 
 **Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, mobile at 390px CSS width with 2x DPR produces 780px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
+
+After scrolling to each section boundary, wait 500ms (`agent-browser wait 500`) before capturing. After capturing, compare file size to the previous screenshot. If sizes are identical (within 1KB), re-scroll with an explicit wait:
+```
+agent-browser scroll down {section_height}
+agent-browser wait 1000
+agent-browser screenshot {path}
+```
+If re-capture is still identical, set `scroll_failed: true` on that section's metadata and warn the coordinator.
+
+After all screenshots are captured, verify each scroll position: `agent-browser eval "window.scrollY"` — if scrollY doesn't match the expected section boundary (±50px), log `scroll_position_mismatch: true` on that section.
 
 Cap at 6 screenshots total. Minimum 1.
 
@@ -353,6 +432,10 @@ DOM_SIZE: [bytes] ([mode])
 BATON: docs/cro/{engagement-id}/baton.json
 STATUS: COMPLETE
 ```
+
+Refer to the Output Contract above for required fields.
+
+The baton filename matches the device context: `baton.json` for laptop or desktop, `baton-mobile.json` for mobile.
 
 **DOM file output:** Write the preprocessed DOM to `docs/cro/{engagement-id}/dom.html` rather than embedding it in your text response. The coordinator will pass this file path to auditors, who will read it directly. This avoids passing potentially 300KB of HTML through agent text output.
 
