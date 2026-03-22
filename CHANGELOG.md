@@ -1,5 +1,55 @@
 # Changelog
 
+## 4.4.0 — 2026-03-21
+
+### Reliability, Accuracy & Performance Improvements
+
+Batch of 19 improvements based on real-world audit feedback. Focuses on acquisition reliability, audit accuracy, mobile fidelity, and report generation performance.
+
+#### Acquisition Reliability (7 changes)
+- **agent-browser CLI note** — acquire.md now explicitly states that agent-browser is a CLI tool and all commands must run via Bash. This was the #1 source of failed acquisitions — agents tried to call agent-browser as an MCP tool.
+- **Manual acquisition fallback** — When the acquisition agent fails, the coordinator now captures screenshots/DOM directly via agent-browser CLI commands, with real element coordinate extraction. Adds `source_mode: "manual"` to meta.json.
+- **WebFetch fallback** — When agent-browser is unavailable, falls back to WebFetch for page content. Adds `source_mode: "webfetch"` with defined behavior (CODE-only findings, no screenshots).
+- **Stale baton cleanup** — Coordinator now deletes failed agent's partial baton.json/dom.html before manual acquisition, preventing downstream agents from reading empty/partial data.
+- **Sequential "both" mode** — Simplified dual-device acquisition to strictly sequential (desktop then mobile) since the browser session is shared.
+- **Mobile DPR: 3x → 2x** — Mobile screenshots now use 2x DPR (780px wide) instead of 3x (1170px wide). Cuts base64 file size ~45% with negligible quality loss at carousel display sizes.
+- **Screenshot compression guidance** — acquire.md now includes post-capture compression guidance (re-encode at quality 60 if >500KB).
+
+#### Audit Accuracy (5 changes)
+- **"What's Working Well" section** — PASS findings now go in a separate lightweight section at the end of audit output (slug + one-liner, no priority/recommendation). Prevents PASS findings from rendering as "Low Priority" issue cards in visual reports.
+- **FAQ/accordion awareness** — Auditors now check for FAQ/accordion sections containing hidden trust signals (refund policy, payment methods, security info) that don't appear in the primary visual flow.
+- **Floating chat widget detection** — Mobile auditors now check for floating chat widgets (Intercom, Chatwoot, etc.) that may occlude CTAs or touch targets.
+- **`user-scalable=no` finding** — Now emitted as a MEDIUM finding under `mobile-touch-targets` when detected, instead of being noted as an ethics concern and never becoming a finding. Cites WCAG 1.4.4.
+- **Enforced separate mobile audit** — "Both" mode now requires dispatching separate mobile auditors with mobile screenshots and mobile-specific principles. Explicitly prohibits reusing desktop findings for mobile reports.
+
+#### New Reference File (1 change)
+- **competitive-positioning.md** — 8 findings covering value proposition framing, process comparison sections, specificity effect, before/after framing, anchoring via competitor context, and outcome vs. feature framing. Added to visual-cta and trust-conversion cluster reference files. New canonical slugs: `value-proposition`, `competitive-comparison`, `process-differentiation`.
+
+#### Visual Report Performance (2 changes)
+- **components-digest.md** — Line-range index for components.html (1115 lines, ~162K tokens). Agents can now read only the component sections they need instead of the full file.
+- **Parallel visual reports** — "Both" mode now dispatches desktop and mobile visual reports in parallel instead of sequentially (~30 min time savings).
+
+#### Workflow Optimizations (4 changes)
+- **meta.json validation on resume only** — Coordinator no longer re-reads and validates meta.json immediately after writing it. Validation now only runs when resuming engagements the coordinator didn't write.
+- **Early trust-conversion dispatch** — trust-conversion auditors can now start on DOM while screenshots are still capturing, since they primarily need DOM content. visual-cta still waits for all screenshots.
+- **Progress memory: "Now Passing" section** — Progress comparison now prominently surfaces FAIL→PASS transitions ("Now Passing") with their own table, emphasizing wins from previous audits.
+- **Progress memory: FIXED items first** — Checkpoint presentation now leads with fixed items before regressions and new findings.
+
+#### Files Modified
+- `workflows/acquire.md` — CLI note, DPR change, compression guidance, section-to-cluster mapping
+- `workflows/audit.md` — "What's Working Well" section, FAQ/accordion awareness, chat widget detection, user-scalable=no finding, new canonical slugs, device-aware evaluation updates
+- `workflows/visual-report.md` — PASS finding filtering, "What's Working Well" rendering, components-digest reference
+- `skills/audit/SKILL.md` — Manual/WebFetch fallback, sequential "both" mode, mobile DPR, separate mobile audit, parallel visual reports, meta.json validation, early dispatch, progress memory
+- `skills/compare/SKILL.md` — Mobile DPR updates
+- `skills/quick-scan/SKILL.md` — Mobile DPR updates
+- `templates/audit.md.template` — "What's Working Well" section placeholder
+- `templates/meta.json.template` — New source_mode values (manual, webfetch)
+- `templates/components-digest.md` — New file (line-range index)
+- `references/competitive-positioning.md` — New file (8 findings)
+- `.claude-plugin/plugin.json` — Version bump to 4.4.0
+
+---
+
 ## 4.3.0 — 2026-03-20
 
 ### Visual Report Redesign

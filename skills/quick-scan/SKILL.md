@@ -21,7 +21,7 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 --ephemeral: DEPRECATED — behaves as --no-visual. Prints warning: "--ephemeral is deprecated, use --no-visual".
 --device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
   - desktop: 1440×900, 1x DPR
-  - mobile: 390×844 (iPhone 14 preset, includes DPR and user-agent)
+  - mobile: 390×844, 2x DPR (via --force-device-scale-factor=2)
   - both: Runs two separate scans, produces audit.md (desktop) + audit-mobile.md (mobile)
   In --auto mode: defaults to "desktop" (no prompt).
 </flags>
@@ -50,7 +50,7 @@ Determine input type from $ARGUMENTS:
    - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
      - Desktop: viewport 1440×900, device "desktop"
-     - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"
+     - Mobile: viewport 390×844 (use `--force-device-scale-factor=2`), device "mobile"
      - Both: dispatch twice serially:
        1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
        2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
@@ -69,7 +69,7 @@ Determine input type from $ARGUMENTS:
 
 "Which device should I scan?
 1. **Desktop** (1440×900) — default
-2. **Mobile** (390×844, iPhone 14/15)
+2. **Mobile** (390×844, 2x DPR)
 3. **Both** — produces two separate reports"
 
 - If `--device` flag is set: use specified device, skip prompt.
@@ -94,7 +94,7 @@ Set `platform` in meta.json to the detected value. Do NOT default to `"generic"`
 <engagement_setup>
 Always create meta.json silently (needed for aggregation). Create engagement directory and meta.json with type: "quick-scan", quick_scan: true, schema_version: 2.
 
-After writing meta.json, re-read it and verify all required fields against these patterns:
+**meta.json validation schema** (validate on resume only — not after the coordinator writes it):
 - `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
 - `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
 - `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`

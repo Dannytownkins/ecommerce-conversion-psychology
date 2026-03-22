@@ -26,6 +26,13 @@ QUICK_WIN: [true|false]
 
 ---
 
+## What's Working Well
+
+<!-- PASS findings go here in lightweight format. No PRIORITY, no RECOMMENDATION, no rationale. -->
+<!-- Format: - **[slug]**: [One-line observation]. ↳ [reference-file.md], Finding [N] -->
+
+---
+
 ## Ethics Compliance
 
 <!-- MANDATORY: This section must appear in every audit output. -->

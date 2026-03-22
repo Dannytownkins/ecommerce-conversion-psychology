@@ -98,7 +98,7 @@ If `meta.json` has `blocked: true` or `review.md` (or any `review-{slug}.md`) co
 When reading any meta.json, validate:
 - `phase` is one of the allowed enum values
 - If `plans_queue` exists, each entry's `file` matches the pattern `plan-{slug}.md` and contains no path separators
-- `source_mode` (if present) is one of: `url-dual`, `url-screenshot`, `screenshot`, `file`, `description`
+- `source_mode` (if present) is one of: `url-dual`, `manual`, `webfetch`, `url-screenshot`, `screenshot`, `file`, `description`
 - `screenshot_input` (if present) is an object with at least `filename` (string)
 - `schema_version` is a known value (1 or 2)
 

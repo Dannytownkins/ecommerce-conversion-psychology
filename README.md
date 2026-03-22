@@ -1,8 +1,8 @@
 # E-Commerce Conversion Psychology
 
-![v4.3.0](https://img.shields.io/badge/version-4.3.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
+![v4.4.0](https://img.shields.io/badge/version-4.4.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
-**A CRO engine that thinks like a psychologist.** 18 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
+**A CRO engine that thinks like a psychologist.** 19 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, competitive positioning, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
 Each phase runs in a fresh context window with only the files it needs — no single agent tries to hold the full picture. A baton file system passes structured findings between phases, so nothing gets lost to compaction and every recommendation is traceable back to the research that produced it.
 
@@ -75,7 +75,7 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ## What's Under the Hood
 
-- **18 domain reference files** — pricing, checkout, trust, social proof, CTAs, color, eye tracking, cognitive load, mobile UX, performance, personalization, cross-cultural, post-purchase, search/filter, cookie consent, biometric/express checkout, social commerce
+- **19 domain reference files** — pricing, checkout, trust, social proof, CTAs, color, eye tracking, cognitive load, mobile UX, performance, personalization, cross-cultural, post-purchase, search/filter, cookie consent, biometric/express checkout, social commerce, competitive positioning
 - **Evidence tier system** — 300 classified findings tagged Gold (peer-reviewed RCT/meta-analysis), Silver (large-N observational or vendor A/B test), Bronze (expert consensus, small-N, or directional). Clickable citation URLs resolved at render time from `citations/sources.md` — auditors stay lean, links are always accurate.
 - **4 auditor clusters** that get assigned by page type (or `--cluster` override)
 - **Ethics gate** checked at every phase — fake urgency, hidden pricing, review manipulation, dark patterns -> always `CRITICAL`
@@ -92,8 +92,8 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 | Cluster | Slug | Coverage |
 |---------|------|----------|
-| Visual & CTA | `visual-cta` | CTA design, color psychology, eye tracking, scan patterns, product video |
-| Trust & Conversion | `trust-conversion` | Trust signals, social proof, checkout optimization, pricing, biometric auth, cookie consent |
+| Visual & CTA | `visual-cta` | CTA design, color psychology, eye tracking, scan patterns, product video, competitive positioning |
+| Trust & Conversion | `trust-conversion` | Trust signals, social proof, checkout optimization, pricing, biometric auth, cookie consent, competitive positioning |
 | Context & Platform | `context-platform` | Cognitive load, mobile UX, performance, search & filter, cookie consent |
 | Audience & Journey | `audience-journey` | Personalization, cross-cultural, post-purchase, social commerce, push notifications |
 
@@ -128,7 +128,7 @@ claude plugin update cro@ecommerce-conversion-psychology
 
 ```
 ecommerce-conversion-psychology/
-  .claude-plugin/plugin.json          Plugin metadata (v4.3.0)
+  .claude-plugin/plugin.json          Plugin metadata (v4.4.0)
   skills/
     cro/SKILL.md                      /cro router
     audit/SKILL.md                    /cro:audit
@@ -136,7 +136,7 @@ ecommerce-conversion-psychology/
     compare/SKILL.md                  /cro:compare
     quick-scan/SKILL.md               /cro:quick-scan
     resume/SKILL.md                   /cro:resume
-  references/                         18 domain + 9 operational files
+  references/                         19 domain + 9 operational files
   citations/                          Source URLs for human verification
   platforms/                          shopify.md, nextjs.md
   templates/                          Baton + report templates + component library

@@ -22,7 +22,7 @@ Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce
 --engagement-id [id]: Resume or target a specific past engagement instead of creating new.
 --device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
   - desktop: 1440×900, 1x DPR
-  - mobile: 390×844 (iPhone 14 preset, includes DPR and user-agent)
+  - mobile: 390×844, 2x DPR (via --force-device-scale-factor=2)
   - both: Runs two separate acquisition/audit passes, produces audit.md (desktop) + audit-mobile.md (mobile)
   In --auto mode: defaults to "desktop" (no prompt).
 </flags>
@@ -37,18 +37,41 @@ How to acquire page data:
    - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
      - Desktop: viewport 1440×900, device "desktop"
-     - Mobile: viewport 390×844 (use device preset "iPhone 14"), device "mobile"
-     - Both: dispatch with overlapping phases:
-       1. Desktop pass: full acquisition (DOM + screenshots + element coordinates) — viewport 1440×900, device "desktop"
-       2. Mobile pass: starts after desktop DOM is written (does not wait for desktop screenshots to finish). Pass `dom_file` from desktop acquisition, device "mobile" — screenshots + element coordinates only
-       The mobile pass only needs the DOM file, not the desktop screenshots. If using sequential dispatch (single-agent environments), dispatch mobile immediately after verifying `dom.html` exists — do not wait for the full desktop baton.
+     - Mobile: viewport 390×844, 2x DPR (use `--force-device-scale-factor=2`), device "mobile"
+     - Both: dispatch sequentially (desktop first, then mobile). The browser session is shared — you cannot run two viewports simultaneously.
+       1. Desktop pass: full acquisition (DOM + screenshots + element coordinates) — viewport 1440×900, device "desktop". Wait for full completion.
+       2. Mobile pass: after desktop completes, dispatch mobile acquisition. Pass `dom_file` from desktop acquisition, device "mobile", 2x DPR — screenshots + element coordinates only.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
    - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
    - Set `source_mode: "url-dual"` in meta.json
-3. **No agent-browser and no file path** → prompt user to paste code or provide file path. Set `source_mode: "file"` or `"description"`.
-4. Never silently fail — always tell the user what is happening
+3. **Acquisition agent fails entirely** → fall back to manual acquisition (see below). Set `source_mode: "manual"`.
+4. **No agent-browser and no file path** → fall back to WebFetch for page content. Set `source_mode: "webfetch"`.
+5. Never silently fail — always tell the user what is happening
+
+**Manual acquisition fallback:**
+If the acquisition agent fails (crashes, returns malformed output, or produces a baton.json with `screenshots: []`):
+1. **Delete the failed agent's stale baton.json and dom.html** — downstream agents will misread partial/empty data as real acquisition output if left in place.
+2. The coordinator captures the page directly using Bash commands:
+   ```
+   agent-browser set viewport 1440 900
+   agent-browser goto "{url}"
+   agent-browser screenshot "docs/cro/{engagement-id}/section-1.jpg"
+   ```
+3. Extract DOM: `agent-browser eval "document.documentElement.outerHTML"` and write to `dom.html`
+4. **Extract element coordinates** at each scroll position using the JS snippet from acquire.md Step 3b via `agent-browser eval`. This gives real `getBoundingClientRect()` coordinates even in manual mode.
+5. Write a valid `baton.json` with `source_mode: "manual"` and `status: "COMPLETE"`
+6. Set `source_mode: "manual"` in meta.json
+7. Proceed to audit phase normally
+
+**WebFetch fallback (no agent-browser available):**
+If agent-browser is not installed and the input is a URL:
+1. Fetch page content via WebFetch
+2. Write response to `dom.html` (note: this is source HTML, not rendered DOM)
+3. Write baton.json with `source_mode: "webfetch"`, `screenshots: []`, `status: "COMPLETE"`
+4. Set `source_mode: "webfetch"` in meta.json — auditors will know they have no screenshots and no computed styles
+5. Proceed to audit with CODE-only findings (no VISUAL source possible)
 </mode_detection>
 
 <device_selection>
@@ -56,7 +79,7 @@ How to acquire page data:
 
 "Which device should I scan?
 1. **Desktop** (1440×900) — default
-2. **Mobile** (390×844, iPhone 14/15)
+2. **Mobile** (390×844, 2x DPR)
 3. **Both** — produces two separate reports"
 
 - If `--device` flag is set: use specified device, skip prompt.
@@ -86,7 +109,7 @@ Before dispatching auditors:
 5. Write context.md (write-once, locked after this step)
 6. Write meta.json with schema_version: 2, phase: "pending", source_mode from mode_detection
 
-After writing meta.json, re-read it and verify all required fields against these patterns:
+**meta.json validation schema** (reference for the coordinator):
 - `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
 - `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
 - `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
@@ -95,7 +118,9 @@ After writing meta.json, re-read it and verify all required fields against these
 - `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
 - `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
 Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
-If ANY required field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
+
+**When to validate:** Do NOT re-read and validate meta.json immediately after writing it — the coordinator just wrote it, so it will always pass. This validation is only needed when **resuming an engagement** (via `/cro:resume` or `--engagement-id`) where the coordinator is reading a meta.json it did not write in this session. On resume, re-read and verify all required fields. If ANY field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
+
 Always update the `updated` field to the current ISO timestamp on every phase transition.
 </engagement_setup>
 
@@ -119,8 +144,8 @@ Select 1-3 clusters based on page type:
 | Post-purchase | audience-journey | trust-conversion | — |
 
 Cluster reference files:
-- visual-cta: cta-design-and-placement.md, color-psychology.md, eye-tracking-and-scan-patterns.md
-- trust-conversion: trust-and-credibility.md, social-proof-patterns.md, checkout-optimization.md, pricing-psychology.md, biometric-and-express-checkout.md, cookie-consent-and-compliance.md
+- visual-cta: cta-design-and-placement.md, color-psychology.md, eye-tracking-and-scan-patterns.md, competitive-positioning.md
+- trust-conversion: trust-and-credibility.md, social-proof-patterns.md, checkout-optimization.md, pricing-psychology.md, biometric-and-express-checkout.md, cookie-consent-and-compliance.md, competitive-positioning.md
 - context-platform: cognitive-load-management.md, mobile-conversion.md, page-performance-psychology.md, search-and-filter-ux.md
 - audience-journey: personalization-psychology.md, cross-cultural-considerations.md, post-purchase-psychology.md, social-commerce-psychology.md
 
@@ -132,6 +157,8 @@ Override rules:
 
 <phase_audit>
 Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message. Use `model: "opus"` for all auditor dispatches — Opus provides better reasoning for cross-referencing screenshots against DOM and applying device-appropriate principles.
+
+**Early dispatch optimization:** The DOM is ready before all screenshots finish capturing. For clusters that lean heavily on DOM content rather than visual layout (especially **trust-conversion** — pricing structure, review markup, payment logos, checkout flow), the coordinator MAY dispatch those auditors as soon as `dom.html` is written, without waiting for the full baton. Pass available screenshots and note which sections are still pending. The **visual-cta** cluster requires all screenshots before dispatch. This can save several minutes on pages with many sections.
 
 Each Agent call contains:
 - The audit workflow instructions (read from ${CLAUDE_PLUGIN_ROOT}/workflows/audit.md)
@@ -154,10 +181,20 @@ Update meta.json: phase → "audit", `devices_scanned` → matches selected devi
 
 **"Both" mode:**
 Run auditor batches sequentially to cap concurrency at 3 simultaneous Opus subagents:
-1. Dispatch desktop auditors (1 per cluster, up to 3 clusters in parallel) with `device: "desktop"` — collect findings
-2. Wait for all desktop auditors to complete
-3. Dispatch mobile auditors (1 per cluster, up to 3 clusters in parallel) with `device: "mobile"` — collect findings
+1. Dispatch desktop auditors (1 per cluster, up to 3 clusters in parallel) with `device: "desktop"` — pass **desktop screenshots** and DOM. Collect findings.
+2. Wait for all desktop auditors to complete.
+3. Dispatch **separate** mobile auditors (1 per cluster, up to 3 clusters in parallel) with `device: "mobile"` — pass **mobile screenshots** and DOM. Collect findings.
 Do NOT dispatch all 6 auditors at once — Opus rate limits make this unreliable.
+
+**CRITICAL: Mobile auditors MUST receive mobile screenshots and device: "mobile".** Do NOT reuse desktop audit findings for the mobile report. A proper mobile audit evaluates:
+- Whether CTA button heights meet the 48px minimum at mobile viewport
+- Whether pricing cards have adequate touch target spacing
+- Whether sticky bottom CTAs are implemented
+- Thumb zone positioning at 390px width
+- Font readability at mobile sizes
+
+Reusing desktop findings overlaid on mobile screenshots is not a true mobile audit — it misses device-specific issues entirely.
+
 4. Write `audit.md` (desktop findings) to disk
 5. Write `audit-mobile.md` (mobile findings) to disk
 6. **Then** update meta.json: phase → "audit", `devices_scanned: ["desktop", "mobile"]`, updated → current ISO timestamp
@@ -192,11 +229,11 @@ After writing audit.md but before presenting the checkpoint:
 3. Parse the current audit.md the same way.
 
 4. Compare by SECTION slug and classify each:
-   - FIXED: was FAIL or PARTIAL in previous, now PASS in current
+   - FIXED: was FAIL or PARTIAL in previous, now PASS in current — **this is a win, highlight it**
    - REGRESSED: was PASS in previous, now FAIL or PARTIAL in current
    - UNCHANGED: same verdict in both
    - NEW: present in current but not in previous
-   - RESOLVED: present in previous but not in current
+   - RESOLVED: present in previous but not in current (section no longer evaluated)
 
 5. Append a `## Progress Comparison` section to the current engagement's audit.md:
 
@@ -205,14 +242,26 @@ After writing audit.md but before presenting the checkpoint:
 
 Compared against engagement `{previous-id}` ({date}).
 
-| Section | Previous | Current | Status |
-|---------|----------|---------|--------|
-| {slug} | {verdict} | {verdict} | {status} |
+### Now Passing ✓
+<!-- List FIXED items prominently — these represent implemented improvements -->
+| Section | Previous | Current |
+|---------|----------|---------|
+| {slug} | FAIL | PASS |
+
+### Regressions
+| Section | Previous | Current |
+|---------|----------|---------|
+| {slug} | PASS | FAIL |
+
+### New Findings
+| Section | Current |
+|---------|---------|
+| {slug} | {verdict} |
 
 Summary: X FIXED, Y REGRESSED, Z UNCHANGED, W NEW, V RESOLVED
 ```
 
-6. Use the summary counts when presenting the checkpoint message.
+6. Use the summary counts when presenting the checkpoint message. **Emphasize FIXED items** — these are the user's wins. Present them first: "X issues from your last audit are now passing: [list slugs]." This gives users concrete feedback that their changes worked.
 </progress_comparison>
 
 <checkpoint_audit>
@@ -439,7 +488,8 @@ Available at any checkpoint when user requests a visual report.
 **You MUST use the HTML/CSS/JS from components.html exactly as written. Do not modify component structure. Do not add custom CSS. Only populate content placeholders.**
 
 Output: `docs/cro/{engagement-id}/visual-report.html`
-For "both" mode: `visual-report-desktop.html` and `visual-report-mobile.html`
+
+**"Both" mode — dispatch in parallel:** For dual-device reports, generate `visual-report-desktop.html` and `visual-report-mobile.html` as two **parallel** Agent dispatches. Desktop and mobile reports are completely independent — they use different screenshots, different audit findings, and different baton data. Generating them sequentially wastes ~30 minutes. Dispatch both at once using multiple Agent tool calls in a single message.
 
 **Text report:** Read ${CLAUDE_PLUGIN_ROOT}/workflows/report.md for text report generator instructions.
 Dispatch report subagent with all baton files from the engagement directory.

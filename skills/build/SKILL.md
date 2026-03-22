@@ -50,7 +50,7 @@ Use sensible defaults for anything the user doesn't care about.
 <engagement_setup>
 Same as /cro:audit — generate engagement ID, create directory, write context.md and meta.json with type: "build".
 
-After writing meta.json, re-read it and verify all required fields are present:
+**meta.json validation schema** (validate on resume only — not after the coordinator writes it):
 - `id`: string, format YYYY-MM-DD-{8hex}
 - `created`: ISO 8601 string
 - `type`: one of [audit, build, quick-scan, compare]

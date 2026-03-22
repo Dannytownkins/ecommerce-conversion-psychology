@@ -558,3 +558,19 @@ To check a citation, ask Claude Code:
 | 7 | TikTok Shop statistics (Marketing LTB 2025) | Marketing LTB | https://marketingltb.com/blog/statistics/tiktok-shop-statistics/ |
 | 7 | TikTok shopping statistics (Capital One Shopping) | Capital One Shopping | https://capitaloneshopping.com/research/tiktok-shopping-statistics |
 | 3 | eMarketer US social commerce forecast (Dec 2025) | eMarketer | https://www.emarketer.com/press-releases/tiktok-shop-makes-up-nearly-20-of-social-commerce-in-2025/ |
+
+## competitive-positioning.md
+
+| Finding | Description | Source | URL |
+|---------|-------------|--------|-----|
+| 1 | Process comparison as persuasion element | CXL Institute | https://cxl.com/blog/comparison-tables/ |
+| 2 | Comparison table usability | Baymard Institute | https://baymard.com/blog/comparison-table-design |
+| 2 | Comparison table usability | NNGroup | https://www.nngroup.com/articles/comparison-tables/ |
+| 3 | Specificity effect in value claims | CXL Institute | https://cxl.com/blog/value-proposition-examples/ |
+| 4 | Before and after framing (prospect theory) | Kahneman & Tversky, 1979 | https://www.science.org/doi/10.1126/science.185.4157.1124 |
+| 5 | Anchoring via competitor framing | Tversky & Kahneman, 1974 | https://www.science.org/doi/10.1126/science.185.4157.1124 |
+| 5 | Anchoring in pricing (Ariely) | Dan Ariely, Predictably Irrational | https://danariely.com/books/predictably-irrational/ |
+| 6 | Social proof in competitive context | Cialdini, Influence (2006) | https://www.influenceatwork.com/principles-of-persuasion/ |
+| 6 | Consumer review survey | BrightLocal | https://www.brightlocal.com/research/local-consumer-review-survey/ |
+| 7 | Unique value proposition clarity | CXL Institute | https://cxl.com/blog/value-proposition-examples/ |
+| 8 | Feature vs outcome framing | CXL Institute | https://cxl.com/blog/value-proposition-examples/ |

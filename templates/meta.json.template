@@ -30,6 +30,8 @@
 
   source_mode values:
     "url-dual"    — Page scanned via URL with agent-browser (dual capture: DOM + screenshots)
+    "manual"      — Acquisition agent failed; coordinator captured screenshots + DOM directly via agent-browser CLI. Real element coordinates available.
+    "webfetch"    — agent-browser unavailable; page content fetched via WebFetch. Real page content but no viewport rendering, no screenshots, no computed styles. Auditors use CODE source only.
     "file-path"   — Local file path provided
     "pasted-code" — Code pasted directly
     "screenshot"  — User-provided screenshot image (no URL, no DOM)

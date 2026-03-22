@@ -18,7 +18,7 @@ Compare your ecommerce page against a competitor's page. 1:1 same-type compariso
 --engagement-id [id]: Target a specific past engagement.
 --device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
   - desktop: 1440×900, 1x DPR
-  - mobile: 390×844 (iPhone 14 preset, includes DPR and user-agent)
+  - mobile: 390×844, 2x DPR (via --force-device-scale-factor=2)
   - both: Runs acquisition/audit for both devices on both pages (4 total acquisitions). Produces separate per-device reports.
   In --auto mode: defaults to "desktop" (no prompt).
 </flags>
@@ -40,7 +40,7 @@ For URLs: validate using ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md befo
 
 "Which device should I compare?
 1. **Desktop** (1440×900) — default
-2. **Mobile** (390×844, iPhone 14/15)
+2. **Mobile** (390×844, 2x DPR)
 3. **Both** — compares both devices (4 acquisitions total, takes longer)"
 
 **Cost warning for "both" mode:**
@@ -65,7 +65,7 @@ If user proceeds despite mismatch, note it in the comparison output.
 Same as /cro:audit but with type: "compare", schema_version: 2 in meta.json.
 Store compare_target URL/path in meta.json.
 
-After writing meta.json, re-read it and verify all required fields against these patterns:
+**meta.json validation schema** (validate on resume only — not after the coordinator writes it):
 - `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
 - `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
 - `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
@@ -87,7 +87,7 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 - Validate URL, dispatch acquisition agent (model: opus) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
 - Pass viewport dimensions and device context based on selected device:
   - Desktop: viewport 1440×900, device "desktop"
-  - Mobile: viewport 390×844 (device preset "iPhone 14"), device "mobile"
+  - Mobile: viewport 390×844, 2x DPR (use `--force-device-scale-factor=2`), device "mobile"
   - Both: two serial passes — desktop (full) then mobile (pass `dom_file`, screenshots only)
 - Collect screenshots + preprocessed DOM + metadata
 - If acquisition returns STATUS: BLOCKED → stop entirely, report error, do NOT proceed to competitor

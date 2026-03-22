@@ -19,7 +19,9 @@ The coordinator produces an annotated visual report by assembling pre-defined HT
 
 ## Step 1: Read Component Definitions
 
-Read `templates/components.html` in full. This file contains every HTML component used in the report. All subsequent steps reference components defined there.
+Read `templates/components.html` for all HTML components used in the report. All subsequent steps reference components defined there.
+
+**Performance tip:** `components.html` is ~1115 lines (~162K tokens). If you only need specific components (e.g., finding cards for a partial update), consult `templates/components-digest.md` for a line-range index so you can read only the sections you need using `offset` and `limit` parameters.
 
 ## Step 2: Inject Font Stylesheet
 
@@ -85,7 +87,9 @@ Populate the two metric cards below the thumbnail strip:
 
 ## Step 7: Assemble Finding Cards
 
-For each finding in the audit, assemble a finding-card component from `components.html`:
+**Filter:** Only render FAIL and PARTIAL findings as full finding cards. PASS findings from the "What's Working Well" section are rendered separately (see Step 7b). Do NOT render PASS findings as severity-badged finding cards — they are not problems.
+
+For each FAIL/PARTIAL finding in the audit, assemble a finding-card component from `components.html`:
 
 1. **Select severity CSS class** based on the finding's PRIORITY field (critical, high, medium, low).
 
@@ -105,6 +109,25 @@ For each finding in the audit, assemble a finding-card component from `component
    - Render the evidence tier badge inline next to the ref — use `tier-badge--gold`, `tier-badge--silver`, or `tier-badge--bronze` class
    - **Resolve and render clickable citation URL as the "View Source" link.** Extract the reference filename and finding number from the auditor's citation line. Look up the URL in `citations/sources.md` from the plugin directory. Render as an `<a>` tag with `rel="noopener noreferrer" target="_blank"`. If no URL match found, render as plain text "(source unavailable)".
    - **A finding card without a citation footer is incomplete.**
+
+## Step 7b: What's Working Well Section
+
+If the audit contains a "What's Working Well" section with PASS findings, render them as a compact list between the finding cards and the summary section. Use a simple styled container — not full finding cards:
+
+```html
+<div style="margin: 2rem 0; padding: 1.5rem; background: var(--panel); border: 1px solid var(--border); border-radius: 12px;">
+  <h3 style="color: var(--text); font-size: 1.1rem; margin: 0 0 1rem 0; font-family: var(--font-display);">What's Working Well</h3>
+  <ul style="list-style: none; padding: 0; margin: 0;">
+    <!-- For each PASS finding: -->
+    <li style="padding: 0.5rem 0; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem;">
+      <span style="color: #22c55e; margin-right: 0.5rem;">✓</span>
+      <strong style="color: var(--text);">{{slug}}</strong> — {{one-line observation}}
+    </li>
+  </ul>
+</div>
+```
+
+This section is intentionally compact. It acknowledges good practices without the visual weight of a finding card.
 
 ## Step 8: Limitations Banner
 

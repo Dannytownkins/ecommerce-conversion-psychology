@@ -33,7 +33,8 @@ page-load, image-optimization, lazy-loading, critical-css, font-loading,
 cognitive-load, choice-overload, information-density, form-complexity,
 personalization, cross-cultural, post-purchase-flow,
 search-ux, filter-ux, sort-ux, category-navigation,
-cookie-consent, express-checkout, social-commerce
+cookie-consent, express-checkout, social-commerce,
+value-proposition, competitive-comparison, process-differentiation
 
 If a finding doesn't match any slug, use the closest match.
 
@@ -82,6 +83,17 @@ When `device: "desktop"`:
 When `device: "mobile"`:
 - Emphasize: sticky CTAs, touch target sizes (48px+ minimum), thumb-reachable zones, single-column flow, font readability (16px+ body), mobile nav patterns, swipe gestures, viewport-relative sizing
 - De-emphasize: F-pattern left-side dominance (does not apply to single-column layouts), multi-column grid analysis, hover states
+- **Mandatory check — `user-scalable=no`:** Search the DOM for `<meta name="viewport"` containing `user-scalable=no` or `maximum-scale=1`. If found, emit a MEDIUM finding under `mobile-touch-targets`:
+  ```
+  FINDING: FAIL
+  SECTION: mobile-touch-targets
+  SOURCE: CODE
+  OBSERVATION: Viewport meta tag includes user-scalable=no (or maximum-scale=1), preventing pinch-to-zoom. This violates WCAG 1.4.4 (Resize Text) and affects ~15% of mobile users who rely on zoom for readability.
+  RECOMMENDATION: Remove user-scalable=no and maximum-scale=1 from the viewport meta tag. Allow users to zoom freely.
+  REFERENCE: mobile-conversion.md — Finding 1
+  PRIORITY: MEDIUM
+  ```
+  This is not an ethics violation but an accessibility concern that impacts conversion for users with low vision.
 
 **DOM caveat for mobile:** When `device: "mobile"`, the DOM may have been captured at the desktop viewport (1440px). Some elements may be hidden or restructured at mobile widths via CSS or JavaScript. For layout and visibility judgments on mobile, rely on **screenshots as the primary source of truth**. Use DOM only for content extraction (text, prices, attributes, semantic structure).
 
@@ -147,12 +159,34 @@ The rationale block is required for FAIL and PARTIAL findings. It may be omitted
 
 ### Step 5: What's Working Well
 
-Include PASS findings for principles the page already implements correctly. This prevents unnecessary rework and acknowledges good practices. PASS findings in file-path mode use `SOURCE: CODE`. PASS findings from screenshots use `SOURCE: VISUAL` or `SOURCE: BOTH`.
+After recording all FAIL/PARTIAL findings, add a separate `## What's Working Well` section at the **end** of your output. This section uses a lighter format — no recommendation, no rationale, no priority. It acknowledges good practices and lets the progress memory system track when issues are finally resolved.
+
+**Format for PASS findings:**
+```
+## What's Working Well
+
+- **[canonical-slug]**: [One-line observation of what's done correctly]. ↳ [reference-file.md], Finding [N]
+- **[canonical-slug]**: [One-line observation]. ↳ [reference-file.md], Finding [N]
+```
+
+**Do NOT assign PRIORITY to PASS findings.** PASS findings are informational — they are not actionable items. Assigning LOW priority to passes makes them appear as low-priority problems in visual reports, which is misleading. If a PASS finding is included in the main findings list with a PRIORITY value, the visual report generator will render it as a "Low Priority" issue card, which reads oddly for something done correctly.
+
+**Do NOT interleave PASS findings with FAIL/PARTIAL findings** in the main `## Findings` section. Keep them separated.
+
+PASS findings in file-path mode use `SOURCE: CODE`. PASS findings from screenshots use `SOURCE: VISUAL` or `SOURCE: BOTH`.
+
+### Step 6: Hidden Content Awareness
+
+Before finalizing your output, check for content that may be hidden from the primary visual flow but still relevant to your cluster:
+
+- **FAQ/accordion sections:** These often contain trust-relevant content (refund policy, payment methods, security info, shipping details, photo data policies) that addresses trust-conversion concerns. If the DOM contains `<details>`, `[class*="faq"]`, `[class*="accordion"]`, `[class*="collapsible"]`, or similar patterns, note their contents in your findings even if they don't appear prominently in screenshots. A trust signal buried in an FAQ is better than no trust signal, but worse than one displayed prominently.
+
+- **Floating chat widgets (mobile):** On mobile viewports, check for floating elements (Intercom, Chatwoot, Drift, Zendesk, etc.) that may partially occlude CTAs, pricing, or touch targets. Look for `[class*="chat"]`, `[class*="intercom"]`, `[class*="widget"]`, `iframe[title*="chat"]` in the DOM, and visually inspect the bottom-right corner of mobile screenshots. If a chat widget overlaps a CTA or payment button, flag it as a finding.
 
 ## Output Rules
 
-- Limit to 5-10 highest-impact findings per domain (plus all CRITICAL)
-- PASS findings can be brief (1-line observation, no recommendation needed)
+- Limit to 5-10 highest-impact FAIL/PARTIAL findings per domain (plus all CRITICAL)
+- PASS findings go in the "What's Working Well" section — brief one-liners, no priority
 - FAIL and PARTIAL findings must have specific, implementable recommendations
 - Every recommendation must cite a specific principle from the reference files
 - Do not recommend changes outside your domain cluster — stay in your lane
