@@ -1,6 +1,6 @@
 # E-Commerce Conversion Psychology
 
-![v4.4.0](https://img.shields.io/badge/version-4.4.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
+![v4.5.0](https://img.shields.io/badge/version-4.5.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Codex Skill](https://img.shields.io/badge/Codex-skill-10b981) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 19 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, competitive positioning, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -110,6 +110,8 @@ docs/cro/2026-03-11-a3f2b1c9/
 
 ## Installation
 
+### Claude Code
+
 ```bash
 claude plugin marketplace add Dannytownkins/ecommerce-conversion-psychology
 claude plugin install cro@ecommerce-conversion-psychology
@@ -122,13 +124,39 @@ To update later:
 claude plugin update cro@ecommerce-conversion-psychology
 ```
 
+### Codex
+
+This repo now carries the Codex wrapper skill as source-controlled files:
+
+- `SKILL.md`
+- `agents/openai.yaml`
+- `scripts/sync-to-codex.ps1`
+
+Use the repo as the source of truth, then sync the installed Codex copy:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\sync-to-codex.ps1
+```
+
+Default target:
+
+`C:\Users\SM - Dan\.codex\skills\ecommerce-conversion-psychology`
+
+This keeps the installed `.codex` copy rebuildable instead of editing runtime files directly.
+
 ---
 
 ## Architecture
 
 ```
 ecommerce-conversion-psychology/
-  .claude-plugin/plugin.json          Plugin metadata (v4.4.0)
+  agents/
+    openai.yaml                       Codex UI metadata
+  SKILL.md                            Codex wrapper skill
+  .claude-plugin/plugin.json          Plugin metadata (v4.5.0)
+  scripts/
+    generate-report.py                Self-contained HTML visual report generator
+    sync-to-codex.ps1                 Sync repo source into ~/.codex/skills install
   skills/
     cro/SKILL.md                      /cro router
     audit/SKILL.md                    /cro:audit
@@ -141,6 +169,7 @@ ecommerce-conversion-psychology/
   platforms/                          shopify.md, nextjs.md
   templates/                          Baton + report templates + component library
   workflows/                          Phase workflows (context: fork)
+  CODEX_CONVERSION.md                 Codex source/install notes
   README.md
   CHANGELOG.md
   LICENSE

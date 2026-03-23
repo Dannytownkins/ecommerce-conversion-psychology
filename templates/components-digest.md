@@ -2,7 +2,7 @@
 
 Use this file to read only the sections of `components.html` you need, instead of reading all 1115 lines. Pass `offset` and `limit` parameters to the Read tool.
 
-**Source file:** `templates/components.html` (v4.4.0, ~1115 lines, ~162K tokens)
+**Source file:** `templates/components.html` (v4.5.0, ~1115 lines, ~162K tokens)
 
 | # | Component | Lines | Tokens (approx) |
 |---|-----------|-------|-----------------|

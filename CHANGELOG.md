@@ -1,5 +1,25 @@
 # Changelog
 
+## 4.5.0 — 2026-03-23
+
+### Codex Source Workflow
+
+Codex support now lives in the repo as first-class source files instead of only in the installed `.codex` copy.
+
+- **Codex wrapper added to source control** - Added root `SKILL.md` so Codex intent-based routing is versioned alongside the shared CRO assets.
+- **Codex UI metadata added** - Added `agents/openai.yaml` for Codex display metadata and default prompt wiring.
+- **Codex source/install notes added** - Added `CODEX_CONVERSION.md` documenting the repo-as-source, `.codex`-as-install workflow.
+- **Codex publish script added** - Added `scripts/sync-to-codex.ps1` to mirror the repo's Codex-managed files into `~/.codex/skills/ecommerce-conversion-psychology`.
+- **Python cache ignored** - `.gitignore` now ignores `__pycache__/` and `*.pyc` from report-generator verification.
+- **Claude plugin metadata preserved** - `.claude-plugin/plugin.json` remains the Claude-facing package manifest; only the version was bumped for release alignment.
+
+### Documentation
+
+- **README Codex install workflow** - Added a Codex section covering the source-of-truth repo model and the sync command.
+- **Architecture updated** - README now lists the Codex wrapper files and the sync script alongside the shared CRO assets.
+
+---
+
 ## 4.4.1 — 2026-03-22
 
 ### Ethics Detection & Quick-Scan UX

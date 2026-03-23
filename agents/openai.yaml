@@ -1,0 +1,4 @@
+interface:
+  display_name: "Ecommerce CRO"
+  short_description: "Audit, quick-scan, compare, resume, and build ecommerce CRO work"
+  default_prompt: "Use $ecommerce-conversion-psychology to audit an ecommerce page, run a quick-scan, compare against a competitor, resume an engagement, or build a higher-converting page from scratch."

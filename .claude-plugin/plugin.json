@@ -1,6 +1,6 @@
 {
   "name": "cro",
-  "version": "4.4.0",
+  "version": "4.5.0",
   "description": "CRO toolkit for ecommerce pages using research-backed psychology. Evidence tier citations (Gold/Silver/Bronze) across 300 classified findings, annotated screenshot reports with bidirectional scroll-sync, screenshot-only input mode, component-library-enforced structural consistency, ethics compliance in every report, dark chrome design system with WCAG AA contrast, auto-save audit artifacts. Commands: /cro:audit, /cro:build, /cro:quick-scan, /cro:compare. Platform-aware (Shopify, Next.js).",
   "author": {
     "name": "Daniel Kinsner"
