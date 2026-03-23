@@ -4,7 +4,7 @@ CRO Visual Report Generator
 
 Generates self-contained dark-mode HTML visual reports from audit data.
 Burns numbered severity markers directly into screenshot JPEGs via Pillow,
-then assembles the full report HTML with font injection and click targets.
+then assembles the full report HTML matching components.html design system.
 
 Usage:
     python3 generate-report.py \
@@ -38,31 +38,38 @@ try:
     HAS_PILLOW = True
 except ImportError:
     HAS_PILLOW = False
-    print("WARNING: Pillow not installed. Markers will use CSS positioning (less accurate).", file=sys.stderr)
+    print("WARNING: Pillow not installed. Markers will not be burned into screenshots.", file=sys.stderr)
     print("Install with: pip install Pillow", file=sys.stderr)
 
 
-# --- Constants ---
+# --- Constants (matching components.html design tokens) ---
 
 SEVERITY_COLORS = {
-    "critical": "#ef4444",
-    "high": "#f97316",
-    "medium": "#eab308",
+    "critical": "#93000a",
+    "high": "#ff9f00",
+    "medium": "#10b981",
     "low": "#6b7280",
 }
 
+SEVERITY_TEXT_COLORS = {
+    "critical": "#ffb4ab",
+    "high": "#ffc687",
+    "medium": "#34d399",
+    "low": "#9ca3af",
+}
+
 SEVERITY_LABELS = {
-    "critical": "Critical Impact",
-    "high": "High Priority",
-    "medium": "Medium Priority",
-    "low": "Low Priority",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low",
 }
 
 MARKER_RADIUS = {
-    "critical": 22,
-    "high": 18,
-    "medium": 18,
-    "low": 16,
+    "critical": 28,
+    "high": 24,
+    "medium": 24,
+    "low": 22,
 }
 
 
@@ -93,7 +100,6 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
     font = None
     font_small = None
     try:
-        # Try common system font paths
         for font_path in [
             "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
             "/usr/share/fonts/TTF/DejaVuSans-Bold.ttf",
@@ -102,8 +108,8 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
             "/System/Library/Fonts/Helvetica.ttc",
         ]:
             if os.path.exists(font_path):
-                font = ImageFont.truetype(font_path, 16)
-                font_small = ImageFont.truetype(font_path, 13)
+                font = ImageFont.truetype(font_path, 18)
+                font_small = ImageFont.truetype(font_path, 14)
                 break
     except Exception:
         pass
@@ -121,7 +127,7 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
         cy = marker["y"]
         severity = marker.get("severity", "medium")
         number = marker["number"]
-        radius = MARKER_RADIUS.get(severity, 18)
+        radius = MARKER_RADIUS.get(severity, 24)
 
         fill_color = hex_to_rgb(SEVERITY_COLORS.get(severity, "#6b7280"))
 
@@ -167,7 +173,6 @@ def parse_findings(audit_path):
         content = f.read()
 
     findings = []
-    # Match finding blocks (``` delimited)
     blocks = re.findall(
         r"```\s*\nFINDING:\s*(FAIL|PARTIAL)\s*\n(.*?)```",
         content,
@@ -204,7 +209,6 @@ def parse_pass_findings(audit_path):
         content = f.read()
 
     passes = []
-    # Look for the section
     well_match = re.search(r"## What's Working Well\s*\n(.*?)(?=\n## |\Z)", content, re.DOTALL)
     if well_match:
         section = well_match.group(1)
@@ -247,8 +251,6 @@ def compute_marker_positions(markers_mapping, baton_data):
         if elem_idx is not None and elem_idx < len(elements):
             elem = elements[elem_idx]
 
-            # Find the screenshot for this slide
-            screenshot = None
             if isinstance(screenshots, list) and slide < len(screenshots):
                 ss = screenshots[slide]
                 scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
@@ -257,16 +259,13 @@ def compute_marker_positions(markers_mapping, baton_data):
                 scroll_y = 0
                 nat_h = 900
 
-            # Compute position within the screenshot
             abs_y = elem.get("y", 0)
             rel_y = abs_y - scroll_y
             rel_x = elem.get("x", 0)
 
-            # Center on the element
             cx = rel_x + elem.get("width", 0) // 2
             cy = rel_y + elem.get("height", 0) // 2
 
-            # Clamp to screenshot bounds
             cx = max(30, min(cx, elem.get("width", 1440) if cx > 1000 else 1440 - 30))
             cy = max(30, min(cy, nat_h - 30))
 
@@ -277,7 +276,6 @@ def compute_marker_positions(markers_mapping, baton_data):
                 "severity": severity,
             })
         else:
-            # No element match — center on the section area
             if isinstance(sections, list) and slide < len(sections):
                 sec = sections[slide]
                 sec_h = sec.get("height", 400) if isinstance(sec, dict) else 400
@@ -291,17 +289,12 @@ def compute_marker_positions(markers_mapping, baton_data):
     return slide_markers
 
 
-# --- HTML Assembly ---
+# --- HTML Helpers ---
 
 def encode_image_base64(image_path):
     """Base64 encode an image file for data URI embedding."""
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode("ascii")
-
-
-def build_severity_class(priority):
-    """Map priority string to CSS class name."""
-    return (priority or "medium").lower()
 
 
 def escape_html(text):
@@ -321,6 +314,32 @@ def slug_to_title(slug):
     """Convert a canonical slug to a display title."""
     return slug.replace("-", " ").title()
 
+
+def get_severity_class(priority):
+    """Map priority string to severity class name."""
+    return (priority or "medium").lower()
+
+
+# --- SVG Icons ---
+
+SVG_LIGHTBULB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>'
+
+SVG_INFO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'
+
+SVG_CHART = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>'
+
+SVG_TREND_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>'
+
+SVG_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'
+
+SVG_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>'
+
+SVG_CHEVRON_LEFT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
+
+SVG_CHEVRON_RIGHT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>'
+
+
+# --- Main Report Generator ---
 
 def generate_report(
     engagement_dir,
@@ -392,7 +411,7 @@ def generate_report(
     # --- Count severities ---
     severity_counts = {"critical": 0, "high": 0, "medium": 0, "low": 0}
     for f in findings:
-        sev = (f.get("priority") or "medium").lower()
+        sev = get_severity_class(f.get("priority"))
         if sev in severity_counts:
             severity_counts[sev] += 1
 
@@ -416,144 +435,134 @@ def generate_report(
         for f in findings
     )
 
-    # --- Load templates ---
-    components_path = plugin_path / "templates" / "components.html"
+    # --- Load font CSS ---
     font_path = plugin_path / "templates" / "font-embed.css"
-    template_path = plugin_path / "templates" / "visual-report.html.template"
+    font_css = ""
+    if font_path.exists():
+        with open(font_path, "r", encoding="utf-8") as f:
+            font_css = f.read()
 
-    with open(font_path, "r", encoding="utf-8") as f:
-        font_css = f.read()
-
-    # Read components.html for CSS extraction
-    with open(components_path, "r", encoding="utf-8") as f:
-        components_html = f.read()
-
-    # Extract CSS from components (between first <style> and </style>)
-    css_match = re.search(r"<style>(.*?)</style>", components_html, re.DOTALL)
-    component_css = css_match.group(1) if css_match else ""
-
-    # --- Build HTML sections ---
-
-    # Metadata
+    # --- Metadata ---
     viewport = baton.get("viewport", {})
     device_label = f"{device.title()} ({viewport.get('width', '?')}×{viewport.get('height', '?')})"
     date_str = meta.get("created", "")[:10] if meta.get("created") else "Unknown"
     engagement_id = meta.get("id", engagement_path.name)
+    page_url = meta.get("page", {}).get("url", "Unknown URL")
+    page_type = (meta.get("page", {}).get("type") or "Unknown").title()
+    platform = (meta.get("platform") or "Unknown").title()
+    source_mode = meta.get("source_mode", "Unknown")
 
-    # Thumbnail HTML
-    thumb_html = ""
-    for i, b64 in enumerate(slide_base64):
-        active = "active" if i == 0 else ""
-        thumb_html += f'<div class="thumb {active}" onclick="goToSlide({i})"><img src="data:image/jpeg;base64,{b64[:100]}..." alt="Section {i+1}"></div>\n'
-
-    # Actually build proper thumbnails with full base64
+    # --- Build thumbnails HTML ---
     thumb_html = ""
     for i, b64 in enumerate(slide_base64):
         active = " active" if i == 0 else ""
-        thumb_html += f'<div class="thumb{active}" onclick="goToSlide({i})" style="cursor:pointer"><img src="data:image/jpeg;base64,{b64}" alt="Section {i+1}" style="width:100%;height:100%;object-fit:cover;border-radius:8px"></div>\n'
+        thumb_html += f'''<div class="thumb{active}" onclick="setSlide({i})">
+      <img src="data:image/jpeg;base64,{b64}" alt="Section {i+1}" />
+    </div>\n'''
 
-    # Click target overlays (transparent, approximate positioning)
-    click_targets = ""
-    for mapping in markers_mapping:
-        fidx = mapping["finding_index"]
-        slide = mapping.get("slide", 0)
-        elem_idx = mapping.get("baton_element_index")
-        elements = baton.get("elements", [])
-
-        if elem_idx is not None and elem_idx < len(elements):
-            elem = elements[elem_idx]
-            ss = screenshots[slide] if slide < len(screenshots) else {}
-            scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
-            nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
-            nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
-
-            rel_y = elem.get("y", 0) - scroll_y
-            left_pct = (elem.get("x", 0) + elem.get("width", 0) / 2) / max(nat_w, 1) * 100
-            top_pct = (rel_y + elem.get("height", 0) / 2) / max(nat_h, 1) * 100
-
-            click_targets += (
-                f'<a href="#finding-{fidx:02d}" class="marker-target" '
-                f'data-slide="{slide}" data-finding="{fidx}" '
-                f'style="position:absolute;left:{left_pct:.1f}%;top:{top_pct:.1f}%;'
-                f'width:40px;height:40px;border-radius:50%;cursor:pointer;'
-                f'transform:translate(-50%,-50%);display:{"block" if slide == 0 else "none"}'
-                f'"></a>\n'
-            )
-
-    # Finding cards HTML
+    # --- Build finding cards HTML ---
     finding_cards = ""
     for f in findings:
         idx = f["index"]
-        sev = build_severity_class(f.get("priority"))
-        sev_label = SEVERITY_LABELS.get(sev, "Medium Priority")
+        sev = get_severity_class(f.get("priority"))
+        sev_label = SEVERITY_LABELS.get(sev, "Medium")
         section_title = slug_to_title(f.get("section", "unknown"))
+        source_type = (f.get("source") or "DOM").upper()
+        tier = (f.get("tier") or "Bronze").lower()
+        tier_label = tier.title()
 
-        finding_cards += f"""
-        <div class="finding-card severity-{sev}" id="finding-{idx:02d}" data-finding="{idx}">
-          <div class="finding-header">
-            <span class="finding-number">{idx:02d}</span>
-            <h3 class="finding-title">{escape_html(section_title)}</h3>
-            <span class="severity-badge {sev}">{escape_html(sev_label)}</span>
-          </div>
-          <div class="finding-body">
-            <p class="observation">{escape_html(f.get('observation', ''))}</p>
-            <div class="recommendation-box">
-              <p>{escape_html(f.get('recommendation', ''))}</p>
-            </div>
-            <div class="why-matters">
-              <p><strong>Why this matters:</strong> {escape_html(f.get('why_matters', ''))}</p>
-            </div>
-            <div class="citation-footer">
-              <span class="ref-id">{escape_html(f.get('reference', ''))}</span>
-              <span class="tier-badge tier-badge--{(f.get('tier') or 'bronze').lower()}">{escape_html(f.get('tier', 'Bronze'))}</span>
-            </div>
-          </div>
+        finding_cards += f'''
+    <article id="finding-{idx}" class="finding-card" data-finding="finding-{idx}">
+      <div class="finding-accent {sev}"></div>
+      <div class="finding-header">
+        <div class="finding-header-left">
+          <span class="finding-number">{idx}</span>
+          <span class="severity-badge {sev}">{escape_html(sev_label)}</span>
         </div>
-        """
-
-    # What's Working Well
-    pass_html = ""
-    if pass_findings:
-        pass_items = ""
-        for p in pass_findings:
-            pass_items += f'<li><span style="color:#22c55e;margin-right:0.5rem">&#10003;</span>{escape_html(p)}</li>\n'
-        pass_html = f"""
-        <div style="margin:2rem 0;padding:1.5rem;background:var(--panel);border:1px solid var(--border);border-radius:12px">
-          <h3 style="color:var(--text);font-size:1.1rem;margin:0 0 1rem 0">What's Working Well</h3>
-          <ul style="list-style:none;padding:0;margin:0">{pass_items}</ul>
+        <span class="finding-source">{escape_html(source_type)}</span>
+      </div>
+      <h3 class="finding-title">{escape_html(section_title)}</h3>
+      <p class="finding-observation">{escape_html(f.get('observation', ''))}</p>
+      <div class="recommendation-box">
+        <div class="recommendation-header {sev}">
+          {SVG_LIGHTBULB}
+          <span class="recommendation-label">Recommendation</span>
         </div>
-        """
+        <p class="recommendation-text">{escape_html(f.get('recommendation', ''))}</p>
+      </div>
+      <div class="why-matters">
+        {SVG_INFO}
+        <span>{escape_html(f.get('why_matters', ''))}</span>
+      </div>
+      <div class="finding-footer">
+        <div class="finding-footer-left">
+          <span class="ref-id">{escape_html(f.get('reference', ''))}</span>
+          <span class="tier-badge tier-badge--{tier}">{escape_html(tier_label)}</span>
+        </div>
+        <a href="#" class="view-source">View Source</a>
+      </div>
+    </article>
+'''
 
-    # Severity distribution bars
+    # --- Severity distribution bars ---
     max_count = max(severity_counts.values()) if any(severity_counts.values()) else 1
     severity_bars = ""
-    for sev_name, count in severity_counts.items():
+    for sev_name in ["critical", "high", "medium", "low"]:
+        count = severity_counts[sev_name]
         if count > 0:
             width_pct = count / max_count * 100
-            color = SEVERITY_COLORS[sev_name]
-            severity_bars += f"""
-            <div style="margin-bottom:0.5rem">
-              <div style="display:flex;justify-content:space-between;margin-bottom:0.25rem">
-                <span style="color:var(--text-muted);font-size:0.85rem;text-transform:capitalize">{sev_name}</span>
-                <span style="color:var(--text);font-weight:600">{count}</span>
-              </div>
-              <div style="height:6px;background:var(--border);border-radius:3px">
-                <div style="height:100%;width:{width_pct:.0f}%;background:{color};border-radius:3px"></div>
-              </div>
-            </div>
-            """
+            severity_bars += f'''
+      <div class="severity-bar">
+        <div class="severity-bar-header">
+          <span class="severity-bar-label">{sev_name.title()}</span>
+          <span class="severity-bar-count {sev_name}">{count}</span>
+        </div>
+        <div class="severity-bar-track">
+          <div class="severity-bar-fill {sev_name}" style="width:{width_pct:.0f}%"></div>
+        </div>
+      </div>
+'''
 
-    # Ethics card
+    # --- Ethics card ---
     if has_ethics_violations:
-        ethics_html = '<div class="summary-value" style="color:#ef4444">FAIL</div><p style="color:var(--text-muted);font-size:0.85rem">Ethics violations detected</p>'
+        ethics_card = f'''
+    <div class="summary-card" style="flex-direction: column; align-items: stretch;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <div class="summary-label">Ethics Check</div>
+          <div class="summary-value critical">FAIL</div>
+        </div>
+        <div class="summary-icon-circle fail">
+          {SVG_X}
+        </div>
+      </div>
+      <div class="ethics-violations">
+        <div class="ethics-violation-item">
+          <span class="ethics-violation-icon">&#10007;</span>
+          <span>Dark pattern detected in findings</span>
+        </div>
+      </div>
+    </div>
+'''
     else:
-        ethics_html = '<div class="summary-value" style="color:#22c55e">PASS</div><p style="color:var(--text-muted);font-size:0.85rem">No dark patterns detected</p>'
+        ethics_card = f'''
+    <div class="summary-card">
+      <div>
+        <div class="summary-label">Ethics Check</div>
+        <div class="summary-value green">PASS</div>
+        <div class="summary-note">No dark patterns detected</div>
+      </div>
+      <div class="summary-icon-circle pass">
+        {SVG_CHECK}
+      </div>
+    </div>
+'''
 
-    # Slide sources JSON for JS
+    # --- Slide sources JSON ---
     slide_sources_json = json.dumps([f"data:image/jpeg;base64,{b64}" for b64 in slide_base64])
 
     # --- Assemble final HTML ---
-    html = f"""<!DOCTYPE html>
+    html = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -561,115 +570,716 @@ def generate_report(
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; font-src data:;">
   <title>CRO Visual Report — {escape_html(engagement_id)}</title>
   <style>{font_css}</style>
-  <style>{component_css}</style>
   <style>
-    :root {{
-      --bg: #0a0a0a; --panel: #141414; --border: #2a2a2a;
-      --text: #e5e5e5; --text-muted: #888; --amber: #f59e0b; --green: #22c55e;
-      --font-display: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
-    }}
-    * {{ margin: 0; padding: 0; box-sizing: border-box; }}
-    body {{ background: var(--bg); color: var(--text); font-family: var(--font-display); line-height: 1.6; }}
-    .container {{ max-width: 1400px; margin: 0 auto; padding: 2rem; }}
-    .main-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0; }}
-    .evidence-canvas {{ position: sticky; top: 2rem; height: fit-content; }}
-    .carousel {{ position: relative; background: var(--panel); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); }}
-    .carousel img {{ width: 100%; display: block; }}
-    .carousel-nav {{ position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.7); color: white; border: none; padding: 0.5rem 0.75rem; cursor: pointer; border-radius: 8px; font-size: 1.2rem; z-index: 10; }}
-    .carousel-nav.prev {{ left: 0.5rem; }}
-    .carousel-nav.next {{ right: 0.5rem; }}
-    .thumb-strip {{ display: grid; grid-template-columns: repeat({len(slide_base64)}, 1fr); gap: 0.5rem; margin-top: 1rem; }}
-    .thumb {{ border: 2px solid transparent; border-radius: 8px; overflow: hidden; opacity: 0.5; transition: all 0.2s; }}
-    .thumb.active {{ border-color: var(--amber); opacity: 1; }}
-    .findings {{ max-height: 80vh; overflow-y: auto; padding-right: 1rem; }}
-    .finding-card {{ background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }}
-    .finding-header {{ display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }}
-    .finding-number {{ font-family: var(--font-mono); font-size: 1.5rem; font-weight: 700; color: var(--amber); }}
-    .finding-title {{ flex: 1; font-size: 1.1rem; }}
-    .severity-badge {{ padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }}
-    .severity-badge.critical {{ background: rgba(239,68,68,0.15); color: #ef4444; }}
-    .severity-badge.high {{ background: rgba(249,115,22,0.15); color: #f97316; }}
-    .severity-badge.medium {{ background: rgba(234,179,8,0.15); color: #eab308; }}
-    .severity-badge.low {{ background: rgba(107,114,128,0.15); color: #9ca3af; }}
-    .finding-card.severity-critical {{ border-left: 3px solid #ef4444; }}
-    .finding-card.severity-high {{ border-left: 3px solid #f97316; }}
-    .finding-card.severity-medium {{ border-left: 3px solid #eab308; }}
-    .finding-card.severity-low {{ border-left: 3px solid #6b7280; }}
-    .recommendation-box {{ background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.2); border-radius: 8px; padding: 1rem; margin: 0.75rem 0; }}
-    .why-matters {{ color: var(--text-muted); font-size: 0.9rem; margin: 0.75rem 0; }}
-    .citation-footer {{ display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-muted); }}
-    .tier-badge {{ padding: 0.15rem 0.5rem; border-radius: 10px; font-size: 0.7rem; font-weight: 600; }}
-    .tier-badge--gold {{ background: rgba(234,179,8,0.2); color: #eab308; }}
-    .tier-badge--silver {{ background: rgba(156,163,175,0.2); color: #9ca3af; }}
-    .tier-badge--bronze {{ background: rgba(180,130,80,0.2); color: #b4825; }}
-    .summary-section {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 2rem 0; }}
-    .summary-card {{ background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; }}
-    .summary-label {{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 0.5rem; }}
-    .summary-value {{ font-size: 1.5rem; font-weight: 700; }}
-    .summary-value.green {{ color: var(--green); }}
-    .summary-value.amber {{ color: var(--amber); }}
-    .metrics-bar {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }}
-    .metric-card {{ background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; display: flex; align-items: center; gap: 1rem; }}
-    .section-label {{ font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text-muted); margin-bottom: 1rem; }}
-    header {{ margin-bottom: 2rem; }}
-    .eyebrow {{ font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--amber); margin-bottom: 0.5rem; }}
-    .hero-title {{ font-size: 2rem; font-weight: 700; line-height: 1.2; }}
-    .hero-title .amber {{ color: var(--amber); }}
-    .subtitle {{ color: var(--text-muted); margin-top: 0.5rem; }}
-    .metadata {{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem; }}
-    .meta-item {{ font-size: 0.85rem; }}
-    .meta-label {{ color: var(--text-muted); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; }}
-    .marker-target {{ z-index: 5; }}
-    .observation {{ margin-bottom: 0.5rem; }}
-    @media (max-width: 900px) {{
-      .main-grid {{ grid-template-columns: 1fr; }}
-      .evidence-canvas {{ position: static; }}
-      .summary-section {{ grid-template-columns: 1fr; }}
-      .metadata {{ grid-template-columns: repeat(2, 1fr); }}
-    }}
+:root {{
+  /* Surfaces */
+  --bg: #000000;
+  --panel: rgba(255,255,255,0.04);
+  --border: rgba(255,255,255,0.05);
+  --border-light: rgba(255,255,255,0.1);
+
+  /* Text */
+  --text: rgba(255,255,255,0.9);
+  --text-muted: rgba(255,255,255,0.5);
+  --text-dim: rgba(255,255,255,0.4);
+  --text-faint: rgba(255,255,255,0.2);
+
+  /* Accent — amber system */
+  --amber: #ff9f00;
+  --amber-light: #ffc687;
+  --amber-glow: #ffb347;
+
+  /* Severity colors */
+  --critical: #93000a;
+  --critical-text: #ffb4ab;
+  --critical-bg: rgba(147,0,10,0.2);
+  --critical-border: rgba(147,0,10,0.3);
+  --high: #ff9f00;
+  --high-bg: rgba(255,159,0,0.2);
+  --high-border: rgba(255,159,0,0.3);
+  --medium: #10b981;
+  --medium-text: #34d399;
+  --medium-bg: rgba(16,185,129,0.1);
+  --medium-border: rgba(16,185,129,0.2);
+  --low: #6b7280;
+  --low-text: #9ca3af;
+  --low-bg: rgba(107,114,128,0.1);
+  --low-border: rgba(107,114,128,0.2);
+
+  /* Evidence tier colors */
+  --tier-gold: #fbbf24;
+  --tier-gold-bg: rgba(251,191,36,0.1);
+  --tier-gold-border: rgba(251,191,36,0.25);
+  --tier-silver: #9ca3af;
+  --tier-silver-bg: rgba(156,163,175,0.1);
+  --tier-silver-border: rgba(156,163,175,0.2);
+  --tier-bronze: #cd7f32;
+  --tier-bronze-bg: rgba(205,127,50,0.1);
+  --tier-bronze-border: rgba(205,127,50,0.25);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
+}}
+
+*, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+
+html {{ scroll-behavior: smooth; }}
+
+body {{
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}}
+
+body::before {{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+}}
+
+a {{ color: var(--medium-text); text-decoration: none; }}
+a:hover {{ text-decoration: underline; }}
+
+.container {{
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 4rem;
+  position: relative;
+  z-index: 1;
+}}
+
+/* Header */
+header {{ margin-bottom: 4rem; }}
+
+.header-content {{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2.5rem;
+}}
+
+.header-main {{ max-width: 56rem; }}
+
+.eyebrow {{
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}}
+.eyebrow-line {{
+  width: 4rem;
+  height: 1px;
+  background: rgba(255,255,255,0.2);
+  margin-right: 1rem;
+}}
+.eyebrow-text {{
+  color: var(--text-muted);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}}
+
+h1 {{
+  font-size: 5.5rem;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}}
+h1 .amber {{ color: var(--amber); }}
+h1 .amber-light {{ color: var(--amber-light); }}
+
+.subtitle {{
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  max-width: 48rem;
+}}
+
+/* Metadata Grid */
+.metadata {{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem 2rem;
+  border-left: 1px solid var(--border-light);
+  padding-left: 2rem;
+  flex-shrink: 0;
+}}
+.meta-item label {{
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 0.25rem;
+}}
+.meta-item span {{
+  font-size: 1rem;
+  font-weight: 500;
+}}
+.meta-item .highlight {{ color: var(--amber); }}
+
+/* Main Grid */
+.main-grid {{
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 3rem;
+  align-items: start;
+}}
+
+/* Evidence Canvas */
+.evidence-canvas {{
+  position: sticky;
+  top: 2rem;
+}}
+
+.section-label {{
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--text-dim);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}}
+
+.nav-buttons {{ display: flex; gap: 0.75rem; }}
+.nav-btn {{
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}}
+.nav-btn:hover {{ background: rgba(255,255,255,0.05); }}
+
+.screenshot-container {{
+  position: relative;
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: #0a0a0a;
+  border: 1px solid var(--border-light);
+  margin-bottom: 1rem;
+}}
+.screenshot-container img {{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
+}}
+.screenshot-overlay {{
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  pointer-events: none;
+}}
+
+/* Thumbnails */
+.thumbnails {{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}}
+.thumb {{
+  aspect-ratio: 16/10;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  opacity: 0.5;
+  cursor: pointer;
+  transition: all 0.2s;
+}}
+.thumb:hover {{ opacity: 1; border-color: rgba(255,255,255,0.3); }}
+.thumb.active {{
+  opacity: 1;
+  outline: 2px solid rgba(255,255,255,0.5);
+  outline-offset: 2px;
+}}
+.thumb img {{ width: 100%; height: 100%; object-fit: cover; }}
+
+/* Metrics Bar */
+.metrics-bar {{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}}
+.metric-card {{
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}}
+.metric-icon {{
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}}
+.metric-icon svg {{ width: 1.5rem; height: 1.5rem; }}
+.metric-icon.amber svg {{ color: var(--amber); }}
+.metric-icon.green svg {{ color: var(--medium); }}
+.metric-label {{
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  margin-bottom: 0.25rem;
+}}
+.metric-value {{
+  font-size: 1.5rem;
+  font-weight: 700;
+}}
+.metric-value.green {{ color: var(--medium); }}
+
+/* Findings */
+.findings {{ display: flex; flex-direction: column; gap: 1.5rem; }}
+
+.finding-card {{
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s;
+}}
+.finding-card:hover {{ background: rgba(255,255,255,0.06); }}
+
+.finding-card.highlight {{
+  border-color: var(--amber);
+  box-shadow: 0 0 0 1px var(--amber);
+}}
+
+.finding-accent {{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  opacity: 0.5;
+}}
+.finding-accent.critical {{ background: linear-gradient(to right, var(--critical), transparent); }}
+.finding-accent.high {{ background: linear-gradient(to right, var(--high), transparent); }}
+.finding-accent.medium {{ background: linear-gradient(to right, var(--medium), transparent); }}
+.finding-accent.low {{ background: linear-gradient(to right, var(--low), transparent); }}
+
+.finding-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}}
+.finding-header-left {{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}}
+
+.finding-number {{
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  color: var(--text);
+}}
+
+.severity-badge {{
+  padding: 0.375rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}}
+.severity-badge.critical {{
+  background: var(--critical-bg);
+  color: var(--critical-text);
+  border: 1px solid var(--critical-border);
+}}
+.severity-badge.high {{
+  background: var(--high-bg);
+  color: var(--amber-glow);
+  border: 1px solid var(--high-border);
+}}
+.severity-badge.medium {{
+  background: var(--medium-bg);
+  color: var(--medium-text);
+  border: 1px solid var(--medium-border);
+}}
+.severity-badge.low {{
+  background: var(--low-bg);
+  color: var(--low-text);
+  border: 1px solid var(--low-border);
+}}
+
+.finding-source {{
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+}}
+
+.finding-title {{
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text);
+}}
+
+.finding-observation {{
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 2rem;
+  line-height: 1.7;
+}}
+
+.recommendation-box {{
+  background: rgba(255,255,255,0.05);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 1.5rem;
+}}
+.recommendation-header {{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}}
+.recommendation-header svg {{ width: 1.25rem; height: 1.25rem; }}
+.recommendation-header.critical svg {{ color: var(--critical-text); }}
+.recommendation-header.high svg {{ color: var(--amber); }}
+.recommendation-header.medium svg {{ color: var(--medium); }}
+.recommendation-header.low svg {{ color: var(--low-text); }}
+.recommendation-label {{
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.8);
+}}
+.recommendation-text {{
+  color: rgba(255,255,255,0.7);
+  font-style: italic;
+}}
+
+.why-matters {{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}}
+.why-matters svg {{
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}}
+
+.finding-footer {{
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}}
+.finding-footer-left {{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}}
+.ref-id {{
+  font-size: 0.5625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  color: var(--text-faint);
+}}
+.view-source {{
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}}
+.view-source:hover {{ color: var(--text); text-decoration: underline; }}
+
+/* Tier Badges */
+.tier-badge {{
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.4;
+}}
+.tier-badge--gold {{
+  background: var(--tier-gold-bg);
+  color: var(--tier-gold);
+  border: 1px solid var(--tier-gold-border);
+}}
+.tier-badge--silver {{
+  background: var(--tier-silver-bg);
+  color: var(--tier-silver);
+  border: 1px solid var(--tier-silver-border);
+}}
+.tier-badge--bronze {{
+  background: var(--tier-bronze-bg);
+  color: var(--tier-bronze);
+  border: 1px solid var(--tier-bronze-border);
+}}
+
+/* Summary Section */
+.summary-section {{
+  margin-top: 4rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}}
+
+.summary-card {{
+  background: var(--panel);
+  backdrop-filter: blur(24px);
+  padding: 2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}}
+
+.summary-label {{
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}}
+.summary-value {{
+  font-size: 1.5rem;
+  font-weight: 700;
+}}
+.summary-value.amber {{ color: var(--amber); }}
+.summary-value.green {{ color: var(--medium); }}
+.summary-value.critical {{ color: var(--critical-text); }}
+.summary-note {{
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}}
+
+.summary-icon {{
+  width: 3rem;
+  height: 3rem;
+  flex-shrink: 0;
+}}
+.summary-icon svg {{ width: 100%; height: 100%; }}
+.summary-icon.amber svg {{ color: rgba(255,159,0,0.3); }}
+
+.summary-icon-circle {{
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}}
+.summary-icon-circle svg {{ width: 1.75rem; height: 1.75rem; }}
+
+.summary-icon-circle.pass {{
+  background: rgba(16,185,129,0.1);
+}}
+.summary-icon-circle.pass svg {{ color: var(--medium); }}
+
+.summary-icon-circle.fail {{
+  background: rgba(147,0,10,0.1);
+}}
+.summary-icon-circle.fail svg {{ color: var(--critical-text); }}
+
+/* Severity Distribution */
+.severity-dist {{
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+}}
+.severity-bar {{ flex: 1; }}
+.severity-bar-header {{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}}
+.severity-bar-label {{
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.8);
+}}
+.severity-bar-count {{
+  font-size: 0.75rem;
+  font-weight: 700;
+}}
+.severity-bar-count.critical {{ color: var(--critical-text); }}
+.severity-bar-count.high {{ color: var(--high); }}
+.severity-bar-count.medium {{ color: var(--medium); }}
+.severity-bar-count.low {{ color: var(--low-text); }}
+.severity-bar-track {{
+  height: 0.25rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 9999px;
+  overflow: hidden;
+}}
+.severity-bar-fill {{ height: 100%; border-radius: 9999px; }}
+.severity-bar-fill.critical {{ background: var(--critical); }}
+.severity-bar-fill.high {{ background: var(--high); }}
+.severity-bar-fill.medium {{ background: var(--medium); }}
+.severity-bar-fill.low {{ background: var(--low); }}
+
+/* Ethics Violations */
+.ethics-violations {{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}}
+.ethics-violation-item {{
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--critical-text);
+  padding: 0.5rem 0.75rem;
+  background: var(--critical-bg);
+  border-radius: 0.5rem;
+  border: 1px solid var(--critical-border);
+}}
+.ethics-violation-icon {{
+  font-weight: 700;
+  flex-shrink: 0;
+}}
+
+/* Responsive */
+@media (max-width: 1200px) {{
+  .main-grid {{ grid-template-columns: 1fr; }}
+  .evidence-canvas {{ position: static; }}
+  h1 {{ font-size: 3.5rem; }}
+  .header-content {{ flex-direction: column; }}
+  .metadata {{ border-left: none; padding-left: 0; border-top: 1px solid var(--border-light); padding-top: 2rem; }}
+}}
+
+@media (max-width: 768px) {{
+  .container {{ padding: 2rem 1rem; }}
+  h1 {{ font-size: 2.5rem; }}
+  .summary-section {{ grid-template-columns: 1fr; }}
+  .metadata {{ grid-template-columns: repeat(2, 1fr); }}
+  .thumbnails {{ grid-template-columns: repeat(2, 1fr); }}
+}}
   </style>
 </head>
 <body>
   <div class="container">
 
     <header>
-      <div class="eyebrow">Strategic Intelligence Report</div>
-      <h1 class="hero-title">CRO <span class="amber">Conversion</span> Audit</h1>
-      <p class="subtitle">{escape_html(device.title())} viewport analysis — {escape_html(meta.get('page', {}).get('url', 'Unknown URL'))}</p>
-      <div class="metadata">
-        <div class="meta-item"><div class="meta-label">Page Type</div>{escape_html((meta.get('page', {}).get('type') or 'Unknown').title())}</div>
-        <div class="meta-item"><div class="meta-label">Platform</div>{escape_html((meta.get('platform') or 'Unknown').title())}</div>
-        <div class="meta-item"><div class="meta-label">Device</div>{escape_html(device_label)}</div>
-        <div class="meta-item"><div class="meta-label">Source Mode</div>{escape_html(meta.get('source_mode', 'Unknown'))}</div>
-        <div class="meta-item"><div class="meta-label">Audit Date</div>{escape_html(date_str)}</div>
-        <div class="meta-item"><div class="meta-label">Engagement</div><span style="color:var(--amber)">{escape_html(engagement_id)}</span></div>
+      <div class="header-content">
+        <div class="header-main">
+          <div class="eyebrow">
+            <div class="eyebrow-line"></div>
+            <span class="eyebrow-text">Strategic Intelligence Report</span>
+          </div>
+          <h1>CRO <span class="amber">Conversion</span> Audit</h1>
+          <p class="subtitle">{escape_html(device.title())} viewport analysis — {escape_html(page_url)}</p>
+        </div>
+
+        <div class="metadata">
+          <div class="meta-item"><label>Page Type</label><span>{escape_html(page_type)}</span></div>
+          <div class="meta-item"><label>Platform</label><span>{escape_html(platform)}</span></div>
+          <div class="meta-item"><label>Device</label><span>{escape_html(device_label)}</span></div>
+          <div class="meta-item"><label>Source Mode</label><span>{escape_html(source_mode)}</span></div>
+          <div class="meta-item"><label>Audit Date</label><span>{escape_html(date_str)}</span></div>
+          <div class="meta-item"><label>Engagement</label><span class="highlight">{escape_html(engagement_id)}</span></div>
+        </div>
       </div>
     </header>
 
     <div class="main-grid">
 
       <section class="evidence-canvas">
-        <div class="section-label">Primary Interface Evidence</div>
-        <div class="carousel" style="position:relative">
-          <button class="carousel-nav prev" onclick="prevSlide()">&#8249;</button>
-          <button class="carousel-nav next" onclick="nextSlide()">&#8250;</button>
-          <img id="mainImage" src="data:image/jpeg;base64,{slide_base64[0]}" alt="Screenshot">
-          {click_targets}
+        <div class="section-label">
+          <span>Primary Interface Evidence</span>
+          <div class="nav-buttons">
+            <button class="nav-btn" onclick="prevSlide()">{SVG_CHEVRON_LEFT}</button>
+            <button class="nav-btn" onclick="nextSlide()">{SVG_CHEVRON_RIGHT}</button>
+          </div>
         </div>
-        <div class="thumb-strip">
+
+        <div class="screenshot-container">
+          <img id="mainImage" src="data:image/jpeg;base64,{slide_base64[0]}" alt="Screenshot" />
+          <div class="screenshot-overlay"></div>
+        </div>
+
+        <div class="thumbnails">
           {thumb_html}
         </div>
+
         <div class="metrics-bar">
           <div class="metric-card">
+            <div class="metric-icon amber">
+              {SVG_CHART}
+            </div>
             <div>
-              <div class="meta-label">Intent Reliability</div>
-              <div style="font-size:1.5rem;font-weight:700">{intent_reliability}%</div>
+              <div class="metric-label">Intent Reliability</div>
+              <div class="metric-value">{intent_reliability}%</div>
             </div>
           </div>
           <div class="metric-card">
+            <div class="metric-icon green">
+              {SVG_TREND_UP}
+            </div>
             <div>
-              <div class="meta-label">Projected Lift</div>
-              <div style="font-size:1.5rem;font-weight:700" class="green">+{projected_lift:.0f}%</div>
+              <div class="metric-label">Projected Lift</div>
+              <div class="metric-value green">+{projected_lift:.0f}%</div>
             </div>
           </div>
         </div>
@@ -678,66 +1288,79 @@ def generate_report(
       <section class="findings">
         <div class="section-label">Diagnostic Insights</div>
         {finding_cards}
-        {pass_html}
       </section>
 
     </div>
 
     <section class="summary-section">
       <div class="summary-card">
-        <div class="summary-label">Evidence Confidence</div>
-        <div class="summary-value amber">HIGH</div>
-        <p style="color:var(--text-muted);font-size:0.85rem;margin-top:0.5rem">URL + DOM dual-source analysis</p>
+        <div>
+          <div class="summary-label">Evidence Confidence</div>
+          <div class="summary-value amber">HIGH</div>
+          <div class="summary-note">URL + DOM dual-source analysis</div>
+        </div>
+        <div class="summary-icon amber">
+          {SVG_CHECK}
+        </div>
       </div>
-      <div class="summary-card">
-        <div class="summary-label">Severity Distribution</div>
-        {severity_bars}
+
+      <div class="summary-card" style="flex-direction: column; align-items: stretch;">
+        <div class="summary-label" style="margin-bottom: 1.25rem;">Severity Distribution</div>
+        <div class="severity-dist">
+          {severity_bars}
+        </div>
       </div>
-      <div class="summary-card">
-        <div class="summary-label">Ethics Check</div>
-        {ethics_html}
-      </div>
+
+      {ethics_card}
     </section>
 
   </div>
 
   <script>
-    const slideSources = {slide_sources_json};
-    let currentSlide = 0;
+(function() {{
+  'use strict';
 
-    function goToSlide(n) {{
-      currentSlide = n;
-      document.getElementById('mainImage').src = slideSources[n];
-      document.querySelectorAll('.thumb').forEach((t, i) => {{
-        t.classList.toggle('active', i === n);
-      }});
-      document.querySelectorAll('.marker-target').forEach(m => {{
-        m.style.display = parseInt(m.dataset.slide) === n ? 'block' : 'none';
-      }});
+  var slideSources = {slide_sources_json};
+  var currentSlide = 0;
+  var mainImage = document.getElementById('mainImage');
+  var thumbs = document.querySelectorAll('.thumb');
+
+  window.setSlide = function(index) {{
+    currentSlide = index;
+    if (mainImage && slideSources[index]) {{
+      mainImage.src = slideSources[index];
     }}
-
-    function nextSlide() {{
-      goToSlide((currentSlide + 1) % slideSources.length);
-    }}
-
-    function prevSlide() {{
-      goToSlide((currentSlide - 1 + slideSources.length) % slideSources.length);
-    }}
-
-    // Scroll-sync: clicking a finding card switches to its slide
-    document.querySelectorAll('.finding-card').forEach(card => {{
-      card.addEventListener('click', () => {{
-        const findingNum = parseInt(card.dataset.finding);
-        const target = document.querySelector(`.marker-target[data-finding="${{findingNum}}"]`);
-        if (target) {{
-          goToSlide(parseInt(target.dataset.slide));
-        }}
-      }});
+    thumbs.forEach(function(thumb, i) {{
+      thumb.classList.toggle('active', i === index);
     }});
+  }};
+
+  window.prevSlide = function() {{
+    window.setSlide(currentSlide === 0 ? slideSources.length - 1 : currentSlide - 1);
+  }};
+
+  window.nextSlide = function() {{
+    window.setSlide(currentSlide === slideSources.length - 1 ? 0 : currentSlide + 1);
+  }};
+
+  // Scroll-sync: clicking finding number highlights card
+  var findingCards = document.querySelectorAll('.finding-card');
+  findingCards.forEach(function(card) {{
+    var num = card.querySelector('.finding-number');
+    if (num) {{
+      num.style.cursor = 'pointer';
+      num.addEventListener('click', function() {{
+        findingCards.forEach(function(c) {{ c.classList.remove('highlight'); }});
+        card.classList.add('highlight');
+        setTimeout(function() {{ card.classList.remove('highlight'); }}, 2000);
+      }});
+    }}
+  }});
+}})();
   </script>
 
 </body>
-</html>"""
+</html>'''
 
     # --- Write output ---
     if not output_file:
@@ -755,7 +1378,7 @@ def generate_report(
     print(f"  Findings: {total_findings}")
     print(f"  Screenshots: {len(slide_base64)}")
     print(f"  Markers burned: {sum(len(m) for m in slide_markers.values())}")
-    print(f"  Pillow: {'yes' if HAS_PILLOW else 'no (CSS fallback)'}")
+    print(f"  Pillow: {'yes' if HAS_PILLOW else 'no'}")
 
 
 # --- CLI ---
