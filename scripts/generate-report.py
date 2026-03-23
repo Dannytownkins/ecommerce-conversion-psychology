@@ -84,11 +84,6 @@ def hex_to_rgb(hex_color):
 def burn_markers_into_screenshot(screenshot_path, markers, output_path):
     """
     Burn numbered severity-colored circle markers directly onto a JPEG screenshot.
-
-    Args:
-        screenshot_path: Path to the original JPEG screenshot
-        markers: List of dicts with keys: number, x, y, severity
-        output_path: Path to write the annotated JPEG
     """
     if not HAS_PILLOW:
         return False
@@ -96,7 +91,6 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
     img = Image.open(screenshot_path).convert("RGB")
     draw = ImageDraw.Draw(img)
 
-    # Try to load a font; fall back to default
     font = None
     font_small = None
     try:
@@ -131,19 +125,15 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
 
         fill_color = hex_to_rgb(SEVERITY_COLORS.get(severity, "#6b7280"))
 
-        # Draw outer white border circle
         draw.ellipse(
             [cx - radius - 2, cy - radius - 2, cx + radius + 2, cy + radius + 2],
             fill=(255, 255, 255),
         )
-
-        # Draw filled severity circle
         draw.ellipse(
             [cx - radius, cy - radius, cx + radius, cy + radius],
             fill=fill_color,
         )
 
-        # Draw number text centered
         text = str(number)
         if font:
             use_font = font_small if number >= 10 else font
@@ -163,12 +153,7 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
 # --- Finding Parser ---
 
 def parse_findings(audit_path):
-    """
-    Parse audit.md to extract FAIL and PARTIAL findings.
-
-    Returns list of dicts with keys: index, section, element, source, severity,
-    observation, recommendation, why_matters, reference, citation, tier
-    """
+    """Parse audit.md to extract FAIL and PARTIAL findings."""
     with open(audit_path, "r", encoding="utf-8") as f:
         content = f.read()
 
@@ -187,12 +172,10 @@ def parse_findings(audit_path):
             if match:
                 finding[field.lower()] = match.group(1).strip()
 
-        # Parse "Why this matters"
         why_match = re.search(r"\*\*Why this matters:\*\*\s*(.+?)(?=\n↳|\Z)", block, re.DOTALL)
         if why_match:
             finding["why_matters"] = why_match.group(1).strip()
 
-        # Parse citation line
         cite_match = re.search(r"↳\s*(.+?)(?:\[(\w+)\])?\s*$", block, re.MULTILINE)
         if cite_match:
             finding["citation"] = cite_match.group(1).strip()
@@ -223,16 +206,7 @@ def parse_pass_findings(audit_path):
 # --- Marker Position Calculator ---
 
 def compute_marker_positions(markers_mapping, baton_data):
-    """
-    Compute pixel positions for markers on screenshots.
-
-    Args:
-        markers_mapping: List from coordinator with finding_index, baton_element_index, slide, severity
-        baton_data: Parsed baton.json
-
-    Returns:
-        Dict mapping slide_index -> list of {number, x, y, severity}
-    """
+    """Compute pixel positions for markers on screenshots."""
     elements = baton_data.get("elements", [])
     screenshots = baton_data.get("screenshots", [])
     sections = baton_data.get("sections", [])
@@ -255,9 +229,11 @@ def compute_marker_positions(markers_mapping, baton_data):
                 ss = screenshots[slide]
                 scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
                 nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
+                nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
             else:
                 scroll_y = 0
                 nat_h = 900
+                nat_w = 1440
 
             abs_y = elem.get("y", 0)
             rel_y = abs_y - scroll_y
@@ -266,13 +242,19 @@ def compute_marker_positions(markers_mapping, baton_data):
             cx = rel_x + elem.get("width", 0) // 2
             cy = rel_y + elem.get("height", 0) // 2
 
-            cx = max(30, min(cx, elem.get("width", 1440) if cx > 1000 else 1440 - 30))
+            cx = max(30, min(cx, nat_w - 30))
             cy = max(30, min(cy, nat_h - 30))
+
+            # Store both pixel coords AND percentage for CSS overlays
+            x_pct = (cx / nat_w) * 100
+            y_pct = (cy / nat_h) * 100
 
             slide_markers[slide].append({
                 "number": finding_idx,
                 "x": cx,
                 "y": cy,
+                "x_pct": x_pct,
+                "y_pct": y_pct,
                 "severity": severity,
             })
         else:
@@ -283,6 +265,8 @@ def compute_marker_positions(markers_mapping, baton_data):
                     "number": finding_idx,
                     "x": 100,
                     "y": sec_h // 2,
+                    "x_pct": 10,
+                    "y_pct": 50,
                     "severity": severity,
                 })
 
@@ -337,6 +321,142 @@ SVG_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width
 SVG_CHEVRON_LEFT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
 
 SVG_CHEVRON_RIGHT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>'
+
+
+# --- Device Frame SVGs ---
+
+def get_device_frame_css(device):
+    """Return CSS for device frame based on device type."""
+    if device == "laptop":
+        return """
+/* Laptop Frame */
+.device-frame {
+  position: relative;
+  padding: 1.5rem 1.5rem 0 1.5rem;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 1.25rem 1.25rem 0 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-bottom: none;
+}
+.device-frame::before {
+  content: "";
+  position: absolute;
+  top: 0.625rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #333;
+  border-radius: 50%;
+  border: 1px solid #444;
+}
+.device-base {
+  height: 1.25rem;
+  background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 100%);
+  border-radius: 0 0 0.5rem 0.5rem;
+  margin: 0 -0.5rem;
+  position: relative;
+}
+.device-base::before {
+  content: "";
+  position: absolute;
+  bottom: 0.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6rem;
+  height: 0.25rem;
+  background: #333;
+  border-radius: 0.125rem;
+}
+"""
+    elif device == "mobile":
+        return """
+/* Mobile Frame */
+.device-frame {
+  position: relative;
+  padding: 2.5rem 0.75rem 2rem 0.75rem;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 2.5rem;
+  border: 2px solid rgba(255,255,255,0.1);
+  max-width: 400px;
+  margin: 0 auto;
+}
+.device-frame::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 5rem;
+  height: 0.375rem;
+  background: #333;
+  border-radius: 0.25rem;
+}
+.device-frame::after {
+  content: "";
+  position: absolute;
+  bottom: 0.625rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.5rem;
+  height: 0.25rem;
+  background: #333;
+  border-radius: 0.125rem;
+}
+.device-base { display: none; }
+"""
+    else:  # desktop
+        return """
+/* Desktop Frame */
+.device-frame {
+  position: relative;
+  padding: 1.25rem;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+  border-radius: 0.75rem 0.75rem 0 0;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-bottom: none;
+}
+.device-frame::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  left: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0.75rem 0 0 #eab308, 1.5rem 0 0 #22c55e;
+}
+.device-base {
+  height: 3rem;
+  background: linear-gradient(180deg, #2a2a2a 0%, #1f1f1f 100%);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.device-base::before {
+  content: "";
+  width: 4rem;
+  height: 0.25rem;
+  background: #333;
+  border-radius: 0.125rem;
+}
+.device-stand {
+  width: 8rem;
+  height: 4rem;
+  background: linear-gradient(180deg, #1f1f1f 0%, #151515 100%);
+  margin: 0 auto;
+  clip-path: polygon(10% 0%, 90% 0%, 100% 100%, 0% 100%);
+}
+.device-stand-base {
+  width: 12rem;
+  height: 0.5rem;
+  background: #1a1a1a;
+  margin: 0 auto;
+  border-radius: 0.25rem;
+}
+"""
 
 
 # --- Main Report Generator ---
@@ -460,6 +580,14 @@ def generate_report(
       <img src="data:image/jpeg;base64,{b64}" alt="Section {i+1}" />
     </div>\n'''
 
+    # --- Build clickable marker overlays HTML ---
+    marker_overlays_html = ""
+    for slide_idx, markers in slide_markers.items():
+        for marker in markers:
+            display = "flex" if slide_idx == 0 else "none"
+            sev = marker.get("severity", "medium")
+            marker_overlays_html += f'''<a href="#finding-{marker['number']}" class="marker-overlay" data-slide="{slide_idx}" data-severity="{sev}" data-finding="{marker['number']}" style="top:{marker['y_pct']:.1f}%;left:{marker['x_pct']:.1f}%;display:{display};"></a>\n'''
+
     # --- Build finding cards HTML ---
     finding_cards = ""
     for f in findings:
@@ -472,7 +600,7 @@ def generate_report(
         tier_label = tier.title()
 
         finding_cards += f'''
-    <article id="finding-{idx}" class="finding-card" data-finding="finding-{idx}">
+    <article id="finding-{idx}" class="finding-card" data-finding="{idx}">
       <div class="finding-accent {sev}"></div>
       <div class="finding-header">
         <div class="finding-header-left">
@@ -558,6 +686,15 @@ def generate_report(
     </div>
 '''
 
+    # --- Device frame CSS ---
+    device_frame_css = get_device_frame_css(device)
+
+    # --- Desktop-specific HTML ---
+    device_stand_html = ""
+    if device == "desktop":
+        device_stand_html = '''<div class="device-stand"></div>
+        <div class="device-stand-base"></div>'''
+
     # --- Slide sources JSON ---
     slide_sources_json = json.dumps([f"data:image/jpeg;base64,{b64}" for b64 in slide_base64])
 
@@ -572,24 +709,17 @@ def generate_report(
   <style>{font_css}</style>
   <style>
 :root {{
-  /* Surfaces */
   --bg: #000000;
   --panel: rgba(255,255,255,0.04);
   --border: rgba(255,255,255,0.05);
   --border-light: rgba(255,255,255,0.1);
-
-  /* Text */
   --text: rgba(255,255,255,0.9);
   --text-muted: rgba(255,255,255,0.5);
   --text-dim: rgba(255,255,255,0.4);
   --text-faint: rgba(255,255,255,0.2);
-
-  /* Accent — amber system */
   --amber: #ff9f00;
   --amber-light: #ffc687;
   --amber-glow: #ffb347;
-
-  /* Severity colors */
   --critical: #93000a;
   --critical-text: #ffb4ab;
   --critical-bg: rgba(147,0,10,0.2);
@@ -605,8 +735,6 @@ def generate_report(
   --low-text: #9ca3af;
   --low-bg: rgba(107,114,128,0.1);
   --low-border: rgba(107,114,128,0.2);
-
-  /* Evidence tier colors */
   --tier-gold: #fbbf24;
   --tier-gold-bg: rgba(251,191,36,0.1);
   --tier-gold-border: rgba(251,191,36,0.25);
@@ -616,14 +744,11 @@ def generate_report(
   --tier-bronze: #cd7f32;
   --tier-bronze-bg: rgba(205,127,50,0.1);
   --tier-bronze-border: rgba(205,127,50,0.25);
-
-  /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Consolas', monospace;
 }}
 
 *, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
-
 html {{ scroll-behavior: smooth; }}
 
 body {{
@@ -643,8 +768,8 @@ body::before {{
   inset: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
   background-size: 40px 40px;
   z-index: 0;
 }}
@@ -660,7 +785,6 @@ a:hover {{ text-decoration: underline; }}
   z-index: 1;
 }}
 
-/* Header */
 header {{ margin-bottom: 4rem; }}
 
 .header-content {{
@@ -699,7 +823,6 @@ h1 {{
   margin-bottom: 1.5rem;
 }}
 h1 .amber {{ color: var(--amber); }}
-h1 .amber-light {{ color: var(--amber-light); }}
 
 .subtitle {{
   font-size: 1.25rem;
@@ -708,7 +831,6 @@ h1 .amber-light {{ color: var(--amber-light); }}
   max-width: 48rem;
 }}
 
-/* Metadata Grid */
 .metadata {{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -726,13 +848,9 @@ h1 .amber-light {{ color: var(--amber-light); }}
   letter-spacing: 0.15em;
   margin-bottom: 0.25rem;
 }}
-.meta-item span {{
-  font-size: 1rem;
-  font-weight: 500;
-}}
+.meta-item span {{ font-size: 1rem; font-weight: 500; }}
 .meta-item .highlight {{ color: var(--amber); }}
 
-/* Main Grid */
 .main-grid {{
   display: grid;
   grid-template-columns: 7fr 5fr;
@@ -740,11 +858,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
   align-items: start;
 }}
 
-/* Evidence Canvas */
-.evidence-canvas {{
-  position: sticky;
-  top: 2rem;
-}}
+.evidence-canvas {{ position: sticky; top: 2rem; }}
 
 .section-label {{
   font-size: 0.75rem;
@@ -776,33 +890,59 @@ h1 .amber-light {{ color: var(--amber-light); }}
 }}
 .nav-btn:hover {{ background: rgba(255,255,255,0.05); }}
 
+{device_frame_css}
+
+.screenshot-wrapper {{
+  position: relative;
+}}
+
 .screenshot-container {{
   position: relative;
   aspect-ratio: 16/9;
-  border-radius: 1rem;
+  border-radius: 0.25rem;
   overflow: hidden;
   background: #0a0a0a;
-  border: 1px solid var(--border-light);
-  margin-bottom: 1rem;
 }}
 .screenshot-container img {{
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0.9;
+  opacity: 0.95;
 }}
 .screenshot-overlay {{
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 40%);
   pointer-events: none;
 }}
 
-/* Thumbnails */
+/* Clickable Marker Overlays */
+.marker-overlay {{
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  /* Transparent - the visual marker is burned into the image */
+  background: transparent;
+}}
+.marker-overlay:hover {{
+  transform: translate(-50%, -50%) scale(1.15);
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+}}
+.marker-overlay[data-severity="critical"] {{ width: 3.5rem; height: 3.5rem; }}
+
 .thumbnails {{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
+  margin-top: 1.5rem;
   margin-bottom: 1.5rem;
 }}
 .thumb {{
@@ -822,7 +962,6 @@ h1 .amber-light {{ color: var(--amber-light); }}
 }}
 .thumb img {{ width: 100%; height: 100%; object-fit: cover; }}
 
-/* Metrics Bar */
 .metrics-bar {{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -860,13 +999,9 @@ h1 .amber-light {{ color: var(--amber-light); }}
   color: var(--text-dim);
   margin-bottom: 0.25rem;
 }}
-.metric-value {{
-  font-size: 1.5rem;
-  font-weight: 700;
-}}
+.metric-value {{ font-size: 1.5rem; font-weight: 700; }}
 .metric-value.green {{ color: var(--medium); }}
 
-/* Findings */
 .findings {{ display: flex; flex-direction: column; gap: 1.5rem; }}
 
 .finding-card {{
@@ -877,13 +1012,12 @@ h1 .amber-light {{ color: var(--amber-light); }}
   border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 }}
 .finding-card:hover {{ background: rgba(255,255,255,0.06); }}
-
 .finding-card.highlight {{
   border-color: var(--amber);
-  box-shadow: 0 0 0 1px var(--amber);
+  box-shadow: 0 0 0 1px var(--amber), 0 0 20px rgba(255,159,0,0.2);
 }}
 
 .finding-accent {{
@@ -917,7 +1051,10 @@ h1 .amber-light {{ color: var(--amber-light); }}
   letter-spacing: -0.05em;
   line-height: 1;
   color: var(--text);
+  cursor: pointer;
+  transition: color 0.2s;
 }}
+.finding-number:hover {{ color: var(--amber); }}
 
 .severity-badge {{
   padding: 0.375rem 1rem;
@@ -1006,11 +1143,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
   font-size: 0.75rem;
   color: var(--text-dim);
 }}
-.why-matters svg {{
-  width: 1rem;
-  height: 1rem;
-  flex-shrink: 0;
-}}
+.why-matters svg {{ width: 1rem; height: 1rem; flex-shrink: 0; }}
 
 .finding-footer {{
   margin-top: 1.5rem;
@@ -1035,13 +1168,11 @@ h1 .amber-light {{ color: var(--amber-light); }}
 .view-source {{
   font-size: 0.625rem;
   color: var(--text-muted);
-  text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }}
-.view-source:hover {{ color: var(--text); text-decoration: underline; }}
+.view-source:hover {{ color: var(--text); }}
 
-/* Tier Badges */
 .tier-badge {{
   display: inline-flex;
   align-items: center;
@@ -1051,7 +1182,6 @@ h1 .amber-light {{ color: var(--amber-light); }}
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  line-height: 1.4;
 }}
 .tier-badge--gold {{
   background: var(--tier-gold-bg);
@@ -1069,7 +1199,6 @@ h1 .amber-light {{ color: var(--amber-light); }}
   border: 1px solid var(--tier-bronze-border);
 }}
 
-/* Summary Section */
 .summary-section {{
   margin-top: 4rem;
   display: grid;
@@ -1096,10 +1225,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
   color: var(--text-dim);
   margin-bottom: 0.5rem;
 }}
-.summary-value {{
-  font-size: 1.5rem;
-  font-weight: 700;
-}}
+.summary-value {{ font-size: 1.5rem; font-weight: 700; }}
 .summary-value.amber {{ color: var(--amber); }}
 .summary-value.green {{ color: var(--medium); }}
 .summary-value.critical {{ color: var(--critical-text); }}
@@ -1109,11 +1235,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
   margin-top: 0.5rem;
 }}
 
-.summary-icon {{
-  width: 3rem;
-  height: 3rem;
-  flex-shrink: 0;
-}}
+.summary-icon {{ width: 3rem; height: 3rem; flex-shrink: 0; }}
 .summary-icon svg {{ width: 100%; height: 100%; }}
 .summary-icon.amber svg {{ color: rgba(255,159,0,0.3); }}
 
@@ -1127,23 +1249,12 @@ h1 .amber-light {{ color: var(--amber-light); }}
   flex-shrink: 0;
 }}
 .summary-icon-circle svg {{ width: 1.75rem; height: 1.75rem; }}
-
-.summary-icon-circle.pass {{
-  background: rgba(16,185,129,0.1);
-}}
+.summary-icon-circle.pass {{ background: rgba(16,185,129,0.1); }}
 .summary-icon-circle.pass svg {{ color: var(--medium); }}
-
-.summary-icon-circle.fail {{
-  background: rgba(147,0,10,0.1);
-}}
+.summary-icon-circle.fail {{ background: rgba(147,0,10,0.1); }}
 .summary-icon-circle.fail svg {{ color: var(--critical-text); }}
 
-/* Severity Distribution */
-.severity-dist {{
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-}}
+.severity-dist {{ display: flex; gap: 1rem; width: 100%; }}
 .severity-bar {{ flex: 1; }}
 .severity-bar-header {{
   display: flex;
@@ -1158,10 +1269,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
   letter-spacing: 0.15em;
   color: rgba(255,255,255,0.8);
 }}
-.severity-bar-count {{
-  font-size: 0.75rem;
-  font-weight: 700;
-}}
+.severity-bar-count {{ font-size: 0.75rem; font-weight: 700; }}
 .severity-bar-count.critical {{ color: var(--critical-text); }}
 .severity-bar-count.high {{ color: var(--high); }}
 .severity-bar-count.medium {{ color: var(--medium); }}
@@ -1178,12 +1286,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
 .severity-bar-fill.medium {{ background: var(--medium); }}
 .severity-bar-fill.low {{ background: var(--low); }}
 
-/* Ethics Violations */
-.ethics-violations {{
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}}
+.ethics-violations {{ display: flex; flex-direction: column; gap: 0.5rem; }}
 .ethics-violation-item {{
   display: flex;
   align-items: flex-start;
@@ -1195,12 +1298,8 @@ h1 .amber-light {{ color: var(--amber-light); }}
   border-radius: 0.5rem;
   border: 1px solid var(--critical-border);
 }}
-.ethics-violation-icon {{
-  font-weight: 700;
-  flex-shrink: 0;
-}}
+.ethics-violation-icon {{ font-weight: 700; flex-shrink: 0; }}
 
-/* Responsive */
 @media (max-width: 1200px) {{
   .main-grid {{ grid-template-columns: 1fr; }}
   .evidence-canvas {{ position: static; }}
@@ -1254,9 +1353,16 @@ h1 .amber-light {{ color: var(--amber-light); }}
           </div>
         </div>
 
-        <div class="screenshot-container">
-          <img id="mainImage" src="data:image/jpeg;base64,{slide_base64[0]}" alt="Screenshot" />
-          <div class="screenshot-overlay"></div>
+        <div class="screenshot-wrapper">
+          <div class="device-frame">
+            <div class="screenshot-container">
+              <img id="mainImage" src="data:image/jpeg;base64,{slide_base64[0]}" alt="Screenshot" />
+              <div class="screenshot-overlay"></div>
+              {marker_overlays_html}
+            </div>
+          </div>
+          <div class="device-base"></div>
+          {device_stand_html}
         </div>
 
         <div class="thumbnails">
@@ -1324,6 +1430,15 @@ h1 .amber-light {{ color: var(--amber-light); }}
   var currentSlide = 0;
   var mainImage = document.getElementById('mainImage');
   var thumbs = document.querySelectorAll('.thumb');
+  var markers = document.querySelectorAll('.marker-overlay');
+  var findingCards = document.querySelectorAll('.finding-card');
+
+  function updateMarkerVisibility(slideIndex) {{
+    markers.forEach(function(m) {{
+      var markerSlide = parseInt(m.getAttribute('data-slide') || '0', 10);
+      m.style.display = markerSlide === slideIndex ? 'flex' : 'none';
+    }});
+  }}
 
   window.setSlide = function(index) {{
     currentSlide = index;
@@ -1333,6 +1448,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
     thumbs.forEach(function(thumb, i) {{
       thumb.classList.toggle('active', i === index);
     }});
+    updateMarkerVisibility(index);
   }};
 
   window.prevSlide = function() {{
@@ -1343,19 +1459,40 @@ h1 .amber-light {{ color: var(--amber-light); }}
     window.setSlide(currentSlide === slideSources.length - 1 ? 0 : currentSlide + 1);
   }};
 
-  // Scroll-sync: clicking finding number highlights card
-  var findingCards = document.querySelectorAll('.finding-card');
+  // Marker click -> scroll to finding card
+  markers.forEach(function(marker) {{
+    marker.addEventListener('click', function(e) {{
+      e.preventDefault();
+      var findingNum = this.getAttribute('data-finding');
+      var targetCard = document.getElementById('finding-' + findingNum);
+      if (targetCard) {{
+        targetCard.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+        highlightCard(targetCard);
+      }}
+    }});
+  }});
+
+  // Finding number click -> switch to correct slide
   findingCards.forEach(function(card) {{
     var num = card.querySelector('.finding-number');
     if (num) {{
-      num.style.cursor = 'pointer';
       num.addEventListener('click', function() {{
-        findingCards.forEach(function(c) {{ c.classList.remove('highlight'); }});
-        card.classList.add('highlight');
-        setTimeout(function() {{ card.classList.remove('highlight'); }}, 2000);
+        var findingId = card.id.replace('finding-', '');
+        var targetMarker = document.querySelector('.marker-overlay[data-finding="' + findingId + '"]');
+        if (targetMarker) {{
+          var targetSlide = parseInt(targetMarker.getAttribute('data-slide') || '0', 10);
+          window.setSlide(targetSlide);
+        }}
+        highlightCard(card);
       }});
     }}
   }});
+
+  function highlightCard(card) {{
+    findingCards.forEach(function(c) {{ c.classList.remove('highlight'); }});
+    card.classList.add('highlight');
+    setTimeout(function() {{ card.classList.remove('highlight'); }}, 2500);
+  }}
 }})();
   </script>
 
@@ -1378,6 +1515,7 @@ h1 .amber-light {{ color: var(--amber-light); }}
     print(f"  Findings: {total_findings}")
     print(f"  Screenshots: {len(slide_base64)}")
     print(f"  Markers burned: {sum(len(m) for m in slide_markers.values())}")
+    print(f"  Click overlays: {sum(len(m) for m in slide_markers.values())}")
     print(f"  Pillow: {'yes' if HAS_PILLOW else 'no'}")
 
 
