@@ -299,6 +299,20 @@ def slug_to_title(slug):
     return slug.replace("-", " ").title()
 
 
+def aspect_ratio_value(width, height, fallback="16 / 9"):
+    """Return a CSS aspect-ratio string from numeric dimensions."""
+    try:
+        width = int(width or 0)
+        height = int(height or 0)
+    except (TypeError, ValueError):
+        return fallback
+
+    if width > 0 and height > 0:
+        return f"{width} / {height}"
+
+    return fallback
+
+
 def get_severity_class(priority):
     """Map priority string to severity class name."""
     return (priority or "medium").lower()
@@ -494,6 +508,8 @@ def generate_report(
             markers_mapping = json.load(f)
 
     # --- Process screenshots ---
+    viewport = baton.get("viewport", {})
+    default_slide_aspect_ratio = aspect_ratio_value(viewport.get("width"), viewport.get("height"))
     screenshots = baton.get("screenshots", [])
     screenshot_paths = []
     for ss in screenshots:
@@ -510,10 +526,20 @@ def generate_report(
     annotated_dir.mkdir(exist_ok=True)
 
     slide_base64 = []
+    slide_aspect_ratios = []
     for i, ss_path in enumerate(screenshot_paths):
         full_path = engagement_path / ss_path
         if not full_path.exists():
             continue
+
+        screenshot_meta = screenshots[i] if i < len(screenshots) and isinstance(screenshots[i], dict) else {}
+        slide_aspect_ratios.append(
+            aspect_ratio_value(
+                screenshot_meta.get("naturalWidth") or screenshot_meta.get("width") or viewport.get("width"),
+                screenshot_meta.get("naturalHeight") or screenshot_meta.get("height") or viewport.get("height"),
+                default_slide_aspect_ratio,
+            )
+        )
 
         markers_for_slide = slide_markers.get(i, [])
         annotated_path = annotated_dir / f"annotated-{i}.jpg"
@@ -576,7 +602,8 @@ def generate_report(
     thumb_html = ""
     for i, b64 in enumerate(slide_base64):
         active = " active" if i == 0 else ""
-        thumb_html += f'''<div class="thumb{active}" onclick="setSlide({i})">
+        thumb_aspect_ratio = slide_aspect_ratios[i] if i < len(slide_aspect_ratios) else default_slide_aspect_ratio
+        thumb_html += f'''<div class="thumb{active}" onclick="setSlide({i})" style="--thumb-aspect-ratio:{thumb_aspect_ratio};">
       <img src="data:image/jpeg;base64,{b64}" alt="Section {i+1}" />
     </div>\n'''
 
@@ -697,6 +724,8 @@ def generate_report(
 
     # --- Slide sources JSON ---
     slide_sources_json = json.dumps([f"data:image/jpeg;base64,{b64}" for b64 in slide_base64])
+    slide_aspect_ratios_json = json.dumps(slide_aspect_ratios)
+    initial_slide_aspect_ratio = slide_aspect_ratios[0] if slide_aspect_ratios else default_slide_aspect_ratio
 
     # --- Assemble final HTML ---
     html = f'''<!DOCTYPE html>
@@ -898,7 +927,7 @@ h1 .amber {{ color: var(--amber); }}
 
 .screenshot-container {{
   position: relative;
-  aspect-ratio: 16/9;
+  aspect-ratio: var(--slide-aspect-ratio, 16 / 9);
   border-radius: 0.25rem;
   overflow: hidden;
   background: #0a0a0a;
@@ -946,7 +975,7 @@ h1 .amber {{ color: var(--amber); }}
   margin-bottom: 1.5rem;
 }}
 .thumb {{
-  aspect-ratio: 16/10;
+  aspect-ratio: var(--thumb-aspect-ratio, 16 / 10);
   border-radius: 0.5rem;
   overflow: hidden;
   border: 1px solid var(--border-light);
@@ -1355,7 +1384,7 @@ h1 .amber {{ color: var(--amber); }}
 
         <div class="screenshot-wrapper">
           <div class="device-frame">
-            <div class="screenshot-container">
+            <div class="screenshot-container" id="mainSlide" style="--slide-aspect-ratio:{initial_slide_aspect_ratio};">
               <img id="mainImage" src="data:image/jpeg;base64,{slide_base64[0]}" alt="Screenshot" />
               <div class="screenshot-overlay"></div>
               {marker_overlays_html}
@@ -1427,7 +1456,9 @@ h1 .amber {{ color: var(--amber); }}
   'use strict';
 
   var slideSources = {slide_sources_json};
+  var slideAspectRatios = {slide_aspect_ratios_json};
   var currentSlide = 0;
+  var mainSlide = document.getElementById('mainSlide');
   var mainImage = document.getElementById('mainImage');
   var thumbs = document.querySelectorAll('.thumb');
   var markers = document.querySelectorAll('.marker-overlay');
@@ -1440,8 +1471,15 @@ h1 .amber {{ color: var(--amber); }}
     }});
   }}
 
+  function setMainSlideAspectRatio(index) {{
+    if (mainSlide && slideAspectRatios[index]) {{
+      mainSlide.style.setProperty('--slide-aspect-ratio', slideAspectRatios[index]);
+    }}
+  }}
+
   window.setSlide = function(index) {{
     currentSlide = index;
+    setMainSlideAspectRatio(index);
     if (mainImage && slideSources[index]) {{
       mainImage.src = slideSources[index];
     }}
