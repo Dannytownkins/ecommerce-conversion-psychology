@@ -19,11 +19,12 @@ Run a quick CRO scan — single domain cluster, 3-5 highest-impact quick wins, n
 --visual: Auto-generate visual report (annotated wireframe with findings) without prompting.
 --no-visual: Skip output prompt, conversation output only (meta.json still created silently).
 --ephemeral: DEPRECATED — behaves as --no-visual. Prints warning: "--ephemeral is deprecated, use --no-visual".
---device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
-  - desktop: 1440×900, 1x DPR
-  - mobile: 390×844, 2x DPR (via --force-device-scale-factor=2)
-  - both: Runs two separate scans, produces audit.md (desktop) + audit-mobile.md (mobile)
-  In --auto mode: defaults to "desktop" (no prompt).
+--device [mobile|laptop|desktop|both]: Target device viewport. Default: prompt user (URL mode only).
+  - mobile: 390×844, 3x DPR (via `agent-browser close` + `agent-browser set device "iPhone 14"`)
+  - laptop: 1440×900, 1x DPR
+  - desktop: 1920×1080, 1x DPR
+  - both: Runs two separate scans (first + second device serially), produces audit.md + audit-{second}.md
+  In --auto mode: defaults to "laptop" (no prompt).
 </flags>
 
 <mode_detection>
@@ -49,13 +50,16 @@ Determine input type from $ARGUMENTS:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
    - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
-     - Desktop: viewport 1440×900, device "desktop"
-     - Mobile: viewport 390×844 (use `--force-device-scale-factor=2`), device "mobile"
-     - Both: dispatch twice serially:
-       1. Desktop pass: full acquisition (DOM + screenshots) — viewport 1440×900, device "desktop"
-       2. Mobile pass: pass `dom_file` from desktop acquisition, device "mobile" — screenshots only
+     - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
+     - Laptop: viewport 1440×900, device "laptop"
+     - Desktop: viewport 1920×1080, device "desktop"
+     - Both (two devices): dispatch twice serially. The `agent-browser` daemon is system-wide — you cannot run two viewports simultaneously.
+       1. First device pass: full acquisition (DOM + screenshots + element coordinates). Wait for full completion.
+       2. Second device pass: pass `dom_file` from first acquisition — screenshots + element coordinates only.
+       - **DPR between device passes:** If the second device needs a different DPR (e.g., mobile after laptop), the acquisition agent MUST run `agent-browser close` before setting the new device.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, styles, baton.json
-   - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
+   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, run `ls docs/cro/{engagement-id}/` and verify baton.json, dom.html, and at least 1 screenshot exist on disk. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, fall back to manual acquisition per the audit SKILL.md manual fallback procedure.
+   - After file verification passes, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present reason, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data
    - Set `source_mode: "url-dual"` in meta.json
@@ -68,17 +72,19 @@ Determine input type from $ARGUMENTS:
 **URL mode only.** After mode detection, before cluster selection, prompt for device:
 
 "Which device should I scan?
-1. **Desktop** (1440×900) — default
-2. **Mobile** (390×844, 2x DPR)
-3. **Both** — produces two separate reports"
+1. **Mobile** (390×844)
+2. **Laptop** (1440×900) — default
+3. **Desktop** (1920×1080)
+4. **Both** (pick two, e.g., 1,3) — produces two separate reports"
 
-- If `--device` flag is set: use specified device, skip prompt.
-- In `--auto` mode: default to `desktop`, skip prompt.
+- If `--device` flag is set: use specified device(s), skip prompt.
+- In `--auto` mode: default to `laptop`, skip prompt.
 - For file path and description modes: skip device selection entirely (no viewport rendering).
+- "Both" accepts a comma pair (e.g., `--device mobile,desktop`). Max 2 per run.
 
 Log selected device: "Scanning **[device]** at [width]×[height]."
 
-Set `devices_requested` in meta.json to the user's choice: `["desktop"]`, `["mobile"]`, or `["desktop", "mobile"]`.
+Set `devices_requested` in meta.json to the user's choice (e.g., `["laptop"]`, `["mobile", "desktop"]`).
 </device_selection>
 
 <platform_detection>
@@ -148,14 +154,14 @@ Dispatch ONE auditor per device with `model: "opus"`:
 - **File path mode:** Pass page source code directly
 - **Description mode:** Pass the text description
 
-**Single device (desktop or mobile):**
+**Single device (mobile, laptop, or desktop):**
 Write findings to docs/cro/{engagement-id}/audit.md. Update meta.json: phase → "complete", `devices_scanned` → matches selected device.
 
-**Both mode:**
+**Both mode (two devices):**
 Dispatch TWO auditors (one per device, serially) with `model: "opus"`:
-1. Desktop auditor → write to `audit.md`
-2. Mobile auditor → write to `audit-mobile.md`
-Write audit files first, THEN update meta.json: phase → "complete", `devices_scanned: ["desktop", "mobile"]`.
+1. First device auditor → write to `audit.md`
+2. Second device auditor → write to `audit-{second_device}.md`
+Write audit files first, THEN update meta.json: phase → "complete", `devices_scanned` → both devices.
 
 **Partial failure in "both" mode:**
 If one device's acquisition or audit fails, deliver the successful device's report + warning:

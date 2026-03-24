@@ -27,9 +27,16 @@ Bug fixes from two live audit runs (SlingMods product page, AWDMods product page
 #### Hash Verification (1 change)
 - **Duplicate screenshot detection** — `md5sum` hash comparison after each screenshot capture. File-size comparison alone is insufficient — hash match triggers re-scroll and re-capture.
 
+#### Quick-Scan Parity (3 changes)
+- **Device options match audit** — Quick-scan now offers mobile (390×844), laptop (1440×900), and desktop (1920×1080). Previously only had "desktop" (actually 1440×900) and mobile.
+- **Mobile DPR fix** — Same `set device "iPhone 14"` fix as audit. Replaces broken `--force-device-scale-factor=2`.
+- **Post-acquisition file verification** — Same mandatory `ls` check as audit.
+
 ### Files Changed
 - `skills/audit/SKILL.md` — Objective, acquisition dispatch, baton validation, deduplication, manual fallback, report export, DPR docs
+- `skills/quick-scan/SKILL.md` — Device options (mobile/laptop/desktop), DPR fix, file verification, viewport dimensions
 - `workflows/acquire.md` — Mobile DPR method, scroll method, hash verification, python command
+- `workflows/quick-scan.md` — Device-aware evaluation for laptop vs desktop viewports, DOM caveat update
 - `references/ethics-gate.md` — Phantom social proof visibility test
 - `.claude-plugin/plugin.json` — Version bump to 4.5.1
 - `README.md` — Version badge

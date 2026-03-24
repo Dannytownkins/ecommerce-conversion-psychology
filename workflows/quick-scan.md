@@ -28,15 +28,16 @@ Read all provided reference files. Focus on the highest-impact principles — yo
 
 You are auditing a **{device}** viewport at {width}×{height}. Apply only principles relevant to this viewport.
 
-When `device: "desktop"`:
-- Emphasize: visual hierarchy, F/Z scan patterns, whitespace around CTAs, above-fold content at 1440px width, grid vs carousel layout, left-side dominance (80% fixation rule), multi-column layouts
+When `device: "laptop"` (1440×900) or `device: "desktop"` (1920×1080):
+- Emphasize: visual hierarchy, F/Z scan patterns, whitespace around CTAs, above-fold content at viewport width, grid vs carousel layout, left-side dominance (80% fixation rule), multi-column layouts
 - De-emphasize: touch target sizes, sticky bottom CTAs, thumb-reachable zones
+- At 1920px (desktop): more whitespace is expected; watch for content that feels "lost" in a wide viewport, and check whether product info columns stretch too wide or float in excessive negative space
 
 When `device: "mobile"`:
 - Emphasize: sticky CTAs, touch target sizes (48px+ minimum), thumb-reachable zones, single-column flow, font readability (16px+ body), mobile nav patterns, swipe gestures, viewport-relative sizing
 - De-emphasize: F-pattern left-side dominance (does not apply to single-column layouts), multi-column grid analysis, hover states
 
-**DOM caveat for mobile:** When `device: "mobile"`, the DOM may have been captured at the desktop viewport (1440px). Some elements may be hidden or restructured at mobile widths via CSS or JavaScript. For layout and visibility judgments on mobile, rely on **screenshots as the primary source of truth**. Use DOM only for content extraction (text, prices, attributes, semantic structure).
+**DOM caveat for mobile:** When `device: "mobile"`, the DOM may have been captured at a non-mobile viewport (1440px or 1920px). Some elements may be hidden or restructured at mobile widths via CSS or JavaScript. For layout and visibility judgments on mobile, rely on **screenshots as the primary source of truth**. Use DOM only for content extraction (text, prices, attributes, semantic structure).
 
 Do NOT apply desktop-specific principles to mobile screenshots or vice versa. This is the primary source of false positives.
 
