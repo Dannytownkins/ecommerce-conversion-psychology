@@ -96,13 +96,16 @@ Follow these steps in exact order:
 
 **Mobile:**
 
-1. Set viewport with 2x DPR:
+1. Close any existing browser daemon and set device (this ensures correct DPR):
    ```
-   agent-browser --args "--force-device-scale-factor=2" set viewport 390 844
+   agent-browser close
+   agent-browser set device "iPhone 14"
    ```
-   Sets viewport 390x844 at 2x DPR (780px-wide screenshots). This produces images large enough for visual audit while keeping report file sizes ~45% smaller than 3x DPR.
+   This gives viewport 390x844 at 3x DPR (1170px-wide screenshots). The `set device` command is the ONLY reliable way to get high-DPR screenshots — `--args "--force-device-scale-factor=2"` does not work on Windows and `set viewport` after `set device` resets DPR to 1x.
 
-   > **Why not `set device "iPhone 14"`?** The iPhone 14 preset uses 3x DPR, producing 1170px-wide screenshots. At carousel display sizes (~600-700px), the extra resolution is invisible but inflates base64 encoding by ~45%. The 2x DPR override is the recommended default for CRO audits.
+   > **Why `set device` instead of `set viewport`?** The `set viewport` command always produces 1x DPR screenshots regardless of `--args` flags. `set device "iPhone 14"` sets both the viewport dimensions AND the 3x DPR in a single command. Screenshots are 1170px wide — larger than the 2x target (780px) but this is the only working approach. The visual report carousel renders at ~600-700px, so the extra resolution has no visible cost beyond ~45% larger base64 encoding.
+
+   > **CRITICAL: Do NOT call `set viewport` after `set device`.** This resets DPR to 1x, producing 390px-wide screenshots that are too small for visual audit. If you need to verify dimensions, use `agent-browser eval "JSON.stringify({w: window.innerWidth, dpr: window.devicePixelRatio})"`.
 
 2. Then navigate:
    ```
@@ -240,15 +243,30 @@ If conversion tools are unavailable, proceed with PNG but note `"format_override
 
 **Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, mobile at 390px CSS width with 2x DPR produces 780px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
 
-After scrolling to each section boundary, wait 500ms (`agent-browser wait 500`) before capturing. After capturing, compare file size to the previous screenshot. If sizes are identical (within 1KB), re-scroll with an explicit wait:
-```
-agent-browser scroll down {section_height}
-agent-browser wait 1000
-agent-browser screenshot {path}
-```
-If re-capture is still identical, set `scroll_failed: true` on that section's metadata and warn the coordinator.
+**Scrolling method — use JS eval, not agent-browser scroll.** The `agent-browser scroll to` command fails silently on many Shopify themes and sites with `scroll-behavior: smooth` or JS-controlled scrolling. Always scroll via JavaScript eval:
 
-After all screenshots are captured, verify each scroll position: `agent-browser eval "window.scrollY"` — if scrollY doesn't match the expected section boundary (±50px), log `scroll_position_mismatch: true` on that section.
+```
+agent-browser eval "window.scrollTo({top: {scrollY}, behavior: 'instant'}); window.scrollY"
+```
+
+This returns the actual scroll position, which you MUST verify matches the target (±50px). If the returned value doesn't match, retry once with a delay:
+
+```
+agent-browser wait 500
+agent-browser eval "window.scrollTo({top: {scrollY}, behavior: 'instant'}); window.scrollY"
+```
+
+Do NOT use `agent-browser scroll to` or `agent-browser scroll down` as the primary scroll method — they are unreliable across themes.
+
+After scrolling, wait 500ms (`agent-browser wait 500`) before capturing.
+
+**Duplicate screenshot detection (mandatory after each capture):** After each screenshot, compute its hash and compare to all previous screenshots:
+```
+md5sum {screenshot_path}
+```
+If the hash matches ANY previous screenshot, the scroll failed silently. Re-scroll with JS eval, wait 1000ms, re-capture, and re-check. If the hash still matches after retry, set `scroll_failed: true` on that section's metadata and warn the coordinator.
+
+Do NOT rely on file size comparison alone — different scroll positions can produce similar-sized JPEGs. Hash comparison is the definitive check.
 
 Cap at 6 screenshots total. Minimum 1.
 

@@ -26,6 +26,7 @@ These rules are non-negotiable. They override every other recommendation in this
 ### Phantom Social Proof
 
 - Displaying review badges, star ratings, 'Rated and Reviewed' claims, or review-count indicators when zero verified reviews exist constitutes phantom social proof — BLOCK
+- **Visibility test:** An element is "displayed" only if it is rendered with computed `display` != `none` AND `visibility` != `hidden` AND has non-zero bounding box dimensions. Loading a CSS file (e.g., `component-rating.css`), having a hidden DOM node, or including rating markup that is not rendered at the current viewport does NOT constitute "displaying." When evidence is CODE-only (element exists in DOM but not confirmed visible in screenshots), flag as MEDIUM under `star-ratings` with a note to verify visibility, not CRITICAL.
 - 'Trusted by thousands' or similar vague volume claims without verifiable evidence (specific count, named customers, or linked reviews) — flag as CRITICAL under `social-proof-placement`
 - This applies to the page being audited, not to site-wide claims on shared elements (e.g., a footer badge referencing overall store reviews is acceptable if the store has reviews)
 

@@ -1,5 +1,42 @@
 # Changelog
 
+## 4.5.1 — 2026-03-24
+
+### Acquisition Reliability & Ethics Accuracy
+
+Bug fixes from two live audit runs (SlingMods product page, AWDMods product page) that exposed silent failures in screenshot capture, DPR handling, and ethics gate false positives.
+
+#### Acquisition Fixes (3 changes)
+- **JS scroll replaces agent-browser scroll** — `agent-browser scroll to` fails silently on Shopify themes and sites with `scroll-behavior: smooth`. Primary scroll method is now `window.scrollTo({behavior: 'instant'})` via `agent-browser eval`, with scrollY verification after each call. Prevents duplicate screenshots.
+- **DPR fix: `set device` replaces `--args`** — `--force-device-scale-factor=2` does not work on Windows. Mobile acquisition now uses `agent-browser close` + `agent-browser set device "iPhone 14"` (3x DPR) as the only reliable high-DPR method. Documents that `set viewport` after `set device` resets DPR to 1x.
+- **Post-acquisition file verification** — Coordinator now runs `ls` on the engagement directory after acquisition agent returns to verify baton.json, dom.html, and screenshots actually exist on disk. Catches silent subagent file-write failures before they propagate.
+
+#### Ethics Gate Fix (1 change)
+- **Phantom social proof visibility test** — Added explicit visibility criteria: an element is "displayed" only if `display != none`, `visibility != hidden`, and bounding box is non-zero. Loading a CSS file or having a hidden DOM node does not constitute phantom social proof. CODE-only evidence flagged as MEDIUM (verify visibility), not CRITICAL.
+
+#### Coordinator Fixes (4 changes)
+- **Baton normalization** — Coordinator normalizes simplified baton schemas (string screenshot arrays → objects, missing fields inferred from sections/viewport data) before dispatching auditors.
+- **Ethics gate preservation rule** — During finding deduplication, if ANY auditor flagged a finding as CRITICAL with an ethics-gate.md reference, the deduplicated finding retains CRITICAL regardless of other auditors' ratings.
+- **Subagent file-write clarification** — Objective section now explicitly states the acquisition agent is the exception to "subagents never write files."
+- **DPR daemon persistence documented** — SKILL.md now notes that `agent-browser` uses a system-wide daemon and requires explicit `agent-browser close` between device passes with different DPR.
+
+#### Report Generation Fixes (2 changes)
+- **Python prerequisites** — `<report_export>` now includes a prerequisite block that detects `python` vs `python3` and auto-installs Pillow.
+- **Cross-platform python command** — acquire.md base64 fallback and report generation use `python` (Windows) with `python3` (Linux/macOS) fallback.
+
+#### Hash Verification (1 change)
+- **Duplicate screenshot detection** — `md5sum` hash comparison after each screenshot capture. File-size comparison alone is insufficient — hash match triggers re-scroll and re-capture.
+
+### Files Changed
+- `skills/audit/SKILL.md` — Objective, acquisition dispatch, baton validation, deduplication, manual fallback, report export, DPR docs
+- `workflows/acquire.md` — Mobile DPR method, scroll method, hash verification, python command
+- `references/ethics-gate.md` — Phantom social proof visibility test
+- `.claude-plugin/plugin.json` — Version bump to 4.5.1
+- `README.md` — Version badge
+- `CHANGELOG.md` — This entry
+
+---
+
 ## 4.5.0 — 2026-03-23
 
 ### Codex Source Workflow

@@ -1,6 +1,6 @@
 # E-Commerce Conversion Psychology
 
-![v4.5.0](https://img.shields.io/badge/version-4.5.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Codex Skill](https://img.shields.io/badge/Codex-skill-10b981) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
+![v4.5.1](https://img.shields.io/badge/version-4.5.1-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Codex Skill](https://img.shields.io/badge/Codex-skill-10b981) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 19 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, competitive positioning, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -153,7 +153,7 @@ ecommerce-conversion-psychology/
   agents/
     openai.yaml                       Codex UI metadata
   SKILL.md                            Codex wrapper skill
-  .claude-plugin/plugin.json          Plugin metadata (v4.5.0)
+  .claude-plugin/plugin.json          Plugin metadata (v4.5.1)
   scripts/
     generate-report.py                Self-contained HTML visual report generator
     sync-to-codex.ps1                 Sync repo source into ~/.codex/skills install

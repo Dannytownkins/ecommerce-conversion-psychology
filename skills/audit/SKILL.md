@@ -9,7 +9,7 @@ argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|h
 ---
 
 <objective>
-Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce page. You are the coordinator — you orchestrate phases, present checkpoints, and write baton files. Subagents never write files.
+Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce page. You are the coordinator — you orchestrate phases, present checkpoints, and write baton files. Auditor, planner, reviewer, and builder subagents never write files — only the coordinator writes their output. **Exception:** the acquisition agent (dispatched to capture page screenshots and DOM) DOES write files directly (baton.json, dom.html, screenshots). After an acquisition agent returns, always verify its files exist on disk before proceeding.
 </objective>
 
 <flags>
@@ -43,15 +43,17 @@ How to acquire page data:
      - Mobile: viewport 390×844, 2x DPR (use `--force-device-scale-factor=2`), device "mobile"
      - Laptop: viewport 1440×900, device "laptop"
      - Desktop: viewport 1920×1080, device "desktop"
-     - Two devices: dispatch sequentially (first device, then second). The browser session is shared — you cannot run two viewports simultaneously.
+     - Two devices: dispatch sequentially (first device, then second). The `agent-browser` daemon is system-wide and persists between agent invocations — you cannot run two viewports simultaneously.
+     - **DPR between device passes:** If the second device needs a different DPR (e.g., mobile after desktop), the acquisition agent MUST run `agent-browser close` before setting the new device. Without this, `--args` flags and `set device` commands are ignored because the daemon is already running with the first device's settings.
        1. First device pass: full acquisition (DOM + screenshots + element coordinates). Wait for full completion.
        2. Second device pass: after first completes, dispatch second acquisition. Pass `dom_file` from first acquisition — screenshots + element coordinates only.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
-   - After acquisition, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
+   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, verify files actually exist on disk before reading them. Run `ls docs/cro/{engagement-id}/` and check for baton.json, dom.html, and at least 1 screenshot file. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, immediately fall back to manual acquisition — do not re-dispatch the subagent.
+   - After file verification passes, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
    - Set `source_mode: "url-dual"` in meta.json
-3. **Acquisition agent fails entirely** → fall back to manual acquisition (see below). Set `source_mode: "manual"`.
+3. **Acquisition agent fails entirely** (or reports COMPLETE but files are missing on disk) → fall back to manual acquisition (see below). Set `source_mode: "manual"`.
 4. **No agent-browser and no file path** → fall back to WebFetch for page content. Set `source_mode: "webfetch"`.
 5. Never silently fail — always tell the user what is happening
 
@@ -62,8 +64,16 @@ If the acquisition agent fails (crashes, returns malformed output, or produces a
    ```
    agent-browser set viewport 1440 900
    agent-browser goto "{url}"
+   agent-browser wait 3000
    agent-browser screenshot "docs/cro/{engagement-id}/section-1.jpg"
    ```
+   For subsequent sections, scroll using JS eval (NOT `agent-browser scroll` which fails silently on many themes):
+   ```
+   agent-browser eval "window.scrollTo({top: 700, behavior: 'instant'}); window.scrollY"
+   agent-browser wait 500
+   agent-browser screenshot "docs/cro/{engagement-id}/section-2.jpg"
+   ```
+   Always verify the returned scrollY matches the target. If it returns 0 or the wrong value, retry with `behavior: 'instant'`.
 3. Extract DOM: `agent-browser eval "document.documentElement.outerHTML"` and write to `dom.html`
 4. **Extract element coordinates** at each scroll position using the JS snippet from acquire.md Step 3b via `agent-browser eval`. This gives real `getBoundingClientRect()` coordinates even in manual mode.
 5. Write a valid `baton.json` with `source_mode: "manual"` and `status: "COMPLETE"`
@@ -277,7 +287,13 @@ Each Agent call contains:
 - **File path mode (source_mode: file):** Pass the page source code directly. No screenshots.
 - **Description mode (source_mode: description):** Pass the text description.
 
-**Baton validation:** After acquisition completes, read baton.json. Verify `status: 'COMPLETE'`, `screenshots` array has ≥1 entry with all required fields (index, label, scrollY, path, naturalWidth, naturalHeight). If validation fails, re-dispatch acquisition once. If second attempt fails, fall back to manual acquisition.
+**Baton validation and normalization:** After acquisition completes, read baton.json. Verify `status: 'COMPLETE'` and `screenshots` array has ≥1 entry. If validation fails, re-dispatch acquisition once. If second attempt fails, fall back to manual acquisition.
+
+**Baton normalization (mandatory):** Acquisition agents sometimes simplify the baton schema. The coordinator MUST normalize before proceeding:
+- If `screenshots` is an array of strings (e.g., `["section1.jpg", "section2.jpg"]`), convert each to an object: `{"index": N, "label": sections[N-1].label, "scrollY": sections[N-1].scrollY, "path": string_value, "naturalWidth": viewport.width * viewport.dpr, "naturalHeight": viewport.height * viewport.dpr}`.
+- If `screenshots` entries are objects but missing `naturalWidth`/`naturalHeight`, compute from `viewport.width * viewport.dpr`.
+- If `sections` entries are missing `screenshot_index`, assign sequentially (section 1 → screenshot 1, etc.).
+- If `sections` entries are missing `clusters`, infer from label keywords (see fallback rules below).
 
 **Screenshot-to-auditor routing:**
 For each auditor cluster, build its screenshot list:
