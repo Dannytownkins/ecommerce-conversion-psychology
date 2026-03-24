@@ -29,7 +29,7 @@ Use whichever succeeds first.
 2. **Viewport** — `{ width, height }` passed by the coordinator. No default — the coordinator must specify dimensions based on the selected device.
 3. **Device context** — `"desktop"` or `"mobile"`. Used for section detection heuristics and DPR selection:
    - Desktop: 1x DPR (default Chromium behavior)
-   - Mobile: 2x DPR via `--force-device-scale-factor=2` (balances visual fidelity with report file size)
+   - Mobile: 3x DPR via `agent-browser set device "iPhone 14"` (the only reliable high-DPR method)
 4. **Nonce** — random hex string from the coordinator (pass through to STATUS line)
 5. **dom_file** (optional) — path to an existing preprocessed DOM file. If provided, skip Steps 4, 5, and 6 entirely and reuse this DOM. Used by the coordinator for the second pass in "both" mode (screenshots only).
 
@@ -225,11 +225,11 @@ Capture screenshots at each section boundary:
 2. **Each subsequent section** — scroll to the boundary's `scrollY`, capture a viewport-sized screenshot
 
 Capture settings:
-- Device pixel ratio: determined by device context (1x for desktop, 2x for mobile — see below)
+- Device pixel ratio: determined by device context (1x for laptop/desktop, 3x for mobile via `set device "iPhone 14"`)
 - Format: JPEG, quality 80
 - Viewport: as specified in input (no default — coordinator must specify)
 
-**Report-optimized sizing:** Screenshots are embedded as base64 in visual reports, where the carousel renders at ~600-700px wide. Mobile screenshots at 3x DPR produce 1170px-wide images that inflate base64 size by ~45% with no visible quality gain in the report. Use **2x DPR for mobile** (780px-wide images) — this provides sufficient detail for visual audit while keeping report file sizes manageable. Desktop at 1x DPR (1440px) is already appropriate.
+**Report-optimized sizing:** Screenshots are embedded as base64 in visual reports, where the carousel renders at ~600-700px wide. Mobile screenshots at 3x DPR produce 1170px-wide images — larger than ideal but this is the only reliable high-DPR method (`--force-device-scale-factor=2` does not work on Windows, and `set viewport` after `set device` resets DPR to 1x). Laptop at 1x DPR (1440px) and desktop at 1x DPR (1920px) are already appropriate.
 
 **Post-capture compression:** If screenshots exceed 500KB each, re-encode at JPEG quality 60 before writing to disk. The visual difference is negligible at carousel display sizes but cuts file size significantly.
 
@@ -241,7 +241,7 @@ If conversion tools are unavailable, proceed with PNG but note `"format_override
 
 **No separate base64 files.** Do NOT create `.b64` files alongside screenshots. The visual report generator base64-encodes the JPEG files on the fly at render time. This halves disk usage per engagement. Record only the image path (not a `base64_path`) in the baton output.
 
-**Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, mobile at 390px CSS width with 2x DPR produces 780px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
+**Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, mobile at 390px CSS width with 3x DPR produces 1170px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
 
 **Scrolling method — use JS eval, not agent-browser scroll.** The `agent-browser scroll to` command fails silently on many Shopify themes and sites with `scroll-behavior: smooth` or JS-controlled scrolling. Always scroll via JavaScript eval:
 

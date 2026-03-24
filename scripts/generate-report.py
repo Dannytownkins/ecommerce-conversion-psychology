@@ -343,13 +343,68 @@ def parse_pass_findings(audit_path):
 
 # --- Marker Position Calculator ---
 
-def compute_marker_positions(markers_mapping, baton_data):
-    """Compute pixel positions for markers on screenshots."""
+def _auto_match_element(finding_element, elements, slide, screenshots):
+    """Try to match a finding's ELEMENT CSS selector against baton elements.
+
+    Returns the matched element dict or None.
+    Uses substring matching: if the finding says 'button.product-form__submit',
+    we look for baton elements whose selector or class contains 'product-form__submit'.
+    """
+    if not finding_element or not elements:
+        return None
+
+    # Get scroll range for this slide
+    scroll_y = 0
+    scroll_end = 99999
+    if isinstance(screenshots, list) and slide < len(screenshots):
+        ss = screenshots[slide]
+        scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
+        nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
+        scroll_end = scroll_y + nat_h
+
+    # Normalize: strip tag prefix, extract class/id fragments
+    search_terms = []
+    # "button#ProductSubmitButton-xxx" -> ["productsubmitbutton", "button"]
+    # "div.price--on-sale" -> ["price--on-sale", "price"]
+    # "[class*=\"cart\"]" -> ["cart"]
+    for part in re.split(r'[.#\[\]\s"*=]', finding_element):
+        cleaned = part.strip().lower()
+        if cleaned and len(cleaned) > 2 and cleaned not in ("class", "div", "span", "button", "input", "form", "img", "above", "fold", "area"):
+            search_terms.append(cleaned)
+
+    if not search_terms:
+        return None
+
+    for elem in elements:
+        elem_y = elem.get("y", 0)
+        # Only match elements within this slide's scroll range
+        if elem_y < scroll_y or elem_y > scroll_end:
+            continue
+
+        elem_sel = (elem.get("selector", "") + " " + elem.get("class", "")).lower()
+        elem_text = elem.get("text", "").lower()
+
+        for term in search_terms:
+            if term in elem_sel or term in elem_text:
+                return elem
+
+    return None
+
+
+def compute_marker_positions(markers_mapping, baton_data, findings=None):
+    """Compute pixel positions for markers on screenshots.
+
+    If findings are provided and a marker has no baton_element_index,
+    attempts to auto-match the finding's ELEMENT field against baton elements.
+    Unmatched markers are spread vertically to avoid stacking.
+    """
     elements = baton_data.get("elements", [])
     screenshots = baton_data.get("screenshots", [])
     sections = baton_data.get("sections", [])
 
     slide_markers = {}
+    # Track unmatched count per slide to spread them vertically
+    unmatched_count_per_slide = {}
 
     for mapping in markers_mapping:
         finding_idx = mapping["finding_index"]
@@ -360,30 +415,44 @@ def compute_marker_positions(markers_mapping, baton_data):
         if slide not in slide_markers:
             slide_markers[slide] = []
 
+        # Get screenshot dimensions for this slide
+        if isinstance(screenshots, list) and slide < len(screenshots):
+            ss = screenshots[slide]
+            scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
+            nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
+            nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
+        else:
+            scroll_y = 0
+            nat_h = 900
+            nat_w = 1440
+
+        resolved_elem = None
+
+        # Strategy 1: Explicit baton_element_index
         if elem_idx is not None and elem_idx < len(elements):
-            elem = elements[elem_idx]
+            resolved_elem = elements[elem_idx]
 
-            if isinstance(screenshots, list) and slide < len(screenshots):
-                ss = screenshots[slide]
-                scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
-                nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
-                nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
-            else:
-                scroll_y = 0
-                nat_h = 900
-                nat_w = 1440
+        # Strategy 2: Auto-match by ELEMENT field from findings
+        if resolved_elem is None and findings:
+            # Find the finding by index
+            for f in findings:
+                if f.get("index") == finding_idx:
+                    resolved_elem = _auto_match_element(
+                        f.get("element", ""), elements, slide, screenshots
+                    )
+                    break
 
-            abs_y = elem.get("y", 0)
+        if resolved_elem is not None:
+            abs_y = resolved_elem.get("y", 0)
             rel_y = abs_y - scroll_y
-            rel_x = elem.get("x", 0)
+            rel_x = resolved_elem.get("x", 0)
 
-            cx = rel_x + elem.get("width", 0) // 2
-            cy = rel_y + elem.get("height", 0) // 2
+            cx = rel_x + resolved_elem.get("width", 0) // 2
+            cy = rel_y + resolved_elem.get("height", 0) // 2
 
             cx = max(30, min(cx, nat_w - 30))
             cy = max(30, min(cy, nat_h - 30))
 
-            # Store both pixel coords AND percentage for CSS overlays
             x_pct = (cx / nat_w) * 100
             y_pct = (cy / nat_h) * 100
 
@@ -396,17 +465,29 @@ def compute_marker_positions(markers_mapping, baton_data):
                 "severity": severity,
             })
         else:
+            # Fallback: spread unmatched markers vertically along left edge
+            if slide not in unmatched_count_per_slide:
+                unmatched_count_per_slide[slide] = 0
+            n = unmatched_count_per_slide[slide]
+            unmatched_count_per_slide[slide] += 1
+
+            # Distribute from 15% to 85% of slide height, left column at 8%
+            y_pct = 15 + (n * 10) % 70
+            x_pct = 8
+
+            sec_h = nat_h
             if isinstance(sections, list) and slide < len(sections):
                 sec = sections[slide]
-                sec_h = sec.get("height", 400) if isinstance(sec, dict) else 400
-                slide_markers[slide].append({
-                    "number": finding_idx,
-                    "x": 100,
-                    "y": sec_h // 2,
-                    "x_pct": 10,
-                    "y_pct": 50,
-                    "severity": severity,
-                })
+                sec_h = sec.get("height", nat_h) if isinstance(sec, dict) else nat_h
+
+            slide_markers[slide].append({
+                "number": finding_idx,
+                "x": int(nat_w * x_pct / 100),
+                "y": int(nat_h * y_pct / 100),
+                "x_pct": x_pct,
+                "y_pct": y_pct,
+                "severity": severity,
+            })
 
     return slide_markers
 
@@ -667,7 +748,7 @@ def generate_report(
             screenshot_paths.append(ss)
 
     # Compute marker positions
-    slide_markers = compute_marker_positions(markers_mapping, baton)
+    slide_markers = compute_marker_positions(markers_mapping, baton, findings)
 
     # Burn markers into screenshots (if Pillow available)
     annotated_dir = engagement_path / "annotated" / device

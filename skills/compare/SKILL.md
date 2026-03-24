@@ -16,11 +16,12 @@ Compare your ecommerce page against a competitor's page. 1:1 same-type compariso
 --visual: Auto-generate visual comparison report (annotated wireframe with findings).
 --no-visual: Skip visual report prompt, markdown only.
 --engagement-id [id]: Target a specific past engagement.
---device [desktop|mobile|both]: Target device viewport. Default: prompt user (URL mode only).
-  - desktop: 1440×900, 1x DPR
-  - mobile: 390×844, 2x DPR (via --force-device-scale-factor=2)
-  - both: Runs acquisition/audit for both devices on both pages (4 total acquisitions). Produces separate per-device reports.
-  In --auto mode: defaults to "desktop" (no prompt).
+--device [mobile|laptop|desktop|both]: Target device viewport. Default: prompt user (URL mode only).
+  - mobile: 390×844, 3x DPR (via `agent-browser close` + `agent-browser set device "iPhone 14"`)
+  - laptop: 1440×900, 1x DPR
+  - desktop: 1920×1080, 1x DPR
+  - both: Accepts comma pair (e.g., `--device mobile,desktop`). Runs acquisition/audit for both devices on both pages. Produces separate per-device reports.
+  In --auto mode: defaults to "laptop" (no prompt).
 </flags>
 
 <intake>
@@ -39,9 +40,10 @@ For URLs: validate using ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md befo
 **URL mode only.** After intake, before page type validation, prompt for device:
 
 "Which device should I compare?
-1. **Desktop** (1440×900) — default
-2. **Mobile** (390×844, 2x DPR)
-3. **Both** — compares both devices (4 acquisitions total, takes longer)"
+1. **Mobile** (390×844)
+2. **Laptop** (1440×900) — default
+3. **Desktop** (1920×1080)
+4. **Both** (pick two, e.g., 1,3) — compares both devices (4 acquisitions total, takes longer)"
 
 **Cost warning for "both" mode:**
 "Scanning 2 URLs × 2 devices = 4 acquisitions. This will take longer. Proceed?"
@@ -86,10 +88,12 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 **Step 1: Acquire your page** (if URL)
 - Validate URL, dispatch acquisition agent (model: opus) with ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
 - Pass viewport dimensions and device context based on selected device:
-  - Desktop: viewport 1440×900, device "desktop"
-  - Mobile: viewport 390×844, 2x DPR (use `--force-device-scale-factor=2`), device "mobile"
-  - Both: two serial passes — desktop (full) then mobile (pass `dom_file`, screenshots only)
+  - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
+  - Laptop: viewport 1440×900, device "laptop"
+  - Desktop: viewport 1920×1080, device "desktop"
+  - Both: two serial passes — first device (full) then second device (pass `dom_file`, screenshots only). Run `agent-browser close` between passes if DPR changes.
 - Collect screenshots + preprocessed DOM + metadata
+- **Post-acquisition file verification:** After each acquisition agent returns, run `ls` on the engagement directory to verify baton.json, dom.html, and screenshots exist. If missing, fall back to manual acquisition.
 - If acquisition returns STATUS: BLOCKED → stop entirely, report error, do NOT proceed to competitor
 - Set source_mode in meta.json
 

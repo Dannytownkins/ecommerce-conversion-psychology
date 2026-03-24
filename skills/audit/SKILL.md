@@ -21,7 +21,7 @@ Run a four-phase CRO relay (audit, plan, review, build) on an existing ecommerce
 --ab-scaffold: Generate A/B test scaffold after plan phase. Pair with --ab-tool [tool] to specify existing tool.
 --engagement-id [id]: Resume or target a specific past engagement instead of creating new.
 --device [device(s)]: Target device viewport(s). Default: prompt user (URL mode only).
-  - mobile: 390×844, 2x DPR
+  - mobile: 390×844, 3x DPR (via `agent-browser close` + `agent-browser set device "iPhone 14"`)
   - laptop: 1440×900, 1x DPR
   - desktop: 1920×1080, 1x DPR
   Accepts comma-separated pairs (e.g., --device mobile,desktop). Max 2 per run.
@@ -40,7 +40,7 @@ How to acquire page data:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
    - Dispatch via Agent tool with `model: "opus"`
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
-     - Mobile: viewport 390×844, 2x DPR (use `--force-device-scale-factor=2`), device "mobile"
+     - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
      - Laptop: viewport 1440×900, device "laptop"
      - Desktop: viewport 1920×1080, device "desktop"
      - Two devices: dispatch sequentially (first device, then second). The `agent-browser` daemon is system-wide and persists between agent invocations — you cannot run two viewports simultaneously.
@@ -93,7 +93,7 @@ If agent-browser is not installed and the input is a URL:
 **URL mode only.** After mode detection, before engagement setup, prompt for device:
 
 "Which devices should I scan?
-1. **Mobile** (390×844, 2x DPR)
+1. **Mobile** (390×844, 3x DPR)
 2. **Laptop** (1440×900)
 3. **Desktop** (1920×1080)
 

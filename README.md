@@ -24,7 +24,7 @@ Not a checklist. Not a linter. A full workflow that catches what you miss, chall
 
 | Flag | Commands | Purpose |
 |------|----------|---------|
-| `--device` | audit, quick-scan, compare | Target viewport: `desktop` (1440x900), `mobile` (390x844), `both` |
+| `--device` | audit, quick-scan, compare | Target viewport: `mobile` (390x844), `laptop` (1440x900), `desktop` (1920x1080), or comma pair for two (e.g., `mobile,desktop`) |
 | `--auto` | audit, build | Skip checkpoints, run all phases automatically |
 | `--min-priority` | audit, build, quick-scan | Filter by severity: `critical`, `high`, `medium`, `low` |
 | `--platform` | audit, build, quick-scan | Skip detection: `shopify`, `nextjs`, `opencart` |
