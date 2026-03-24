@@ -239,6 +239,31 @@ def parse_findings(audit_path):
 
         findings.append(finding)
 
+    # Assign cluster from section headings (### cluster_name cluster)
+    cluster_sections = re.finditer(r"#{2,3}\s+(\S+)\s+cluster", content)
+    cluster_ranges = []
+    for cm in cluster_sections:
+        cluster_ranges.append((cm.start(), cm.group(1)))
+
+    # For each finding, find which cluster section it belongs to by position
+    if cluster_ranges:
+        # Find positions of all finding blocks in content
+        finding_positions = []
+        for match in re.finditer(r"FINDING:\s*(?:FAIL|PARTIAL)", content):
+            finding_positions.append(match.start())
+
+        for i, f in enumerate(findings):
+            if i < len(finding_positions):
+                pos = finding_positions[i]
+                assigned_cluster = cluster_ranges[0][1]  # default to first
+                for cstart, cname in cluster_ranges:
+                    if cstart < pos:
+                        assigned_cluster = cname
+                f["cluster"] = assigned_cluster
+    else:
+        for f in findings:
+            f["cluster"] = "general"
+
     return findings
 
 
@@ -735,12 +760,44 @@ def generate_report(
     </div>\n'''
 
     # --- Build clickable marker overlays HTML ---
+    # Build finding cluster lookup
+    finding_cluster_map = {f["index"]: f.get("cluster", "general") for f in findings}
+
     marker_overlays_html = ""
     for slide_idx, markers in slide_markers.items():
         for marker in markers:
             display = "flex" if slide_idx == 0 else "none"
             sev = marker.get("severity", "medium")
-            marker_overlays_html += f'''<a href="#finding-{marker['number']}" class="marker-overlay" data-slide="{slide_idx}" data-severity="{sev}" data-finding="{marker['number']}" style="top:{marker['y_pct']:.1f}%;left:{marker['x_pct']:.1f}%;display:{display};"></a>\n'''
+            cluster_id = finding_cluster_map.get(marker['number'], 'general')
+            marker_overlays_html += f'''<a href="#finding-{marker['number']}" class="marker-overlay" data-slide="{slide_idx}" data-severity="{sev}" data-finding="{marker['number']}" data-cluster="{cluster_id}" style="top:{marker['y_pct']:.1f}%;left:{marker['x_pct']:.1f}%;display:{display};"></a>\n'''
+
+    # --- Build cluster tabs HTML ---
+    cluster_order = []
+    cluster_counts_map = {}
+    for f in findings:
+        c = f.get("cluster", "general")
+        if c not in cluster_counts_map:
+            cluster_order.append(c)
+            cluster_counts_map[c] = 0
+        cluster_counts_map[c] += 1
+
+    CLUSTER_DISPLAY = {
+        "visual-cta": ("Visual & CTA", "#ff9f00"),
+        "trust-conversion": ("Trust", "#10b981"),
+        "context-platform": ("Context", "#6366f1"),
+        "audience-journey": ("Audience", "#a78bfa"),
+        "general": ("General", "#9ca3af"),
+    }
+
+    cluster_tabs_html = '<div class="cluster-tabs">\n'
+    for i, cluster_id in enumerate(cluster_order):
+        label, color = CLUSTER_DISPLAY.get(cluster_id, (cluster_id.replace("-", " ").title(), "#9ca3af"))
+        active = " active" if i == 0 else ""
+        count = cluster_counts_map[cluster_id]
+        cluster_tabs_html += f'          <button class="cluster-tab{active}" data-tab="{cluster_id}" onclick="switchCluster(this)"><span class="tab-dot" style="background:{color}"></span>{escape_html(label)}<span class="tab-count">{count}</span></button>\n'
+    cluster_tabs_html += '        </div>\n'
+
+    default_cluster = cluster_order[0] if cluster_order else "general"
 
     # --- Build finding cards HTML ---
     finding_cards = ""
@@ -754,7 +811,7 @@ def generate_report(
         tier_label = tier.title()
 
         finding_cards += f'''
-    <article id="finding-{idx}" class="finding-card" data-finding="{idx}">
+    <article id="finding-{idx}" class="finding-card" data-finding="{idx}" data-cluster="{f.get('cluster', 'general')}">
       <div class="finding-accent {sev}"></div>
       <div class="finding-header">
         <div class="finding-header-left">
@@ -941,16 +998,16 @@ a:hover {{ text-decoration: underline; }}
   z-index: 1;
 }}
 
-header {{ margin-bottom: 4rem; }}
+header {{ margin-bottom: 3rem; }}
 
 .header-content {{
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
   gap: 2.5rem;
+  align-items: start;
 }}
 
-.header-main {{ max-width: 56rem; }}
+.header-main {{ }}
 
 .eyebrow {{
   display: flex;
@@ -972,16 +1029,16 @@ header {{ margin-bottom: 4rem; }}
 }}
 
 h1 {{
-  font-size: 5.5rem;
+  font-size: 3.5rem;
   font-weight: 800;
-  letter-spacing: -0.05em;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  margin-bottom: 1rem;
 }}
 h1 .amber {{ color: var(--amber); }}
 
 .subtitle {{
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   color: var(--text-muted);
   font-weight: 400;
   max-width: 48rem;
@@ -990,10 +1047,10 @@ h1 .amber {{ color: var(--amber); }}
 .metadata {{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem 2rem;
+  gap: 1.5rem 1.5rem;
   border-left: 1px solid var(--border-light);
   padding-left: 2rem;
-  flex-shrink: 0;
+  align-self: center;
 }}
 .meta-item label {{
   display: block;
@@ -1009,25 +1066,28 @@ h1 .amber {{ color: var(--amber); }}
 
 .main-grid {{
   display: grid;
-  grid-template-columns: 7fr 5fr;
-  gap: 3rem;
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: auto 1fr;
+  gap: 0 3rem;
   align-items: start;
 }}
 
 .evidence-canvas {{ position: sticky; top: 2rem; }}
 
 .section-label {{
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.25em;
   color: var(--text-dim);
-  padding-bottom: 1rem;
+  padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  min-height: 2.5rem;
+  align-self: end;
 }}
 
 .nav-buttons {{ display: flex; gap: 0.75rem; }}
@@ -1068,7 +1128,7 @@ h1 .amber {{ color: var(--amber); }}
 .screenshot-overlay {{
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 40%);
+  background: linear-gradient(to top, rgba(0,0,0,0.3), transparent 30%);
   pointer-events: none;
 }}
 
@@ -1192,8 +1252,10 @@ h1 .amber {{ color: var(--amber); }}
 .finding-header {{
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
 }}
 .finding-header-left {{
   display: flex;
@@ -1202,11 +1264,12 @@ h1 .amber {{ color: var(--amber); }}
 }}
 
 .finding-number {{
-  font-size: 3rem;
-  font-weight: 300;
-  letter-spacing: -0.05em;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
-  color: var(--text);
+  color: var(--text-muted);
+  min-width: 2rem;
   cursor: pointer;
   transition: color 0.2s;
 }}
@@ -1250,24 +1313,31 @@ h1 .amber {{ color: var(--amber); }}
 }}
 
 .finding-title {{
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
   color: var(--text);
 }}
 
 .finding-observation {{
   color: rgba(255,255,255,0.6);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
   line-height: 1.7;
+  font-size: 0.9375rem;
 }}
 
 .recommendation-box {{
-  background: rgba(255,255,255,0.05);
-  padding: 1.25rem;
+  background: rgba(255,255,255,0.04);
+  padding: 1.25rem 1.5rem;
   border-radius: 0.75rem;
-  border: 1px solid rgba(255,255,255,0.05);
-  margin-bottom: 1.5rem;
+  border-left: 2px solid var(--amber);
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  margin-bottom: 1.25rem;
 }}
 .recommendation-header {{
   display: flex;
@@ -1280,6 +1350,10 @@ h1 .amber {{ color: var(--amber); }}
 .recommendation-header.high svg {{ color: var(--amber); }}
 .recommendation-header.medium svg {{ color: var(--medium); }}
 .recommendation-header.low svg {{ color: var(--low-text); }}
+.finding-card:has(.recommendation-header.critical) .recommendation-box {{ border-left-color: var(--critical); }}
+.finding-card:has(.recommendation-header.high) .recommendation-box {{ border-left-color: var(--amber); }}
+.finding-card:has(.recommendation-header.medium) .recommendation-box {{ border-left-color: var(--medium); }}
+.finding-card:has(.recommendation-header.low) .recommendation-box {{ border-left-color: var(--low-text); }}
 .recommendation-label {{
   font-size: 0.6875rem;
   font-weight: 700;
@@ -1294,20 +1368,22 @@ h1 .amber {{ color: var(--amber); }}
 
 .why-matters {{
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.75rem;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  padding: 0.75rem 0;
   color: var(--text-dim);
 }}
-.why-matters svg {{ width: 1rem; height: 1rem; flex-shrink: 0; }}
+.why-matters svg {{ width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 0.15rem; opacity: 0.5; }}
 
 .finding-footer {{
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
   border-top: 1px solid var(--border-light);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.75rem;
 }}
 .finding-footer-left {{
   display: flex;
@@ -1320,14 +1396,52 @@ h1 .amber {{ color: var(--amber); }}
   letter-spacing: 0.15em;
   font-weight: 700;
   color: var(--text-faint);
+  line-height: 1.4;
 }}
 .view-source {{
-  font-size: 0.625rem;
-  color: var(--text-muted);
-  font-weight: 500;
+  font-size: 0.6875rem;
+  color: var(--amber);
+  font-weight: 600;
   transition: color 0.2s;
+  text-decoration: none;
+  opacity: 0.7;
 }}
-.view-source:hover {{ color: var(--text); }}
+.view-source:hover {{ color: var(--amber); opacity: 1; }}
+
+/* Cluster Tabs */
+.cluster-tabs {{
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border-light);
+}}
+.cluster-tab {{
+  padding: 0.75rem 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  cursor: pointer;
+  border: 1px solid var(--border-light);
+  border-radius: 0.5rem;
+  background: transparent;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  white-space: nowrap;
+}}
+.cluster-tab:hover {{ color: var(--text); background: rgba(255,255,255,0.04); }}
+.cluster-tab.active {{ color: var(--text); background: rgba(255,255,255,0.08); border-color: var(--amber); }}
+.cluster-tab .tab-dot {{ width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }}
+.cluster-tab .tab-count {{
+  font-size: 0.625rem; font-weight: 600;
+  background: rgba(255,255,255,0.08);
+  padding: 0.125rem 0.5rem; border-radius: 9999px; color: var(--text-dim);
+}}
+.cluster-tab.active .tab-count {{ background: rgba(255,159,0,0.15); color: var(--amber); }}
 
 .tier-badge {{
   display: inline-flex;
@@ -1460,7 +1574,7 @@ h1 .amber {{ color: var(--amber); }}
   .main-grid {{ grid-template-columns: 1fr; }}
   .evidence-canvas {{ position: static; }}
   h1 {{ font-size: 3.5rem; }}
-  .header-content {{ flex-direction: column; }}
+  .header-content {{ grid-template-columns: 1fr; }}
   .metadata {{ border-left: none; padding-left: 0; border-top: 1px solid var(--border-light); padding-top: 2rem; }}
 }}
 
@@ -1500,15 +1614,16 @@ h1 .amber {{ color: var(--amber); }}
 
     <div class="main-grid">
 
-      <section class="evidence-canvas">
-        <div class="section-label">
-          <span>Primary Interface Evidence</span>
-          <div class="nav-buttons">
-            <button class="nav-btn" onclick="prevSlide()">{SVG_CHEVRON_LEFT}</button>
-            <button class="nav-btn" onclick="nextSlide()">{SVG_CHEVRON_RIGHT}</button>
-          </div>
+      <div class="section-label">
+        <span>Primary Interface Evidence</span>
+        <div class="nav-buttons">
+          <button class="nav-btn" onclick="prevSlide()">{SVG_CHEVRON_LEFT}</button>
+          <button class="nav-btn" onclick="nextSlide()">{SVG_CHEVRON_RIGHT}</button>
         </div>
+      </div>
+      <div class="section-label">Diagnostic Insights</div>
 
+      <section class="evidence-canvas">
         <div class="screenshot-wrapper">
           <div class="device-frame">
             <div class="screenshot-container" id="mainSlide" style="--slide-aspect-ratio:{initial_slide_aspect_ratio};">
@@ -1548,7 +1663,7 @@ h1 .amber {{ color: var(--amber); }}
       </section>
 
       <section class="findings">
-        <div class="section-label">Diagnostic Insights</div>
+        {cluster_tabs_html}
         {finding_cards}
       </section>
 
@@ -1659,6 +1774,23 @@ h1 .amber {{ color: var(--amber); }}
     setTimeout(function() {{ card.classList.remove('highlight'); }}, 2500);
   }}
 }})();
+
+  function switchCluster(btn) {{
+    document.querySelectorAll('.cluster-tab').forEach(function(t) {{ t.classList.remove('active'); }});
+    btn.classList.add('active');
+    var cluster = btn.getAttribute('data-tab');
+    document.querySelectorAll('.finding-card[data-cluster]').forEach(function(card) {{
+      card.style.display = (card.getAttribute('data-cluster') === cluster) ? 'block' : 'none';
+    }});
+    document.querySelectorAll('.marker-overlay[data-cluster]').forEach(function(marker) {{
+      marker.style.visibility = (marker.getAttribute('data-cluster') === cluster) ? 'visible' : 'hidden';
+    }});
+  }}
+
+  document.addEventListener('DOMContentLoaded', function() {{
+    var defaultTab = document.querySelector('.cluster-tab.active');
+    if (defaultTab) switchCluster(defaultTab);
+  }});
   </script>
 
 </body>
