@@ -332,7 +332,36 @@ If --min-priority set and zero findings remain after filter: "No findings at [PR
 </phase_audit>
 
 <audit_assembly>
-After collecting all auditor outputs and deduplicating findings (see below), assemble audit.md with this structure:
+After collecting all auditor outputs and deduplicating findings (see below), assemble audit.md.
+
+**CRITICAL FORMAT REQUIREMENT:** Every FAIL and PARTIAL finding in audit.md **MUST** be wrapped in triple-backtick code fences. The visual report generator (`generate-report.py`) parses findings with a regex that matches code-fenced blocks. If findings are written as plain markdown (e.g., `**FINDING: FAIL**` without code fences), they will NOT appear in the DIAGNOSTIC INSIGHTS panel of the visual report — the report will show annotated screenshots with markers but zero finding cards.
+
+**Correct finding format** (note the triple backticks on their own lines before and after):
+
+    ```
+    FINDING: FAIL
+    SECTION: primary-cta
+    ELEMENT: button.btn-cart
+    SOURCE: VISUAL
+    OBSERVATION: [observation text]
+    RECOMMENDATION: [recommendation text]
+    REFERENCE: [reference file and finding number]
+    PRIORITY: HIGH
+    **Why this matters:** [rationale]
+    ↳ [citation] [Tier]
+    ```
+
+**Incorrect** (will cause zero findings in visual report):
+
+    **FINDING: FAIL**
+    SECTION: primary-cta
+    ...
+
+When assembling, copy each finding from the auditor output preserving its code fences. Do NOT reformat findings as plain markdown, bold text, or any other style. The auditors output code-fenced findings per `workflows/audit.md` — preserve that format exactly.
+
+**Note on FINDING verdict:** Use only `FAIL` or `PARTIAL` as the verdict. `CRITICAL` is a PRIORITY value, not a verdict. A critical finding should be `FINDING: FAIL` with `PRIORITY: CRITICAL`.
+
+Assemble audit.md with this structure:
 
 ```
 # CRO Audit: {page_title} ({device_label})
@@ -353,10 +382,10 @@ After collecting all auditor outputs and deduplicating findings (see below), ass
 ## Findings
 
 ### {cluster_name} cluster
-{findings ordered by priority: CRITICAL → HIGH → MEDIUM → LOW}
+{code-fenced findings ordered by priority: CRITICAL → HIGH → MEDIUM → LOW}
 
 ### {next_cluster_name} cluster
-{findings}
+{code-fenced findings}
 
 ---
 

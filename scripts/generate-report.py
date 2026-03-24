@@ -27,10 +27,12 @@ Arguments:
 
 import argparse
 import base64
+import io
 import json
 import os
 import re
 import sys
+import tempfile
 from pathlib import Path
 
 try:
@@ -81,14 +83,17 @@ def hex_to_rgb(hex_color):
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def burn_markers_into_screenshot(screenshot_path, markers, output_path):
+def render_annotated_screenshot_bytes(screenshot_path, markers):
     """
-    Burn numbered severity-colored circle markers directly onto a JPEG screenshot.
+    Render numbered severity-colored circle markers directly onto a JPEG screenshot
+    and return the encoded bytes. Keeping this in memory avoids stale or partially
+    overwritten intermediate files when multiple reports are generated close together.
     """
     if not HAS_PILLOW:
-        return False
+        return None
 
-    img = Image.open(screenshot_path).convert("RGB")
+    with Image.open(screenshot_path) as source_img:
+        img = source_img.convert("RGB")
     draw = ImageDraw.Draw(img)
 
     font = None
@@ -146,23 +151,74 @@ def burn_markers_into_screenshot(screenshot_path, markers, output_path):
         else:
             draw.text((cx - 4, cy - 5), text, fill=(255, 255, 255))
 
-    img.save(output_path, "JPEG", quality=85)
-    return True
+    buffer = io.BytesIO()
+    img.save(buffer, "JPEG", quality=85)
+    return buffer.getvalue()
+
+
+def write_bytes_atomic(output_path, data):
+    """Write bytes atomically to avoid partially-read intermediates."""
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    fd, temp_path = tempfile.mkstemp(
+        prefix=f".{output_path.stem}-",
+        suffix=output_path.suffix,
+        dir=str(output_path.parent),
+    )
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(data)
+        os.replace(temp_path, output_path)
+    except Exception:
+        try:
+            os.unlink(temp_path)
+        except FileNotFoundError:
+            pass
+        raise
+
+
+def write_text_atomic(output_path, text):
+    """Write UTF-8 text atomically to avoid partially-written HTML reports."""
+    write_bytes_atomic(output_path, text.encode("utf-8"))
 
 
 # --- Finding Parser ---
 
 def parse_findings(audit_path):
-    """Parse audit.md to extract FAIL and PARTIAL findings."""
+    """Parse audit.md to extract FAIL and PARTIAL findings.
+
+    Supports two formats:
+    1. Code-fenced (preferred): findings wrapped in ``` ... ``` blocks
+    2. Bare markdown (fallback): findings starting with FINDING: or **FINDING:
+       at line start, terminated by the next finding or section heading
+
+    The code-fenced format is authoritative and specified in the audit assembly
+    instructions. The bare fallback exists for resilience when the coordinator
+    reformats findings during assembly.
+    """
     with open(audit_path, "r", encoding="utf-8") as f:
         content = f.read()
 
     findings = []
+
+    # Strategy 1: Code-fenced findings (preferred)
     blocks = re.findall(
         r"```\s*\nFINDING:\s*(FAIL|PARTIAL)\s*\n(.*?)```",
         content,
         re.DOTALL,
     )
+
+    # Strategy 2: Bare markdown findings (fallback if no fenced blocks found)
+    if not blocks:
+        blocks = re.findall(
+            r"(?:^|\n)\*{0,2}FINDING:\s*(FAIL|PARTIAL)\*{0,2}\s*\n(.*?)(?=\n\*{0,2}FINDING:|\n## |\n---|\Z)",
+            content,
+            re.DOTALL,
+        )
+        if blocks:
+            print(f"WARNING: No code-fenced findings found. Fell back to bare markdown parsing ({len(blocks)} findings).", file=sys.stderr)
+            print("  Fix: wrap each finding in ``` code fences per audit assembly instructions.", file=sys.stderr)
 
     for idx, (verdict, block) in enumerate(blocks, 1):
         finding = {"index": idx, "verdict": verdict}
@@ -184,6 +240,63 @@ def parse_findings(audit_path):
         findings.append(finding)
 
     return findings
+
+
+def parse_citation_urls(plugin_root):
+    """Parse citations/sources.md to build a lookup table: (ref_file, finding_number) -> URL."""
+    sources_path = os.path.join(plugin_root, "citations", "sources.md")
+    if not os.path.exists(sources_path):
+        return {}
+
+    with open(sources_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    url_map = {}
+    current_ref_file = None
+
+    for line in content.split("\n"):
+        header_match = re.match(r"^##\s+(\S+\.md)", line)
+        if header_match:
+            current_ref_file = header_match.group(1)
+            continue
+
+        if current_ref_file and line.startswith("|"):
+            cells = [c.strip() for c in line.split("|")]
+            if len(cells) >= 5:
+                finding_id = cells[1].strip()
+                url = cells[4].strip()
+                if url.startswith("http") and finding_id not in ("Finding", "---", "------"):
+                    key = (current_ref_file, finding_id)
+                    url_map[key] = url
+
+    return url_map
+
+
+def resolve_citation_url(finding, url_map):
+    """Resolve a finding's citation to a source URL using the url_map."""
+    ref = finding.get("reference", "")
+    if not ref:
+        return "#"
+
+    ref_match = re.match(r"([a-z0-9_-]+\.md)[\s,;:\u2014-]+(?:Finding\s+)?(\d+)", ref, re.IGNORECASE)
+    if ref_match:
+        ref_file = ref_match.group(1)
+        finding_num = ref_match.group(2)
+        url = url_map.get((ref_file, finding_num))
+        if url:
+            return url
+
+    citation = finding.get("citation", "")
+    if citation:
+        cite_ref_match = re.match(r"([a-z0-9_-]+\.md)[\s,;:\u2014-]+(?:Finding\s+)?(\d+)", citation, re.IGNORECASE)
+        if cite_ref_match:
+            ref_file = cite_ref_match.group(1)
+            finding_num = cite_ref_match.group(2)
+            url = url_map.get((ref_file, finding_num))
+            if url:
+                return url
+
+    return "#"
 
 
 def parse_pass_findings(audit_path):
@@ -279,6 +392,11 @@ def encode_image_base64(image_path):
     """Base64 encode an image file for data URI embedding."""
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode("ascii")
+
+
+def encode_bytes_base64(data):
+    """Base64 encode raw image bytes for data URI embedding."""
+    return base64.b64encode(data).decode("ascii")
 
 
 def escape_html(text):
@@ -502,6 +620,11 @@ def generate_report(
     findings = parse_findings(engagement_path / audit_file)
     pass_findings = parse_pass_findings(engagement_path / audit_file)
 
+    # Resolve citation URLs from sources.md
+    url_map = parse_citation_urls(plugin_root)
+    for f in findings:
+        f["source_url"] = resolve_citation_url(f, url_map)
+
     markers_mapping = []
     if markers_file and os.path.exists(markers_file):
         with open(markers_file, "r", encoding="utf-8") as f:
@@ -522,8 +645,8 @@ def generate_report(
     slide_markers = compute_marker_positions(markers_mapping, baton)
 
     # Burn markers into screenshots (if Pillow available)
-    annotated_dir = engagement_path / "annotated"
-    annotated_dir.mkdir(exist_ok=True)
+    annotated_dir = engagement_path / "annotated" / device
+    annotated_dir.mkdir(parents=True, exist_ok=True)
 
     slide_base64 = []
     slide_aspect_ratios = []
@@ -545,8 +668,12 @@ def generate_report(
         annotated_path = annotated_dir / f"annotated-{i}.jpg"
 
         if HAS_PILLOW and markers_for_slide:
-            burn_markers_into_screenshot(str(full_path), markers_for_slide, str(annotated_path))
-            slide_base64.append(encode_image_base64(str(annotated_path)))
+            annotated_bytes = render_annotated_screenshot_bytes(str(full_path), markers_for_slide)
+            if annotated_bytes:
+                write_bytes_atomic(annotated_path, annotated_bytes)
+                slide_base64.append(encode_bytes_base64(annotated_bytes))
+            else:
+                slide_base64.append(encode_image_base64(str(full_path)))
         else:
             slide_base64.append(encode_image_base64(str(full_path)))
 
@@ -654,7 +781,7 @@ def generate_report(
           <span class="ref-id">{escape_html(f.get('reference', ''))}</span>
           <span class="tier-badge tier-badge--{tier}">{escape_html(tier_label)}</span>
         </div>
-        <a href="#" class="view-source">View Source</a>
+        <a href="{escape_html(f.get('source_url', '#'))}" class="view-source" target="_blank" rel="noopener noreferrer"{'  style="display:none"' if f.get('source_url', '#') == '#' else ''}>View Source</a>
       </div>
     </article>
 '''
@@ -1545,8 +1672,7 @@ h1 .amber {{ color: var(--amber); }}
             output_file = f"visual-report-{device}.html"
 
     output_path = engagement_path / output_file
-    with open(output_path, "w", encoding="utf-8") as f:
-        f.write(html)
+    write_text_atomic(output_path, html)
 
     print(f"Report written to: {output_path}")
     print(f"  Device: {device_label}")

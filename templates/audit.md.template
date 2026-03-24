@@ -11,18 +11,23 @@
 
 ### [CLUSTER_NAME]
 
+<!-- IMPORTANT: Each finding MUST be wrapped in triple-backtick code fences.
+     The visual report generator (generate-report.py) parses findings using a regex
+     that matches ``` followed by FINDING: FAIL|PARTIAL. Without code fences,
+     findings will NOT appear in the visual report's DIAGNOSTIC INSIGHTS panel. -->
+
+```
 FINDING: [PASS|FAIL|PARTIAL|SKIP]
 SECTION: [canonical-slug]
+ELEMENT: [CSS selector or short description of target element]
 SOURCE: [VISUAL|CODE|BOTH]
 OBSERVATION: [specific observation about the page]
 RECOMMENDATION: [actionable recommendation with citation]
 REFERENCE: [reference-file.md — section name]
 PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
-EFFORT: [Low|Medium|High]
-QUICK_WIN: [true|false]
 **Why this matters:** [2-3 sentence rationale]
 ↳ [reference-file.md], Finding [N] ([Study/Author], [Year]) [Gold|Silver|Bronze]
-  URL: [source URL from the reference file's Source field]
+```
 
 ---
 
