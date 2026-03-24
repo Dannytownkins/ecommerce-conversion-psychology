@@ -5,7 +5,7 @@ description: >-
   comparison with side-by-side scoring and gap analysis. Supports URLs
   (via agent-browser) and local file paths.
 disable-model-invocation: true
-argument-hint: "[your-url-or-path] [competitor-url-or-path] [--device desktop|mobile|both] [--visual] [--no-visual] [--engagement-id id]"
+argument-hint: "[your-url-or-path] [competitor-url-or-path] [--device mobile|laptop|desktop|both] [--visual] [--no-visual] [--engagement-id id]"
 ---
 
 <objective>
@@ -50,7 +50,7 @@ For URLs: validate using ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md befo
 In --auto mode: show warning but proceed without prompt.
 
 - If `--device` flag is set: use specified device, skip prompt.
-- In `--auto` mode: default to `desktop`, skip prompt.
+- In `--auto` mode: default to `laptop`, skip prompt.
 - For file path inputs: skip device selection entirely.
 
 Set `devices_requested` in meta.json.

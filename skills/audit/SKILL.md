@@ -97,7 +97,7 @@ If agent-browser is not installed and the input is a URL:
 2. **Laptop** (1440×900)
 3. **Desktop** (1920×1080)
 
-Select up to two (e.g., 1,2). Scanning two devices runs both viewports in parallel."
+Select up to two (e.g., 1,2). Scanning two devices runs both viewports sequentially."
 
 - If `--device` flag is set: use specified device(s), skip prompt. Accepts: `mobile`, `laptop`, `desktop`, or comma-separated pairs (e.g., `--device mobile,desktop`).
 - In `--auto` mode: default to `mobile,laptop`, skip prompt.

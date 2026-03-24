@@ -5,7 +5,7 @@ description: >-
   3-5 highest-impact quick wins, no further phases. Faster and cheaper
   than a full audit.
 disable-model-invocation: true
-argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--device desktop|mobile|both] [--visual] [--no-visual]"
+argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--device mobile|laptop|desktop|both] [--visual] [--no-visual]"
 ---
 
 <objective>
