@@ -18,7 +18,7 @@ You capture page data for CRO analysis. Your job is purely mechanical: navigate,
 **Base64 encoding (cross-platform):**
 When base64 encoding is needed, try in order:
 1. `base64 -w 0 < {file}` (Linux/macOS/Git Bash)
-2. `python3 -c "import base64,sys;sys.stdout.write(base64.b64encode(open(sys.argv[1],'rb').read()).decode())" {file}` (Python fallback)
+2. `python -c "import base64,sys;sys.stdout.write(base64.b64encode(open(sys.argv[1],'rb').read()).decode())" {file}` (Python fallback — use `python` on Windows, `python3` on Linux/macOS)
 3. `certutil -encode {file} {file}.b64 && grep -v CERTIFICATE {file}.b64 | tr -d '\r\n'` (Windows native fallback)
 
 Use whichever succeeds first.

@@ -255,6 +255,7 @@ Before writing audit.md, deduplicate findings across clusters:
 - When duplicates are found, keep the finding with the higher PRIORITY. If equal, keep the one with the stronger evidence tier (Gold > Silver > Bronze)
 - Append to the kept finding's observation: 'Also identified by {other_cluster} cluster.'
 - Do NOT deduplicate findings that share a SECTION slug but target different elements (e.g., two different CTAs both flagged under primary-cta)
+- **Ethics gate preservation rule:** If ANY auditor flagged a finding as PRIORITY: CRITICAL with a reference to ethics-gate.md, the deduplicated finding MUST retain PRIORITY: CRITICAL regardless of other auditors' severity ratings. Ethics violations cannot be downgraded during deduplication. This ensures the Ethics Gate summary and finding cards are consistent — a violation listed in the Ethics Gate section always appears as a CRITICAL finding card in the visual report.
 - Expected reduction: 20-30 raw findings typically deduplicate to 12-18 unique findings
 </finding_deduplication>
 
@@ -678,6 +679,15 @@ Available at any checkpoint when user requests a visual report.
 
 **Preferred: Python script.** Before attempting LLM-based assembly, try the Python report generator:
 
+**Prerequisites (run once per environment):**
+```bash
+# Detect the working Python command (Windows uses `python`, Linux/macOS use `python3`)
+python --version 2>/dev/null && PYTHON_CMD=python || PYTHON_CMD=python3
+
+# Install Pillow if missing (required for marker burning into screenshots)
+$PYTHON_CMD -c "from PIL import Image" 2>/dev/null || $PYTHON_CMD -m pip install Pillow
+```
+
 1. Create a marker mapping JSON by matching each finding's ELEMENT field to a baton element entry. Write this as a JSON file (e.g., `markers.json`) in the engagement directory:
    ```json
    [
@@ -687,9 +697,9 @@ Available at any checkpoint when user requests a visual report.
    ```
    Null `baton_element_index` means no element match — the script centers the marker on the section area.
 
-2. Run the script:
+2. Run the script (use `$PYTHON_CMD` from prerequisites, or `python` on Windows / `python3` on Linux/macOS):
    ```bash
-   python3 ${CLAUDE_PLUGIN_ROOT}/scripts/generate-report.py \
+   $PYTHON_CMD ${CLAUDE_PLUGIN_ROOT}/scripts/generate-report.py \
      --engagement docs/cro/{engagement-id} \
      --device {device} \
      --audit {audit-filename} \
