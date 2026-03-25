@@ -301,13 +301,22 @@ To check a citation, ask Claude Code:
 | Finding | Description | Source | URL |
 |---------|-------------|--------|-----|
 | 1 | 4.0-4.7 star rating sweet spot | Spiegel Research Center (2017) | https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/ |
+| 2 | Reviews matter more for higher-priced products | Spiegel Research Center (2017) | https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/ |
+| 3 | Five reviews = 270% conversion lift | Spiegel Research Center (2017) | https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/ |
 | 4 | 95% read reviews before purchase | PowerReviews (2025) | https://www.powerreviews.com/research/ |
+| 5 | UGC outperforms professional photography | Bazaarvoice (2022) | https://www.bazaarvoice.com/blog/exploring-the-bazaarvoice-shopper-experience-index-2022/ |
 | 6 | Photo/video reviews convert at 2x | Skeepers/Yotpo | https://skeepers.io/blog/5-reasons-why-photo-reviews-positively-impact-e-commerce/ |
+| 7 | Negative reviews increase trust and time on site | Spiegel Research Center / RaveCapture | https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/ |
 | 8 | Specific testimonials outperform vague by ~58% | VWO Blog | https://vwo.com/blog/testimonials-improve-conversion-rate/ |
+| 9 | Countdown timers — variable results, can backfire | Hmurovic et al. (2023), J. Marketing Research | https://doi.org/10.1177/00222437221130713 |
 | 10 | Scarcity messages decrease sales 17.6% | UCLA Anderson | https://anderson-review.ucla.edu/inventory-scarcity |
+| 11 | Scarcity meta-analysis — depends on type and product | Barton et al. (2022), J. Retailing | https://doi.org/10.1016/j.jretai.2022.06.003 |
+| 12 | Worchel cookie scarcity experiment | Worchel, Lee & Adewole (1975), JPSP | https://doi.org/10.1037/0022-3514.32.5.906 |
 | 13 | Booking.com regulatory actions | Gulf News | https://gulfnews.com/travel/only-one-room-left-bookingcom-faces-massive-lawsuits-over-anti-competitive-practices-market-abuse-deceptive-pricing-fabricated-scarcity-tactics-1.500230124 |
 | 14 | Scarcity cues increase negative emotions | Bauer et al. (2023), Behaviour & IT | https://www.tandfonline.com/doi/full/10.1080/0144929X.2023.2242966 |
 | 15 | Real-time social proof notifications 10-15% lift | ShopperApproved | https://results.shopperapproved.com/evidence |
+| 16 | Influencer/peer reviews vs celebrity endorsements | Schouten et al. (2020), Intl J. Advertising | https://doi.org/10.1080/02650487.2019.1634898 |
+| 17 | Social proof varies by purchase journey stage | Gartner Digital Markets | https://www.gartner.com/en/digital-markets |
 | 18 | Q&A sections drive conversion lift | Bazaarvoice (2022) | https://www.bazaarvoice.com/blog/exploring-the-bazaarvoice-shopper-experience-index-2022/ |
 | 19 | Review recency matters — 90% consider it | PowerReviews (2024) | https://www.powerreviews.com/the-complete-guide-to-ratings-reviews-2024-edition/ |
 | 20 | High vs low consideration social proof | Shopify Enterprise | https://www.shopify.com/uk/enterprise/blog/the-moment-of-truth-optimizing-the-high-consideration-zones-of-your-website |
