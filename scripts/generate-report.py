@@ -27,12 +27,10 @@ Arguments:
 
 import argparse
 import base64
-import io
 import json
 import os
 import re
 import sys
-import tempfile
 from pathlib import Path
 
 try:
@@ -83,17 +81,14 @@ def hex_to_rgb(hex_color):
     return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 
-def render_annotated_screenshot_bytes(screenshot_path, markers):
+def burn_markers_into_screenshot(screenshot_path, markers, output_path):
     """
-    Render numbered severity-colored circle markers directly onto a JPEG screenshot
-    and return the encoded bytes. Keeping this in memory avoids stale or partially
-    overwritten intermediate files when multiple reports are generated close together.
+    Burn numbered severity-colored circle markers directly onto a JPEG screenshot.
     """
     if not HAS_PILLOW:
-        return None
+        return False
 
-    with Image.open(screenshot_path) as source_img:
-        img = source_img.convert("RGB")
+    img = Image.open(screenshot_path).convert("RGB")
     draw = ImageDraw.Draw(img)
 
     font = None
@@ -151,36 +146,8 @@ def render_annotated_screenshot_bytes(screenshot_path, markers):
         else:
             draw.text((cx - 4, cy - 5), text, fill=(255, 255, 255))
 
-    buffer = io.BytesIO()
-    img.save(buffer, "JPEG", quality=85)
-    return buffer.getvalue()
-
-
-def write_bytes_atomic(output_path, data):
-    """Write bytes atomically to avoid partially-read intermediates."""
-    output_path = Path(output_path)
-    output_path.parent.mkdir(parents=True, exist_ok=True)
-
-    fd, temp_path = tempfile.mkstemp(
-        prefix=f".{output_path.stem}-",
-        suffix=output_path.suffix,
-        dir=str(output_path.parent),
-    )
-    try:
-        with os.fdopen(fd, "wb") as f:
-            f.write(data)
-        os.replace(temp_path, output_path)
-    except Exception:
-        try:
-            os.unlink(temp_path)
-        except FileNotFoundError:
-            pass
-        raise
-
-
-def write_text_atomic(output_path, text):
-    """Write UTF-8 text atomically to avoid partially-written HTML reports."""
-    write_bytes_atomic(output_path, text.encode("utf-8"))
+    img.save(output_path, "JPEG", quality=85)
+    return True
 
 
 # --- Finding Parser ---
@@ -189,39 +156,56 @@ def parse_findings(audit_path):
     """Parse audit.md to extract FAIL and PARTIAL findings.
 
     Supports two formats:
-    1. Code-fenced (preferred): findings wrapped in ``` ... ``` blocks
-    2. Bare markdown (fallback): findings starting with FINDING: or **FINDING:
-       at line start, terminated by the next finding or section heading
+    1. Fenced: findings wrapped in triple-backtick code blocks
+    2. Unfenced: FINDING: line followed by field lines, terminated by blank
+       line, next heading (** or #), or EOF
 
-    The code-fenced format is authoritative and specified in the audit assembly
-    instructions. The bare fallback exists for resilience when the coordinator
-    reformats findings during assembly.
+    Also detects cluster membership from ### cluster headings.
     """
     with open(audit_path, "r", encoding="utf-8") as f:
         content = f.read()
 
+    # Build cluster map: list of (char_offset, cluster_slug) from ### headings
+    cluster_map = []
+    for m in re.finditer(r"^### ([\w-]+) cluster", content, re.MULTILINE):
+        cluster_map.append((m.start(), m.group(1)))
+
+    def cluster_at(pos):
+        """Return cluster slug for a character position in content."""
+        result = None
+        for offset, slug in cluster_map:
+            if offset <= pos:
+                result = slug
+            else:
+                break
+        return result
+
     findings = []
 
-    # Strategy 1: Code-fenced findings (preferred)
-    blocks = re.findall(
+    # Strategy 1: fenced blocks  ```\nFINDING: FAIL\n...\n```
+    fenced = list(re.finditer(
         r"```\s*\nFINDING:\s*(FAIL|PARTIAL)\s*\n(.*?)```",
         content,
         re.DOTALL,
-    )
+    ))
 
-    # Strategy 2: Bare markdown findings (fallback if no fenced blocks found)
-    if not blocks:
-        blocks = re.findall(
-            r"(?:^|\n)\*{0,2}FINDING:\s*(FAIL|PARTIAL)\*{0,2}\s*\n(.*?)(?=\n\*{0,2}FINDING:|\n## |\n---|\Z)",
+    # Strategy 2: unfenced blocks
+    if not fenced:
+        fenced = list(re.finditer(
+            r"^FINDING:\s*(FAIL|PARTIAL)\s*\n(.*?)(?=\n\n\*\*\d|^FINDING:|^## |^### |^# |\Z)",
             content,
-            re.DOTALL,
-        )
-        if blocks:
-            print(f"WARNING: No code-fenced findings found. Fell back to bare markdown parsing ({len(blocks)} findings).", file=sys.stderr)
-            print("  Fix: wrap each finding in ``` code fences per audit assembly instructions.", file=sys.stderr)
+            re.DOTALL | re.MULTILINE,
+        ))
 
-    for idx, (verdict, block) in enumerate(blocks, 1):
+    for idx, m in enumerate(fenced, 1):
+        verdict = m.group(1)
+        block = m.group(2)
         finding = {"index": idx, "verdict": verdict}
+
+        # Assign cluster from position in document
+        cluster = cluster_at(m.start())
+        if cluster:
+            finding["cluster"] = cluster
 
         for field in ["SECTION", "ELEMENT", "SOURCE", "PRIORITY", "OBSERVATION", "RECOMMENDATION", "REFERENCE"]:
             match = re.search(rf"^{field}:\s*(.+)$", block, re.MULTILINE)
@@ -239,89 +223,70 @@ def parse_findings(audit_path):
 
         findings.append(finding)
 
-    # Assign cluster from section headings (### cluster_name cluster)
-    cluster_sections = re.finditer(r"#{2,3}\s+(\S+)\s+cluster", content)
-    cluster_ranges = []
-    for cm in cluster_sections:
-        cluster_ranges.append((cm.start(), cm.group(1)))
-
-    # For each finding, find which cluster section it belongs to by position
-    if cluster_ranges:
-        # Find positions of all finding blocks in content
-        finding_positions = []
-        for match in re.finditer(r"FINDING:\s*(?:FAIL|PARTIAL)", content):
-            finding_positions.append(match.start())
-
-        for i, f in enumerate(findings):
-            if i < len(finding_positions):
-                pos = finding_positions[i]
-                assigned_cluster = cluster_ranges[0][1]  # default to first
-                for cstart, cname in cluster_ranges:
-                    if cstart < pos:
-                        assigned_cluster = cname
-                f["cluster"] = assigned_cluster
-    else:
-        for f in findings:
-            f["cluster"] = "general"
-
     return findings
 
 
-def parse_citation_urls(plugin_root):
-    """Parse citations/sources.md to build a lookup table: (ref_file, finding_number) -> URL."""
-    sources_path = os.path.join(plugin_root, "citations", "sources.md")
-    if not os.path.exists(sources_path):
+def parse_sources(plugin_path):
+    """Parse citations/sources.md into a lookup dict.
+
+    Returns dict keyed by "filename:finding_number" → first URL found.
+    Example: "checkout-optimization.md:1" → "https://baymard.com/..."
+    """
+    sources_path = Path(plugin_path) / "citations" / "sources.md"
+    if not sources_path.exists():
         return {}
 
+    lookup = {}
+    current_file = None
     with open(sources_path, "r", encoding="utf-8") as f:
-        content = f.read()
+        for line in f:
+            line = line.strip()
+            # Detect section headers like "## checkout-optimization.md"
+            if line.startswith("## ") and line.endswith(".md"):
+                current_file = line[3:].strip()
+                continue
+            # Parse table rows: | Finding | Description | Source | URL |
+            if current_file and line.startswith("|") and "http" in line:
+                cols = [c.strip() for c in line.split("|")]
+                # cols[0] is empty (before first |), cols[1]=finding, ..., last non-empty has URL
+                if len(cols) >= 5:
+                    finding_num = cols[1].strip()
+                    url = cols[-2].strip()  # URL is second-to-last (last is empty after trailing |)
+                    if finding_num.isdigit() and url.startswith("http"):
+                        key = f"{current_file}:{finding_num}"
+                        if key not in lookup:  # keep first URL per finding
+                            lookup[key] = url
 
-    url_map = {}
-    current_ref_file = None
-
-    for line in content.split("\n"):
-        header_match = re.match(r"^##\s+(\S+\.md)", line)
-        if header_match:
-            current_ref_file = header_match.group(1)
-            continue
-
-        if current_ref_file and line.startswith("|"):
-            cells = [c.strip() for c in line.split("|")]
-            if len(cells) >= 5:
-                finding_id = cells[1].strip()
-                url = cells[4].strip()
-                if url.startswith("http") and finding_id not in ("Finding", "---", "------"):
-                    key = (current_ref_file, finding_id)
-                    url_map[key] = url
-
-    return url_map
+    return lookup
 
 
-def resolve_citation_url(finding, url_map):
-    """Resolve a finding's citation to a source URL using the url_map."""
-    ref = finding.get("reference", "")
-    if not ref:
-        return "#"
+def resolve_citation_url(reference_str, sources_lookup):
+    """Resolve a finding's REFERENCE field to a citation URL.
 
-    ref_match = re.match(r"([a-z0-9_-]+\.md)[\s,;:\u2014-]+(?:Finding\s+)?(\d+)", ref, re.IGNORECASE)
-    if ref_match:
-        ref_file = ref_match.group(1)
-        finding_num = ref_match.group(2)
-        url = url_map.get((ref_file, finding_num))
-        if url:
-            return url
+    Reference format examples:
+      "cta-design-and-placement.md — Finding 3"
+      "cta-design-and-placement.md — Findings 6, 9, 18"
+      "cta-design-and-placement.md — Finding 3; color-psychology.md — Finding 2"
 
-    citation = finding.get("citation", "")
-    if citation:
-        cite_ref_match = re.match(r"([a-z0-9_-]+\.md)[\s,;:\u2014-]+(?:Finding\s+)?(\d+)", citation, re.IGNORECASE)
-        if cite_ref_match:
-            ref_file = cite_ref_match.group(1)
-            finding_num = cite_ref_match.group(2)
-            url = url_map.get((ref_file, finding_num))
-            if url:
-                return url
+    Returns the first matching URL, or None.
+    """
+    if not reference_str or not sources_lookup:
+        return None
 
-    return "#"
+    # Split on semicolons for multi-file references
+    parts = re.split(r";\s*", reference_str)
+    for part in parts:
+        match = re.match(r"([\w\-]+\.md)\s*[\u2014\u2013\-]+\s*Findings?\s*([\d,\s]+)", part.strip())
+        if match:
+            filename = match.group(1)
+            # Take the first finding number
+            nums = re.findall(r"\d+", match.group(2))
+            for num in nums:
+                key = f"{filename}:{num}"
+                if key in sources_lookup:
+                    return sources_lookup[key]
+
+    return None
 
 
 def parse_pass_findings(audit_path):
@@ -343,68 +308,13 @@ def parse_pass_findings(audit_path):
 
 # --- Marker Position Calculator ---
 
-def _auto_match_element(finding_element, elements, slide, screenshots):
-    """Try to match a finding's ELEMENT CSS selector against baton elements.
-
-    Returns the matched element dict or None.
-    Uses substring matching: if the finding says 'button.product-form__submit',
-    we look for baton elements whose selector or class contains 'product-form__submit'.
-    """
-    if not finding_element or not elements:
-        return None
-
-    # Get scroll range for this slide
-    scroll_y = 0
-    scroll_end = 99999
-    if isinstance(screenshots, list) and slide < len(screenshots):
-        ss = screenshots[slide]
-        scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
-        nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
-        scroll_end = scroll_y + nat_h
-
-    # Normalize: strip tag prefix, extract class/id fragments
-    search_terms = []
-    # "button#ProductSubmitButton-xxx" -> ["productsubmitbutton", "button"]
-    # "div.price--on-sale" -> ["price--on-sale", "price"]
-    # "[class*=\"cart\"]" -> ["cart"]
-    for part in re.split(r'[.#\[\]\s"*=]', finding_element):
-        cleaned = part.strip().lower()
-        if cleaned and len(cleaned) > 2 and cleaned not in ("class", "div", "span", "button", "input", "form", "img", "above", "fold", "area"):
-            search_terms.append(cleaned)
-
-    if not search_terms:
-        return None
-
-    for elem in elements:
-        elem_y = elem.get("y", 0)
-        # Only match elements within this slide's scroll range
-        if elem_y < scroll_y or elem_y > scroll_end:
-            continue
-
-        elem_sel = (elem.get("selector", "") + " " + elem.get("class", "")).lower()
-        elem_text = elem.get("text", "").lower()
-
-        for term in search_terms:
-            if term in elem_sel or term in elem_text:
-                return elem
-
-    return None
-
-
-def compute_marker_positions(markers_mapping, baton_data, findings=None):
-    """Compute pixel positions for markers on screenshots.
-
-    If findings are provided and a marker has no baton_element_index,
-    attempts to auto-match the finding's ELEMENT field against baton elements.
-    Unmatched markers are spread vertically to avoid stacking.
-    """
+def compute_marker_positions(markers_mapping, baton_data):
+    """Compute pixel positions for markers on screenshots."""
     elements = baton_data.get("elements", [])
     screenshots = baton_data.get("screenshots", [])
     sections = baton_data.get("sections", [])
 
     slide_markers = {}
-    # Track unmatched count per slide to spread them vertically
-    unmatched_count_per_slide = {}
 
     for mapping in markers_mapping:
         finding_idx = mapping["finding_index"]
@@ -415,44 +325,30 @@ def compute_marker_positions(markers_mapping, baton_data, findings=None):
         if slide not in slide_markers:
             slide_markers[slide] = []
 
-        # Get screenshot dimensions for this slide
-        if isinstance(screenshots, list) and slide < len(screenshots):
-            ss = screenshots[slide]
-            scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
-            nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
-            nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
-        else:
-            scroll_y = 0
-            nat_h = 900
-            nat_w = 1440
-
-        resolved_elem = None
-
-        # Strategy 1: Explicit baton_element_index
         if elem_idx is not None and elem_idx < len(elements):
-            resolved_elem = elements[elem_idx]
+            elem = elements[elem_idx]
 
-        # Strategy 2: Auto-match by ELEMENT field from findings
-        if resolved_elem is None and findings:
-            # Find the finding by index
-            for f in findings:
-                if f.get("index") == finding_idx:
-                    resolved_elem = _auto_match_element(
-                        f.get("element", ""), elements, slide, screenshots
-                    )
-                    break
+            if isinstance(screenshots, list) and slide < len(screenshots):
+                ss = screenshots[slide]
+                scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
+                nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
+                nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
+            else:
+                scroll_y = 0
+                nat_h = 900
+                nat_w = 1440
 
-        if resolved_elem is not None:
-            abs_y = resolved_elem.get("y", 0)
+            abs_y = elem.get("y", 0)
             rel_y = abs_y - scroll_y
-            rel_x = resolved_elem.get("x", 0)
+            rel_x = elem.get("x", 0)
 
-            cx = rel_x + resolved_elem.get("width", 0) // 2
-            cy = rel_y + resolved_elem.get("height", 0) // 2
+            cx = rel_x + elem.get("width", 0) // 2
+            cy = rel_y + elem.get("height", 0) // 2
 
             cx = max(30, min(cx, nat_w - 30))
             cy = max(30, min(cy, nat_h - 30))
 
+            # Store both pixel coords AND percentage for CSS overlays
             x_pct = (cx / nat_w) * 100
             y_pct = (cy / nat_h) * 100
 
@@ -465,29 +361,17 @@ def compute_marker_positions(markers_mapping, baton_data, findings=None):
                 "severity": severity,
             })
         else:
-            # Fallback: spread unmatched markers vertically along left edge
-            if slide not in unmatched_count_per_slide:
-                unmatched_count_per_slide[slide] = 0
-            n = unmatched_count_per_slide[slide]
-            unmatched_count_per_slide[slide] += 1
-
-            # Distribute from 15% to 85% of slide height, left column at 8%
-            y_pct = 15 + (n * 10) % 70
-            x_pct = 8
-
-            sec_h = nat_h
             if isinstance(sections, list) and slide < len(sections):
                 sec = sections[slide]
-                sec_h = sec.get("height", nat_h) if isinstance(sec, dict) else nat_h
-
-            slide_markers[slide].append({
-                "number": finding_idx,
-                "x": int(nat_w * x_pct / 100),
-                "y": int(nat_h * y_pct / 100),
-                "x_pct": x_pct,
-                "y_pct": y_pct,
-                "severity": severity,
-            })
+                sec_h = sec.get("height", 400) if isinstance(sec, dict) else 400
+                slide_markers[slide].append({
+                    "number": finding_idx,
+                    "x": 100,
+                    "y": sec_h // 2,
+                    "x_pct": 10,
+                    "y_pct": 50,
+                    "severity": severity,
+                })
 
     return slide_markers
 
@@ -498,11 +382,6 @@ def encode_image_base64(image_path):
     """Base64 encode an image file for data URI embedding."""
     with open(image_path, "rb") as f:
         return base64.b64encode(f.read()).decode("ascii")
-
-
-def encode_bytes_base64(data):
-    """Base64 encode raw image bytes for data URI embedding."""
-    return base64.b64encode(data).decode("ascii")
 
 
 def escape_html(text):
@@ -726,10 +605,12 @@ def generate_report(
     findings = parse_findings(engagement_path / audit_file)
     pass_findings = parse_pass_findings(engagement_path / audit_file)
 
-    # Resolve citation URLs from sources.md
-    url_map = parse_citation_urls(plugin_root)
+    # --- Resolve citation URLs ---
+    sources_lookup = parse_sources(plugin_path)
     for f in findings:
-        f["source_url"] = resolve_citation_url(f, url_map)
+        url = resolve_citation_url(f.get("reference", ""), sources_lookup)
+        if url:
+            f["source_url"] = url
 
     markers_mapping = []
     if markers_file and os.path.exists(markers_file):
@@ -748,11 +629,11 @@ def generate_report(
             screenshot_paths.append(ss)
 
     # Compute marker positions
-    slide_markers = compute_marker_positions(markers_mapping, baton, findings)
+    slide_markers = compute_marker_positions(markers_mapping, baton)
 
     # Burn markers into screenshots (if Pillow available)
-    annotated_dir = engagement_path / "annotated" / device
-    annotated_dir.mkdir(parents=True, exist_ok=True)
+    annotated_dir = engagement_path / "annotated"
+    annotated_dir.mkdir(exist_ok=True)
 
     slide_base64 = []
     slide_aspect_ratios = []
@@ -774,12 +655,8 @@ def generate_report(
         annotated_path = annotated_dir / f"annotated-{i}.jpg"
 
         if HAS_PILLOW and markers_for_slide:
-            annotated_bytes = render_annotated_screenshot_bytes(str(full_path), markers_for_slide)
-            if annotated_bytes:
-                write_bytes_atomic(annotated_path, annotated_bytes)
-                slide_base64.append(encode_bytes_base64(annotated_bytes))
-            else:
-                slide_base64.append(encode_image_base64(str(full_path)))
+            burn_markers_into_screenshot(str(full_path), markers_for_slide, str(annotated_path))
+            slide_base64.append(encode_image_base64(str(annotated_path)))
         else:
             slide_base64.append(encode_image_base64(str(full_path)))
 
@@ -841,47 +718,47 @@ def generate_report(
     </div>\n'''
 
     # --- Build clickable marker overlays HTML ---
-    # Build finding cluster lookup
-    finding_cluster_map = {f["index"]: f.get("cluster", "general") for f in findings}
-
     marker_overlays_html = ""
     for slide_idx, markers in slide_markers.items():
         for marker in markers:
             display = "flex" if slide_idx == 0 else "none"
             sev = marker.get("severity", "medium")
-            cluster_id = finding_cluster_map.get(marker['number'], 'general')
-            marker_overlays_html += f'''<a href="#finding-{marker['number']}" class="marker-overlay" data-slide="{slide_idx}" data-severity="{sev}" data-finding="{marker['number']}" data-cluster="{cluster_id}" style="top:{marker['y_pct']:.1f}%;left:{marker['x_pct']:.1f}%;display:{display};"></a>\n'''
+            marker_overlays_html += f'''<a href="#finding-{marker['number']}" class="marker-overlay" data-slide="{slide_idx}" data-severity="{sev}" data-finding="{marker['number']}" style="top:{marker['y_pct']:.1f}%;left:{marker['x_pct']:.1f}%;display:{display};"></a>\n'''
 
     # --- Build cluster tabs HTML ---
-    cluster_order = []
-    cluster_counts_map = {}
-    for f in findings:
-        c = f.get("cluster", "general")
-        if c not in cluster_counts_map:
-            cluster_order.append(c)
-            cluster_counts_map[c] = 0
-        cluster_counts_map[c] += 1
-
-    CLUSTER_DISPLAY = {
-        "visual-cta": ("Visual & CTA", "#ff9f00"),
-        "trust-conversion": ("Trust", "#10b981"),
-        "context-platform": ("Context", "#6366f1"),
-        "audience-journey": ("Audience", "#a78bfa"),
-        "general": ("General", "#9ca3af"),
+    CLUSTER_LABELS = {
+        "visual-cta": "Visual & CTA",
+        "trust-conversion": "Trust",
+        "context-platform": "Context",
+        "audience-journey": "Journey",
+    }
+    CLUSTER_COLORS = {
+        "visual-cta": "#f59e0b",
+        "trust-conversion": "#22c55e",
+        "context-platform": "#8b5cf6",
+        "audience-journey": "#3b82f6",
     }
 
-    cluster_tabs_html = '<div class="cluster-tabs">\n'
-    for i, cluster_id in enumerate(cluster_order):
-        label, color = CLUSTER_DISPLAY.get(cluster_id, (cluster_id.replace("-", " ").title(), "#9ca3af"))
-        active = " active" if i == 0 else ""
-        count = cluster_counts_map[cluster_id]
-        cluster_tabs_html += f'          <button class="cluster-tab{active}" data-tab="{cluster_id}" onclick="switchCluster(this)"><span class="tab-dot" style="background:{color}"></span>{escape_html(label)}<span class="tab-count">{count}</span></button>\n'
-    cluster_tabs_html += '        </div>\n'
+    # Count findings per cluster
+    cluster_counts = {}
+    for f in findings:
+        c = f.get("cluster", "unknown")
+        cluster_counts[c] = cluster_counts.get(c, 0) + 1
 
-    default_cluster = cluster_order[0] if cluster_order else "general"
+    cluster_tabs_html = ""
+    if len(cluster_counts) > 1:
+        cluster_tabs_html = '<div class="cluster-tabs">\n'
+        cluster_tabs_html += f'  <button class="cluster-tab active" data-cluster="all" onclick="filterCluster(\'all\')"><span class="cluster-dot" style="background:#999"></span> All <span class="cluster-count">{len(findings)}</span></button>\n'
+        for slug in ["visual-cta", "trust-conversion", "context-platform", "audience-journey"]:
+            if slug in cluster_counts:
+                label = CLUSTER_LABELS.get(slug, slug)
+                color = CLUSTER_COLORS.get(slug, "#999")
+                count = cluster_counts[slug]
+                cluster_tabs_html += f'  <button class="cluster-tab" data-cluster="{slug}" onclick="filterCluster(\'{slug}\')"><span class="cluster-dot" style="background:{color}"></span> {label} <span class="cluster-count">{count}</span></button>\n'
+        cluster_tabs_html += '</div>\n'
 
     # --- Build finding cards HTML ---
-    finding_cards = ""
+    finding_cards = cluster_tabs_html
     for f in findings:
         idx = f["index"]
         sev = get_severity_class(f.get("priority"))
@@ -890,9 +767,10 @@ def generate_report(
         source_type = (f.get("source") or "DOM").upper()
         tier = (f.get("tier") or "Bronze").lower()
         tier_label = tier.title()
+        cluster_slug = f.get("cluster", "unknown")
 
         finding_cards += f'''
-    <article id="finding-{idx}" class="finding-card" data-finding="{idx}" data-cluster="{f.get('cluster', 'general')}">
+    <article id="finding-{idx}" class="finding-card" data-finding="{idx}" data-cluster="{cluster_slug}">
       <div class="finding-accent {sev}"></div>
       <div class="finding-header">
         <div class="finding-header-left">
@@ -919,7 +797,7 @@ def generate_report(
           <span class="ref-id">{escape_html(f.get('reference', ''))}</span>
           <span class="tier-badge tier-badge--{tier}">{escape_html(tier_label)}</span>
         </div>
-        <a href="{escape_html(f.get('source_url', '#'))}" class="view-source" target="_blank" rel="noopener noreferrer"{'  style="display:none"' if f.get('source_url', '#') == '#' else ''}>View Source</a>
+        <a href="{f.get('source_url', '#')}" class="view-source" {'target="_blank" rel="noopener noreferrer"' if f.get('source_url') else ''}>{('View Source' if f.get('source_url') else '')}</a>
       </div>
     </article>
 '''
@@ -1079,16 +957,16 @@ a:hover {{ text-decoration: underline; }}
   z-index: 1;
 }}
 
-header {{ margin-bottom: 3rem; }}
+header {{ margin-bottom: 4rem; }}
 
 .header-content {{
-  display: grid;
-  grid-template-columns: 3fr 2fr;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 2.5rem;
-  align-items: start;
 }}
 
-.header-main {{ }}
+.header-main {{ max-width: 56rem; }}
 
 .eyebrow {{
   display: flex;
@@ -1110,16 +988,16 @@ header {{ margin-bottom: 3rem; }}
 }}
 
 h1 {{
-  font-size: 3.5rem;
+  font-size: 5.5rem;
   font-weight: 800;
-  letter-spacing: -0.04em;
-  line-height: 1.15;
-  margin-bottom: 1rem;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
 }}
 h1 .amber {{ color: var(--amber); }}
 
 .subtitle {{
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   color: var(--text-muted);
   font-weight: 400;
   max-width: 48rem;
@@ -1128,10 +1006,10 @@ h1 .amber {{ color: var(--amber); }}
 .metadata {{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem 1.5rem;
+  gap: 2.5rem 2rem;
   border-left: 1px solid var(--border-light);
   padding-left: 2rem;
-  align-self: center;
+  flex-shrink: 0;
 }}
 .meta-item label {{
   display: block;
@@ -1147,28 +1025,25 @@ h1 .amber {{ color: var(--amber); }}
 
 .main-grid {{
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  grid-template-rows: auto 1fr;
-  gap: 0 3rem;
+  grid-template-columns: 7fr 5fr;
+  gap: 3rem;
   align-items: start;
 }}
 
 .evidence-canvas {{ position: sticky; top: 2rem; }}
 
 .section-label {{
-  font-size: 0.6875rem;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.25em;
   color: var(--text-dim);
-  padding-bottom: 0.75rem;
+  padding-bottom: 1rem;
   border-bottom: 1px solid var(--border-light);
   margin-bottom: 1.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-height: 2.5rem;
-  align-self: end;
 }}
 
 .nav-buttons {{ display: flex; gap: 0.75rem; }}
@@ -1209,7 +1084,7 @@ h1 .amber {{ color: var(--amber); }}
 .screenshot-overlay {{
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,0.3), transparent 30%);
+  background: linear-gradient(to top, rgba(0,0,0,0.5), transparent 40%);
   pointer-events: none;
 }}
 
@@ -1301,6 +1176,26 @@ h1 .amber {{ color: var(--amber); }}
 
 .findings {{ display: flex; flex-direction: column; gap: 1.5rem; }}
 
+.cluster-tabs {{
+  display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;
+}}
+.cluster-tab {{
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 1rem; border-radius: 8px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); font-size: 0.85rem; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.2s;
+}}
+.cluster-tab:hover {{ border-color: var(--text); color: var(--text); }}
+.cluster-tab.active {{ border-color: currentColor; color: var(--text); background: rgba(255,255,255,0.05); }}
+.cluster-dot {{ width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }}
+.cluster-count {{
+  background: rgba(255,255,255,0.1); padding: 0.1rem 0.45rem;
+  border-radius: 999px; font-size: 0.75rem; font-weight: 700;
+}}
+.finding-card[data-hidden="true"] {{ display: none; }}
+
 .finding-card {{
   background: var(--panel);
   backdrop-filter: blur(24px);
@@ -1333,10 +1228,8 @@ h1 .amber {{ color: var(--amber); }}
 .finding-header {{
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border-light);
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 }}
 .finding-header-left {{
   display: flex;
@@ -1345,12 +1238,11 @@ h1 .amber {{ color: var(--amber); }}
 }}
 
 .finding-number {{
-  font-size: 1.75rem;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
+  font-size: 3rem;
+  font-weight: 300;
+  letter-spacing: -0.05em;
   line-height: 1;
-  color: var(--text-muted);
-  min-width: 2rem;
+  color: var(--text);
   cursor: pointer;
   transition: color 0.2s;
 }}
@@ -1394,31 +1286,24 @@ h1 .amber {{ color: var(--amber); }}
 }}
 
 .finding-title {{
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin-bottom: 0.75rem;
-  letter-spacing: -0.01em;
+  margin-bottom: 1rem;
   color: var(--text);
 }}
 
 .finding-observation {{
   color: rgba(255,255,255,0.6);
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--border-light);
+  margin-bottom: 2rem;
   line-height: 1.7;
-  font-size: 0.9375rem;
 }}
 
 .recommendation-box {{
-  background: rgba(255,255,255,0.04);
-  padding: 1.25rem 1.5rem;
+  background: rgba(255,255,255,0.05);
+  padding: 1.25rem;
   border-radius: 0.75rem;
-  border-left: 2px solid var(--amber);
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
-  margin-bottom: 1.25rem;
+  border: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 1.5rem;
 }}
 .recommendation-header {{
   display: flex;
@@ -1431,10 +1316,6 @@ h1 .amber {{ color: var(--amber); }}
 .recommendation-header.high svg {{ color: var(--amber); }}
 .recommendation-header.medium svg {{ color: var(--medium); }}
 .recommendation-header.low svg {{ color: var(--low-text); }}
-.finding-card:has(.recommendation-header.critical) .recommendation-box {{ border-left-color: var(--critical); }}
-.finding-card:has(.recommendation-header.high) .recommendation-box {{ border-left-color: var(--amber); }}
-.finding-card:has(.recommendation-header.medium) .recommendation-box {{ border-left-color: var(--medium); }}
-.finding-card:has(.recommendation-header.low) .recommendation-box {{ border-left-color: var(--low-text); }}
 .recommendation-label {{
   font-size: 0.6875rem;
   font-weight: 700;
@@ -1449,22 +1330,20 @@ h1 .amber {{ color: var(--amber); }}
 
 .why-matters {{
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.75rem;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-  padding: 0.75rem 0;
+  font-size: 0.75rem;
   color: var(--text-dim);
 }}
-.why-matters svg {{ width: 1rem; height: 1rem; flex-shrink: 0; margin-top: 0.15rem; opacity: 0.5; }}
+.why-matters svg {{ width: 1rem; height: 1rem; flex-shrink: 0; }}
 
 .finding-footer {{
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
   border-top: 1px solid var(--border-light);
   display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
 }}
 .finding-footer-left {{
   display: flex;
@@ -1477,52 +1356,14 @@ h1 .amber {{ color: var(--amber); }}
   letter-spacing: 0.15em;
   font-weight: 700;
   color: var(--text-faint);
-  line-height: 1.4;
 }}
 .view-source {{
-  font-size: 0.6875rem;
-  color: var(--amber);
-  font-weight: 600;
+  font-size: 0.625rem;
+  color: var(--text-muted);
+  font-weight: 500;
   transition: color 0.2s;
-  text-decoration: none;
-  opacity: 0.7;
 }}
-.view-source:hover {{ color: var(--amber); opacity: 1; }}
-
-/* Cluster Tabs */
-.cluster-tabs {{
-  display: flex;
-  gap: 0.25rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border-light);
-}}
-.cluster-tab {{
-  padding: 0.75rem 1.5rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--text-dim);
-  cursor: pointer;
-  border: 1px solid var(--border-light);
-  border-radius: 0.5rem;
-  background: transparent;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  white-space: nowrap;
-}}
-.cluster-tab:hover {{ color: var(--text); background: rgba(255,255,255,0.04); }}
-.cluster-tab.active {{ color: var(--text); background: rgba(255,255,255,0.08); border-color: var(--amber); }}
-.cluster-tab .tab-dot {{ width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }}
-.cluster-tab .tab-count {{
-  font-size: 0.625rem; font-weight: 600;
-  background: rgba(255,255,255,0.08);
-  padding: 0.125rem 0.5rem; border-radius: 9999px; color: var(--text-dim);
-}}
-.cluster-tab.active .tab-count {{ background: rgba(255,159,0,0.15); color: var(--amber); }}
+.view-source:hover {{ color: var(--text); }}
 
 .tier-badge {{
   display: inline-flex;
@@ -1655,7 +1496,7 @@ h1 .amber {{ color: var(--amber); }}
   .main-grid {{ grid-template-columns: 1fr; }}
   .evidence-canvas {{ position: static; }}
   h1 {{ font-size: 3.5rem; }}
-  .header-content {{ grid-template-columns: 1fr; }}
+  .header-content {{ flex-direction: column; }}
   .metadata {{ border-left: none; padding-left: 0; border-top: 1px solid var(--border-light); padding-top: 2rem; }}
 }}
 
@@ -1695,16 +1536,15 @@ h1 .amber {{ color: var(--amber); }}
 
     <div class="main-grid">
 
-      <div class="section-label">
-        <span>Primary Interface Evidence</span>
-        <div class="nav-buttons">
-          <button class="nav-btn" onclick="prevSlide()">{SVG_CHEVRON_LEFT}</button>
-          <button class="nav-btn" onclick="nextSlide()">{SVG_CHEVRON_RIGHT}</button>
-        </div>
-      </div>
-      <div class="section-label">Diagnostic Insights</div>
-
       <section class="evidence-canvas">
+        <div class="section-label">
+          <span>Primary Interface Evidence</span>
+          <div class="nav-buttons">
+            <button class="nav-btn" onclick="prevSlide()">{SVG_CHEVRON_LEFT}</button>
+            <button class="nav-btn" onclick="nextSlide()">{SVG_CHEVRON_RIGHT}</button>
+          </div>
+        </div>
+
         <div class="screenshot-wrapper">
           <div class="device-frame">
             <div class="screenshot-container" id="mainSlide" style="--slide-aspect-ratio:{initial_slide_aspect_ratio};">
@@ -1744,7 +1584,7 @@ h1 .amber {{ color: var(--amber); }}
       </section>
 
       <section class="findings">
-        {cluster_tabs_html}
+        <div class="section-label">Diagnostic Insights</div>
         {finding_cards}
       </section>
 
@@ -1856,22 +1696,18 @@ h1 .amber {{ color: var(--amber); }}
   }}
 }})();
 
-  function switchCluster(btn) {{
-    document.querySelectorAll('.cluster-tab').forEach(function(t) {{ t.classList.remove('active'); }});
-    btn.classList.add('active');
-    var cluster = btn.getAttribute('data-tab');
-    document.querySelectorAll('.finding-card[data-cluster]').forEach(function(card) {{
-      card.style.display = (card.getAttribute('data-cluster') === cluster) ? 'block' : 'none';
-    }});
-    document.querySelectorAll('.marker-overlay[data-cluster]').forEach(function(marker) {{
-      marker.style.visibility = (marker.getAttribute('data-cluster') === cluster) ? 'visible' : 'hidden';
-    }});
-  }}
-
-  document.addEventListener('DOMContentLoaded', function() {{
-    var defaultTab = document.querySelector('.cluster-tab.active');
-    if (defaultTab) switchCluster(defaultTab);
+function filterCluster(slug) {{
+  document.querySelectorAll('.cluster-tab').forEach(function(t) {{
+    t.classList.toggle('active', t.getAttribute('data-cluster') === slug);
   }});
+  document.querySelectorAll('.finding-card').forEach(function(c) {{
+    if (slug === 'all') {{
+      c.setAttribute('data-hidden', 'false');
+    }} else {{
+      c.setAttribute('data-hidden', c.getAttribute('data-cluster') !== slug ? 'true' : 'false');
+    }}
+  }});
+}}
   </script>
 
 </body>
@@ -1885,7 +1721,8 @@ h1 .amber {{ color: var(--amber); }}
             output_file = f"visual-report-{device}.html"
 
     output_path = engagement_path / output_file
-    write_text_atomic(output_path, html)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html)
 
     print(f"Report written to: {output_path}")
     print(f"  Device: {device_label}")
