@@ -549,6 +549,7 @@ To check a citation, ask Claude Code:
 | 4 | Biometric payment in retailing (Zarco 2024) | J. Retailing and Consumer Services | https://www.sciencedirect.com/science/article/pii/S0969698924000857 |
 | 4 | Consumer trust in biometrics (Aware 2024) | Aware Inc. | https://www.aware.com/press-release/new-consumer-report-from-aware-reveals-widespread-trust-in-biometrics/ |
 | 5 | Cart abandonment rate statistics (Baymard 2025) | Baymard Institute | https://baymard.com/lists/cart-abandonment-rate |
+| 6 | Express checkout button placement — early vs late (Stripe 2024-2025) | Stripe Blog | https://stripe.com/blog/testing-the-conversion-impact-of-50-plus-global-payment-methods |
 | 7 | Biometric payments survey (PYMNTS/AWS 2023) | PYMNTS | https://www.pymnts.com/news/biometrics/2023/51percent-of-online-buyers-used-biometrics-to-make-a-purchase/ |
 | 8 | Passkey Index 2025 (FIDO Alliance) | FIDO Alliance | https://fidoalliance.org/passkey-index-2025/ |
 

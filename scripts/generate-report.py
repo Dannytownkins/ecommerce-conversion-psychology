@@ -277,7 +277,7 @@ def resolve_citation_url(reference_str, sources_lookup):
     # Split on semicolons for multi-file references
     parts = re.split(r";\s*", reference_str)
     for part in parts:
-        match = re.match(r"([\w\-]+\.md)\s*[\u2014\u2013\-]+\s*Findings?\s*([\d,\s]+)", part.strip())
+        match = re.match(r"([\w\-]+\.md)\s*[:\u2014\u2013\-]+\s*Findings?\s*([\d,\s]+)", part.strip())
         if match:
             filename = match.group(1)
             # Take the first finding number
