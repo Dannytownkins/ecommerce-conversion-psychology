@@ -32,6 +32,7 @@ import os
 import re
 import sys
 from pathlib import Path
+from datetime import datetime
 
 try:
     from PIL import Image, ImageDraw, ImageFont
@@ -47,14 +48,14 @@ except ImportError:
 SEVERITY_COLORS = {
     "critical": "#93000a",
     "high": "#ff9f00",
-    "medium": "#10b981",
+    "medium": "#27ae60",
     "low": "#6b7280",
 }
 
 SEVERITY_TEXT_COLORS = {
     "critical": "#ffb4ab",
     "high": "#ffc687",
-    "medium": "#34d399",
+    "medium": "#8fe3b0",
     "low": "#9ca3af",
 }
 
@@ -313,6 +314,9 @@ def compute_marker_positions(markers_mapping, baton_data):
     elements = baton_data.get("elements", [])
     screenshots = baton_data.get("screenshots", [])
     sections = baton_data.get("sections", [])
+    viewport = baton_data.get("viewport", {})
+    default_nat_w = int(viewport.get("width") or 1440)
+    default_nat_h = int(viewport.get("height") or 900)
 
     slide_markers = {}
 
@@ -331,12 +335,20 @@ def compute_marker_positions(markers_mapping, baton_data):
             if isinstance(screenshots, list) and slide < len(screenshots):
                 ss = screenshots[slide]
                 scroll_y = ss.get("scrollY", 0) if isinstance(ss, dict) else 0
-                nat_h = ss.get("naturalHeight", 900) if isinstance(ss, dict) else 900
-                nat_w = ss.get("naturalWidth", 1440) if isinstance(ss, dict) else 1440
+                nat_h = (
+                    ss.get("naturalHeight")
+                    or ss.get("height")
+                    or default_nat_h
+                ) if isinstance(ss, dict) else default_nat_h
+                nat_w = (
+                    ss.get("naturalWidth")
+                    or ss.get("width")
+                    or default_nat_w
+                ) if isinstance(ss, dict) else default_nat_w
             else:
                 scroll_y = 0
-                nat_h = 900
-                nat_w = 1440
+                nat_h = default_nat_h
+                nat_w = default_nat_w
 
             abs_y = elem.get("y", 0)
             rel_y = abs_y - scroll_y
@@ -434,6 +446,8 @@ SVG_TREND_UP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strok
 SVG_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>'
 
 SVG_X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>'
+
+SVG_SQUARE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="7" y="7" width="10" height="10" rx="2"/></svg>'
 
 SVG_CHEVRON_LEFT = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>'
 
@@ -707,6 +721,7 @@ def generate_report(
     page_type = (meta.get("page", {}).get("type") or "Unknown").title()
     platform = (meta.get("platform") or "Unknown").title()
     source_mode = meta.get("source_mode", "Unknown")
+    generated_date = datetime.now().strftime("%Y-%m-%d")
 
     # --- Build thumbnails HTML ---
     thumb_html = ""
@@ -770,7 +785,7 @@ def generate_report(
         cluster_slug = f.get("cluster", "unknown")
 
         finding_cards += f'''
-    <article id="finding-{idx}" class="finding-card" data-finding="{idx}" data-cluster="{cluster_slug}">
+    <article id="finding-{idx}" class="finding-card" data-finding="{idx}" data-cluster="{cluster_slug}" data-severity="{sev}">
       <div class="finding-accent {sev}"></div>
       <div class="finding-header">
         <div class="finding-header-left">
@@ -821,40 +836,33 @@ def generate_report(
       </div>
 '''
 
+    severity_total = max(total_findings, 1)
+    severity_inline_stats = ""
+    severity_inline_segments = ""
+    severity_text_items = []
+    for sev_name in ["critical", "high", "medium", "low"]:
+        count = severity_counts[sev_name]
+        if count > 0:
+            width_pct = count / severity_total * 100
+            severity_inline_stats += f'<span class="summary-severity-chip {sev_name}">{sev_name[0].upper()} {count}</span>'
+            severity_inline_segments += f'<span class="summary-severity-fill {sev_name}" style="width:{width_pct:.1f}%"></span>'
+            severity_text_items.append(
+                f'<span class="summary-severity-item {sev_name}"><span class="summary-severity-dot {sev_name}"></span><span>{count} {sev_name.title()}</span></span>'
+            )
+
+    severity_text_html = '<span class="summary-severity-text">' + '<span class="summary-severity-separator">·</span>'.join(severity_text_items) + '</span>'
+
     # --- Ethics card ---
     if has_ethics_violations:
-        ethics_card = f'''
-    <div class="summary-card" style="flex-direction: column; align-items: stretch;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <div>
-          <div class="summary-label">Ethics Check</div>
-          <div class="summary-value critical">FAIL</div>
-        </div>
-        <div class="summary-icon-circle fail">
-          {SVG_X}
-        </div>
-      </div>
-      <div class="ethics-violations">
-        <div class="ethics-violation-item">
-          <span class="ethics-violation-icon">&#10007;</span>
-          <span>Dark pattern detected in findings</span>
-        </div>
-      </div>
-    </div>
-'''
+        ethics_main = "FAIL"
+        ethics_main_class = "critical"
+        ethics_note = "Dark pattern detected in findings"
+        ethics_icon = SVG_X
     else:
-        ethics_card = f'''
-    <div class="summary-card">
-      <div>
-        <div class="summary-label">Ethics Check</div>
-        <div class="summary-value green">PASS</div>
-        <div class="summary-note">No dark patterns detected</div>
-      </div>
-      <div class="summary-icon-circle pass">
-        {SVG_CHECK}
-      </div>
-    </div>
-'''
+        ethics_main = "PASS"
+        ethics_main_class = "green"
+        ethics_note = "No dark patterns detected"
+        ethics_icon = SVG_CHECK
 
     # --- Device frame CSS ---
     device_frame_css = get_device_frame_css(device)
@@ -899,14 +907,16 @@ def generate_report(
   --high: #ff9f00;
   --high-bg: rgba(255,159,0,0.2);
   --high-border: rgba(255,159,0,0.3);
-  --medium: #10b981;
-  --medium-text: #34d399;
-  --medium-bg: rgba(16,185,129,0.1);
-  --medium-border: rgba(16,185,129,0.2);
+  --medium: #27ae60;
+  --medium-text: #8fe3b0;
+  --medium-bg: rgba(39,174,96,0.14);
+  --medium-border: rgba(39,174,96,0.28);
   --low: #6b7280;
   --low-text: #9ca3af;
   --low-bg: rgba(107,114,128,0.1);
   --low-border: rgba(107,114,128,0.2);
+  --success: #10b981;
+  --success-text: #34d399;
   --tier-gold: #fbbf24;
   --tier-gold-bg: rgba(251,191,36,0.1);
   --tier-gold-border: rgba(251,191,36,0.25);
@@ -934,44 +944,29 @@ body {{
   -moz-osx-font-smoothing: grayscale;
 }}
 
-body::before {{
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  z-index: 0;
-}}
-
 a {{ color: var(--medium-text); text-decoration: none; }}
 a:hover {{ text-decoration: underline; }}
 
 .container {{
   max-width: 1600px;
   margin: 0 auto;
-  padding: 4rem;
+  padding: 2rem 3rem 2.5rem;
   position: relative;
   z-index: 1;
 }}
 
-header {{ margin-bottom: 4rem; }}
+header {{ margin-bottom: 1rem; }}
 
 .header-content {{
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2.5rem;
+  display: block;
 }}
 
-.header-main {{ max-width: 56rem; }}
+.header-main {{ max-width: none; }}
 
 .eyebrow {{
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.45rem;
 }}
 .eyebrow-line {{
   width: 4rem;
@@ -988,59 +983,38 @@ header {{ margin-bottom: 4rem; }}
 }}
 
 h1 {{
-  font-size: 5.5rem;
+  font-size: clamp(3.35rem, 4.8vw, 4rem);
   font-weight: 800;
   letter-spacing: -0.05em;
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
+  line-height: 0.96;
+  margin-bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2em 0.28em;
 }}
 h1 .amber {{ color: var(--amber); }}
 
-.subtitle {{
-  font-size: 1.25rem;
-  color: var(--text-muted);
-  font-weight: 400;
-  max-width: 48rem;
-}}
-
-.metadata {{
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem 2rem;
-  border-left: 1px solid var(--border-light);
-  padding-left: 2rem;
-  flex-shrink: 0;
-}}
-.meta-item label {{
-  display: block;
-  font-size: 0.625rem;
-  font-weight: 700;
-  color: var(--text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  margin-bottom: 0.25rem;
-}}
-.meta-item span {{ font-size: 1rem; font-weight: 500; }}
-.meta-item .highlight {{ color: var(--amber); }}
+.subtitle {{ display: none; }}
 
 .main-grid {{
   display: grid;
   grid-template-columns: 7fr 5fr;
-  gap: 3rem;
+  gap: 1rem;
   align-items: start;
 }}
 
-.evidence-canvas {{ position: sticky; top: 2rem; }}
+.evidence-canvas {{ position: sticky; top: 1rem; }}
 
 .section-label {{
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.25em;
   color: var(--text-dim);
-  padding-bottom: 1rem;
+  padding-bottom: 0.625rem;
   border-bottom: 1px solid var(--border-light);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1048,8 +1022,8 @@ h1 .amber {{ color: var(--amber); }}
 
 .nav-buttons {{ display: flex; gap: 0.75rem; }}
 .nav-btn {{
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.125rem;
+  height: 2.125rem;
   border-radius: 50%;
   border: 1px solid var(--border-light);
   background: transparent;
@@ -1104,18 +1078,56 @@ h1 .amber {{ color: var(--amber); }}
   /* Transparent - the visual marker is burned into the image */
   background: transparent;
 }}
-.marker-overlay:hover {{
-  transform: translate(-50%, -50%) scale(1.15);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.3);
+.marker-overlay:hover,
+.marker-overlay.linked-hover {{
+  transform: translate(-50%, -50%) scale(1.18);
+}}
+.marker-overlay[data-severity="critical"]:hover,
+.marker-overlay[data-severity="critical"].linked-hover {{
+  box-shadow: 0 0 0 2px rgba(147,0,10,0.5), 0 0 18px rgba(147,0,10,0.28);
+}}
+.marker-overlay[data-severity="high"]:hover,
+.marker-overlay[data-severity="high"].linked-hover {{
+  box-shadow: 0 0 0 2px rgba(255,159,0,0.48), 0 0 18px rgba(255,159,0,0.26);
+}}
+.marker-overlay[data-severity="medium"]:hover,
+.marker-overlay[data-severity="medium"].linked-hover {{
+  box-shadow: 0 0 0 2px rgba(39,174,96,0.46), 0 0 18px rgba(39,174,96,0.24);
+}}
+.marker-overlay[data-severity="low"]:hover,
+.marker-overlay[data-severity="low"].linked-hover {{
+  box-shadow: 0 0 0 2px rgba(107,114,128,0.4), 0 0 16px rgba(107,114,128,0.2);
 }}
 .marker-overlay[data-severity="critical"] {{ width: 3.5rem; height: 3.5rem; }}
+
+.marker-tooltip {{
+  position: absolute;
+  z-index: 20;
+  max-width: 16rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(15,15,15,0.95);
+  color: rgba(255,255,255,0.92);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-50%);
+  transition: opacity 0.16s ease;
+}}
+
+.marker-tooltip.visible {{
+  opacity: 1;
+}}
 
 .thumbnails {{
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
 }}
 .thumb {{
   aspect-ratio: var(--thumb-aspect-ratio, 16 / 10);
@@ -1162,7 +1174,7 @@ h1 .amber {{ color: var(--amber); }}
 }}
 .metric-icon svg {{ width: 1.5rem; height: 1.5rem; }}
 .metric-icon.amber svg {{ color: var(--amber); }}
-.metric-icon.green svg {{ color: var(--medium); }}
+.metric-icon.green svg {{ color: var(--success); }}
 .metric-label {{
   font-size: 0.625rem;
   font-weight: 700;
@@ -1172,7 +1184,7 @@ h1 .amber {{ color: var(--amber); }}
   margin-bottom: 0.25rem;
 }}
 .metric-value {{ font-size: 1.5rem; font-weight: 700; }}
-.metric-value.green {{ color: var(--medium); }}
+.metric-value.green {{ color: var(--success); }}
 
 .findings {{ display: flex; flex-direction: column; gap: 1.5rem; }}
 
@@ -1204,12 +1216,47 @@ h1 .amber {{ color: var(--amber); }}
   border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
 }}
-.finding-card:hover {{ background: rgba(255,255,255,0.06); }}
+.finding-card:hover {{
+  background: rgba(255,255,255,0.06);
+  transform: translateY(-1px);
+}}
+.finding-card[data-severity="critical"]:hover {{
+  box-shadow: 0 0 0 2px rgba(147,0,10,0.32), 0 0 30px rgba(147,0,10,0.26);
+}}
+.finding-card[data-severity="high"]:hover {{
+  box-shadow: 0 0 0 2px rgba(255,159,0,0.28), 0 0 28px rgba(255,159,0,0.22);
+}}
+.finding-card[data-severity="medium"]:hover {{
+  box-shadow: 0 0 0 2px rgba(127,140,155,0.32), 0 0 28px rgba(127,140,155,0.22);
+}}
+.finding-card[data-severity="low"]:hover {{
+  box-shadow: 0 0 0 2px rgba(107,114,128,0.22), 0 0 24px rgba(107,114,128,0.18);
+}}
 .finding-card.highlight {{
-  border-color: var(--amber);
-  box-shadow: 0 0 0 1px var(--amber), 0 0 20px rgba(255,159,0,0.2);
+  background: rgba(255,255,255,0.07);
+}}
+.finding-card.linked-hover {{
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,159,0,0.22);
+  box-shadow: 0 0 0 1px rgba(255,159,0,0.12);
+}}
+.finding-card.highlight[data-severity="critical"] {{
+  border-color: rgba(147,0,10,0.55);
+  box-shadow: 0 0 0 2px rgba(147,0,10,0.5), 0 0 28px rgba(147,0,10,0.26);
+}}
+.finding-card.highlight[data-severity="high"] {{
+  border-color: rgba(255,159,0,0.5);
+  box-shadow: 0 0 0 2px rgba(255,159,0,0.46), 0 0 28px rgba(255,159,0,0.24);
+}}
+.finding-card.highlight[data-severity="medium"] {{
+  border-color: rgba(127,140,155,0.52);
+  box-shadow: 0 0 0 2px rgba(127,140,155,0.46), 0 0 28px rgba(127,140,155,0.24);
+}}
+.finding-card.highlight[data-severity="low"] {{
+  border-color: rgba(107,114,128,0.4);
+  box-shadow: 0 0 0 2px rgba(107,114,128,0.36), 0 0 24px rgba(107,114,128,0.18);
 }}
 
 .finding-accent {{
@@ -1217,8 +1264,8 @@ h1 .amber {{ color: var(--amber); }}
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
-  opacity: 0.5;
+  height: 3px;
+  opacity: 0.78;
 }}
 .finding-accent.critical {{ background: linear-gradient(to right, var(--critical), transparent); }}
 .finding-accent.high {{ background: linear-gradient(to right, var(--high), transparent); }}
@@ -1392,21 +1439,157 @@ h1 .amber {{ color: var(--amber); }}
 }}
 
 .summary-section {{
-  margin-top: 4rem;
+  margin: 0 0 1rem 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
 }}
 
 .summary-card {{
-  background: var(--panel);
-  backdrop-filter: blur(24px);
-  padding: 2rem;
-  border-radius: 1rem;
-  border: 1px solid var(--border);
+  background: #141414;
+  backdrop-filter: blur(16px);
+  min-height: 66px;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(255,255,255,0.07);
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
+  justify-content: flex-start;
   align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}}
+
+.summary-card-head {{
+  display: none;
+}}
+
+.summary-inline {{
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.3rem;
+  flex-direction: column;
+  min-width: 0;
+}}
+
+.summary-kpi-label {{
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.46);
+  white-space: nowrap;
+  flex-shrink: 0;
+}}
+
+.summary-kpi-value {{
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: right;
+}}
+.summary-kpi-value.amber {{ color: var(--amber); }}
+.summary-kpi-value.green {{ color: var(--success); }}
+.summary-kpi-value.critical {{ color: var(--critical-text); }}
+
+.summary-card--kpi .summary-inline {{
+  align-items: flex-start;
+}}
+
+.summary-kpi-main {{
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}}
+.summary-kpi-main.amber {{ color: var(--amber); }}
+.summary-kpi-main.green {{ color: var(--success); }}
+.summary-kpi-main.critical {{ color: var(--critical-text); }}
+
+.summary-kpi-value-group {{
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}}
+
+.summary-kpi-iconbox {{
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}}
+.summary-kpi-iconbox svg {{
+  width: 16px;
+  height: 16px;
+}}
+.summary-kpi-iconbox.amber svg {{ color: rgba(255,159,0,0.72); }}
+.summary-kpi-iconbox.green svg {{ color: var(--success-text); }}
+.summary-kpi-iconbox.critical svg {{ color: var(--critical-text); }}
+.summary-kpi-iconbox.neutral svg {{ color: rgba(255,255,255,0.5); }}
+
+.summary-card--severity {{
+  justify-content: flex-start;
+}}
+
+.summary-severity-inline {{
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.4rem;
+  overflow: hidden;
+}}
+
+.summary-severity-text {{
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}}
+
+.summary-severity-item {{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}}
+.summary-severity-item.critical {{ color: var(--critical-text); }}
+.summary-severity-item.high {{ color: var(--high); }}
+.summary-severity-item.medium {{ color: var(--medium); }}
+.summary-severity-item.low {{ color: var(--low-text); }}
+
+.summary-severity-dot {{
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}}
+.summary-severity-dot.critical {{ background: var(--critical); }}
+.summary-severity-dot.high {{ background: var(--high); }}
+.summary-severity-dot.medium {{ background: var(--medium); }}
+.summary-severity-dot.low {{ background: var(--low); }}
+
+.summary-severity-separator {{
+  color: rgba(255,255,255,0.32);
+  font-size: 0.8rem;
+  line-height: 1;
 }}
 
 .summary-label {{
@@ -1415,11 +1598,11 @@ h1 .amber {{ color: var(--amber); }}
   text-transform: uppercase;
   letter-spacing: 0.2em;
   color: var(--text-dim);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }}
 .summary-value {{ font-size: 1.5rem; font-weight: 700; }}
 .summary-value.amber {{ color: var(--amber); }}
-.summary-value.green {{ color: var(--medium); }}
+.summary-value.green {{ color: var(--success); }}
 .summary-value.critical {{ color: var(--critical-text); }}
 .summary-note {{
   font-size: 0.75rem;
@@ -1442,7 +1625,7 @@ h1 .amber {{ color: var(--amber); }}
 }}
 .summary-icon-circle svg {{ width: 1.75rem; height: 1.75rem; }}
 .summary-icon-circle.pass {{ background: rgba(16,185,129,0.1); }}
-.summary-icon-circle.pass svg {{ color: var(--medium); }}
+.summary-icon-circle.pass svg {{ color: var(--success); }}
 .summary-icon-circle.fail {{ background: rgba(147,0,10,0.1); }}
 .summary-icon-circle.fail svg {{ color: var(--critical-text); }}
 
@@ -1495,17 +1678,43 @@ h1 .amber {{ color: var(--amber); }}
 @media (max-width: 1200px) {{
   .main-grid {{ grid-template-columns: 1fr; }}
   .evidence-canvas {{ position: static; }}
-  h1 {{ font-size: 3.5rem; }}
-  .header-content {{ flex-direction: column; }}
-  .metadata {{ border-left: none; padding-left: 0; border-top: 1px solid var(--border-light); padding-top: 2rem; }}
+  h1 {{ font-size: 2.25rem; }}
+  .summary-section {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
 }}
 
 @media (max-width: 768px) {{
   .container {{ padding: 2rem 1rem; }}
   h1 {{ font-size: 2.5rem; }}
   .summary-section {{ grid-template-columns: 1fr; }}
-  .metadata {{ grid-template-columns: repeat(2, 1fr); }}
   .thumbnails {{ grid-template-columns: repeat(2, 1fr); }}
+}}
+
+.report-footer {{
+  margin-top: 1.25rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}}
+
+.report-footer-left {{
+  color: var(--text-muted);
+  white-space: nowrap;
+}}
+
+.report-footer-right {{
+  text-align: right;
+}}
+
+.report-footer-meta {{
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.6875rem;
+  color: rgba(255,255,255,0.34);
 }}
   </style>
 </head>
@@ -1523,16 +1732,38 @@ h1 .amber {{ color: var(--amber); }}
           <p class="subtitle">{escape_html(device.title())} viewport analysis — {escape_html(page_url)}</p>
         </div>
 
-        <div class="metadata">
-          <div class="meta-item"><label>Page Type</label><span>{escape_html(page_type)}</span></div>
-          <div class="meta-item"><label>Platform</label><span>{escape_html(platform)}</span></div>
-          <div class="meta-item"><label>Device</label><span>{escape_html(device_label)}</span></div>
-          <div class="meta-item"><label>Source Mode</label><span>{escape_html(source_mode)}</span></div>
-          <div class="meta-item"><label>Audit Date</label><span>{escape_html(date_str)}</span></div>
-          <div class="meta-item"><label>Engagement</label><span class="highlight">{escape_html(engagement_id)}</span></div>
-        </div>
       </div>
     </header>
+
+    <section class="summary-section">
+      <div class="summary-card summary-card--kpi">
+        <div class="summary-inline">
+          <span class="summary-kpi-label">Evidence Confidence</span>
+          <span class="summary-kpi-value-group"><span class="summary-kpi-iconbox amber">{SVG_CHECK}</span><span class="summary-kpi-main amber">HIGH</span></span>
+        </div>
+      </div>
+
+      <div class="summary-card summary-card--kpi">
+        <div class="summary-inline">
+          <span class="summary-kpi-label">Projected Lift</span>
+          <span class="summary-kpi-value-group"><span class="summary-kpi-iconbox green">{SVG_TREND_UP}</span><span class="summary-kpi-main green">+{projected_lift:.0f}%</span></span>
+        </div>
+      </div>
+
+      <div class="summary-card summary-card--severity">
+        <div class="summary-inline">
+          <span class="summary-kpi-label">Severity Distribution</span>
+          <div class="summary-severity-inline"><span class="summary-kpi-iconbox neutral">{SVG_SQUARE}</span>{severity_text_html}</div>
+        </div>
+      </div>
+
+      <div class="summary-card summary-card--kpi">
+        <div class="summary-inline">
+          <span class="summary-kpi-label">Ethics Check</span>
+          <span class="summary-kpi-value-group"><span class="summary-kpi-iconbox {ethics_main_class}">{ethics_icon}</span><span class="summary-kpi-main {ethics_main_class}">{ethics_main}</span></span>
+        </div>
+      </div>
+    </section>
 
     <div class="main-grid">
 
@@ -1561,26 +1792,6 @@ h1 .amber {{ color: var(--amber); }}
           {thumb_html}
         </div>
 
-        <div class="metrics-bar">
-          <div class="metric-card">
-            <div class="metric-icon amber">
-              {SVG_CHART}
-            </div>
-            <div>
-              <div class="metric-label">Intent Reliability</div>
-              <div class="metric-value">{intent_reliability}%</div>
-            </div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-icon green">
-              {SVG_TREND_UP}
-            </div>
-            <div>
-              <div class="metric-label">Projected Lift</div>
-              <div class="metric-value green">+{projected_lift:.0f}%</div>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section class="findings">
@@ -1590,27 +1801,13 @@ h1 .amber {{ color: var(--amber); }}
 
     </div>
 
-    <section class="summary-section">
-      <div class="summary-card">
-        <div>
-          <div class="summary-label">Evidence Confidence</div>
-          <div class="summary-value amber">HIGH</div>
-          <div class="summary-note">URL + DOM dual-source analysis</div>
-        </div>
-        <div class="summary-icon amber">
-          {SVG_CHECK}
-        </div>
+    <footer class="report-footer">
+      <div class="report-footer-left">CRO Conversion Psychology v4.5.1</div>
+      <div class="report-footer-right">
+        Generated {generated_date} · {escape_html(device.title())} viewport · {total_findings} findings · Engagement {escape_html(engagement_id)}
+        <span class="report-footer-meta">Page Type {escape_html(page_type)} · Platform {escape_html(platform)} · Device {escape_html(device_label)} · Source Mode {escape_html(source_mode)} · Audit Date {escape_html(date_str)}</span>
       </div>
-
-      <div class="summary-card" style="flex-direction: column; align-items: stretch;">
-        <div class="summary-label" style="margin-bottom: 1.25rem;">Severity Distribution</div>
-        <div class="severity-dist">
-          {severity_bars}
-        </div>
-      </div>
-
-      {ethics_card}
-    </section>
+    </footer>
 
   </div>
 
@@ -1626,6 +1823,53 @@ h1 .amber {{ color: var(--amber); }}
   var thumbs = document.querySelectorAll('.thumb');
   var markers = document.querySelectorAll('.marker-overlay');
   var findingCards = document.querySelectorAll('.finding-card');
+  var markerTooltip = document.createElement('div');
+  markerTooltip.className = 'marker-tooltip';
+  if (mainSlide) {{
+    mainSlide.appendChild(markerTooltip);
+  }}
+
+  function getCardForFinding(findingId) {{
+    return document.getElementById('finding-' + findingId);
+  }}
+
+  function getMarkersForFinding(findingId) {{
+    return document.querySelectorAll('.marker-overlay[data-finding="' + findingId + '"]');
+  }}
+
+  function clearLinkedHover() {{
+    findingCards.forEach(function(card) {{
+      card.classList.remove('linked-hover');
+    }});
+    markers.forEach(function(marker) {{
+      marker.classList.remove('linked-hover');
+    }});
+    markerTooltip.classList.remove('visible');
+    markerTooltip.textContent = '';
+  }}
+
+  function showMarkerTooltip(marker, text) {{
+    if (!mainSlide || !text) {{
+      return;
+    }}
+    var slideRect = mainSlide.getBoundingClientRect();
+    var markerRect = marker.getBoundingClientRect();
+    markerTooltip.textContent = text;
+    markerTooltip.style.left = '0px';
+    markerTooltip.style.top = '0px';
+    markerTooltip.classList.add('visible');
+
+    var tooltipRect = markerTooltip.getBoundingClientRect();
+    var placeLeft = markerRect.right - slideRect.left + tooltipRect.width + 16 > slideRect.width;
+    var left = placeLeft
+      ? markerRect.left - slideRect.left - tooltipRect.width - 10
+      : markerRect.right - slideRect.left + 10;
+    var top = markerRect.top - slideRect.top + (markerRect.height / 2);
+
+    left = Math.max(8, Math.min(left, slideRect.width - tooltipRect.width - 8));
+    markerTooltip.style.left = left + 'px';
+    markerTooltip.style.top = top + 'px';
+  }}
 
   function updateMarkerVisibility(slideIndex) {{
     markers.forEach(function(m) {{
@@ -1662,6 +1906,21 @@ h1 .amber {{ color: var(--amber); }}
 
   // Marker click -> scroll to finding card
   markers.forEach(function(marker) {{
+    marker.addEventListener('mouseenter', function() {{
+      clearLinkedHover();
+      var findingNum = this.getAttribute('data-finding');
+      var targetCard = getCardForFinding(findingNum);
+      if (targetCard) {{
+        targetCard.classList.add('linked-hover');
+        var title = targetCard.querySelector('.finding-title');
+        showMarkerTooltip(this, title ? title.textContent.trim() : '');
+      }}
+    }});
+
+    marker.addEventListener('mouseleave', function() {{
+      clearLinkedHover();
+    }});
+
     marker.addEventListener('click', function(e) {{
       e.preventDefault();
       var findingNum = this.getAttribute('data-finding');
@@ -1675,6 +1934,20 @@ h1 .amber {{ color: var(--amber); }}
 
   // Finding number click -> switch to correct slide
   findingCards.forEach(function(card) {{
+    card.addEventListener('mouseenter', function() {{
+      var findingId = card.id.replace('finding-', '');
+      getMarkersForFinding(findingId).forEach(function(marker) {{
+        marker.classList.add('linked-hover');
+      }});
+    }});
+
+    card.addEventListener('mouseleave', function() {{
+      var findingId = card.id.replace('finding-', '');
+      getMarkersForFinding(findingId).forEach(function(marker) {{
+        marker.classList.remove('linked-hover');
+      }});
+    }});
+
     var num = card.querySelector('.finding-number');
     if (num) {{
       num.addEventListener('click', function() {{
