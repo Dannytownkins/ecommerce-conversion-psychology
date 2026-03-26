@@ -1,6 +1,6 @@
 # E-Commerce Conversion Psychology
 
-![v4.6.0](https://img.shields.io/badge/version-4.6.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Codex Skill](https://img.shields.io/badge/Codex-skill-10b981) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
+![v4.6.0](https://img.shields.io/badge/version-4.6.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 19 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, competitive positioning, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -19,7 +19,7 @@ Not a checklist. Not a linter. A full workflow that catches what you miss, chall
 | References | 28 | 19 domain files (300+ classified findings) + 9 operational files (ethics, evidence tiers, URL validation, etc.) |
 | Templates | 16 | HTML report templates, component library, device frames, metadata schemas |
 | Platforms | 2 | Shopify (Liquid, OS 2.0, Shop Pay), Next.js (App Router, RSC, Server Actions) |
-| Scripts | 2 | Python visual report generator, PowerShell Codex sync |
+| Scripts | 1 | Python visual report generator (structured JSON + auto-matching markers) |
 
 ---
 
@@ -144,8 +144,7 @@ ecommerce-conversion-psychology/
   references/                         19 domain + 9 operational files
   templates/                          16 HTML/CSS templates + component library
   scripts/
-    generate-report.py                Self-contained visual report generator
-    sync-to-codex.ps1                 Repo -> Codex sync
+    generate-report.py                Visual report generator (reads findings.json + auto-matches markers)
   platforms/                          shopify.md, nextjs.md
   citations/                          Source URLs for human verification
   CLAUDE.md                           Development standards
