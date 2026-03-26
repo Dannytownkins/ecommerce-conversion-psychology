@@ -1,5 +1,69 @@
 # Changelog
 
+## 4.6.0 — 2026-03-26
+
+### Structured JSON Findings Pipeline
+
+Architectural change: findings now travel through the pipeline as structured JSON instead of regex-parsed prose. Eliminates three LLM interpretation layers where findings could silently drop or malform.
+
+#### JSON Findings (3 changes)
+- **Auditor JSON output** — Auditors now output a `FINDINGS_JSON:` block alongside prose findings. JSON array has typed fields: verdict, section, element, source, priority, observation, recommendation, reference, tier, effort, cluster. Prose preserved in audit.md for human review.
+- **Coordinator JSON assembly** — Coordinator extracts JSON arrays from all auditors, merges/deduplicates by field matching (not LLM interpretation), applies ethics severity override, writes `findings.json` as source of truth. Falls back to prose parsing if auditor omits JSON.
+- **Auto-matching markers** — `generate-report.py` reads `findings.json` and matches ELEMENT fields to baton entries via selector/text/tag strategies. No coordinator-provided `markers.json` needed. New `--findings` CLI argument; `--markers` retained for backwards compat.
+
+#### Parallel Acquisition (3 changes)
+- **Named sessions for two-device mode** — Two-device acquisition now dispatches both agents in parallel using `--session {device}`. Each agent gets its own browser instance with independent viewport. Cuts acquisition time nearly in half.
+- **Absolute path mandate** — Coordinator computes absolute `ENGAGEMENT_DIR` and passes to every acquisition agent. Prevents working directory mismatch that caused files written to wrong location.
+- **Baton field name contract** — Explicit callout in acquire.md that field names (`path`, `naturalWidth`, `naturalHeight`, `screenshot_index`, `scrollY`) are machine-readable contracts. Prevents schema drift.
+
+#### Quality Improvements (3 changes)
+- **Ethics severity override rule** — If ethics gate defines severity for a violation class, that severity overrides the auditor's rating during audit assembly. Separate from the dedup preservation rule.
+- **EFFORT: Trivial tier** — New lowest effort tier for DOM features that exist but are disabled via attribute or config flag (e.g., `data-infinite-scroll-enabled="false"`).
+- **Checkpoint prompt format** — Export sub-options use letters (a/b/c/d) instead of nested numbers to avoid decimal ambiguity.
+
+#### Plugin Structure (17 changes)
+- **CLAUDE.md** — Development standards, pre-commit checklist, skill compliance, validation commands.
+- **references/meta-schema.md** — Extracted duplicated meta.json validation schema (was copy-pasted in 4 skills) to single reference file.
+- **Skill descriptions** — All 6 skills rewritten with trigger phrases and third-person format for better skill matching.
+- **build/SKILL.md** — 9 vague "Same as /cro:audit" replaced with specific section pointers.
+- **quick-scan/SKILL.md** — 17-line URL acquisition block collapsed to 5 lines.
+- **evidence-tiers.md** — Added to auditor dispatch template (was referenced indirectly but never dispatched).
+- **Workflow contradictions fixed** — Ethics URL contradiction in audit.md, "user is gate" vs BLOCK in review.md, coordinator-scope content removed from reconcile.md.
+- **acquire.md** — Cut 61 lines of verbose prose, consolidated DPR explanations, fixed 30% occlusion vagueness.
+- **Bold-format parser warning** — `generate-report.py` detects `**FINDING: FAIL**` format and emits stderr warning. Also warns on zero parsed findings.
+- **Plugin manifest** — Keywords, homepage, component counts in description.
+- **README** — Components table, accurate counts, tighter architecture section.
+- **.DS_Store** — Removed from git, added to .gitignore.
+- **Pillow** — Pinned to `>=10.0.0,<12.0.0`.
+- **Hardcoded path** — Fixed `C:\Users\SM - Dan\.codex` in CODEX_CONVERSION.md.
+
+#### Codex Removal (4 files deleted)
+- Removed `SKILL.md` (root wrapper), `agents/openai.yaml`, `scripts/sync-to-codex.ps1`, `CODEX_CONVERSION.md`. Codex integration deferred until 4.6 stable.
+
+### Files Changed
+- `skills/audit/SKILL.md` — JSON assembly, ethics override, parallel acquisition, absolute paths, meta-schema ref, description, checkpoints
+- `skills/build/SKILL.md` — Specific cross-references, meta-schema ref, description
+- `skills/quick-scan/SKILL.md` — Parallel sessions, acquisition trim, meta-schema ref, description
+- `skills/compare/SKILL.md` — Parallel sessions, concurrency fix, evidence-tiers, meta-schema ref, description
+- `skills/resume/SKILL.md` — Description
+- `skills/cro/SKILL.md` — Description
+- `workflows/audit.md` — JSON output format, dual-format note, ethics URL fix
+- `workflows/acquire.md` — ENGAGEMENT_DIR, named sessions, field name contract, verbosity cuts
+- `workflows/review.md` — User-is-gate clarification
+- `workflows/reconcile.md` — Removed coordinator-scope content
+- `workflows/plan.md` — EFFORT: Trivial tier
+- `scripts/generate-report.py` — --findings arg, auto_match_markers(), findings.json loading, bold-format warning
+- `.claude-plugin/plugin.json` — v4.6.0, keywords, homepage, description
+- `.claude-plugin/marketplace.json` — Updated description
+- `CLAUDE.md` — New file (development standards)
+- `references/meta-schema.md` — New file (shared schema)
+- `README.md` — Components table, Codex removal, architecture update
+- `CHANGELOG.md` — This entry
+- `.gitignore` — Added .DS_Store
+- `requirements.txt` — Pillow upper bound
+
+---
+
 ## 4.5.1 — 2026-03-24
 
 ### Acquisition Reliability & Ethics Accuracy
