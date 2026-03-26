@@ -28,6 +28,8 @@ Alternatives: (1) provide a local file path, (2) paste page source code
 ```
 Do NOT attempt any navigation or screenshot commands without this check passing first.
 
+**Named sessions:** If the coordinator passes a `session_name`, prefix ALL agent-browser commands with `--session {session_name}`. This allows parallel acquisition across multiple devices. Example: `agent-browser --session mobile set device "iPhone 14"`.
+
 **Base64 encoding (cross-platform):**
 When base64 encoding is needed, try in order:
 1. `base64 -w 0 < {file}` (Linux/macOS/Git Bash)
@@ -45,6 +47,7 @@ Use whichever succeeds first.
    - Mobile: 3x DPR via `agent-browser set device "iPhone 14"` (the only reliable high-DPR method)
 4. **Nonce** — random hex string from the coordinator (pass through to STATUS line)
 5. **dom_file** (optional) — path to an existing preprocessed DOM file. If provided, skip Steps 4, 5, and 6 entirely and reuse this DOM. Used by the coordinator for the second pass in "both" mode (screenshots only).
+6. **ENGAGEMENT_DIR** (required) — absolute path to the engagement directory (e.g., `/c/Users/SM - Dan/.local/bin/docs/cro/2026-03-26-a3f7b1c2/`). All file writes MUST use this absolute path. Do NOT use relative paths like `docs/cro/{id}/` — the agent's working directory may differ from the coordinator's.
 
 ## Output Contract
 
@@ -68,6 +71,14 @@ The following schema is your deliverable. All subsequent steps describe HOW to c
 - `screenshot_index` (integer, references screenshots[].index)
 
 Section labels MUST be unique. Do NOT use cluster slug names as labels.
+
+**Field Name Contract:** The field names above are exact machine-readable contracts. Downstream agents and the Python report generator parse these by name. Do NOT rename fields:
+- `path` (not `file`, `filename`, or `image`)
+- `naturalWidth` / `naturalHeight` (not `width` / `height` at the screenshot level)
+- `screenshot_index` (integer, not array — not `screenshots` or `screenshot_indices`)
+- `scrollY` (not `scroll`, `offset`, or `position`)
+
+If you output a simplified schema, the coordinator must normalize it before downstream dispatch — which wastes time and introduces errors.
 
 ## Process
 
@@ -333,7 +344,7 @@ If pre-hydration detected:
 
 ## Output Format
 
-Write a structured baton file to `docs/cro/{engagement-id}/baton.json`:
+Write a structured baton file to `{ENGAGEMENT_DIR}/baton.json`:
 
 ```json
 {
@@ -408,7 +419,7 @@ Refer to the Output Contract above for required fields.
 
 The baton filename matches the device context: `baton.json` for laptop or desktop, `baton-mobile.json` for mobile.
 
-**DOM file output:** Write preprocessed DOM to `docs/cro/{engagement-id}/dom.html` — do NOT embed DOM in text output. The coordinator passes this path to auditors directly.
+**DOM file output:** Write preprocessed DOM to `{ENGAGEMENT_DIR}/dom.html` — do NOT embed DOM in text output. The coordinator passes this path to auditors directly.
 
 ## Output Rules
 

@@ -47,8 +47,8 @@ Determine input type from $ARGUMENTS:
 **URL acquisition:**
 1. Validate URL per ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
 2. Dispatch acquisition agent per audit/SKILL.md <mode_detection>: read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md, use `model: "opus"`, pass viewport/device context.
-3. For "both" mode: dispatch twice serially (first device full, second device screenshots-only). Run `agent-browser close` between passes if DPR changes.
-4. **Post-acquisition file verification (mandatory):** Run `ls docs/cro/{engagement-id}/` — verify baton.json, dom.html, and at least 1 screenshot exist. If missing, fall back to manual acquisition per audit/SKILL.md.
+3. For "both" mode: dispatch both acquisition agents in parallel using named sessions (`--session {first_device}`, `--session {second_device}`) — first device (full), second device (pass `dom_file`, screenshots only).
+4. **Post-acquisition file verification (mandatory):** Run `ls {ENGAGEMENT_DIR}` (the absolute engagement directory path) — verify baton.json, dom.html, and at least 1 screenshot exist. If missing, fall back to manual acquisition per audit/SKILL.md.
 5. Set `source_mode: "url-dual"` in meta.json.
 
 **File path:** Set `source_mode: "file"` in meta.json.

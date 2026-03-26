@@ -39,16 +39,17 @@ How to acquire page data:
    Then dispatch the acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
    - Dispatch via Agent tool with `model: "opus"`
+   - **Compute the absolute engagement directory path** (e.g., `/c/Users/.../docs/cro/{engagement-id}/`) and pass it as `ENGAGEMENT_DIR` to every acquisition agent. Acquisition agents MUST use this absolute path for all file writes.
    - Pass the validated URL, viewport dimensions based on selected device, and device context:
      - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
      - Laptop: viewport 1440×900, device "laptop"
      - Desktop: viewport 1920×1080, device "desktop"
-     - Two devices: dispatch sequentially (first device, then second). The `agent-browser` daemon is system-wide and persists between agent invocations — you cannot run two viewports simultaneously.
-     - **DPR between device passes:** If the second device needs a different DPR (e.g., mobile after desktop), the acquisition agent MUST run `agent-browser close` before setting the new device. Without this, `--args` flags and `set device` commands are ignored because the daemon is already running with the first device's settings.
-       1. First device pass: full acquisition (DOM + screenshots + element coordinates). Wait for full completion.
-       2. Second device pass: after first completes, dispatch second acquisition. Pass `dom_file` from first acquisition — screenshots + element coordinates only.
+     - Two devices: dispatch BOTH acquisition agents in parallel using named sessions (`--session mobile`, `--session desktop`). Each agent gets its own browser instance with independent viewport.
+       1. First agent: full acquisition (DOM + screenshots + element coordinates) with `--session {first_device}`.
+       2. Second agent: pass `dom_file` path from first agent's expected output location — screenshots + element coordinates only, with `--session {second_device}`.
+       Note: if one agent needs mobile DPR (`set device "iPhone 14"`), its `agent-browser close` + `set device` only affects its own session — no conflict with the other agent's session.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
-   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, verify files actually exist on disk before reading them. Run `ls docs/cro/{engagement-id}/` and check for baton.json, dom.html, and at least 1 screenshot file. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, immediately fall back to manual acquisition — do not re-dispatch the subagent.
+   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, verify files actually exist on disk before reading them. Run `ls {ENGAGEMENT_DIR}` (the absolute engagement directory path) and check for baton.json, dom.html, and at least 1 screenshot file. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, immediately fall back to manual acquisition — do not re-dispatch the subagent.
    - After file verification passes, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
@@ -257,6 +258,7 @@ Before writing audit.md, deduplicate findings across clusters:
 - Append to the kept finding's observation: 'Also identified by {other_cluster} cluster.'
 - Do NOT deduplicate findings that share a SECTION slug but target different elements (e.g., two different CTAs both flagged under primary-cta)
 - **Ethics gate preservation rule:** If ANY auditor flagged a finding as PRIORITY: CRITICAL with a reference to ethics-gate.md, the deduplicated finding MUST retain PRIORITY: CRITICAL regardless of other auditors' severity ratings. Ethics violations cannot be downgraded during deduplication. This ensures the Ethics Gate summary and finding cards are consistent — a violation listed in the Ethics Gate section always appears as a CRITICAL finding card in the visual report.
+- **Ethics severity override rule:** If the ethics gate defines a severity for a class of violation (e.g., "vague volume claims without verifiable evidence = CRITICAL"), that severity overrides any auditor's rating. During audit assembly, cross-check each ethics-related finding against the ethics gate definitions. If an auditor rated an ethics violation as HIGH or MEDIUM but the ethics gate classifies it as CRITICAL, upgrade to CRITICAL. Log the correction: "Upgraded {finding} from {original} to CRITICAL per ethics gate."
 - Expected reduction: 20-30 raw findings typically deduplicate to 12-18 unique findings
 </finding_deduplication>
 
@@ -488,10 +490,10 @@ Present natural language summary (not raw tables):
 1. Proceed to planning
 2. Adjust — tell me what to change
 3. Export — How would you like this exported?
-   1. Markdown only (already saved)
-   2. Annotated visual report (dark-mode HTML with scroll-sync)
-   3. Both markdown + visual report
-   4. Skip additional exports
+   a. Markdown only (already saved)
+   b. Annotated visual report (dark-mode HTML with scroll-sync)
+   c. Both markdown + visual report
+   d. Skip additional exports
    After export, confirm with filenames: 'Visual report saved to `docs/cro/{engagement-id}/visual-report.html`' or for multi-device: list each file.
 4. Stop here
 

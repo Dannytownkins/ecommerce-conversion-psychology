@@ -84,6 +84,7 @@ Create a prioritized table with exactly these columns:
 - **Priority** — CRITICAL / HIGH / MEDIUM / LOW (same definitions as audit)
 
 ### Effort Scale
+- **Trivial:** feature already exists in DOM but is disabled via attribute or config flag (e.g., `data-infinite-scroll-enabled="false"`, `display: none` on a complete component). Fix is a single attribute/config change, not a development task.
 - **Low:** < 1 hour, simple change
 - **Medium:** 1-4 hours, moderate complexity
 - **High:** 4+ hours or architectural change
