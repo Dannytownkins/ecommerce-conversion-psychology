@@ -11,13 +11,17 @@ Architectural change: findings now travel through the pipeline as structured JSO
 - **Coordinator JSON assembly** — Coordinator extracts JSON arrays from all auditors, merges/deduplicates by field matching (not LLM interpretation), applies ethics severity override, writes `findings.json` as source of truth. Falls back to prose parsing if auditor omits JSON.
 - **Auto-matching markers** — `generate-report.py` reads `findings.json` and matches ELEMENT fields to baton entries via selector/text/tag strategies. No coordinator-provided `markers.json` needed. New `--findings` CLI argument; `--markers` retained for backwards compat.
 
-#### Parallel Acquisition (3 changes)
+#### Parallel Acquisition (5 changes)
 - **Named sessions for two-device mode** — Two-device acquisition now dispatches both agents in parallel using `--session {device}`. Each agent gets its own browser instance with independent viewport. Cuts acquisition time nearly in half.
+- **True parallel acquisition** — Both agents now do full acquisition independently (DOM + screenshots + element coordinates). Previously the second agent depended on the first agent's DOM output via `dom_file`, which forced sequential execution despite named sessions. Removed `dom_file` input parameter from acquire.md.
+- **Device-specific DOM filenames** — Desktop/laptop writes `dom.html`, mobile writes `dom-mobile.html`. Prevents file collisions when two agents run in parallel. The baton's `dom_file` field carries the correct filename downstream.
 - **Absolute path mandate** — Coordinator computes absolute `ENGAGEMENT_DIR` and passes to every acquisition agent. Prevents working directory mismatch that caused files written to wrong location.
 - **Baton field name contract** — Explicit callout in acquire.md that field names (`path`, `naturalWidth`, `naturalHeight`, `screenshot_index`, `scrollY`) are machine-readable contracts. Prevents schema drift.
 
-#### Quality Improvements (3 changes)
+#### Quality Improvements (5 changes)
 - **Ethics severity override rule** — If ethics gate defines severity for a violation class, that severity overrides the auditor's rating during audit assembly. Separate from the dedup preservation rule.
+- **Findings parity validation** — After writing both audit.md and findings.json, coordinator now validates that finding counts match. If prose dedup and JSON dedup diverge (e.g., auditor returns 8 prose findings but 7 JSON entries), the coordinator reconciles by constructing missing entries from whichever source has them. Prevents the visual report from silently showing fewer findings than the markdown.
+- **Mobile DOM caveat removed** — Each device now captures its own DOM at its own viewport. The `{{dom_caveat_if_mobile}}` template note ("DOM was captured at a non-mobile viewport") is no longer needed and has been removed from the auditor dispatch template.
 - **EFFORT: Trivial tier** — New lowest effort tier for DOM features that exist but are disabled via attribute or config flag (e.g., `data-infinite-scroll-enabled="false"`).
 - **Checkpoint prompt format** — Export sub-options use letters (a/b/c/d) instead of nested numbers to avoid decimal ambiguity.
 
@@ -41,14 +45,14 @@ Architectural change: findings now travel through the pipeline as structured JSO
 - Removed `SKILL.md` (root wrapper), `agents/openai.yaml`, `scripts/sync-to-codex.ps1`, `CODEX_CONVERSION.md`. Codex integration deferred until 4.6 stable.
 
 ### Files Changed
-- `skills/audit/SKILL.md` — JSON assembly, ethics override, parallel acquisition, absolute paths, meta-schema ref, description, checkpoints
+- `skills/audit/SKILL.md` — JSON assembly, ethics override, parallel acquisition, absolute paths, meta-schema ref, description, checkpoints, findings parity validation, device-specific DOM verification, mobile DOM caveat removed
 - `skills/build/SKILL.md` — Specific cross-references, meta-schema ref, description
-- `skills/quick-scan/SKILL.md` — Parallel sessions, acquisition trim, meta-schema ref, description
-- `skills/compare/SKILL.md` — Parallel sessions, concurrency fix, evidence-tiers, meta-schema ref, description
+- `skills/quick-scan/SKILL.md` — Parallel sessions, acquisition trim, meta-schema ref, description, true parallel acquisition
+- `skills/compare/SKILL.md` — Parallel sessions, concurrency fix, evidence-tiers, meta-schema ref, description, true parallel acquisition
 - `skills/resume/SKILL.md` — Description
 - `skills/cro/SKILL.md` — Description
 - `workflows/audit.md` — JSON output format, dual-format note, ethics URL fix
-- `workflows/acquire.md` — ENGAGEMENT_DIR, named sessions, field name contract, verbosity cuts
+- `workflows/acquire.md` — ENGAGEMENT_DIR, named sessions, field name contract, verbosity cuts, device-specific DOM filenames, dom_file input removed
 - `workflows/review.md` — User-is-gate clarification
 - `workflows/reconcile.md` — Removed coordinator-scope content
 - `workflows/plan.md` — EFFORT: Trivial tier

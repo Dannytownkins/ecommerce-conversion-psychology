@@ -67,7 +67,8 @@ docs/cro/2026-03-25-a3f2b1c9/
   meta.json           Engagement state + metadata
   baton.json          Structured acquisition output (screenshots, sections, styles)
   context.md          Write-once intake context
-  dom.html            Preprocessed DOM
+  dom.html            Preprocessed DOM (desktop/laptop)
+  dom-mobile.html     Preprocessed DOM (mobile, two-device mode only)
   *.jpg               Screenshots (base64-encoded at report render time)
   audit.md            Findings (+ audit-mobile.md for two-device mode)
   plan.md             Prioritized action plan

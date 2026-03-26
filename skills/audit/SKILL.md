@@ -44,12 +44,13 @@ How to acquire page data:
      - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
      - Laptop: viewport 1440×900, device "laptop"
      - Desktop: viewport 1920×1080, device "desktop"
-     - Two devices: dispatch BOTH acquisition agents in parallel using named sessions (`--session mobile`, `--session desktop`). Each agent gets its own browser instance with independent viewport.
+     - Two devices: dispatch BOTH acquisition agents in parallel using named sessions (`--session mobile`, `--session desktop`). Each agent gets its own browser instance with independent viewport and extracts its own DOM independently.
        1. First agent: full acquisition (DOM + screenshots + element coordinates) with `--session {first_device}`.
-       2. Second agent: pass `dom_file` path from first agent's expected output location — screenshots + element coordinates only, with `--session {second_device}`.
+       2. Second agent: full acquisition (DOM + screenshots + element coordinates) with `--session {second_device}`.
+       Both agents extract DOM independently. DOM is viewport-independent so the content is identical — the redundant extraction is cheap compared to the parallelism gained (cuts wall time in half). Each agent writes a device-specific DOM filename (`dom.html` for desktop/laptop, `dom-mobile.html` for mobile) to avoid file collisions.
        Note: if one agent needs mobile DPR (`set device "iPhone 14"`), its `agent-browser close` + `set device` only affects its own session — no conflict with the other agent's session.
    - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, style metadata, baton.json
-   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, verify files actually exist on disk before reading them. Run `ls {ENGAGEMENT_DIR}` (the absolute engagement directory path) and check for baton.json, dom.html, and at least 1 screenshot file. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, immediately fall back to manual acquisition — do not re-dispatch the subagent.
+   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, verify files actually exist on disk before reading them. Run `ls {ENGAGEMENT_DIR}` (the absolute engagement directory path) and check for baton.json (or baton-mobile.json), the device-specific DOM file (`dom.html` for desktop/laptop, `dom-mobile.html` for mobile), and at least 1 screenshot file. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, immediately fall back to manual acquisition — do not re-dispatch the subagent.
    - After file verification passes, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
    - If acquisition returns `STATUS: BLOCKED` → present the reason to user, ask for file path or pasted code
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
@@ -60,7 +61,7 @@ How to acquire page data:
 
 **Manual acquisition fallback:**
 If the acquisition agent fails (crashes, returns malformed output, or produces a baton.json with `screenshots: []`):
-1. **Delete the failed agent's stale baton.json and dom.html** — downstream agents will misread partial/empty data as real acquisition output if left in place.
+1. **Delete the failed agent's stale baton.json (or baton-mobile.json) and DOM file (dom.html or dom-mobile.html)** — downstream agents will misread partial/empty data as real acquisition output if left in place.
 2. The coordinator captures the page directly using Bash commands:
    ```
    agent-browser set viewport 1440 900
@@ -246,7 +247,7 @@ Read these reference files at ${CLAUDE_PLUGIN_ROOT}/references/:
 ---
 
 Template notes:
-- {{dom_caveat_if_mobile}}: Include only for mobile auditors: "DOM was captured at a non-mobile viewport. For layout/visibility judgments, rely on screenshots as truth. Use DOM for content/attributes only."
+- {{dom_caveat_if_mobile}}: No longer needed — each device captures its own DOM at its own viewport. Omit this caveat.
 - {{filtered_elements_json}}: Filter baton elements to only those within this auditor's screenshot sections (by scrollY range).
 - {{full_ethics_gate_content}}: The COMPLETE text of ethics-gate.md — do not summarize, paraphrase, or excerpt. The file is ~77 lines; include in full.
 </auditor_dispatch_template>
@@ -431,6 +432,15 @@ After collecting all auditor outputs, extract the JSON findings array from each 
 **findings.json is the source of truth for the report generator.** audit.md remains the human-readable view. Both must contain the same findings, but if there's any discrepancy, findings.json wins.
 
 **Fallback:** If an auditor's response does not contain a `FINDINGS_JSON:` block, fall back to parsing its prose findings and constructing the JSON entries manually (extract SECTION, ELEMENT, SOURCE, PRIORITY, OBSERVATION, RECOMMENDATION, REFERENCE fields from code-fenced blocks). Log a warning: "Auditor {cluster} did not return JSON findings — falling back to prose parsing."
+
+**Parity validation (mandatory):** After writing both audit.md and findings.json, verify finding counts match:
+1. Count code-fenced `FINDING: FAIL` and `FINDING: PARTIAL` blocks in audit.md (grep for `^FINDING: (?:FAIL|PARTIAL)` inside code fences).
+2. Count entries in the findings.json array.
+3. If counts match: proceed silently.
+4. If counts differ: log warning "Parity mismatch: audit.md has {N} findings, findings.json has {M}."
+   - If findings.json has fewer: an auditor likely returned prose without a matching JSON entry, or JSON dedup removed an entry that prose dedup kept. For each prose finding missing from findings.json, construct a JSON entry from the prose fields and append to findings.json. Re-index.
+   - If audit.md has fewer: JSON dedup kept a finding that prose dedup dropped (less common). Add the missing prose block to audit.md under its cluster heading.
+   - After reconciliation, re-verify counts match. If still mismatched, log error but proceed — findings.json remains authoritative.
 </audit_assembly>
 
 <progress_comparison>

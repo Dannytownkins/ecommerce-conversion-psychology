@@ -46,8 +46,7 @@ Use whichever succeeds first.
    - Desktop: 1x DPR (default Chromium behavior)
    - Mobile: 3x DPR via `agent-browser set device "iPhone 14"` (the only reliable high-DPR method)
 4. **Nonce** — random hex string from the coordinator (pass through to STATUS line)
-5. **dom_file** (optional) — path to an existing preprocessed DOM file. If provided, skip Steps 4, 5, and 6 entirely and reuse this DOM. Used by the coordinator for the second pass in "both" mode (screenshots only).
-6. **ENGAGEMENT_DIR** (required) — absolute path to the engagement directory (e.g., `/c/Users/SM - Dan/.local/bin/docs/cro/2026-03-26-a3f7b1c2/`). All file writes MUST use this absolute path. Do NOT use relative paths like `docs/cro/{id}/` — the agent's working directory may differ from the coordinator's.
+5. **ENGAGEMENT_DIR** (required) — absolute path to the engagement directory (e.g., `/c/Users/SM - Dan/.local/bin/docs/cro/2026-03-26-a3f7b1c2/`). All file writes MUST use this absolute path. Do NOT use relative paths like `docs/cro/{id}/` — the agent's working directory may differ from the coordinator's.
 
 ## Output Contract
 
@@ -239,8 +238,6 @@ Cap at 6 screenshots total. Minimum 1.
 
 ### Step 4: Extract and Preprocess DOM
 
-**If `dom_file` was provided in input:** Skip Steps 4, 5, and 6. Use the provided path as `DOM_FILE` in output.
-
 Extract `document.documentElement.outerHTML` from the fully rendered page.
 
 **Preprocessing (mandatory — reduces DOM size by 60–80%):**
@@ -372,7 +369,7 @@ Write a structured baton file to `{ENGAGEMENT_DIR}/baton.json`:
       "screenshot_index": 1
     }
   ],
-  "dom_file": "dom.html",
+  "dom_file": "dom.html OR dom-mobile.html (see DOM file output below)",
   "dom_mode": "full",
   "dom_size_bytes": 72000,
   "styles": {
@@ -419,7 +416,11 @@ Refer to the Output Contract above for required fields.
 
 The baton filename matches the device context: `baton.json` for laptop or desktop, `baton-mobile.json` for mobile.
 
-**DOM file output:** Write preprocessed DOM to `{ENGAGEMENT_DIR}/dom.html` — do NOT embed DOM in text output. The coordinator passes this path to auditors directly.
+**DOM file output:** Write preprocessed DOM to a device-specific filename — do NOT embed DOM in text output. The coordinator passes this path to auditors directly.
+- Laptop or desktop: `{ENGAGEMENT_DIR}/dom.html`
+- Mobile: `{ENGAGEMENT_DIR}/dom-mobile.html`
+
+This prevents file collisions when two acquisition agents run in parallel for two-device mode. The baton's `dom_file` field carries the correct filename downstream.
 
 ## Output Rules
 

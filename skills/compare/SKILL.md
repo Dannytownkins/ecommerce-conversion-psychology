@@ -80,9 +80,9 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
   - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
   - Laptop: viewport 1440×900, device "laptop"
   - Desktop: viewport 1920×1080, device "desktop"
-  - Both: two parallel passes using named sessions (`--session {first_device}`, `--session {second_device}`) — first device (full), second device (screenshots only, pass `dom_file`).
+  - Both: two parallel passes using named sessions (`--session {first_device}`, `--session {second_device}`) — both agents do full acquisition independently (DOM + screenshots + element coordinates). Each writes device-specific DOM files (`dom.html` / `dom-mobile.html`) to avoid collisions.
 - Collect screenshots + preprocessed DOM + metadata
-- **Post-acquisition file verification:** After each acquisition agent returns, run `ls` on the engagement directory to verify baton.json, dom.html, and screenshots exist. If missing, fall back to manual acquisition.
+- **Post-acquisition file verification:** After each acquisition agent returns, run `ls` on the engagement directory to verify baton.json (or baton-mobile.json), the device-specific DOM file (`dom.html` or `dom-mobile.html`), and screenshots exist. If missing, fall back to manual acquisition.
 - If acquisition returns STATUS: BLOCKED → stop entirely, report error, do NOT proceed to competitor
 - Set source_mode in meta.json
 
