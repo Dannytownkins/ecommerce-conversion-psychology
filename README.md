@@ -1,6 +1,6 @@
 # E-Commerce Conversion Psychology
 
-![v4.6.0](https://img.shields.io/badge/version-4.6.0-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
+![v4.6.1](https://img.shields.io/badge/version-4.6.1-blue) ![Claude Code Plugin](https://img.shields.io/badge/Claude_Code-plugin-7c3aed) ![Platforms](https://img.shields.io/badge/platforms-Shopify_%7C_Next.js_%7C_OpenCart_%7C_any-green)
 
 **A CRO engine that thinks like a psychologist.** 19 research-backed reference files on pricing psychology, trust signals, cognitive load, eye tracking, competitive positioning, and more — wired into a multi-agent relay that audits, plans, reviews, and builds conversion-optimized ecommerce pages.
 
@@ -133,7 +133,7 @@ claude plugin update cro@ecommerce-conversion-psychology
 
 ```
 ecommerce-conversion-psychology/
-  .claude-plugin/plugin.json          Plugin metadata (v4.6.0)
+  .claude-plugin/plugin.json          Plugin metadata (v4.6.1)
   skills/                             6 coordinator skills
     cro/SKILL.md                      /cro router
     audit/SKILL.md                    /cro:audit (4-phase relay)

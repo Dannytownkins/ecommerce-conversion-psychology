@@ -34,7 +34,7 @@ $ARGUMENTS must contain a URL or file path. If ambiguous, ask: "Are we auditing 
 
 How to acquire page data:
 1. **File path provided** → read directly. Set `source_mode: "file"` in meta.json. No acquisition agent needed.
-2. **URL provided** → validate using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md.
+2. **URL provided** → before dispatching acquisition, verify agent-browser is available: run `agent-browser --version`. If it fails, skip to the no-browser fallback below. If it succeeds, validate the URL using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md.
 2b. **User confirmation (URL mode only, non-auto):** Before dispatching the acquisition agent, ask: 'About to fetch **{domain}** — proceed?' Wait for user confirmation. In `--auto` mode, skip this step.
    Then dispatch the acquisition agent:
    - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
@@ -56,7 +56,8 @@ How to acquire page data:
    - If acquisition returns `STATUS: PARTIAL` → proceed with available data, note gaps at checkpoint
    - Set `source_mode: "url-dual"` in meta.json
 3. **Acquisition agent fails entirely** (or reports COMPLETE but files are missing on disk) → fall back to manual acquisition (see below). Set `source_mode: "manual"`.
-4. **No agent-browser and no file path** → fall back to WebFetch for page content. Set `source_mode: "webfetch"`.
+4. **No agent-browser and input is a URL** → present the no-browser options menu (below). Do NOT fall back to WebFetch for URL inputs — WebFetch returns source HTML without JS rendering, producing false positives for JS-dependent sites (Shopify, Next.js, SPAs).
+   - In `--auto` mode: abort with error. Message: "ABORT: agent-browser is required for URL audits in --auto mode. Install: npm install -g @anthropic-ai/agent-browser && agent-browser install. Alternative: provide a file path instead of a URL (--auto works with file inputs without agent-browser)." Set meta.json `phase: "blocked"`, `blocked: true`.
 5. Never silently fail — always tell the user what is happening
 
 **Manual acquisition fallback:**
@@ -82,13 +83,25 @@ If the acquisition agent fails (crashes, returns malformed output, or produces a
 6. Set `source_mode: "manual"` in meta.json
 7. Proceed to audit phase normally
 
-**WebFetch fallback (no agent-browser available):**
-If agent-browser is not installed and the input is a URL:
-1. Fetch page content via WebFetch
-2. Write response to `dom.html` (note: this is source HTML, not rendered DOM)
-3. Write baton.json with `source_mode: "webfetch"`, `screenshots: []`, `status: "COMPLETE"`
-4. Set `source_mode: "webfetch"` in meta.json — auditors will know they have no screenshots and no computed styles
-5. Proceed to audit with CODE-only findings (no VISUAL source possible)
+**No-browser options menu (URL input, no agent-browser):**
+Present the following options to the user:
+```
+agent-browser is not installed. Visual reports with annotated screenshots require
+agent-browser for viewport-accurate page capture.
+
+Options:
+1. Install agent-browser and retry
+   Run: npm install -g @anthropic-ai/agent-browser && agent-browser install
+   Then tell me to check again. (Full visual audit with annotated screenshots)
+
+2. Provide a local file path instead
+   (Code-only audit — no visual findings or visual report)
+
+3. Stop here
+```
+If user selects option 1 and says to check again: re-run `agent-browser --version` and proceed normally if it passes.
+If user selects option 2: set `source_mode: "file"` and proceed with file-based audit.
+If user selects option 3: set meta.json `phase: "blocked"`, `blocked: true`, stop.
 </mode_detection>
 
 <device_selection>
@@ -427,20 +440,21 @@ After collecting all auditor outputs, extract the JSON findings array from each 
 4. Apply the ethics severity override rule: cross-check each finding's `reference` against ethics-gate.md. If the ethics gate classifies a violation class as CRITICAL, upgrade the finding's `priority` to CRITICAL regardless of the auditor's rating.
 5. Sort by priority: CRITICAL → HIGH → MEDIUM → LOW.
 6. Re-index: set `index` to 1-based sequential order after sorting.
-7. Write the merged array to `docs/cro/{engagement-id}/findings.json`.
+7. Write the merged array to `docs/cro/{engagement-id}/findings.json`. In two-device mode, use `findings.json` for the first device and `findings-{second_device}.json` for the second (e.g., `findings-mobile.json`). Run parity validation once per device against its matching audit file.
 
 **findings.json is the source of truth for the report generator.** audit.md remains the human-readable view. Both must contain the same findings, but if there's any discrepancy, findings.json wins.
 
 **Fallback:** If an auditor's response does not contain a `FINDINGS_JSON:` block, fall back to parsing its prose findings and constructing the JSON entries manually (extract SECTION, ELEMENT, SOURCE, PRIORITY, OBSERVATION, RECOMMENDATION, REFERENCE fields from code-fenced blocks). Log a warning: "Auditor {cluster} did not return JSON findings — falling back to prose parsing."
 
-**Parity validation (mandatory):** After writing both audit.md and findings.json, verify finding counts match:
-1. Count code-fenced `FINDING: FAIL` and `FINDING: PARTIAL` blocks in audit.md (grep for `^FINDING: (?:FAIL|PARTIAL)` inside code fences).
-2. Count entries in the findings.json array.
+**Parity validation (mandatory):** After writing both audit.md and findings.json (in two-device mode, run this once per device against its matching files), verify finding counts match:
+1. Count prose findings: `grep -cE "^FINDING: (FAIL|PARTIAL)" docs/cro/{id}/audit.md` (PASS findings use bullet format under "What's Working Well", not code fences — this count correctly excludes them).
+2. Count JSON findings: `python -c "import json; print(len(json.load(open('docs/cro/{id}/findings.json'))))"` (use `python3` on Linux/macOS).
 3. If counts match: proceed silently.
 4. If counts differ: log warning "Parity mismatch: audit.md has {N} findings, findings.json has {M}."
-   - If findings.json has fewer: an auditor likely returned prose without a matching JSON entry, or JSON dedup removed an entry that prose dedup kept. For each prose finding missing from findings.json, construct a JSON entry from the prose fields and append to findings.json. Re-index.
-   - If audit.md has fewer: JSON dedup kept a finding that prose dedup dropped (less common). Add the missing prose block to audit.md under its cluster heading.
+   - If findings.json has fewer: construct a JSON entry from the prose fields and append. Set optional fields (`why_matters`, `citation`, `tier`, `effort`) to null if not parseable. Re-index.
+   - If audit.md has fewer: add the missing prose block to audit.md under its cluster heading.
    - After reconciliation, re-verify counts match. If still mismatched, log error but proceed — findings.json remains authoritative.
+   (Mismatches are usually caused by dedup asymmetry — prose dedup matches by text patterns while JSON dedup matches by structured field values.)
 </audit_assembly>
 
 <progress_comparison>
@@ -734,6 +748,7 @@ $PYTHON_CMD -c "from PIL import Image" 2>/dev/null || $PYTHON_CMD -m pip install
      --plugin-root ${CLAUDE_PLUGIN_ROOT} \
      --findings findings.json
    ```
+   In two-device mode, run twice — pass `--findings findings-{second_device}.json` for the second device.
 
 3. The script handles: font injection (no context window consumption), marker burning via Pillow (pixel-perfect), base64 encoding, template population, click target generation, and writes a self-contained HTML file.
 

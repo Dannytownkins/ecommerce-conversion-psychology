@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.6.1 — 2026-03-26
+
+### Bug Fixes & Hardening (3 changes)
+- **WebFetch contradiction resolved** — Removed WebFetch fallback for URL inputs from `<mode_detection>` (lines 85-91). This contradicted `acquire.md` line 136 which explicitly blocks WebFetch for URLs due to false positives on JS-dependent sites. WebFetch returns pre-JS source HTML, producing confident-sounding but wrong findings for Shopify, Next.js, and SPA storefronts.
+- **Upfront agent-browser detection** — Coordinator now runs `agent-browser --version` before URL validation and user confirmation. If unavailable, presents a 3-option menu (install, provide file path, stop) instead of dispatching an acquisition agent that immediately returns `STATUS: BLOCKED`. In `--auto` mode, aborts with an actionable error message.
+- **Parity validation hardened** — Replaced vague counting instructions with concrete cross-platform commands: `grep -cE "^FINDING: (FAIL|PARTIAL)"` (POSIX-standard, works on Windows Git Bash — `grep -P` does not). Added two-device findings naming convention (`findings-{second_device}.json`) to prevent second device from overwriting first device's findings. Added dedup asymmetry context for reconciliation.
+
 ## 4.6.0 — 2026-03-26
 
 ### Structured JSON Findings Pipeline
