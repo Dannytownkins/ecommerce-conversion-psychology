@@ -2,8 +2,8 @@
 name: cro:build
 description: >-
   Builds a new ecommerce page from scratch using conversion psychology
-  principles. Four-phase relay with structured intake for product pages,
-  landing pages, pricing pages, and checkout flows.
+  principles. Use when the user describes what they want to build rather
+  than providing an existing page to audit. Three-phase relay: plan, review, build.
 disable-model-invocation: true
 argument-hint: "[description-or-structured-intake] [--auto] [--min-priority level] [--platform shopify|nextjs] [--visual] [--no-visual] [--ab-scaffold] [--ab-tool tool-name]"
 ---
@@ -50,16 +50,7 @@ Use sensible defaults for anything the user doesn't care about.
 <engagement_setup>
 Same as /cro:audit — generate engagement ID, create directory, write context.md and meta.json with type: "build".
 
-**meta.json validation schema** (validate on resume only — not after the coordinator writes it):
-- `id`: string, format YYYY-MM-DD-{8hex}
-- `created`: ISO 8601 string
-- `type`: one of [audit, build, quick-scan, compare]
-- `phase`: one of [pending, audit, plan, review, build, complete]
-- `platform`: one of [shopify, nextjs, generic]
-- `page.type`: must match the page type table
-- `clusters_used`: array of cluster slug strings
-Optional: `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url`, `page.file_path`, `min_priority`
-If any required field is missing or invalid, fix it before proceeding.
+**meta.json schema:** See ${CLAUDE_PLUGIN_ROOT}/references/meta-schema.md. Validate on resume only — not after writing.
 </engagement_setup>
 
 <platform_detection>
@@ -86,15 +77,15 @@ Update meta.json: phase → "plan".
 </phase_plan>
 
 <checkpoint_plan>
-Same as /cro:audit plan checkpoint, plus A/B scaffold option.
+Present plan checkpoint per audit/SKILL.md <checkpoint_plan>, plus A/B scaffold option.
 </checkpoint_plan>
 
 <phase_review>
-Same as /cro:audit.
+Dispatch reviewer per audit/SKILL.md <phase_review>. Pass plan.md, context.md, and ethics gate.
 </phase_review>
 
 <checkpoint_review>
-Same as /cro:audit checkpoint_review, including BLOCK enforcement:
+Present review checkpoint. BLOCK enforcement rules:
 
 If --auto (without --force):
 - If verdict is APPROVE or REVISE: proceed to build.
@@ -107,21 +98,21 @@ Interactive mode: show BLOCK details and options as in /cro:audit.
 </checkpoint_review>
 
 <phase_build>
-Same as /cro:audit. Always loads platform file if detected (this is build-from-scratch, so platform is critical).
+Dispatch builder per audit/SKILL.md <phase_build>. Always load platform file — this is build-from-scratch, so platform guidance is critical.
 </phase_build>
 
 <go_back_protocol>
-Same as /cro:audit.
+Follow go-back protocol per audit/SKILL.md <go_back_protocol>.
 </go_back_protocol>
 
 <report_export>
-Same as /cro:audit.
+Follow report export per audit/SKILL.md <report_export>.
 </report_export>
 
 <ab_scaffold>
-Same as /cro:audit.
+Follow A/B scaffold per audit/SKILL.md <ab_scaffold>.
 </ab_scaffold>
 
 <ethics>
-Same as /cro:audit.
+Pass ethics gate to all subagents per audit/SKILL.md <ethics>.
 </ethics>

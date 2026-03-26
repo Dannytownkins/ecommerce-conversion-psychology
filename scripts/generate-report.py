@@ -198,6 +198,16 @@ def parse_findings(audit_path):
             re.DOTALL | re.MULTILINE,
         ))
 
+    # Detect bold-format findings that neither regex catches
+    bold_count = len(re.findall(r"^\*\*FINDING:\s*(FAIL|PARTIAL)\*\*", content, re.MULTILINE))
+    if bold_count > 0:
+        print(f"WARNING: {bold_count} finding(s) use bold format (**FINDING: FAIL**) "
+              f"which the parser cannot extract. Re-run the audit with code-fenced findings.", file=sys.stderr)
+
+    if not fenced and bold_count == 0:
+        print("WARNING: Zero findings parsed from audit file. "
+              "Check that findings use triple-backtick code fences.", file=sys.stderr)
+
     for idx, m in enumerate(fenced, 1):
         verdict = m.group(1)
         block = m.group(2)

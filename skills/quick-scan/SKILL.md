@@ -1,9 +1,9 @@
 ---
 name: cro:quick-scan
 description: >-
-  Runs a quick CRO scan of an ecommerce page. Single domain cluster,
-  3-5 highest-impact quick wins, no further phases. Faster and cheaper
-  than a full audit.
+  Runs a quick CRO scan of an ecommerce page — single domain cluster,
+  3-5 highest-impact findings, no further phases. Use when the user wants
+  a fast, cheap check or says "quick scan", "quick look", or "quick wins".
 disable-model-invocation: true
 argument-hint: "[url-or-file-path-or-description] [--cluster visual-cta|trust-conversion|context-platform|audience-journey] [--min-priority level] [--platform shopify|nextjs] [--device mobile|laptop|desktop|both] [--visual] [--no-visual]"
 ---
@@ -45,24 +45,11 @@ Determine input type from $ARGUMENTS:
 6. Add limitations banner in visual report: "Based on screenshot only — DOM and interaction patterns not assessed."
 
 **URL acquisition:**
-1. Validate URL using rules in ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
-2. Dispatch acquisition agent:
-   - Read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md
-   - Dispatch via Agent tool with `model: "opus"`
-   - Pass the validated URL, viewport dimensions based on selected device, and device context:
-     - Mobile: device "mobile" (acquire.md uses `agent-browser close` + `agent-browser set device "iPhone 14"` for 3x DPR)
-     - Laptop: viewport 1440×900, device "laptop"
-     - Desktop: viewport 1920×1080, device "desktop"
-     - Both (two devices): dispatch twice serially. The `agent-browser` daemon is system-wide — you cannot run two viewports simultaneously.
-       1. First device pass: full acquisition (DOM + screenshots + element coordinates). Wait for full completion.
-       2. Second device pass: pass `dom_file` from first acquisition — screenshots + element coordinates only.
-       - **DPR between device passes:** If the second device needs a different DPR (e.g., mobile after laptop), the acquisition agent MUST run `agent-browser close` before setting the new device.
-   - Collect output: sectioned screenshots (1-6), preprocessed DOM, section metadata, styles, baton.json
-   - **Post-acquisition file verification (mandatory):** After the acquisition agent returns, run `ls docs/cro/{engagement-id}/` and verify baton.json, dom.html, and at least 1 screenshot exist on disk. Acquisition agents sometimes report STATUS: COMPLETE but fail to write files (working directory mismatch). If files are missing, fall back to manual acquisition per the audit SKILL.md manual fallback procedure.
-   - After file verification passes, read `docs/cro/{engagement-id}/baton.json` to verify `status: "COMPLETE"`. If missing or incomplete, warn and proceed with available data.
-   - If acquisition returns `STATUS: BLOCKED` → present reason, ask for file path or pasted code
-   - If acquisition returns `STATUS: PARTIAL` → proceed with available data
-   - Set `source_mode: "url-dual"` in meta.json
+1. Validate URL per ${CLAUDE_PLUGIN_ROOT}/references/url-validation.md
+2. Dispatch acquisition agent per audit/SKILL.md <mode_detection>: read ${CLAUDE_PLUGIN_ROOT}/workflows/acquire.md, use `model: "opus"`, pass viewport/device context.
+3. For "both" mode: dispatch twice serially (first device full, second device screenshots-only). Run `agent-browser close` between passes if DPR changes.
+4. **Post-acquisition file verification (mandatory):** Run `ls docs/cro/{engagement-id}/` — verify baton.json, dom.html, and at least 1 screenshot exist. If missing, fall back to manual acquisition per audit/SKILL.md.
+5. Set `source_mode: "url-dual"` in meta.json.
 
 **File path:** Set `source_mode: "file"` in meta.json.
 **Description:** Set `source_mode: "description"` in meta.json.
@@ -100,16 +87,7 @@ Set `platform` in meta.json to the detected value. Do NOT default to `"generic"`
 <engagement_setup>
 Always create meta.json silently (needed for aggregation). Create engagement directory and meta.json with type: "quick-scan", quick_scan: true, schema_version: 2.
 
-**meta.json validation schema** (validate on resume only — not after the coordinator writes it):
-- `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
-- `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
-- `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
-- `phase`: string, MUST be one of: `pending`, `audit`, `plan`, `review`, `build`, `complete`
-- `platform`: string, MUST be one of: `shopify`, `nextjs`, `opencart`, `generic`
-- `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
-- `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
-Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
-If ANY required field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
+**meta.json schema:** See ${CLAUDE_PLUGIN_ROOT}/references/meta-schema.md. Validate on resume only — not after writing.
 Always update the `updated` field to current ISO timestamp on phase transitions.
 
 Check if docs/cro/ is in .gitignore. If not, suggest adding it.
@@ -147,6 +125,7 @@ Dispatch ONE auditor per device with `model: "opus"`:
 - Quick-scan workflow from ${CLAUDE_PLUGIN_ROOT}/workflows/quick-scan.md
 - Reference files for selected cluster ONLY (from ${CLAUDE_PLUGIN_ROOT}/references/)
 - Ethics gate from ${CLAUDE_PLUGIN_ROOT}/references/ethics-gate.md
+- Evidence tier definitions from ${CLAUDE_PLUGIN_ROOT}/references/evidence-tiers.md
 - **Device context:** pass `"desktop"` or `"mobile"` to the auditor
 
 **Input varies by source mode:**

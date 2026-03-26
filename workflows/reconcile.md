@@ -107,43 +107,7 @@ Before returning, verify:
 
 ## Multi-PRD Conflict Resolution Logic
 
-### How plans_queue Works in meta.json
-
-When multi-planner mode is active, `meta.json` tracks each PRD's lifecycle:
-
-```json
-"plans_queue": [
-  {
-    "cluster": "visual-cta",
-    "file": "plan-visual-cta.md",
-    "phase": "plan",
-    "steps": 8,
-    "priority_breakdown": { "critical": 0, "high": 4, "medium": 3, "low": 1 },
-    "reconciled": true,
-    "amendments": 1
-  },
-  {
-    "cluster": "trust-conversion",
-    "file": "plan-trust-conversion.md",
-    "phase": "plan",
-    "steps": 6,
-    "priority_breakdown": { "critical": 1, "high": 3, "medium": 2, "low": 0 },
-    "reconciled": true,
-    "amendments": 0
-  }
-]
-```
-
-Each entry tracks:
-- `cluster` — which cluster this plan covers
-- `file` — filename relative to engagement directory
-- `phase` — current phase of this plan: `plan`, `review`, `build`, `complete`
-- `steps` — total number of implementation steps
-- `priority_breakdown` — count of steps per severity level
-- `reconciled` — whether the reconciler has processed this plan
-- `amendments` — number of steps amended during reconciliation
-
-The coordinator updates `plans_queue` after each phase transition. When going back on a single PRD, only that entry's phase resets — others are unaffected.
+<!-- Coordinator handles meta.json updates and retry logic -->
 
 ### Cross-Audit Contradictions
 
@@ -189,13 +153,7 @@ If the coordinator indicates `--auto` mode:
 - Do NOT flag anything for user decision — resolve everything and document the reasoning
 - Tag auto-resolved irreconcilable conflicts with `[AUTO-RESOLVED]`
 
-## Reconciler Retry
-
-If the reconciler fails (crashes, returns malformed output, or does not end with `STATUS: COMPLETE`):
-1. Retry once with the same inputs
-2. If retry also fails: skip reconciliation, set `reconciled: false` in meta.json
-3. Warn user at checkpoint: "Reconciliation failed — plans may contain cross-cluster conflicts. Review manually before building."
-4. The build phase proceeds with unreconciled plans, but the builder should watch for visual clashes
+<!-- Coordinator handles meta.json updates and retry logic -->
 
 End your output with:
 

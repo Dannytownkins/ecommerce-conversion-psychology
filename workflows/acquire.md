@@ -114,68 +114,34 @@ Follow these steps in exact order:
    agent-browser close
    agent-browser set device "iPhone 14"
    ```
-   This gives viewport 390x844 at 3x DPR (1170px-wide screenshots). The `set device` command is the ONLY reliable way to get high-DPR screenshots — `--args "--force-device-scale-factor=2"` does not work on Windows and `set viewport` after `set device` resets DPR to 1x.
+   This gives viewport 390x844 at 3x DPR (1170px-wide screenshots). `set device` is the ONLY reliable high-DPR method — `--force-device-scale-factor` does not work on Windows and `set viewport` after `set device` resets DPR to 1x.
 
-   > **Why `set device` instead of `set viewport`?** The `set viewport` command always produces 1x DPR screenshots regardless of `--args` flags. `set device "iPhone 14"` sets both the viewport dimensions AND the 3x DPR in a single command. Screenshots are 1170px wide — larger than the 2x target (780px) but this is the only working approach. The visual report carousel renders at ~600-700px, so the extra resolution has no visible cost beyond ~45% larger base64 encoding.
-
-   > **CRITICAL: Do NOT call `set viewport` after `set device`.** This resets DPR to 1x, producing 390px-wide screenshots that are too small for visual audit. If you need to verify dimensions, use `agent-browser eval "JSON.stringify({w: window.innerWidth, dpr: window.devicePixelRatio})"`.
+   > **CRITICAL: Do NOT call `set viewport` after `set device`.** This resets DPR to 1x. To verify dimensions: `agent-browser eval "JSON.stringify({w: window.innerWidth, dpr: window.devicePixelRatio})"`.
 
 2. Then navigate:
    ```
    agent-browser goto "{url}"
    ```
 
-**agent-browser is REQUIRED for URL input.** If agent-browser is not available and the input is a URL, return immediately:
-
-```
-STATUS: BLOCKED — agent-browser is required for viewport-accurate URL scanning.
-Install: npm install -g agent-browser && agent-browser install
-Alternatives: (1) provide a local file path, (2) paste page source code
-```
-
-Do NOT fall back to WebFetch or any other HTTP fetching tool for URL input. WebFetch does not render the page at a viewport and produces source code that does not reflect the actual rendered layout, causing false positives in downstream auditors.
-
-**Note:** If the input is a file path or pasted source code (not a URL), agent-browser is not needed. Proceed normally without viewport rendering.
+**agent-browser is REQUIRED for URL input.** If unavailable, return the same BLOCKED status from the pre-flight check above. Do NOT fall back to WebFetch — it does not render at a viewport and causes false positives. File path or pasted source input does not require agent-browser.
 
 Wait for the page to be ready before proceeding:
 1. Wait for DOMContentLoaded
-2. Wait an additional 3 seconds settle time (handles JS hydration, lazy-loaded content, async API calls)
-3. If the page appears to still be loading (spinner elements visible, skeleton screens, fewer than 10 visible text nodes), wait an additional 3 seconds (6 total settle time)
-
-The original 2-second settle was insufficient for heavy JS sites (React SPAs, Next.js hydration) and contributed to false positives from incomplete rendering.
+2. Wait 3 seconds settle time (JS hydration, lazy content, async calls)
+3. If still loading (spinners, skeleton screens, <10 visible text nodes) → wait 3 more seconds (6 total)
 
 ### Step 1b: Dismiss Overlays
 
 After settle time, check for overlays that obstruct the page:
 
 1. Look for elements matching: `[role="dialog"]`, `.modal`, `.popup`, `.cookie-banner`, `[class*="consent"]`, `[class*="overlay"]`, `[class*="newsletter"]`, `[class*="subscribe"]`, `#onetrust-consent-sdk`, `.cc-window`
-2. For each overlay found:
-   a. Try clicking the dismiss/close/accept button (look for: `[aria-label*="close"]`, `[aria-label*="dismiss"]`, `.close`, `.dismiss`, `button:has-text("Accept")`, `button:has-text("Got it")`, `button:has-text("×")`)
-   b. If no dismiss button found: try pressing Escape
-   c. If still present: try clicking outside the overlay (click at coordinates 10,10)
-   d. If still present after all attempts: note `"overlay_dismissed": false` in the section metadata for affected sections and proceed — the visual report will flag occluded sections
-3. Wait 1 second after each successful dismissal before proceeding
-4. Re-check: if dismissing one overlay revealed another (common with cookie → newsletter chains), repeat steps 2a-2c for the new overlay
+2. For each overlay, try dismissal in order: click dismiss/close/accept button (`[aria-label*="close"]`, `.close`, `.dismiss`, `button:has-text("Accept")`, `button:has-text("Got it")`, `button:has-text("×")`) → press Escape → click outside (10,10). If all fail, set `"overlay_dismissed": false` on affected sections and proceed.
+3. Wait 1 second after each dismissal. Re-check for chained overlays (cookie -> newsletter) and repeat.
 
-This step is critical for screenshot quality. Undismissed overlays produce occluded screenshots that downstream auditors cannot evaluate.
-
-**Post-navigation URL validation:** After the page loads, verify that `window.location.href` still resolves to the same domain as the original validated URL. If the page redirected to a different domain, a private IP range, or a non-HTTP scheme, abort immediately:
-
-```
-STATUS: BLOCKED — Page redirected to [final URL] which differs from the validated domain. Provide the source code locally or paste the page content.
-```
-
-**Authentication detection:** If the rendered DOM contains a `<input type="password">` element or the URL was redirected to a path containing `/login`, `/signin`, `/auth`, or `/account`:
-
-```
-STATUS: BLOCKED — This page appears to require authentication. Agent-browser cannot authenticate. Provide the source code locally or paste the page content.
-```
-
-**Navigation timeout:** If the page does not reach DOMContentLoaded within 30 seconds, abort:
-
-```
-STATUS: BLOCKED — Page did not load within 30 seconds. Check the URL or provide the source code locally.
-```
+**Post-navigation checks (abort if any fail):**
+- **Redirect detection:** If `window.location.href` resolved to a different domain, private IP, or non-HTTP scheme → `STATUS: BLOCKED — Page redirected to [final URL] which differs from the validated domain.`
+- **Auth detection:** If DOM contains `<input type="password">` or URL redirected to `/login`, `/signin`, `/auth`, `/account` → `STATUS: BLOCKED — Page requires authentication.`
+- **Timeout:** If DOMContentLoaded not reached within 30 seconds → `STATUS: BLOCKED — Page did not load within 30 seconds.`
 
 ### Step 1c: Timer Verification
 
@@ -211,11 +177,9 @@ Target 1–6 sections that together cover the full page.
 
 Record each boundary as: `{ "label": "[descriptive name]", "scrollY": [pixel offset], "height": [section height in px], "clusters": ["relevant-cluster-slugs"], "occluded": false }`.
 
-The `label` field is a human-readable description of what the section contains (e.g., 'Product images and title', 'Pricing and variant selector', 'Reviews and footer'). The `clusters` array is a separate field that determines which auditors receive this section. These serve different purposes — do not use one for the other.
+`label` = human-readable description of content. `clusters` = which auditors receive this section. These serve different purposes — do not use one for the other. Labels must be unique across sections.
 
-Labels must be unique across sections. If two sections serve the same cluster, they still need distinct descriptive labels.
-
-**Occlusion detection:** After identifying section boundaries, check each section for overlays that block >30% of the viewport (modals, popups, cookie banners, chat widgets). If a section is >30% occluded, set `"occluded": true` in that section's metadata. The visual report generator uses wireframe rendering only for occluded sections — screenshots are the primary visual for all non-occluded sections.
+**Occlusion detection:** After identifying section boundaries, check each section for overlays (modals, popups, cookie banners, chat widgets). Heuristic: if an overlay covers more than roughly a third of the viewport after scrolling past it, dismiss it before capturing. If dismissal fails, set `"occluded": true` in that section's metadata. The visual report generator uses wireframe rendering only for occluded sections.
 
 **Section-to-cluster mapping:** Tag each section with the cluster slugs most relevant to its content:
 - Sections containing CTAs, hero areas, product images, visual hierarchy, process comparison sections, "how it works" → `visual-cta`
@@ -238,54 +202,33 @@ Capture screenshots at each section boundary:
 2. **Each subsequent section** — scroll to the boundary's `scrollY`, capture a viewport-sized screenshot
 
 Capture settings:
-- Device pixel ratio: determined by device context (1x for laptop/desktop, 3x for mobile via `set device "iPhone 14"`)
+- DPR: per device rules in Step 1 (1x laptop/desktop, 3x mobile via `set device`)
 - Format: JPEG, quality 80
 - Viewport: as specified in input (no default — coordinator must specify)
 
-**Report-optimized sizing:** Screenshots are embedded as base64 in visual reports, where the carousel renders at ~600-700px wide. Mobile screenshots at 3x DPR produce 1170px-wide images — larger than ideal but this is the only reliable high-DPR method (`--force-device-scale-factor=2` does not work on Windows, and `set viewport` after `set device` resets DPR to 1x). Laptop at 1x DPR (1440px) and desktop at 1x DPR (1920px) are already appropriate.
-
 **Post-capture compression:** If screenshots exceed 500KB each, re-encode at JPEG quality 60 before writing to disk. The visual difference is negligible at carousel display sizes but cuts file size significantly.
 
-**Screenshot format validation:** After each capture, verify the screenshot file is JPEG (`.jpg` or `.jpeg`). If agent-browser produces a PNG (`.png`), re-capture with explicit JPEG format. If re-capture still produces PNG, convert inline:
-```
-base64 -d screenshot.b64 | convert png:- -quality 80 jpg:- | base64 > screenshot-jpeg.b64
-```
-If conversion tools are unavailable, proceed with PNG but note `"format_override": "png"` in the baton output for that screenshot.
+**Screenshot format validation:** After each capture, verify the file is JPEG. If agent-browser produces PNG, re-capture with explicit JPEG format. If still PNG, convert: `base64 -d screenshot.b64 | convert png:- -quality 80 jpg:- | base64 > screenshot-jpeg.b64`. If conversion unavailable, proceed with PNG and set `"format_override": "png"` in the baton.
 
 **No separate base64 files.** Do NOT create `.b64` files alongside screenshots. The visual report generator base64-encodes the JPEG files on the fly at render time. This halves disk usage per engagement. Record only the image path (not a `base64_path`) in the baton output.
 
-**Screenshot dimensions vs CSS viewport:** Screenshot pixel dimensions = CSS viewport width × DPR. For example, mobile at 390px CSS width with 3x DPR produces 1170px-wide screenshot images. This is correct behavior — the screenshots are mobile captures, not desktop. Do not re-acquire because the image file appears wider than the CSS viewport.
+**Screenshot dimensions vs CSS viewport:** Screenshot pixels = CSS width x DPR. Mobile 390px at 3x = 1170px-wide images. This is correct — do not re-acquire.
 
-**Scrolling method — use JS eval, not agent-browser scroll.** The `agent-browser scroll to` command fails silently on many Shopify themes and sites with `scroll-behavior: smooth` or JS-controlled scrolling. Always scroll via JavaScript eval:
+**Scrolling method — use JS eval, not agent-browser scroll.** `agent-browser scroll to` fails silently on many sites. Always scroll via JS eval:
 
 ```
 agent-browser eval "window.scrollTo({top: {scrollY}, behavior: 'instant'}); window.scrollY"
 ```
 
-This returns the actual scroll position, which you MUST verify matches the target (±50px). If the returned value doesn't match, retry once with a delay:
+Verify the returned scroll position matches the target (+-50px). If mismatched, retry once: `agent-browser wait 500` then re-eval. Do NOT use `agent-browser scroll to` or `agent-browser scroll down` — unreliable across themes. Wait 500ms after scrolling before capturing.
 
-```
-agent-browser wait 500
-agent-browser eval "window.scrollTo({top: {scrollY}, behavior: 'instant'}); window.scrollY"
-```
-
-Do NOT use `agent-browser scroll to` or `agent-browser scroll down` as the primary scroll method — they are unreliable across themes.
-
-After scrolling, wait 500ms (`agent-browser wait 500`) before capturing.
-
-**Duplicate screenshot detection (mandatory after each capture):** After each screenshot, compute its hash and compare to all previous screenshots:
-```
-md5sum {screenshot_path}
-```
-If the hash matches ANY previous screenshot, the scroll failed silently. Re-scroll with JS eval, wait 1000ms, re-capture, and re-check. If the hash still matches after retry, set `scroll_failed: true` on that section's metadata and warn the coordinator.
-
-Do NOT rely on file size comparison alone — different scroll positions can produce similar-sized JPEGs. Hash comparison is the definitive check.
+**Duplicate screenshot detection (mandatory after each capture):** After each screenshot, run `md5sum {screenshot_path}` and compare to all previous hashes. If a match is found (scroll failed silently), re-scroll via JS eval, wait 1000ms, re-capture, and re-check. If still duplicate after retry, set `scroll_failed: true` on that section and warn the coordinator. Use hash comparison, not file size.
 
 Cap at 6 screenshots total. Minimum 1.
 
 ### Step 4: Extract and Preprocess DOM
 
-**If `dom_file` was provided in input:** Skip Steps 4, 5, and 6 entirely. The coordinator has already acquired the DOM from a previous acquisition pass. Proceed directly to the Output Format section, using the provided `dom_file` path as `DOM_FILE` in the output.
+**If `dom_file` was provided in input:** Skip Steps 4, 5, and 6. Use the provided path as `DOM_FILE` in output.
 
 Extract `document.documentElement.outerHTML` from the fully rendered page.
 
@@ -354,14 +297,11 @@ JSON.stringify(
 )
 ```
 
-**Key differences from a single bulk extraction:**
-- Runs at each scroll position, so lazy-loaded content is in the DOM
-- Filters to elements currently in the viewport (`r.bottom >= 0 && r.top <= innerHeight`), avoiding duplicate captures across sections
-- Coordinates include `scrollY` offset, giving absolute page position
+This runs per-scroll-position so lazy-loaded content is captured, filters to in-viewport elements only, and uses absolute page coordinates (`scrollY` offset included).
 
-**Deduplication:** After collecting elements from all sections, deduplicate by `(selector, x, y)` — the same element scrolled through twice should only appear once. Keep the entry with the largest `width × height` (most accurate bounding box).
+**Deduplication:** After all sections, deduplicate by `(selector, x, y)`. Keep the entry with the largest `width x height`.
 
-**DPR adjustment:** Coordinates from `getBoundingClientRect()` are in CSS pixels. For mobile at DPR > 1, multiply `x`, `y`, `width`, `height` by the DPR to match screenshot pixel dimensions. For desktop at 1x DPR, no adjustment needed.
+**DPR adjustment:** `getBoundingClientRect()` returns CSS pixels. For mobile (DPR > 1), multiply coordinates by DPR to match screenshot pixel dimensions. Desktop at 1x needs no adjustment.
 
 **Cap:** Keep a maximum of 100 total elements across all sections to limit baton size.
 
@@ -452,7 +392,7 @@ Write a structured baton file to `docs/cro/{engagement-id}/baton.json`:
 
 All paths in the baton are relative to the engagement directory (`docs/cro/{engagement-id}/`).
 
-**Also return a text summary** for the coordinator's context (keep it brief — the baton file is the authoritative output):
+**Also return a brief text summary** (the baton file is authoritative):
 
 ```
 DEVICE: [desktop | mobile]
@@ -468,7 +408,7 @@ Refer to the Output Contract above for required fields.
 
 The baton filename matches the device context: `baton.json` for laptop or desktop, `baton-mobile.json` for mobile.
 
-**DOM file output:** Write the preprocessed DOM to `docs/cro/{engagement-id}/dom.html` rather than embedding it in your text response. The coordinator will pass this file path to auditors, who will read it directly. This avoids passing potentially 300KB of HTML through agent text output.
+**DOM file output:** Write preprocessed DOM to `docs/cro/{engagement-id}/dom.html` — do NOT embed DOM in text output. The coordinator passes this path to auditors directly.
 
 ## Output Rules
 

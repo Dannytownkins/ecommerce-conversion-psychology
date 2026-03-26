@@ -1,12 +1,10 @@
 ---
 name: cro
 description: >-
-  Conversion rate optimization toolkit for ecommerce pages. Evidence-backed
-  citations with credibility tiers (Gold/Silver/Bronze), annotated screenshot
-  reports with bidirectional scroll-sync, screenshot-only input mode,
-  component-library-enforced structural consistency, ethics compliance in
-  every report. Use when the user mentions CRO, conversion optimization, or
-  ecommerce page improvements without specifying audit, build, scan, or compare.
+  Conversion rate optimization toolkit for ecommerce pages. Use when the
+  user mentions CRO, conversion optimization, or ecommerce page improvements
+  without specifying a specific command (audit, build, scan, or compare).
+  Routes to the appropriate sub-command.
 disable-model-invocation: false
 ---
 

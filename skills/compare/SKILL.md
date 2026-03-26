@@ -1,9 +1,9 @@
 ---
 name: cro:compare
 description: >-
-  Compares an ecommerce page against a competitor page. Runs 1:1 same-type
-  comparison with side-by-side scoring and gap analysis. Supports URLs
-  (via agent-browser) and local file paths.
+  Compares an ecommerce page against a competitor page with side-by-side
+  scoring and gap analysis. Use when the user provides two URLs or file
+  paths and wants to know what the competitor does better or worse.
 disable-model-invocation: true
 argument-hint: "[your-url-or-path] [competitor-url-or-path] [--device mobile|laptop|desktop|both] [--visual] [--no-visual] [--engagement-id id]"
 ---
@@ -67,18 +67,7 @@ If user proceeds despite mismatch, note it in the comparison output.
 Same as /cro:audit but with type: "compare", schema_version: 2 in meta.json.
 Store compare_target URL/path in meta.json.
 
-**meta.json validation schema** (validate on resume only — not after the coordinator writes it):
-- `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
-- `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
-- `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
-- `phase`: string, MUST be one of: `pending`, `audit`, `plan`, `review`, `build`, `complete`
-- `platform`: string, MUST be one of: `shopify`, `nextjs`, `opencart`, `generic`
-- `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
-- `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
-Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
-If ANY required field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
-Always update the `updated` field to current ISO timestamp on phase transitions.
-
+**meta.json schema:** See ${CLAUDE_PLUGIN_ROOT}/references/meta-schema.md. Validate on resume only — not after writing.
 Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 </engagement_setup>
 
@@ -108,8 +97,8 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 
 <dispatch>
 1. Select clusters using page-type table (same as /cro:audit)
-2. **Dispatch ALL auditors in parallel** (up to 6: 3 per page) using `model: "opus"`:
-   - Each auditor gets: audit workflow, cluster references, ethics gate, **device context**
+2. **Dispatch auditors** (up to 6: 3 per page) using `model: "opus"`:
+   - Each auditor gets: audit workflow, cluster references, ethics gate, evidence tier definitions (${CLAUDE_PLUGIN_ROOT}/references/evidence-tiers.md), **device context**
    - **URL mode:** pass sectioned screenshots + preprocessed DOM (segmented by cluster)
    - **File path mode:** pass source code directly
    - Your page auditors write findings for audit.md
@@ -117,8 +106,8 @@ Check if docs/cro/ is in .gitignore. If not, suggest adding it.
 3. **Auditor retry:** if an auditor fails, retry once. If retry fails: "No data available for [cluster]"
 4. After all auditors complete: dispatch compare workflow
 
-**"Both" mode auditor dispatch:**
-Run device batches sequentially to cap concurrency:
+**"Both" mode:**
+Dispatch by device batch — complete one device before starting the next:
 1. Desktop auditors (up to 6: 3 per page) with `device: "desktop"` → audit.md + audit-competitor.md
 2. Mobile auditors (up to 6: 3 per page) with `device: "mobile"` → audit-mobile.md + audit-competitor-mobile.md
 3. Write all audit files first, then update meta.json `devices_scanned` (atomicity)

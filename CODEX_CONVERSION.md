@@ -4,7 +4,7 @@ This repo is the source of truth for the Codex version of the ecommerce CRO tool
 
 The installed Codex runtime copy lives at:
 
-`C:\Users\SM - Dan\.codex\skills\ecommerce-conversion-psychology`
+`%USERPROFILE%\.codex\skills\ecommerce-conversion-psychology`
 
 Do not treat the installed `.codex` copy as the canonical workspace. Make changes in this repo, then sync the Codex install from source.
 

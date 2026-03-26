@@ -72,7 +72,6 @@ REFERENCE: ethics-gate.md — [section name]
 PRIORITY: CRITICAL
 **Why this matters:** [Regulatory context + potential penalty amounts from ethics-gate.md]
 ↳ ethics-gate.md ([Regulation Name], [Year]) [Gold]
-  URL: [regulation URL if available, otherwise omit URL line]
 ```
 
 **Ethics findings MUST be included in your output.** Do not just check internally — every ethics violation must appear as a structured finding in the final output so it renders in both audit.md and visual reports. If no ethics violations are found, include a summary note at the end of your output:

@@ -1,9 +1,9 @@
 ---
 name: cro:audit
 description: >-
-  Runs a full CRO audit of an existing ecommerce page via four-phase relay
-  (audit, plan, review, build). Covers product pages, checkout flows, carts,
-  pricing, landing pages, and category pages using research-backed psychology.
+  Runs a full CRO audit on an existing ecommerce page via four-phase relay
+  (audit, plan, review, build). Use when the user provides a URL or file path
+  and wants a comprehensive conversion analysis with actionable recommendations.
 disable-model-invocation: true
 argument-hint: "[url-or-file-path] [--auto] [--force] [--min-priority critical|high|medium|low] [--platform shopify|nextjs] [--device mobile|laptop|desktop] [--clusters cluster1,cluster2] [--visual] [--no-visual] [--ab-scaffold] [--engagement-id id]"
 ---
@@ -126,17 +126,7 @@ Before dispatching auditors:
 5. Write context.md (write-once, locked after this step)
 6. Write meta.json with schema_version: 2, phase: "pending", source_mode from mode_detection
 
-**meta.json validation schema** (reference for the coordinator):
-- `id`: string, MUST match pattern `^\d{4}-\d{2}-\d{2}-[0-9a-f]{8}$` (e.g., `2026-03-19-a3f7b1c2`)
-- `created`: string, valid ISO 8601 (e.g., `2026-03-19T14:30:00.000Z`)
-- `type`: string, MUST be one of: `audit`, `build`, `quick-scan`, `compare`
-- `phase`: string, MUST be one of: `pending`, `audit`, `plan`, `review`, `build`, `complete`
-- `platform`: string, MUST be one of: `shopify`, `nextjs`, `opencart`, `generic`
-- `page.type`: string, MUST be one of: `product`, `cart`, `checkout`, `homepage`, `category`, `landing`, `pricing`, `post-purchase`
-- `clusters_used`: array of strings, each MUST be one of: `visual-cta`, `trust-conversion`, `context-platform`, `audience-journey`
-Optional fields (valid if present): `blocked` (boolean), `quick_scan` (boolean), `compare_target` (object), `page.url` (string|null), `page.file_path` (string|null), `min_priority` (string|null), `source_mode` (string|null), `devices_requested` (array), `devices_scanned` (array), `plans_queue` (array), `reconciled` (boolean), `screenshot_input` (object|null)
-
-**When to validate:** Do NOT re-read and validate meta.json immediately after writing it — the coordinator just wrote it, so it will always pass. This validation is only needed when **resuming an engagement** (via `/cro:resume` or `--engagement-id`) where the coordinator is reading a meta.json it did not write in this session. On resume, re-read and verify all required fields. If ANY field is missing, null, or fails its pattern/enum check: fix it immediately before proceeding. Log which field was corrected.
+**meta.json schema:** See ${CLAUDE_PLUGIN_ROOT}/references/meta-schema.md. Validate on resume only — not after writing.
 
 Always update the `updated` field to the current ISO timestamp on every phase transition.
 </engagement_setup>
@@ -236,6 +226,7 @@ auditing a **{{device}}** viewport at **{{width}}×{{height}}**.
 ## Your Reference Files (READ ALL BEFORE AUDITING)
 Read these reference files at ${CLAUDE_PLUGIN_ROOT}/references/:
 {{reference_file_list}}
+- evidence-tiers.md (tier definitions: Gold, Silver, Bronze — apply to every citation)
 
 ## Page Data
 - **Screenshots** (PRIMARY visual evidence): {{screenshot_paths_with_descriptions}}
@@ -272,7 +263,7 @@ Before writing audit.md, deduplicate findings across clusters:
 <phase_audit>
 Dispatch 1-3 domain auditors IN PARALLEL using multiple Agent tool calls in a single message. Use `model: "opus"` for all auditor dispatches — Opus provides better reasoning for cross-referencing screenshots against DOM and applying device-appropriate principles.
 
-**Early dispatch optimization:** The DOM is ready before all screenshots finish capturing. For clusters that lean heavily on DOM content rather than visual layout (especially **trust-conversion** — pricing structure, review markup, payment logos, checkout flow), the coordinator MAY dispatch those auditors as soon as `dom.html` is written, without waiting for the full baton. Pass available screenshots and note which sections are still pending. The **visual-cta** cluster requires all screenshots before dispatch. This can save several minutes on pages with many sections.
+**Early dispatch (optional):** Trust-conversion auditors rely more on DOM than screenshots. If DOM is ready before all screenshots finish, dispatch trust-conversion auditors early with available screenshots. Visual-cta auditors require all screenshots — always wait for full baton.
 
 Each Agent call contains:
 - The audit workflow instructions (read from ${CLAUDE_PLUGIN_ROOT}/workflows/audit.md)
@@ -318,9 +309,9 @@ Write combined findings to docs/cro/{engagement-id}/audit.md.
 Update meta.json: phase → "audit", `devices_scanned` → matches selected device, updated → current ISO timestamp.
 
 **Two-device mode:**
-Dispatch all auditors in parallel across both devices. If rate limits are encountered (429 responses or agent failures), fall back to batching by device (complete first device's auditors, then second device's):
-1. Dispatch first device auditors (1 per cluster, up to 3 clusters in parallel) with `device: "{first_device}"` — pass **first device screenshots** and DOM. Collect findings.
-2. Dispatch second device auditors (1 per cluster, up to 3 clusters in parallel) with `device: "{second_device}"` — pass **second device screenshots** and DOM. Collect findings.
+Dispatch auditors by device batch — complete one device before starting the next:
+1. First device: dispatch 1 auditor per cluster (up to 3 in parallel) with `device: "{first_device}"` — pass first device screenshots and DOM. Collect findings.
+2. Second device: dispatch 1 auditor per cluster (up to 3 in parallel) with `device: "{second_device}"` — pass second device screenshots and DOM. Collect findings.
 
 **CRITICAL: Each device's auditors MUST receive that device's screenshots and correct device label.** Do NOT reuse one device's audit findings for another device's report. A proper mobile audit evaluates:
 - Whether CTA button heights meet the 48px minimum at mobile viewport

@@ -1,9 +1,9 @@
 ---
 name: cro:resume
 description: >-
-  List and resume in-progress CRO engagements. Use when returning
-  to a previous audit, build, or comparison to check status or
-  continue where you left off.
+  Lists and resumes in-progress CRO engagements. Use when the user wants
+  to continue a previous audit, build, or comparison, or check what
+  engagements are in progress.
 disable-model-invocation: true
 argument-hint: "[--engagement-id <id>]"
 allowed-tools: Read, Bash(ls *)
