@@ -398,6 +398,70 @@ def compute_marker_positions(markers_mapping, baton_data):
     return slide_markers
 
 
+def auto_match_markers(findings, baton_data):
+    """Auto-compute marker mapping from findings and baton data.
+
+    Matches each finding's 'element' field to baton elements by:
+    1. Exact CSS selector match
+    2. Partial text match (element text contains finding element string)
+    3. Tag + class substring match
+    Falls back to section-center positioning if no match found.
+    """
+    elements = baton_data.get("elements", [])
+    screenshots = baton_data.get("screenshots", [])
+    sections = baton_data.get("sections", [])
+
+    markers = []
+    for finding in findings:
+        elem_str = finding.get("element") or ""
+        section_str = finding.get("section", "")
+        severity = (finding.get("priority") or "medium").lower()
+        finding_idx = finding.get("index", 0)
+
+        # Determine which slide this finding belongs to
+        slide = 0
+        for i, sec in enumerate(sections):
+            sec_label = sec.get("label", "") if isinstance(sec, dict) else ""
+            if section_str.lower() in sec_label.lower() or sec_label.lower() in section_str.lower():
+                slide = sec.get("screenshot_index", i + 1) - 1 if isinstance(sec, dict) else i
+                break
+
+        # Try to match element to baton elements
+        matched_elem_idx = None
+        if elem_str:
+            elem_lower = elem_str.lower()
+            # Strategy 1: exact selector match
+            for j, el in enumerate(elements):
+                sel = (el.get("selector", "") + " " + el.get("class", "")).lower()
+                if elem_lower in sel or sel in elem_lower:
+                    matched_elem_idx = j
+                    break
+            # Strategy 2: text content match
+            if matched_elem_idx is None:
+                for j, el in enumerate(elements):
+                    el_text = el.get("text", "").lower()
+                    if elem_lower in el_text or el_text in elem_lower:
+                        matched_elem_idx = j
+                        break
+            # Strategy 3: tag match
+            if matched_elem_idx is None:
+                tag = elem_str.split(".")[0].split("[")[0].lower()
+                if tag:
+                    for j, el in enumerate(elements):
+                        if el.get("tag", "").lower() == tag:
+                            matched_elem_idx = j
+                            break
+
+        markers.append({
+            "finding_index": finding_idx,
+            "baton_element_index": matched_elem_idx,
+            "slide": max(0, slide),
+            "severity": severity,
+        })
+
+    return markers
+
+
 # --- HTML Helpers ---
 
 def encode_image_base64(image_path):
@@ -609,6 +673,7 @@ def generate_report(
     baton_file,
     plugin_root,
     markers_file,
+    findings_file=None,
     output_file=None,
 ):
     """Generate the complete visual report HTML."""
@@ -626,7 +691,20 @@ def generate_report(
         with open(meta_path, "r", encoding="utf-8") as f:
             meta = json.load(f)
 
-    findings = parse_findings(engagement_path / audit_file)
+    # Prefer structured findings.json over regex-parsed audit.md
+    findings_json_path = engagement_path / findings_file if findings_file else None
+    if findings_json_path and findings_json_path.exists():
+        with open(findings_json_path, "r", encoding="utf-8") as f:
+            findings = json.load(f)
+        # Ensure index field exists
+        for i, finding in enumerate(findings, 1):
+            if "index" not in finding:
+                finding["index"] = i
+        print(f"Loaded {len(findings)} findings from {findings_file}", file=sys.stderr)
+    else:
+        findings = parse_findings(engagement_path / audit_file)
+        if findings_json_path:
+            print(f"WARNING: {findings_file} not found, falling back to audit.md regex parsing", file=sys.stderr)
     pass_findings = parse_pass_findings(engagement_path / audit_file)
 
     # --- Resolve citation URLs ---
@@ -640,6 +718,10 @@ def generate_report(
     if markers_file and os.path.exists(markers_file):
         with open(markers_file, "r", encoding="utf-8") as f:
             markers_mapping = json.load(f)
+    elif findings:
+        # Auto-compute markers from findings + baton
+        markers_mapping = auto_match_markers(findings, baton)
+        print(f"Auto-matched {len(markers_mapping)} markers from findings", file=sys.stderr)
 
     # --- Process screenshots ---
     viewport = baton.get("viewport", {})
@@ -2026,6 +2108,7 @@ if __name__ == "__main__":
     parser.add_argument("--baton", required=True, help="Baton filename (e.g., baton.json)")
     parser.add_argument("--plugin-root", required=True, help="Path to plugin root directory")
     parser.add_argument("--markers", default=None, help="Path to marker mapping JSON")
+    parser.add_argument("--findings", default=None, help="Path to findings.json (structured findings, preferred over audit.md parsing)")
     parser.add_argument("--output", default=None, help="Output filename (auto-generated if omitted)")
 
     args = parser.parse_args()
@@ -2037,5 +2120,6 @@ if __name__ == "__main__":
         baton_file=args.baton,
         plugin_root=args.plugin_root,
         markers_file=args.markers,
+        findings_file=args.findings,
         output_file=args.output,
     )

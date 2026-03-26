@@ -416,6 +416,21 @@ Assemble audit.md with this structure:
 **Top 5 actions by expected impact:**
 1. {action}
 ```
+
+**JSON findings extraction (mandatory):**
+After collecting all auditor outputs, extract the JSON findings array from each auditor's response. Look for the `FINDINGS_JSON:` marker followed by a JSON code block.
+
+1. Parse each auditor's JSON array.
+2. Merge all arrays into a single list.
+3. Apply deduplication rules (same as prose dedup — match by `section` + `element`). Keep the higher `priority`. If equal, keep the stronger `tier` (Gold > Silver > Bronze). Append "Also identified by {cluster}" to the kept finding's `observation`.
+4. Apply the ethics severity override rule: cross-check each finding's `reference` against ethics-gate.md. If the ethics gate classifies a violation class as CRITICAL, upgrade the finding's `priority` to CRITICAL regardless of the auditor's rating.
+5. Sort by priority: CRITICAL → HIGH → MEDIUM → LOW.
+6. Re-index: set `index` to 1-based sequential order after sorting.
+7. Write the merged array to `docs/cro/{engagement-id}/findings.json`.
+
+**findings.json is the source of truth for the report generator.** audit.md remains the human-readable view. Both must contain the same findings, but if there's any discrepancy, findings.json wins.
+
+**Fallback:** If an auditor's response does not contain a `FINDINGS_JSON:` block, fall back to parsing its prose findings and constructing the JSON entries manually (extract SECTION, ELEMENT, SOURCE, PRIORITY, OBSERVATION, RECOMMENDATION, REFERENCE fields from code-fenced blocks). Log a warning: "Auditor {cluster} did not return JSON findings — falling back to prose parsing."
 </audit_assembly>
 
 <progress_comparison>
@@ -697,14 +712,7 @@ python --version 2>/dev/null && PYTHON_CMD=python || PYTHON_CMD=python3
 $PYTHON_CMD -c "from PIL import Image" 2>/dev/null || $PYTHON_CMD -m pip install Pillow
 ```
 
-1. Create a marker mapping JSON by matching each finding's ELEMENT field to a baton element entry. Write this as a JSON file (e.g., `markers.json`) in the engagement directory:
-   ```json
-   [
-     {"finding_index": 1, "baton_element_index": 3, "slide": 0, "severity": "critical"},
-     {"finding_index": 2, "baton_element_index": null, "slide": 1, "severity": "high"}
-   ]
-   ```
-   Null `baton_element_index` means no element match — the script centers the marker on the section area.
+1. **Markers are auto-computed.** The report generator reads `findings.json` and `baton.json` directly, matching each finding's `element` field to baton entries internally. No `markers.json` file is needed.
 
 2. Run the script (use `$PYTHON_CMD` from prerequisites, or `python` on Windows / `python3` on Linux/macOS):
    ```bash
@@ -714,7 +722,7 @@ $PYTHON_CMD -c "from PIL import Image" 2>/dev/null || $PYTHON_CMD -m pip install
      --audit {audit-filename} \
      --baton {baton-filename} \
      --plugin-root ${CLAUDE_PLUGIN_ROOT} \
-     --markers docs/cro/{engagement-id}/markers.json
+     --findings findings.json
    ```
 
 3. The script handles: font injection (no context window consumption), marker burning via Pillow (pixel-perfect), base64 encoding, template population, click target generation, and writes a self-contained HTML file.

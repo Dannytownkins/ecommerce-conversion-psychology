@@ -126,16 +126,6 @@ Restart Claude Code. `/cro` commands are available immediately.
 claude plugin update cro@ecommerce-conversion-psychology
 ```
 
-### Codex
-
-Sync from this repo (source of truth) to the Codex install:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\sync-to-codex.ps1
-```
-
-Target: `%USERPROFILE%\.codex\skills\ecommerce-conversion-psychology`
-
 ---
 
 ## Architecture
@@ -158,8 +148,6 @@ ecommerce-conversion-psychology/
     sync-to-codex.ps1                 Repo -> Codex sync
   platforms/                          shopify.md, nextjs.md
   citations/                          Source URLs for human verification
-  agents/openai.yaml                  Codex UI metadata
-  SKILL.md                            Codex wrapper skill
   CLAUDE.md                           Development standards
   CHANGELOG.md
   LICENSE

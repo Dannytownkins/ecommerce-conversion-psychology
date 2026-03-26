@@ -163,11 +163,63 @@ PRIORITY: [CRITICAL|HIGH|MEDIUM|LOW]
 
 The rationale block is required for FAIL and PARTIAL findings. It may be omitted for PASS findings.
 
+**Both prose and JSON formats are required.** The prose findings are written to audit.md for human review. The JSON array is written to findings.json for the report generator and downstream automation.
+
 **Priority definitions:**
 - **CRITICAL** — Ethics violation, legal compliance issue. Fix immediately.
 - **HIGH** — Strong evidence of >10% conversion impact potential.
 - **MEDIUM** — Well-supported improvement, 5-10% potential lift.
 - **LOW** — Good practice, <5% marginal measured effect.
+
+### Machine-Readable Output (Required)
+
+After all prose findings, output a JSON findings array as a fenced JSON block. This is the authoritative machine-readable format — the coordinator and report generator consume this directly.
+
+```json
+[
+  {
+    "verdict": "FAIL",
+    "section": "primary-cta",
+    "element": "button.btn-cart",
+    "source": "VISUAL",
+    "priority": "HIGH",
+    "observation": "CTA button uses low-contrast gray (#999) on white background...",
+    "recommendation": "Change CTA background to high-contrast color...",
+    "reference": "cta-design-and-placement.md:3",
+    "why_matters": "Baymard Institute found 31% of users miss low-contrast CTAs...",
+    "citation": "Baymard Institute, 2023",
+    "tier": "Gold",
+    "effort": "Low",
+    "cluster": "visual-cta"
+  }
+]
+```
+
+**Field requirements:**
+- `verdict`: "FAIL" or "PARTIAL" (required)
+- `section`: slug matching the prose SECTION field (required)
+- `element`: CSS selector or description matching ELEMENT field (required, null if none)
+- `source`: "VISUAL", "CODE", or "DOM" (required)
+- `priority`: "CRITICAL", "HIGH", "MEDIUM", or "LOW" (required)
+- `observation`: full observation text (required)
+- `recommendation`: full recommendation text (required)
+- `reference`: "filename.md:finding_number" format (required)
+- `why_matters`: rationale text (optional)
+- `citation`: source attribution (optional)
+- `tier`: "Gold", "Silver", or "Bronze" (optional, defaults to "Bronze")
+- `effort`: "Trivial", "Low", "Medium", or "High" (optional)
+- `cluster`: the auditor's cluster slug (required)
+
+The JSON array MUST contain every FAIL and PARTIAL finding. PASS findings are not included (they go in the prose "What's Working Well" section only).
+
+**Output the JSON block at the very end of your response**, after all prose findings and the STATUS line. Tag it:
+
+```
+FINDINGS_JSON:
+```json
+[...]
+```
+```
 
 ### Step 5: What's Working Well
 
